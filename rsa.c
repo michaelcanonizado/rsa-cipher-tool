@@ -4,7 +4,7 @@
 #include <math.h>
 
 #define RAND_NUM_LOWER_LIMIT 10
-#define RAND_NUM_UPPER_LIMIT 50
+#define RAND_NUM_UPPER_LIMIT 20
 
 int isPrime(int randNum);
 int generatePrimeNum(int lowerLimit, int upperLimit);
@@ -18,7 +18,7 @@ int main (void) {
     int pPrime = generatePrimeNum(RAND_NUM_LOWER_LIMIT, RAND_NUM_UPPER_LIMIT);
     int qPrime = generatePrimeNum(RAND_NUM_LOWER_LIMIT, RAND_NUM_UPPER_LIMIT);
 
-    while(pPrime < qPrime) {
+    while(pPrime == qPrime) {
         qPrime = generatePrimeNum(RAND_NUM_LOWER_LIMIT, RAND_NUM_UPPER_LIMIT);
     }
 
