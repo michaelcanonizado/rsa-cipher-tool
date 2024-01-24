@@ -3,8 +3,8 @@
 #include <time.h> 
 #include <math.h>
 
-#define RAND_NUM_LOWER_LIMIT 10
-#define RAND_NUM_UPPER_LIMIT 20
+#define RAND_NUM_LOWER_LIMIT 5
+#define RAND_NUM_UPPER_LIMIT 15
 
 int isPrime(int randNum);
 int generatePrimeNum(int lowerLimit, int upperLimit);
