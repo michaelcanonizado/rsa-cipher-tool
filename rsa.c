@@ -10,7 +10,9 @@ int isPrime(int randNum);
 int generatePrimeNum(int lowerLimit, int upperLimit);
 int findGCD(int num1, int num2);
 int modInverse(int e, int phiOfN);
-int encryptChar(char character, int e, int n);
+unsigned int encryptChar(char character, int exponent, int divisor);
+int arrayModulo(int arr[], int size, int divisor);
+int multiplyArrayItems(int x, int result[], int size);
 
 int main (void) {
     srand(time(0));
@@ -94,15 +96,65 @@ int modInverse(int e, int phiOfN) {
     return 0;
 }
 
-int encryptChar(char character, int e, int n) {
-    int asciiCharacter = 15;
+unsigned int encryptChar(char character, int exponent, int divisor) {
+    // ASCII character (base)
+    int asciiCode = 15;
+    
+    int size = 0;
+    int result[10000];
+    int temp = asciiCode;
 
-    printf("\nE: %llu", pow(asciiCharacter, e));
+    // Load each digit of base(x) into array backwards to get size
+    while(temp != 0) {
+        result[size++] = temp % 10;
+        temp = temp / 10;
+    }
 
-    unsigned long long int charToThePowerOfE = pow(asciiCharacter, e);
-    printf("\n\ncharToThePowerOfE: %llu", charToThePowerOfE);
+    // Perform multiplication
+    for (int i = 2; i <= exponent; i++) {
+        size = multiplyArrayItems(asciiCode, result, size);
+    }
+    
+    // GET MODULO
+    int moduloResult = arrayModulo(result, size, divisor);
 
-    int encryptedCharacter = charToThePowerOfE % n;
+    return moduloResult;
+}
 
-    return encryptedCharacter;
+// Function to calculate modulo of an array of digits (FOR LOOP WILL START FROM THE END OF THE ARRAY AS THE ARRAY IS IN REVERSE)
+int arrayModulo(int arr[], int size, int divisor) {
+    int remainder = 0;
+
+    // Iterate through the array from left to right
+    for (int i = size-1; i >= 0; i--) {
+        
+        // Calculate the current result including the next digit
+        int currentResult = remainder * 10 + arr[i];
+        // Update the remainder for the next iteration
+        remainder = currentResult % divisor;
+    }
+
+    // The final remainder is the result of the modulo operation
+    return remainder;
+}
+
+int multiplyArrayItems(int x, int result[], int size) {
+    int carry = 0;
+    int product;
+    // printf("\nx: %d size: %d", x, size);
+    // Multiply n with each digit of result[]
+    for (int i = 0; i < size; i++) {
+        product = result[i] * x + carry;
+        result[i] = product % 10;
+        carry = product / 10;
+    }
+
+    // Count how many digits in array
+    while(carry) {
+        result[size] = carry % 10;
+        carry = carry / 10;
+        size++;
+    }
+
+    return size;
 }
