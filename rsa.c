@@ -3,8 +3,8 @@
 #include <time.h> 
 #include <math.h>
 
-#define RAND_NUM_LOWER_LIMIT 5
-#define RAND_NUM_UPPER_LIMIT 15
+#define RAND_NUM_LOWER_LIMIT 100
+#define RAND_NUM_UPPER_LIMIT 999
 
 int isPrime(int randNum);
 int generatePrimeNum(int lowerLimit, int upperLimit);
@@ -15,34 +15,33 @@ int encryptChar(char character, int e, int n);
 int main (void) {
     srand(time(0));
     
-    int pPrime = generatePrimeNum(RAND_NUM_LOWER_LIMIT, RAND_NUM_UPPER_LIMIT);
-    int qPrime = generatePrimeNum(RAND_NUM_LOWER_LIMIT, RAND_NUM_UPPER_LIMIT);
+    unsigned long long int pPrime = generatePrimeNum(RAND_NUM_LOWER_LIMIT, RAND_NUM_UPPER_LIMIT);
+    unsigned long long int qPrime = generatePrimeNum(RAND_NUM_LOWER_LIMIT, RAND_NUM_UPPER_LIMIT);
 
     while(pPrime == qPrime) {
         qPrime = generatePrimeNum(RAND_NUM_LOWER_LIMIT, RAND_NUM_UPPER_LIMIT);
     }
 
-    int n_Public = pPrime * qPrime;
-    int phiOfN = (pPrime - 1) * (qPrime - 1);
+    unsigned long long int n_Public = pPrime * qPrime;
+    unsigned long long int phiOfN = (pPrime - 1) * (qPrime - 1);
 
-    int e = (rand() % (3, phiOfN - 1)) + 3;
+    unsigned long long int e = (rand() % (3, phiOfN - 1)) + 3;
     while(findGCD(e, phiOfN) != 1) {
         e = (rand() % (3, phiOfN - 1)) + 3;
     }
 
-    int d_Private = modInverse(e, phiOfN);
+    unsigned long long int d_Private = modInverse(e, phiOfN);
 
-    printf("Random Prime. P: %d | Q: %d\n", pPrime, qPrime);
-    printf("N: %d", n_Public);
-    printf("\nPhi of N: %d", phiOfN);
-    printf("\ne (Public Key): %d", e);
-    printf("\nGCD of e and Phi of N: %d", findGCD(e, phiOfN));
-    printf("\nd (Private Key): %d", d_Private);
-    printf("\n(d * e) mod Phi of N: %d", (d_Private * e) % phiOfN);
+    printf("Random Prime. P: %llu | Q: %llu\n", pPrime, qPrime);
+    printf("N: %llu", n_Public);
+    printf("\nPhi of N: %llu", phiOfN);
+    printf("\ne (Public Key): %llu", e);
+    printf("\nGCD of e and Phi of N: %llu", findGCD(e, phiOfN));
+    printf("\nd (Private Key): %llu", d_Private);
+    printf("\n(d * e) mod Phi of N: %llu", (d_Private * e) % phiOfN);
 
-    int encryptedChar = encryptChar('c', e, n_Public);
-
-    printf("\n\nEncrypted Char: %d", encryptedChar);
+    unsigned int encryptedChar = encryptChar('c', e, n_Public);
+    printf("\nEncrypted Char: %d", encryptedChar);
 
 
     return 0;
