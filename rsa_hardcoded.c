@@ -6,6 +6,14 @@
 #define RAND_NUM_LOWER_LIMIT 100
 #define RAND_NUM_UPPER_LIMIT 999
 
+// Global Key limits. 
+//Since e(public key) and d(private key) are being used as exponents, they cant be too large for this program as it will cause an overflow.
+int PUBLIC_KEY_LOWER_LIMIT = 1000;
+int PUBLIC_KEY_UPPER_LIMIT = 8500;
+// d(private key) gets a lower limit as it will be an exponent to a quite large base (5-6 digits) which will also cause an overflow.
+int PRIVATE_KEY_LOWER_LIMIT = 100;
+int PRIVATE_KEY_UPPER_LIMIT = 999;
+
 int isPrime(int randNum);
 int generatePrimeNum(int lowerLimit, int upperLimit);
 int findGCD(int num1, int num2);
@@ -32,14 +40,23 @@ int main (void) {
     // Generate Phi of N
     unsigned long long int phiOfN_Private = (pPrime_Private - 1) * (qPrime_Private - 1);
 
-    // Generate PUBLIC KEY
-    unsigned long long int e_Public = (rand() % (3, phiOfN_Private - 1)) + 3;
-    while(findGCD(e_Public, phiOfN_Private) != 1) {
-        e_Public = (rand() % (3, phiOfN_Private - 1)) + 3;
+    // Generate PUBLIC KEY (e theoretically must be prime, and between 2 & phi of n. But use the KEY_LIMITS to scope the key)
+    unsigned long long int e_Public = generatePrimeNum(PUBLIC_KEY_LOWER_LIMIT, PUBLIC_KEY_UPPER_LIMIT);
+    while((findGCD(e_Public, phiOfN_Private) != 1) && (e_Public > phiOfN_Private)) {
+        e_Public = generatePrimeNum(PUBLIC_KEY_LOWER_LIMIT, PUBLIC_KEY_UPPER_LIMIT);
     }
 
     // Generate PRIVATE KEY
     unsigned long long int d_Private = modInverse(e_Public, phiOfN_Private);
+
+    // if d_Private key was not found with the generated e_Public and n_Public. Generate a new e_Public, then generate d_Private.
+    while(d_Private == 0) {
+        e_Public = generatePrimeNum(PUBLIC_KEY_LOWER_LIMIT, PUBLIC_KEY_UPPER_LIMIT);
+        while((findGCD(e_Public, phiOfN_Private) != 1) && (e_Public > phiOfN_Private)) {
+            e_Public = generatePrimeNum(PUBLIC_KEY_LOWER_LIMIT, PUBLIC_KEY_UPPER_LIMIT);
+        }
+        d_Private = modInverse(e_Public, phiOfN_Private);
+    }
 
     // Print Keys
     printf("\nRandom Prime. P: %llu | Q: %llu\n", pPrime_Private, qPrime_Private);
@@ -52,7 +69,7 @@ int main (void) {
 
     // Test keys if it can encrypt
     unsigned int encryptedChar = encryptChar('c', e_Public, n_Public);
-    printf("\nEncrypted Char: %d", encryptedChar);
+    printf("\n\nEncrypted Char: %d", encryptedChar);
 
     printf("\n\n");
     return 0;
@@ -96,7 +113,7 @@ int findGCD(int num1, int num2) {
 }
 
 int modInverse(int e, int phiOfN) {
-    for (int d=1; d <= phiOfN; ++d) {
+    for (int d=1; d <= PRIVATE_KEY_UPPER_LIMIT; ++d) {
         if ((d * e) % phiOfN == 1) {
             return d;
         }
