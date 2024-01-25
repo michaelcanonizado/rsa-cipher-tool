@@ -19,6 +19,7 @@ int generatePrimeNum(int lowerLimit, int upperLimit);
 int findGCD(int num1, int num2);
 int modInverse(int e, int phiOfN);
 unsigned int encryptChar(char character, int exponent, int divisor);
+unsigned int decryptChar(unsigned int character, int exponent, int divisor);
 int arrayModulo(int arr[], int size, int divisor);
 int multiplyArrayItems(int x, int result[], int size);
 
@@ -70,6 +71,10 @@ int main (void) {
     // Test keys if it can encrypt
     unsigned int encryptedChar = encryptChar('c', e_Public, n_Public);
     printf("\n\nEncrypted Char: %d", encryptedChar);
+
+    // Test keys if it can decrypt
+    unsigned int decryptedChar = decryptChar(encryptedChar, d_Private, n_Public);
+    printf("\nDecrypted Char: %d", decryptedChar);
 
     printf("\n\n");
     return 0;
@@ -123,12 +128,11 @@ int modInverse(int e, int phiOfN) {
 }
 
 unsigned int encryptChar(char character, int exponent, int divisor) {
-    // ASCII character (base)
-    int asciiCode = 15;
+    character = (int)character;
     
     int size = 0;
     int result[10000];
-    int temp = asciiCode;
+    int temp = character;
 
     // Load each digit of base(x) into array backwards to get size
     while(temp != 0) {
@@ -138,7 +142,30 @@ unsigned int encryptChar(char character, int exponent, int divisor) {
 
     // Perform multiplication
     for (int i = 2; i <= exponent; i++) {
-        size = multiplyArrayItems(asciiCode, result, size);
+        size = multiplyArrayItems(character, result, size);
+    }
+    
+    // GET MODULO
+    int moduloResult = arrayModulo(result, size, divisor);
+
+    return moduloResult;
+}
+
+unsigned int decryptChar(unsigned int character, int exponent, int divisor) {
+    
+    int size = 0;
+    int result[10000];
+    int temp = character;
+
+    // Load each digit of base(x) into array backwards to get size
+    while(temp != 0) {
+        result[size++] = temp % 10;
+        temp = temp / 10;
+    }
+
+    // Perform multiplication
+    for (int i = 2; i <= exponent; i++) {
+        size = multiplyArrayItems(character, result, size);
     }
     
     // GET MODULO
