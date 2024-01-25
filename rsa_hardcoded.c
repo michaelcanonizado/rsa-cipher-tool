@@ -17,6 +17,7 @@ int multiplyArrayItems(int x, int result[], int size);
 int main (void) {
     srand(time(0));
     
+    // Generate P and Q Primes
     // unsigned long long int pPrime = generatePrimeNum(RAND_NUM_LOWER_LIMIT, RAND_NUM_UPPER_LIMIT);
     // unsigned long long int qPrime = generatePrimeNum(RAND_NUM_LOWER_LIMIT, RAND_NUM_UPPER_LIMIT);
     unsigned long long int pPrime_Private = 317;
@@ -26,16 +27,21 @@ int main (void) {
         qPrime_Private = generatePrimeNum(RAND_NUM_LOWER_LIMIT, RAND_NUM_UPPER_LIMIT);
     }
 
+    // Generate N
     unsigned long long int n_Public = pPrime_Private * qPrime_Private;
+    // Generate Phi of N
     unsigned long long int phiOfN_Private = (pPrime_Private - 1) * (qPrime_Private - 1);
 
+    // Generate PUBLIC KEY
     unsigned long long int e_Public = (rand() % (3, phiOfN_Private - 1)) + 3;
     while(findGCD(e_Public, phiOfN_Private) != 1) {
         e_Public = (rand() % (3, phiOfN_Private - 1)) + 3;
     }
 
+    // Generate PRIVATE KEY
     unsigned long long int d_Private = modInverse(e_Public, phiOfN_Private);
 
+    // Print Keys
     printf("\nRandom Prime. P: %llu | Q: %llu\n", pPrime_Private, qPrime_Private);
     printf("N: %llu", n_Public);
     printf("\nPhi of N: %llu", phiOfN_Private);
@@ -44,6 +50,7 @@ int main (void) {
     printf("\nd (Private Key): %llu", d_Private);
     printf("\n(d * e) mod Phi of N: %llu", (d_Private * e_Public) % phiOfN_Private);
 
+    // Test keys if it can encrypt
     unsigned int encryptedChar = encryptChar('c', e_Public, n_Public);
     printf("\nEncrypted Char: %d", encryptedChar);
 
