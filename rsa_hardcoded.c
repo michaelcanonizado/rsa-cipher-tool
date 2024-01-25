@@ -76,6 +76,40 @@ int main (void) {
     unsigned int decryptedChar = decryptChar(encryptedChar, d_Private, n_Public);
     printf("\nDecrypted Char: %d", decryptedChar);
 
+    char d_message[] = "Hello World";
+    unsigned int e_message[sizeof d_message/sizeof d_message[0]];
+
+    // Encrypt message
+    for (int i = 0; i < sizeof d_message/sizeof d_message[0]; i++) {
+        e_message[i] = encryptChar(d_message[i], e_Public, n_Public);
+    }
+
+    // Print message
+    printf("\n\nMessage: ");
+    printf("%s - ", d_message);
+    for (int i = 0; i < sizeof d_message/sizeof d_message[0]-1; i++) {
+        printf("%d,", d_message[i]);
+    }
+    // Print encrypted message
+    printf("\n\nEncrypted Message: ");
+    for (int i = 0; i < sizeof e_message/sizeof e_message[0]-1; i++) {
+        printf("%d,", e_message[i]);
+    }
+
+    // Decrypt message
+    for (int i = 0; i < sizeof e_message/sizeof e_message[0]-1; i++) {
+        d_message[i] = decryptChar(e_message[i], d_Private, n_Public);
+    }
+    // Print decrypted message
+    printf("\n\nDecrypted Message: ");
+    for (int i = 0; i < sizeof d_message/sizeof d_message[0]-1; i++) {
+        printf("%d,", d_message[i]);
+    }
+    printf("\n");
+    for (int i = 0; i < sizeof d_message/sizeof d_message[0]-1; i++) {
+        printf("%c,", d_message[i]);
+    }
+
     printf("\n\n");
     return 0;
 }
