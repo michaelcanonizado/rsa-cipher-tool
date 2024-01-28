@@ -6,46 +6,115 @@
 #define RAND_NUM_LOWER_LIMIT 100
 #define RAND_NUM_UPPER_LIMIT 999
 
+// Global Key limits. 
+//Since e(public key) and d(private key) are being used as exponents, they cant be too large for this program as it will cause an overflow.
+int PUBLIC_KEY_LOWER_LIMIT = 1000;
+int PUBLIC_KEY_UPPER_LIMIT = 5000;
+// d(private key) gets a lower limit as it will be an exponent to a quite large base (5-6 digits) which will also cause an overflow.
+int PRIVATE_KEY_LOWER_LIMIT = 800;
+int PRIVATE_KEY_UPPER_LIMIT = 900;
+
 int isPrime(int randNum);
 int generatePrimeNum(int lowerLimit, int upperLimit);
 int findGCD(int num1, int num2);
 int modInverse(int e, int phiOfN);
 unsigned int encryptChar(char character, int exponent, int divisor);
+unsigned int decryptChar(unsigned int character, int exponent, int divisor);
 int arrayModulo(int arr[], int size, int divisor);
 int multiplyArrayItems(int x, int result[], int size);
 
 int main (void) {
     srand(time(0));
     
-    unsigned long long int pPrime = generatePrimeNum(RAND_NUM_LOWER_LIMIT, RAND_NUM_UPPER_LIMIT);
-    unsigned long long int qPrime = generatePrimeNum(RAND_NUM_LOWER_LIMIT, RAND_NUM_UPPER_LIMIT);
+    // Generate P and Q Primes
+    unsigned long long int pPrime_Private = generatePrimeNum(RAND_NUM_LOWER_LIMIT, RAND_NUM_UPPER_LIMIT);
+    unsigned long long int qPrime_Private = generatePrimeNum(RAND_NUM_LOWER_LIMIT, RAND_NUM_UPPER_LIMIT);
 
-    while(pPrime == qPrime) {
-        qPrime = generatePrimeNum(RAND_NUM_LOWER_LIMIT, RAND_NUM_UPPER_LIMIT);
+    while(pPrime_Private == qPrime_Private) {
+        qPrime_Private = generatePrimeNum(RAND_NUM_LOWER_LIMIT, RAND_NUM_UPPER_LIMIT);
     }
 
-    unsigned long long int n_Public = pPrime * qPrime;
-    unsigned long long int phiOfN = (pPrime - 1) * (qPrime - 1);
+    // Generate N
+    unsigned long long int n_Public = pPrime_Private * qPrime_Private;
+    // Generate Phi of N
+    unsigned long long int phiOfN_Private = (pPrime_Private - 1) * (qPrime_Private - 1);
 
-    unsigned long long int e = (rand() % (3, phiOfN - 1)) + 3;
-    while(findGCD(e, phiOfN) != 1) {
-        e = (rand() % (3, phiOfN - 1)) + 3;
+    // Generate PUBLIC KEY (e theoretically must be prime, and between 2 & phi of n. But use the KEY_LIMITS to scope the key)
+    unsigned long long int e_Public = generatePrimeNum(PUBLIC_KEY_LOWER_LIMIT, PUBLIC_KEY_UPPER_LIMIT);
+    while((findGCD(e_Public, phiOfN_Private) != 1) && (e_Public > phiOfN_Private)) {
+        e_Public = generatePrimeNum(PUBLIC_KEY_LOWER_LIMIT, PUBLIC_KEY_UPPER_LIMIT);
     }
 
-    unsigned long long int d_Private = modInverse(e, phiOfN);
+    // Generate PRIVATE KEY
+    unsigned long long int d_Private = modInverse(e_Public, phiOfN_Private);
 
-    printf("Random Prime. P: %llu | Q: %llu\n", pPrime, qPrime);
+    // if d_Private key was not found with the generated e_Public and n_Public. Generate a new e_Public, then generate d_Private.
+    while(d_Private == 0) {
+        e_Public = generatePrimeNum(PUBLIC_KEY_LOWER_LIMIT, PUBLIC_KEY_UPPER_LIMIT);
+        while((findGCD(e_Public, phiOfN_Private) != 1) && (e_Public > phiOfN_Private)) {
+            e_Public = generatePrimeNum(PUBLIC_KEY_LOWER_LIMIT, PUBLIC_KEY_UPPER_LIMIT);
+        }
+        d_Private = modInverse(e_Public, phiOfN_Private);
+    }
+
+    // Print Keys
+    printf("\nRandom Prime. P: %llu | Q: %llu\n", pPrime_Private, qPrime_Private);
     printf("N: %llu", n_Public);
-    printf("\nPhi of N: %llu", phiOfN);
-    printf("\ne (Public Key): %llu", e);
-    printf("\nGCD of e and Phi of N: %llu", findGCD(e, phiOfN));
+    printf("\nPhi of N: %llu", phiOfN_Private);
+    printf("\ne (Public Key): %llu", e_Public);
+    printf("\nGCD of e and Phi of N: %llu", findGCD(e_Public, phiOfN_Private));
     printf("\nd (Private Key): %llu", d_Private);
-    printf("\n(d * e) mod Phi of N: %llu", (d_Private * e) % phiOfN);
+    printf("\n(d * e) mod Phi of N: %llu", (d_Private * e_Public) % phiOfN_Private);
 
-    unsigned int encryptedChar = encryptChar('c', e, n_Public);
-    printf("\nEncrypted Char: %d", encryptedChar);
+    printf("\n\nTesting keys...\n");
 
+    // Test keys if it can encrypt
+    unsigned int encryptedChar = encryptChar('c', e_Public, n_Public);
+    printf("\n\nEncrypted Char: %d", encryptedChar);
 
+    printf("\n\nPublic key can encrypt\n");
+
+    // Test keys if it can decrypt
+    unsigned int decryptedChar = decryptChar(encryptedChar, d_Private, n_Public);
+    printf("\nDecrypted Char: %d - %c", decryptedChar, decryptedChar);
+
+    printf("\n\nPrivate key can decrypt\n");
+
+    char d_message[] = "Hello World";
+    unsigned int e_message[sizeof d_message/sizeof d_message[0]];
+
+    // Encrypt message
+    for (int i = 0; i < sizeof d_message/sizeof d_message[0]; i++) {
+        e_message[i] = encryptChar(d_message[i], e_Public, n_Public);
+    }
+
+    // Print message
+    printf("\n\nMessage: ");
+    printf("%s - ", d_message);
+    for (int i = 0; i < sizeof d_message/sizeof d_message[0]-1; i++) {
+        printf("%d,", d_message[i]);
+    }
+    // Print encrypted message
+    printf("\n\nEncrypted Message: ");
+    for (int i = 0; i < sizeof e_message/sizeof e_message[0]-1; i++) {
+        printf("%d,", e_message[i]);
+    }
+
+    // Decrypt message
+    for (int i = 0; i < sizeof e_message/sizeof e_message[0]-1; i++) {
+        d_message[i] = decryptChar(e_message[i], d_Private, n_Public);
+    }
+    // Print decrypted message
+    printf("\n\nDecrypted Message: ");
+    for (int i = 0; i < sizeof d_message/sizeof d_message[0]-1; i++) {
+        printf("%d,", d_message[i]);
+    }
+    printf("\n");
+    for (int i = 0; i < sizeof d_message/sizeof d_message[0]-1; i++) {
+        printf("%c,", d_message[i]);
+    }
+
+    printf("\n\n");
     return 0;
 }
 
@@ -87,7 +156,7 @@ int findGCD(int num1, int num2) {
 }
 
 int modInverse(int e, int phiOfN) {
-    for (int d=1; d <= phiOfN; ++d) {
+    for (int d=1; d <= PRIVATE_KEY_UPPER_LIMIT; ++d) {
         if ((d * e) % phiOfN == 1) {
             return d;
         }
@@ -97,12 +166,11 @@ int modInverse(int e, int phiOfN) {
 }
 
 unsigned int encryptChar(char character, int exponent, int divisor) {
-    // ASCII character (base)
-    int asciiCode = 15;
+    character = (int)character;
     
     int size = 0;
     int result[10000];
-    int temp = asciiCode;
+    int temp = character;
 
     // Load each digit of base(x) into array backwards to get size
     while(temp != 0) {
@@ -112,7 +180,30 @@ unsigned int encryptChar(char character, int exponent, int divisor) {
 
     // Perform multiplication
     for (int i = 2; i <= exponent; i++) {
-        size = multiplyArrayItems(asciiCode, result, size);
+        size = multiplyArrayItems(character, result, size);
+    }
+    
+    // GET MODULO
+    int moduloResult = arrayModulo(result, size, divisor);
+
+    return moduloResult;
+}
+
+unsigned int decryptChar(unsigned int character, int exponent, int divisor) {
+    
+    int size = 0;
+    int result[10000];
+    int temp = character;
+
+    // Load each digit of base(x) into array backwards to get size
+    while(temp != 0) {
+        result[size++] = temp % 10;
+        temp = temp / 10;
+    }
+
+    // Perform multiplication
+    for (int i = 2; i <= exponent; i++) {
+        size = multiplyArrayItems(character, result, size);
     }
     
     // GET MODULO
