@@ -1,14 +1,17 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
-int multiplyArrayItems(int x, int result[], int size) {
+int multiplyArrayItems(int x, int result[], int size, int *insertedItems) {
     int carry = 0;
     int product;
-    // printf("\nx: %d size: %d", x, size);
+
     // Multiply n with each digit of result[]
     for (int i = 0; i < size; i++) {
         product = result[i] * x + carry;
         result[i] = product % 10;
         carry = product / 10;
+        printf("\n%d - %d", product, product % 10);
     }
 
     // Count how many digits in array
@@ -16,6 +19,7 @@ int multiplyArrayItems(int x, int result[], int size) {
         result[size] = carry % 10;
         carry = carry / 10;
         size++;
+        (*insertedItems)++;
     }
 
     return size;
@@ -39,19 +43,26 @@ int arrayModulo(int arr[], int size, int divisor) {
 }
 
 int main(void) {
+    // Start timer
+    clock_t begin = clock();
 
-    int x = 115;
-    int n = 103;
+    // int x = 256312;
+    // int n = 43;
+    int x = 2;
+    int n = 4;
     
     int size = 0;
-    int result[100000];
+    // Dynamically allocate memory to array
+    int *result = malloc(sizeof(int) * 100000000);
     int temp = x;
+    int itemsInserted = 0;
     int i;
 
     // Load each digit of base(x) into array backwards
     while(temp != 0) {
         result[size++] = temp % 10;
         temp = temp / 10;
+        itemsInserted++;
     }
 
     // Print loaded array and exponent
@@ -59,25 +70,36 @@ int main(void) {
     for (i = 0; i < size; i++) {
         printf("%d,", result[i]);
     }
-    printf("\nexponent: %d\n\n", n);
+    printf("\nexponent: %d", n);
+    printf("\nNum of digits in base: %d", itemsInserted);
 
+    printf("\n\nMultiplying digits...");
     for (i = 2; i <= n; i++) {
-        size = multiplyArrayItems(x, result, size);
+        size = multiplyArrayItems(x, result, size, &itemsInserted);
     }
+    printf("\nGetting power done...");
 
-    printf("\nx^n result: ");
+    printf("\n\nx^n result: ");
     for (i = size-1; i >= 0; i--) {
         printf("%d", result[i]);
     }
+    printf("\nNum of digits in result: %d", itemsInserted);
     
     // GET MODULO
-
+    printf("\n\nGetting modulo...");
     int divisor = 143;
-
     int moduloResult = arrayModulo(result, size, divisor);
 
     // Display the result
-    printf("\n\nModulo result: %d\n", moduloResult);
+    printf("\nModulo result: %d\n\n", moduloResult);
+
+    // Free malloc'ed array
+    free(result);
+
+    // End timer
+    clock_t end = clock();
+    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    printf("ELAPSED TIME CALCULATING: %lf seconds\n\n", time_spent);
 
     return 0;
 }
