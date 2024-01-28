@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
 int multiplyArrayItems(int x, int result[], int size, int *insertedItems) {
     int carry = 0;
@@ -43,9 +42,6 @@ int arrayModulo(int arr[], int size, int divisor) {
 }
 
 int main(void) {
-    // Start timer
-    clock_t begin = clock();
-
     // int x = 256312;
     // int n = 43;
     int x = 2;
@@ -95,11 +91,5 @@ int main(void) {
 
     // Free malloc'ed array
     free(result);
-
-    // End timer
-    clock_t end = clock();
-    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-    printf("ELAPSED TIME CALCULATING: %lf seconds\n\n", time_spent);
-
     return 0;
 }
