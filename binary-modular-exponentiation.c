@@ -9,9 +9,19 @@ int main(void) {
     // d (Private Key) : 841
     // n (P * Q) : 421999
     // Encrypt ex. : H (72) -> 351180
-    unsigned long long int exponent = 3001;
-    unsigned long long int base = 72;
-    unsigned long long int divisor = 421999;
+    // unsigned long long int exponent = 3001;
+    // unsigned long long int base = 72;
+    // unsigned long long int divisor = 421999;
+    unsigned long long int exponent = 2284897;
+    unsigned long long int base = 7151692;
+    unsigned long long int divisor = 7543457; // 7151692
+// Random Prime. P: 2417 | Q: 3121
+// N: 7543457
+// Phi of N: 7537920
+// e (Public Key): 673
+// GCD of e and Phi of N: 1
+// d (Private Key): 2284897
+// (d * e) mod Phi of N: 1
 
     // Other examples. Correct results are given
     //
