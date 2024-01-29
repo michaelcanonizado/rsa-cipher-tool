@@ -11,8 +11,8 @@ int main(void) {
     // Encrypt ex. : H (72) -> 351180
 
     unsigned long long int exponent = 3001;
-    long long int base = 72;
-    long long int divisor = 421999;
+    unsigned long long int base = 72;
+    unsigned long long int divisor = 421999;
 
     int binaryExponent[10000];
 
