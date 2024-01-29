@@ -11,7 +11,6 @@ int multiplyArrayItems(int x, int result[], int size, int *insertedItems) {
         product = result[i] * x + carry;
         result[i] = product % 10;
         carry = product / 10;
-        printf("\n%d - %d", product, product % 10);
     }
 
     // Count how many digits in array
@@ -48,8 +47,8 @@ int main(void) {
 
     // int x = 256312;
     // int n = 43;
-    int x = 2;
-    int n = 4;
+    int x = 72;
+    int n = 2;
     
     int size = 0;
     // Dynamically allocate memory to array
@@ -87,7 +86,7 @@ int main(void) {
     
     // GET MODULO
     printf("\n\nGetting modulo...");
-    int divisor = 143;
+    int divisor = 421999;
     int moduloResult = arrayModulo(result, size, divisor);
 
     // Display the result
