@@ -20,6 +20,7 @@ int findGCD(int num1, int num2);
 int modInverse(int e, int phiOfN);
 
 int main (void) {
+    clock_t start_time = clock();
     srand(time(0));
     
     // Generate P and Q Primes
@@ -61,6 +62,10 @@ int main (void) {
     printf("\nGCD of e and Phi of N: %llu", findGCD(e_Public, phiOfN_Private));
     printf("\nd (Private Key): %llu", d_Private);
     printf("\n(d * e) mod Phi of N: %llu", (d_Private * e_Public) % phiOfN_Private);
+
+    clock_t end_time = clock();
+    double CPU_TIME_USED = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
+    printf("\n\nCPU TIME USED: %lf secs", CPU_TIME_USED);
 
     printf("\n\n");
     return 0;
