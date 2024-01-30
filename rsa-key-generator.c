@@ -8,8 +8,8 @@
 
 // Global Key limits. 
 //Since e(public key) and d(private key) are being used as exponents, they cant be too large for this program as it will cause an overflow.
-int PUBLIC_KEY_LOWER_LIMIT = 1000;
-int PUBLIC_KEY_UPPER_LIMIT = 5000;
+int PUBLIC_KEY_LOWER_LIMIT = 100000;
+int PUBLIC_KEY_UPPER_LIMIT = 500000;
 // d(private key) gets a lower limit as it will be an exponent to a quite large base (5-6 digits) which will also cause an overflow.
 int PRIVATE_KEY_LOWER_LIMIT = 800;
 int PRIVATE_KEY_UPPER_LIMIT = 900;
@@ -37,9 +37,9 @@ int main (void) {
     unsigned long long int phiOfN_Private = (pPrime_Private - 1) * (qPrime_Private - 1);
 
     // Generate PUBLIC KEY (e theoretically must be prime, and between 2 & phi of n. But use the KEY_LIMITS to scope the key)
-    unsigned long long int e_Public = generatePrimeNum(2, phiOfN_Private - 1);
+    unsigned long long int e_Public = generatePrimeNum(PUBLIC_KEY_LOWER_LIMIT, phiOfN_Private - 1);
     while((findGCD(e_Public, phiOfN_Private) != 1) && (e_Public > phiOfN_Private)) {
-        e_Public = generatePrimeNum(2, phiOfN_Private - 1);
+        e_Public = generatePrimeNum(PUBLIC_KEY_LOWER_LIMIT, phiOfN_Private - 1);
     }
 
     // Generate PRIVATE KEY
@@ -47,9 +47,9 @@ int main (void) {
 
     // if d_Private key was not found with the generated e_Public and n_Public. Generate a new e_Public, then generate d_Private.
     while(d_Private == 0) {
-        e_Public = generatePrimeNum(2, phiOfN_Private - 1);
+        e_Public = generatePrimeNum(PUBLIC_KEY_LOWER_LIMIT, phiOfN_Private - 1);
         while((findGCD(e_Public, phiOfN_Private) != 1) && (e_Public > phiOfN_Private)) {
-            e_Public = generatePrimeNum(2, phiOfN_Private - 1);
+            e_Public = generatePrimeNum(PUBLIC_KEY_LOWER_LIMIT, phiOfN_Private - 1);
         }
         d_Private = modInverse(e_Public, phiOfN_Private);
     }
