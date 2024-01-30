@@ -3,8 +3,8 @@
 #include <time.h> 
 #include <math.h>
 
-#define RAND_NUM_LOWER_LIMIT 1000
-#define RAND_NUM_UPPER_LIMIT 9999
+#define RAND_NUM_LOWER_LIMIT 10000000
+#define RAND_NUM_UPPER_LIMIT 99999999
 
 // Global Key limits. 
 //Since e(public key) and d(private key) are being used as exponents, they cant be too large for this program as it will cause an overflow.
@@ -16,8 +16,8 @@ int PRIVATE_KEY_UPPER_LIMIT = 900;
 
 int isPrime(int randNum);
 int generatePrimeNum(int lowerLimit, int upperLimit);
-int findGCD(int num1, int num2);
-int modInverse(int e, int phiOfN);
+unsigned long long int findGCD(unsigned long long int num1, unsigned long long int num2);
+unsigned long long int modInverse(unsigned long long int e, unsigned long long int phiOfN);
 
 int main (void) {
     clock_t start_time = clock();
@@ -95,26 +95,53 @@ int generatePrimeNum(int lowerLimit, int upperLimit) {
     return randNum;
 }
 
-int findGCD(int num1, int num2) {
-    int gcd;
+unsigned long long int findGCD(unsigned long long int num1, unsigned long long int num2) {
+    unsigned long long int quotient, remainder;
+    unsigned int count = 0;
 
-    for(int i=1; i <= num1 && i <= num2; ++i)
-    {
-        // Checks if i is factor of both integers
-        if(num1%i==0 && num2%i==0)
-            gcd = i;
+    unsigned long long int a = num1 > num2 ? num1 : num2;
+    unsigned long long int b = num1 < num2 ? num1 : num2;
+
+    while(b > 0) {
+        remainder = a % b;
+        quotient = a / b;
+
+        a = b;
+        b = remainder;
+
+        count++;
     }
 
-    return gcd;
+    return a;
 }
 
-int modInverse(int e, int phiOfN) {
-    for (int d=3; d <= phiOfN; ++d) {
-        if ((d * e) % phiOfN == 1) {
-            printf("\n\n-> (%d*%d) M %d = %d\n\n",d,e, phiOfN,(d * e) % phiOfN);
-            return d;
-        }
+unsigned long long int modInverse(unsigned long long int e, unsigned long long int phiOfN) {
+    unsigned long long int quotient, remainder;
+    long long int t;
+    long long int t1 = 0;
+    long long int t2 = 1;
+
+    unsigned int count = 0;
+
+    unsigned long long int a = e >phiOfN ? e :phiOfN;
+    unsigned long long int b = e <phiOfN ? e :phiOfN;
+
+    while(b > 0) {
+        remainder = a % b;
+        quotient = a / b;
+        t = t1 - (t2 * quotient);
+
+        a = b;
+        b = remainder;
+        t1 = t2;
+        t2 = t;
+
+        count++;
     }
 
-    return 0;
+    if (t1 < 0) {
+        return t1 + phiOfN;
+    } else {
+        return t1;
+    }
 }

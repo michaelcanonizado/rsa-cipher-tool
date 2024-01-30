@@ -68,8 +68,8 @@ unsigned long long int modInverse(unsigned long long int  num, unsigned long lon
 }
 
 int main (void) {
-    unsigned long long int num1 = 24481;
-    unsigned long long int divisor = 30783412;
+    unsigned long long int num1 = 15647;
+    unsigned long long int divisor = 9470664;
 
     unsigned long long int gcdResult = gcd(num1,divisor);
     unsigned long long int modInverseResult = modInverse(num1,divisor);
