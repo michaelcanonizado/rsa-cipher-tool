@@ -39,7 +39,7 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         printf("\n#1: %d | #2: %d | sum %d | carry %d",num1->digits[i], num2->digits[i], sum, carry);
         result->digits[resultLength] = sum;
 
-       
+        resultLength++;
     }
     printf("\n\n");
     for (int i = 0; i < resultLength; i++) {
