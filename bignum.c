@@ -10,10 +10,18 @@ typedef struct {
 } Bignum;
 
 void initBignum(Bignum *numStruct, char numStr[]) {
+    int temp;
+
     numStruct->length = strlen(numStr);
 
     for (int i = 0; i < numStruct->length; i++) {
         numStruct->digits[i] = numStr[i] - '0';
+    }
+
+    for (int i = 0; i < numStruct->length / 2; i++) {
+        temp = numStruct->digits[i];
+        numStruct->digits[i] = numStruct->digits[numStruct->length - i - 1];
+        numStruct->digits[numStruct->length - i - 1] = temp;
     }
 }
 
@@ -50,16 +58,13 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 int main(void) {
     Bignum num1, num2, result;
 
-    initBignum(&num1, "10");
-    initBignum(&num2, "2");
+    initBignum(&num1, "123456789");
 
-    printf("\nNum Length: %d\n", num1.length);
+    printf("\nNum Length: %d\nNum (reverse): ", num1.length);
 
     for (int i = 0; i < num1.length; i++) {
         printf("%d", num1.digits[i]);
     }
-
-    addBignum(&result, &num1, &num2);
 
     return 0;
 }
