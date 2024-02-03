@@ -5,7 +5,9 @@
 #define MAX_INT_LENGTH 10000
 
 typedef struct {
+    // Integer will be in reverse for easier arithmetic
     int digits[MAX_INT_LENGTH];
+    // Number of digits in integer
     int length;
 } Bignum;
 
