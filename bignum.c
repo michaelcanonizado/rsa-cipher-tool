@@ -12,12 +12,15 @@ typedef struct {
 void initBignum(Bignum *numStruct, char numStr[]) {
     int temp;
 
+    // Store number length
     numStruct->length = strlen(numStr);
 
+    // Load numbers into Bignum.digits
     for (int i = 0; i < numStruct->length; i++) {
         numStruct->digits[i] = numStr[i] - '0';
     }
 
+    // Reverse Bignum.digits for easier operations to be done
     for (int i = 0; i < numStruct->length / 2; i++) {
         temp = numStruct->digits[i];
         numStruct->digits[i] = numStruct->digits[numStruct->length - i - 1];
