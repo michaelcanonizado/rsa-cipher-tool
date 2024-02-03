@@ -61,7 +61,7 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 }
 
 int main(void) {
-    Bignum num1, num2, result;
+    Bignum num1;
 
     initBignum(&num1, "123456789");
 
