@@ -34,8 +34,10 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     int sum;
     int carry = 0;
     int resultLength = 0;
+    // maxLength will cap out at around 18,446,744,073,709,551,615 (ref: C docs). Therefore the Bignum num1 and num2 can only have a maximum of 18,446,744,073,709,551,615 digits.
     unsigned long long int maxLength;
 
+    // Find the longest length
     if (num1->length > num2->length) {
         maxLength = num1->length;
     } else if (num2->length > num1->length) {
@@ -44,6 +46,7 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         maxLength = num1->length;
     }
 
+    // Perform addition
     for (int i = 0; i < maxLength; i++) {
         sum = carry;
         sum += num1->digits[i] + num2->digits[i];
@@ -55,11 +58,13 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         resultLength++;
     }
 
+    // If there is a remaining carry, append to result. e.g. 8 + 9 = 17 NOT 8 + 9 = 7 (the carry in the buffer was not added)
     if (carry == 1) {
         result->digits[resultLength] = carry;
         resultLength++;
     }
 
+    // Store result digit length
     result->length = resultLength;
 }
 
