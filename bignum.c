@@ -44,32 +44,51 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         maxLength = num1->length;
     }
 
-    for (int i = maxLength - 1; i >= 0; i--) {
+    for (int i = 0; i < maxLength; i++) {
         sum = carry;
         sum += num1->digits[i] + num2->digits[i];
         carry = sum >= 10 ? 1 : 0;
         sum = sum % 10;
-        printf("\n#1: %d | #2: %d | sum %d | carry %d",num1->digits[i], num2->digits[i], sum, carry);
-        result->digits[resultLength] = sum;
+
+        result->digits[i] = sum;
 
         resultLength++;
     }
-    printf("\n\n");
-    for (int i = 0; i < resultLength; i++) {
-        printf("%d", result->digits[i]);
+
+    if (carry == 1) {
+        result->digits[resultLength] = carry;
+        resultLength++;
     }
+
+    result->length = resultLength;
 }
 
 int main(void) {
-    Bignum num1;
+    Bignum num1, num2, result;
 
-    initBignum(&num1, "123456789");
+    initBignum(&num1, "8587450224");
+    initBignum(&num2, "9189749783");
 
-    printf("\nNum Length: %d\nNum (reverse): ", num1.length);
+    addBignum(&result, &num1, &num2);
 
-    for (int i = 0; i < num1.length; i++) {
+    printf("\n");
+    for (int i = num1.length - 1; i >= 0 ; i--) {
         printf("%d", num1.digits[i]);
     }
+    printf(" + ");
+    for (int i = num2.length - 1; i >= 0 ; i--) {
+        printf("%d", num2.digits[i]);
+    }
+    printf(" = ");
+    for (int i = result.length - 1; i >= 0 ; i--) {
+        printf("%d", result.digits[i]);
+    }
+
+    printf("\n\nResult Length: %d\nNum: ", result.length);
+    for (int i = result.length - 1; i >= 0; i--) {
+        printf("%d", result.digits[i]);
+    }
+    printf("\n\n");
 
     return 0;
 }
