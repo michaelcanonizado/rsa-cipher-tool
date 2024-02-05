@@ -84,17 +84,24 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 }
 
 int main(void) {
-    Bignum num1;
+    Bignum num1, num2, result;
 
     intToBignum(&num1, 12345);
+    initBignum(&num2, "12345");
 
-    printf("\nFormatted order: ");
+    printf("\n");
     for (int i = num1.length - 1; i >= 0 ; i--) {
         printf("%d", num1.digits[i]);
     }
-    printf("\nNon Formatted order: ");
-    for (int i = 0; i < num1.length ; i++) {
-        printf("%d", num1.digits[i]);
+    printf(" + ");
+    for (int i = num2.length - 1; i >= 0; i--) {
+        printf("%d", num2.digits[i]);
+    }
+
+    addBignum(&result, &num1, &num2);
+    printf("= ");
+    for (int i = result.length - 1; i >= 0; i--) {
+        printf("%d", result.digits[i]);
     }
     
     printf("\n\n");
