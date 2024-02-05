@@ -30,6 +30,18 @@ void initBignum(Bignum *numStruct, char numStr[]) {
     }
 }
 
+void intToBignum(Bignum *numStruct, unsigned long long int integer) {
+    unsigned long long int count = 0;
+    
+    while(integer > 0) {
+        numStruct->digits[count] = integer % 10;
+        integer = integer / 10;
+        count++;
+    }
+
+    numStruct->length = count++;
+}
+
 void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     int sum;
     int carry = 0;
@@ -69,30 +81,19 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 }
 
 int main(void) {
-    Bignum num1, num2, result;
+    Bignum num1;
 
-    initBignum(&num1, "8587450224");
-    initBignum(&num2, "9189749783");
+    intToBignum(&num1, 12345);
 
-    addBignum(&result, &num1, &num2);
-
-    printf("\n");
+    printf("\nFormatted order: ");
     for (int i = num1.length - 1; i >= 0 ; i--) {
         printf("%d", num1.digits[i]);
     }
-    printf(" + ");
-    for (int i = num2.length - 1; i >= 0 ; i--) {
-        printf("%d", num2.digits[i]);
+    printf("\nNon Formatted order: ");
+    for (int i = 0; i < num1.length ; i++) {
+        printf("%d", num1.digits[i]);
     }
-    printf(" = ");
-    for (int i = result.length - 1; i >= 0 ; i--) {
-        printf("%d", result.digits[i]);
-    }
-
-    printf("\n\nResult Length: %d\nNum: ", result.length);
-    for (int i = result.length - 1; i >= 0; i--) {
-        printf("%d", result.digits[i]);
-    }
+    
     printf("\n\n");
 
     return 0;
