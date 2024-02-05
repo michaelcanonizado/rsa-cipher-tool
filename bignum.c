@@ -42,7 +42,7 @@ void intToBignum(Bignum *numStruct, unsigned long long int integer) {
     }
 
     // Store the count in Bignum.length
-    numStruct->length = count + 1;
+    numStruct->length = count;
 }
 
 void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
