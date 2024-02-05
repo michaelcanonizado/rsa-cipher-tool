@@ -31,14 +31,17 @@ void initBignum(Bignum *numStruct, char numStr[]) {
 }
 
 void intToBignum(Bignum *numStruct, unsigned long long int integer) {
+    // Use a counter to track indexes and length. Int is used as the unsigned longlong int data type's max digit count is 20
     unsigned long long int count = 0;
-    
+
+    // Push remainder of the modulo of the last digit of the integer to the Bignum struct, then divide the integer by 10 to shift the integer. Do this untill all digits have been pushed.
     while(integer > 0) {
         numStruct->digits[count] = integer % 10;
         integer = integer / 10;
         count++;
     }
 
+    // Store the count in Bignum.length
     numStruct->length = count++;
 }
 
