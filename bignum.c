@@ -9,17 +9,28 @@ typedef struct {
     int digits[MAX_INT_LENGTH];
     // Number of digits in integer
     int length;
+    int sign;
 } Bignum;
 
 void initBignum(Bignum *numStruct, char numStr[]) {
     int temp;
+    char numStrCopy[strlen(numStr)];
+
+    strcpy(numStrCopy, numStr);
+
+    if (numStrCopy[0] == '-') {
+        numStruct->sign = 1;
+        memmove(numStrCopy, numStrCopy + 1, strlen(numStrCopy));
+    } else {
+        numStruct->sign = 0;
+    }
 
     // Store number length
-    numStruct->length = strlen(numStr);
+    numStruct->length = strlen(numStrCopy);
 
     // Load numbers into Bignum.digits
     for (int i = 0; i < numStruct->length; i++) {
-        numStruct->digits[i] = numStr[i] - '0';
+        numStruct->digits[i] = numStrCopy[i] - '0';
     }
 
     // Reverse Bignum.digits for easier operations to be done
@@ -85,23 +96,17 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
 int main(void) {
     Bignum num1, num2, result;
-
-    intToBignum(&num1, 12345);
+    
+    initBignum(&num1, "-12345");
     initBignum(&num2, "12345");
 
-    printf("\n");
+    printf("\nsign: %d | num 1: ", num1.sign);
     for (int i = num1.length - 1; i >= 0 ; i--) {
         printf("%d", num1.digits[i]);
     }
-    printf(" + ");
-    for (int i = num2.length - 1; i >= 0; i--) {
+    printf("\nsign: %d | num 2: ", num2.sign);
+    for (int i = num2.length - 1; i >= 0 ; i--) {
         printf("%d", num2.digits[i]);
-    }
-
-    addBignum(&result, &num1, &num2);
-    printf("= ");
-    for (int i = result.length - 1; i >= 0; i--) {
-        printf("%d", result.digits[i]);
     }
     
     printf("\n\n");
