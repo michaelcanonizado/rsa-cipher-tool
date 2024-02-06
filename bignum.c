@@ -9,15 +9,18 @@ typedef struct {
     int digits[MAX_INT_LENGTH];
     // Number of digits in integer
     int length;
+    // Sign will be 0 (positive) or 1 (negative), following the binary sign bit convention.
     int sign;
 } Bignum;
 
 void initBignum(Bignum *numStruct, char numStr[]) {
     int temp;
-    char numStrCopy[strlen(numStr)];
 
+    // Create a mutable array to be able to remove the negative sign as numStr is a constant string.
+    char numStrCopy[strlen(numStr)];
     strcpy(numStrCopy, numStr);
 
+    // Check if numStr is a negative integer. If true, set Bignum.sign to 1 then remove the negative sign.
     if (numStrCopy[0] == '-') {
         numStruct->sign = 1;
         memmove(numStrCopy, numStrCopy + 1, strlen(numStrCopy));
