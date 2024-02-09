@@ -42,6 +42,7 @@ void initBignum(Bignum *numStruct, char numStr[]) {
         numStruct->digits[i] = numStruct->digits[numStruct->length - i - 1];
         numStruct->digits[numStruct->length - i - 1] = temp;
     }
+    // test
 }
 
 void intToBignum(Bignum *numStruct, unsigned long long int integer) {
