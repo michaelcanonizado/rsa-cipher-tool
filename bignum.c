@@ -4,6 +4,11 @@
 
 #define MAX_INT_LENGTH 10000
 
+typedef enum {
+    positive = 0,
+    negative = 1
+} INT_SIGN;
+
 typedef struct {
     // Integer will be in reverse for easier arithmetic
     int digits[MAX_INT_LENGTH];
@@ -13,27 +18,18 @@ typedef struct {
     int sign;
 } Bignum;
 
-void initBignum(Bignum *numStruct, char numStr[]) {
+void initBignum(Bignum *numStruct, char numStr[], INT_SIGN sign) {
     int temp;
 
-    // Create a mutable array to be able to remove the negative sign as numStr is a constant string.
-    char numStrCopy[strlen(numStr)];
-    strcpy(numStrCopy, numStr);
-
-    // Check if numStr is a negative integer. If true, set Bignum.sign to 1 then remove the negative sign.
-    if (numStrCopy[0] == '-') {
-        numStruct->sign = 1;
-        memmove(numStrCopy, numStrCopy + 1, strlen(numStrCopy));
-    } else {
-        numStruct->sign = 0;
-    }
+    // Store sign enum (1 = negative || 0 = positive)
+    numStruct->sign = sign;
 
     // Store number length
-    numStruct->length = strlen(numStrCopy);
+    numStruct->length = strlen(numStr);
 
     // Load numbers into Bignum.digits
     for (int i = 0; i < numStruct->length; i++) {
-        numStruct->digits[i] = numStrCopy[i] - '0';
+        numStruct->digits[i] = numStr[i] - '0';
     }
 
     // Reverse Bignum.digits for easier operations to be done
@@ -100,8 +96,8 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 int main(void) {
     Bignum num1, num2, result;
     
-    initBignum(&num1, "-12345");
-    initBignum(&num2, "12345");
+    initBignum(&num1, "12345", negative);
+    initBignum(&num2, "12345", positive);
 
     printf("\nsign: %d | num 1: ", num1.sign);
     for (int i = num1.length - 1; i >= 0 ; i--) {
