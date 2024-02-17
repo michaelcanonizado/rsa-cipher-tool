@@ -93,11 +93,30 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     result->length = resultLength;
 }
 
+void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
+
+    if (num1->sign == 0 && num2->sign == 1) {
+        printf("Subtracting...\n");
+        addBignum(result, num1, num2);
+        return;
+    }
+
+    if (num1->sign == 1 && num2->sign == 0) {
+        printf("Subtracting...\n");
+        addBignum(result, num1, num2);
+        result->sign = negative;
+        return;
+    }
+
+}
+
 int main(void) {
     Bignum num1, num2, result;
     
-    initBignum(&num1, "12345", negative);
-    initBignum(&num2, "12345", positive);
+    initBignum(&num1, "380", negative);
+    initBignum(&num2, "124", positive);
+
+    subtractBignum(&result, &num1, &num2);
 
     printf("\nsign: %d | num 1: ", num1.sign);
     for (int i = num1.length - 1; i >= 0 ; i--) {
@@ -106,6 +125,10 @@ int main(void) {
     printf("\nsign: %d | num 2: ", num2.sign);
     for (int i = num2.length - 1; i >= 0 ; i--) {
         printf("%d", num2.digits[i]);
+    }
+    printf("\nsign: %d | result: ", result.sign);
+    for (int i = result.length - 1; i >= 0 ; i--) {
+        printf("%d", result.digits[i]);
     }
     
     printf("\n\n");
