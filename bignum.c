@@ -15,7 +15,7 @@ typedef struct {
     // Number of digits in integer
     int length;
     // Sign will be 0 (positive) or 1 (negative), following the binary sign bit convention.
-    int sign;
+    INT_SIGN sign;
 } Bignum;
 
 void initBignum(Bignum *numStruct, char numStr[], INT_SIGN sign) {
