@@ -94,7 +94,6 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 }
 
 void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
-
     if (num1->sign == positive && num2->sign == negative) {
         printf("Subtracting...\n");
         addBignum(result, num1, num2);
@@ -108,13 +107,32 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         return;
     }
 
+    unsigned long long int minLength;
+    Bignum minuend;
+    if (num1->length > num2->length) {
+        minuend.length = num1->length;
+        memcpy(&minuend.digits, num1->digits, sizeof(int) * num1->length);
+
+        minLength = num2->length;
+    } else if (num2->length > num1->length) {
+        minuend.length = num2->length;
+        memcpy(&minuend.digits, num2->digits, sizeof(int) * num2->length);
+
+        minLength = num1->length;
+    }
+
+    printf("\nMinuend: ");
+    for (int i = minuend.length - 1; i >= 0; i--) {
+        printf("%d", minuend.digits[i]);
+    }
+    printf("\n");
 }
 
 int main(void) {
     Bignum num1, num2, result;
     
-    initBignum(&num1, "380", positive);
-    initBignum(&num2, "424", negative);
+    initBignum(&num1, "38000", positive);
+    initBignum(&num2, "40024", positive);
 
     subtractBignum(&result, &num1, &num2);
 
