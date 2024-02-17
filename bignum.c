@@ -93,6 +93,34 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     result->length = resultLength;
 }
 
+int isGreaterThanBignum(Bignum *num1, Bignum *num2) {
+    if (num1->sign == negative && num2->sign == positive) {
+        return 0;
+    }
+    if (num1->sign == positive && num2->sign == negative) {
+        return 1;
+    }
+
+    if (num1->length > num2->length) {
+        return 1;
+    }
+    if (num2->length > num1->length) {
+        return 0;
+    }
+
+    for (int i = num1->length - 1; i >= 0; i--) {
+        if (num1->digits[i] > num2->digits[i]) {
+            return 1;
+        }
+
+        if (num2->digits[i] > num1->digits[i]) {
+            return 0;
+        }
+    }
+
+    return 0;
+}
+
 void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     if (num1->sign == positive && num2->sign == negative) {
         printf("Subtracting...\n");
@@ -131,10 +159,10 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 int main(void) {
     Bignum num1, num2, result;
     
-    initBignum(&num1, "38000", positive);
-    initBignum(&num2, "40024", positive);
+    initBignum(&num1, "1", positive);
+    initBignum(&num2, "48001", negative);
 
-    subtractBignum(&result, &num1, &num2);
+    // subtractBignum(&result, &num1, &num2);
 
     printf("\nsign: %d | num 1: ", num1.sign);
     for (int i = num1.length - 1; i >= 0 ; i--) {
@@ -148,6 +176,8 @@ int main(void) {
     for (int i = result.length - 1; i >= 0 ; i--) {
         printf("%d", result.digits[i]);
     }
+    
+    printf("\nnum1 > num2 = %d", isGreaterThanBignum(&num1, &num2));
     
     printf("\n\n");
 
