@@ -19,6 +19,7 @@ typedef struct {
 } Bignum;
 
 Bignum initBignum() {
+    // Initialize Bignum values. This is needed some of the arithmetic function need to know if the Bignum has already been set, and get rid of garbage values.
     Bignum num;
     num.length = 0;
     num.sign = positive;
