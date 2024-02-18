@@ -134,12 +134,12 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
     // Check signs | If signs are different, add the two numbers
     if (num1->sign == positive && num2->sign == negative) {
-        printf("Subtracting...\n");
+        printf("\nThey have different signs! Will perform addition on them...");
         addBignum(result, num1, num2);
         return;
     }
     if (num1->sign == negative && num2->sign == positive) {
-        printf("Subtracting...\n");
+        printf("\nThey have different signs! Will perform addition on them...");
         addBignum(result, num1, num2);
         result->sign = negative;
         return;
@@ -151,29 +151,32 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
     // Check length | Longer length will automatically be set to the minuend
     if (num1->length > num2->length) {
+        printf("\nNum 1 is longer! It will be set to the minuend...");
         minLength = num2->length;
 
         minuend.length = num1->length;
         memcpy(&minuend.digits, num1->digits, sizeof(int) * num1->length);
     } else if (num2->length > num1->length) {
+        printf("\nNum 2 is longer! It will be set to the minuend...");
         minLength = num1->length;
 
         minuend.length = num2->length;
         memcpy(&minuend.digits, num2->digits, sizeof(int) * num2->length);
     }
 
-    if (isGreaterThanBignum(num1, num2)) {
-        printf("They have the same length and sign, but num 1 is bigger!");
+    if (isGreaterThanBignum(num1, num2) && minuend.length == 0) {
+        printf("\nThey have the same length and sign, but num 1 is bigger!...");
         minLength = num1->length;
         minuend.length = num1->length;
         memcpy(&minuend.digits, num1->digits, sizeof(int) * num1->length);
-    } else if (isGreaterThanBignum(num2, num1)) {
-        printf("They have the same length and sign, but num 2 is bigger!");
+    }
+    if (isGreaterThanBignum(num2, num1) && minuend.length == 0) {
+        printf("\nThey have the same length and sign, but num 2 is bigger!...");
         minLength = num2->length;
         minuend.length = num2->length;
         memcpy(&minuend.digits, num2->digits, sizeof(int) * num2->length);
     } else {
-        printf("They have the same length, sign, and is equal!");
+        printf("They have the same length, sign, and is equal!...");
     }
 
     printf("\nMinuend: ");
@@ -189,7 +192,7 @@ int main(void) {
     Bignum result = initBignum();
     
     setBignum(&num1, "48001", positive);
-    setBignum(&num2, "48001", positive);
+    setBignum(&num2, "9", positive);
 
     subtractBignum(&result, &num1, &num2);
 
