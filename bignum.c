@@ -122,12 +122,14 @@ int isGreaterThanBignum(Bignum *num1, Bignum *num2) {
 }
 
 void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
+    // Compare the 2 integers to determine whether to add or subract (subraction rules) and determine the sign of result.
+
+    // Check signs | If signs are different, add the two numbers
     if (num1->sign == positive && num2->sign == negative) {
         printf("Subtracting...\n");
         addBignum(result, num1, num2);
         return;
     }
-
     if (num1->sign == negative && num2->sign == positive) {
         printf("Subtracting...\n");
         addBignum(result, num1, num2);
@@ -135,8 +137,11 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         return;
     }
 
+    // Find minuend | Store in a temp Bignum as array elements will be manipulated due to carries
     unsigned long long int minLength;
     Bignum minuend;
+
+    // Check length | Longer length will automatically be set to the minuend
     if (num1->length > num2->length) {
         minuend.length = num1->length;
         memcpy(&minuend.digits, num1->digits, sizeof(int) * num1->length);
