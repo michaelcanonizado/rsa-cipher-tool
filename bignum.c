@@ -193,7 +193,7 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
     // Find minuend | Store in a temp Bignum as array elements will be manipulated due to carries
     unsigned long long int minLength;
-    Bignum minuend;
+    Bignum minuend = initBignum();
 
     // Check length | Longer length will automatically be set to the minuend
     if (num1->length > num2->length) {
@@ -221,8 +221,9 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         minLength = num2->length;
         minuend.length = num2->length;
         memcpy(&minuend.digits, num2->digits, sizeof(int) * num2->length);
-    } else {
-        printf("They have the same length, sign, and is equal!...");
+    }
+    if (isEqualToBignum(num1, num2)) {
+        printf("\nThey have the same length, sign, and is equal!...");
     }
 
     printf("\nMinuend: ");
@@ -237,10 +238,10 @@ int main(void) {
     Bignum num2 = initBignum(); 
     Bignum result = initBignum();
     
-    setBignum(&num1, "10007", positive);
-    setBignum(&num2, "10007", positive);
+    setBignum(&num1, "10007", negative);
+    setBignum(&num2, "00000", positive);
 
-    // subtractBignum(&result, &num1, &num2);
+    subtractBignum(&result, &num1, &num2);
 
     printf("\nsgn: %d | len: %d | num 1: ", num1.sign, num1.length);
     for (int i = num1.length - 1; i >= 0 ; i--) {
