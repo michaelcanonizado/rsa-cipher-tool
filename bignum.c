@@ -157,6 +157,24 @@ int isLessThanBignum(Bignum *num1, Bignum *num2) {
     return 0;
 }
 
+int isEqualToBignum(Bignum *num1, Bignum *num2) {
+    if (num1->sign != num2->sign) {
+        return 0;
+    }
+
+    if (num1->length != num2->length) {
+        return 0;
+    }
+
+    for (int i = num1->length - 1; i >= 0; i--) {
+        if (num1->digits[i] != num2->digits[i]) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
 void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     // Compare the 2 integers to determine whether to add or subract (subraction rules) and determine the sign of result.
 
@@ -220,7 +238,7 @@ int main(void) {
     Bignum result = initBignum();
     
     setBignum(&num1, "10007", positive);
-    setBignum(&num2, "9", positive);
+    setBignum(&num2, "10007", positive);
 
     // subtractBignum(&result, &num1, &num2);
 
@@ -239,6 +257,7 @@ int main(void) {
     
     printf("\nnum 1 > num 2 = %d", isGreaterThanBignum(&num1, &num2));
     printf("\nnum 1 < num 2 = %d", isLessThanBignum(&num1, &num2));
+    printf("\nnum 1 == num 2 = %d", isEqualToBignum(&num1, &num2));
     
     printf("\n\n");
 
