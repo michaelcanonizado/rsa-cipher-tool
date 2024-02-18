@@ -18,7 +18,7 @@ typedef struct {
     INT_SIGN sign;
 } Bignum;
 
-void initBignum(Bignum *numStruct, char numStr[], INT_SIGN sign) {
+void setBignum(Bignum *numStruct, char numStr[], INT_SIGN sign) {
     int temp;
 
     // Store sign enum (1 = negative || 0 = positive)
@@ -178,8 +178,8 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 int main(void) {
     Bignum num1, num2, result;
     
-    initBignum(&num1, "48001", positive);
-    initBignum(&num2, "48001", positive);
+    setBignum(&num1, "48001", positive);
+    setBignum(&num2, "48001", positive);
 
     subtractBignum(&result, &num1, &num2);
 
