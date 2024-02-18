@@ -143,15 +143,29 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
     // Check length | Longer length will automatically be set to the minuend
     if (num1->length > num2->length) {
+        minLength = num2->length;
+
         minuend.length = num1->length;
         memcpy(&minuend.digits, num1->digits, sizeof(int) * num1->length);
-
-        minLength = num2->length;
     } else if (num2->length > num1->length) {
+        minLength = num1->length;
+
         minuend.length = num2->length;
         memcpy(&minuend.digits, num2->digits, sizeof(int) * num2->length);
+    }
 
+    if (isGreaterThanBignum(num1, num2)) {
+        printf("They have the same length and sign, but num 1 is bigger!");
         minLength = num1->length;
+        minuend.length = num1->length;
+        memcpy(&minuend.digits, num1->digits, sizeof(int) * num1->length);
+    } else if (isGreaterThanBignum(num2, num1)) {
+        printf("They have the same length and sign, but num 2 is bigger!");
+        minLength = num2->length;
+        minuend.length = num2->length;
+        memcpy(&minuend.digits, num2->digits, sizeof(int) * num2->length);
+    } else {
+        printf("They have the same length, sign, and is equal!");
     }
 
     printf("\nMinuend: ");
@@ -164,20 +178,20 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 int main(void) {
     Bignum num1, num2, result;
     
-    initBignum(&num1, "1", positive);
-    initBignum(&num2, "48001", negative);
+    initBignum(&num1, "48001", positive);
+    initBignum(&num2, "48001", positive);
 
-    // subtractBignum(&result, &num1, &num2);
+    subtractBignum(&result, &num1, &num2);
 
-    printf("\nsign: %d | num 1: ", num1.sign);
+    printf("\nsgn: %d | len: %d | num 1: ", num1.sign, num1.length);
     for (int i = num1.length - 1; i >= 0 ; i--) {
         printf("%d", num1.digits[i]);
     }
-    printf("\nsign: %d | num 2: ", num2.sign);
+    printf("\nsgn: %d | len: %d | num 2: ", num2.sign, num2.length);
     for (int i = num2.length - 1; i >= 0 ; i--) {
         printf("%d", num2.digits[i]);
     }
-    printf("\nsign: %d | result: ", result.sign);
+    printf("\nsgn: %d | len: %d | result: ", result.sign, result.length);
     for (int i = result.length - 1; i >= 0 ; i--) {
         printf("%d", result.digits[i]);
     }
