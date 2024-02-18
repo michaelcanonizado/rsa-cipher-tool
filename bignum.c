@@ -18,6 +18,13 @@ typedef struct {
     INT_SIGN sign;
 } Bignum;
 
+Bignum initBignum() {
+    Bignum num;
+    num.length = 0;
+    num.sign = positive;
+    return num;
+}
+
 void setBignum(Bignum *numStruct, char numStr[], INT_SIGN sign) {
     int temp;
 
@@ -176,7 +183,9 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 }
 
 int main(void) {
-    Bignum num1, num2, result;
+    Bignum num1 = initBignum(); 
+    Bignum num2 = initBignum(); 
+    Bignum result = initBignum();
     
     setBignum(&num1, "48001", positive);
     setBignum(&num2, "48001", positive);
