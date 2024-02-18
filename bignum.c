@@ -112,7 +112,7 @@ int isGreaterThanBignum(Bignum *num1, Bignum *num2) {
     if (num1->length > num2->length) {
         return 1;
     }
-    if (num2->length > num1->length) {
+    if (num1->length < num2->length) {
         return 0;
     }
 
@@ -121,7 +121,35 @@ int isGreaterThanBignum(Bignum *num1, Bignum *num2) {
             return 1;
         }
 
-        if (num2->digits[i] > num1->digits[i]) {
+        if (num1->digits[i] < num2->digits[i]) {
+            return 0;
+        }
+    }
+
+    return 0;
+}
+
+int isLessThanBignum(Bignum *num1, Bignum *num2) {
+    if (num1->sign == negative && num2->sign == positive) {
+        return 1;
+    }
+    if (num1->sign == positive && num2->sign == negative) {
+        return 0;
+    }
+
+    if (num1->length > num2->length) {
+        return 0;
+    }
+    if (num1->length < num2->length) {
+        return 1;
+    }
+
+    for (int i = num1->length - 1; i >= 0; i--) {
+        if (num1->digits[i] < num2->digits[i]) {
+            return 1;
+        }
+
+        if (num1->digits[i] > num2->digits[i]) {
             return 0;
         }
     }
@@ -191,10 +219,10 @@ int main(void) {
     Bignum num2 = initBignum(); 
     Bignum result = initBignum();
     
-    setBignum(&num1, "48001", positive);
+    setBignum(&num1, "10007", positive);
     setBignum(&num2, "9", positive);
 
-    subtractBignum(&result, &num1, &num2);
+    // subtractBignum(&result, &num1, &num2);
 
     printf("\nsgn: %d | len: %d | num 1: ", num1.sign, num1.length);
     for (int i = num1.length - 1; i >= 0 ; i--) {
@@ -209,7 +237,8 @@ int main(void) {
         printf("%d", result.digits[i]);
     }
     
-    printf("\nnum1 > num2 = %d", isGreaterThanBignum(&num1, &num2));
+    printf("\nnum 1 > num 2 = %d", isGreaterThanBignum(&num1, &num2));
+    printf("\nnum 1 < num 2 = %d", isLessThanBignum(&num1, &num2));
     
     printf("\n\n");
 
