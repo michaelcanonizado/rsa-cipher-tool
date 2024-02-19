@@ -284,6 +284,7 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
                     minuend.digits[i] = minuend.digits[i] + 10;
 
                     // Since a borrow was found. Exit out of loop.
+                    // Since a borrow was found. Exit out of loop.
                     break;
                 } else if (minuend.digits[j] == 0) {
                     // If the digit is a 0, replace that 0 with 9 and move to the next digit looking for a digit that can give a borrow. We can immediately give it a value of 9, since it is bound to be a 9 as it will be a 10 once a borrow is found, then it will be decremented as it needs to give a borrow to the digit to its right.
