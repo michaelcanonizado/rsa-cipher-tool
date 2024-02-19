@@ -240,10 +240,10 @@ int main(void) {
     Bignum num2 = initBignum(); 
     Bignum result = initBignum();
     
-    setBignum(&num1, "10007", negative);
-    setBignum(&num2, "00000", positive);
+    setBignum(&num1, "34000", positive);
+    setBignum(&num2, "180", positive);
 
-    addBignum(&result, &num1, &num2);
+    subtractBignum(&result, &num1, &num2);
 
     printf("\nsgn: %d | len: %d | num 1: ", num1.sign, num1.length);
     for (int i = num1.length - 1; i >= 0 ; i--) {
