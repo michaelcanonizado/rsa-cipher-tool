@@ -180,7 +180,7 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     // Compare the 2 integers to determine whether to add or subract (subraction rules) and determine the sign of result.
 
-    // Check signs | If signs are different, add the two numbers
+    // Check signs | If signs are different, add the two numbers.
     if (num1->sign == positive && num2->sign == negative) {
         printf("\nThey have different signs! Will perform addition on them...");
         addBignum(result, num1, num2);
@@ -198,7 +198,7 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     Bignum minuend = initBignum();
     Bignum subtrahend = initBignum();
 
-    // Check length | Longer length will automatically be set to the minuend and shorter will be the subtrahend
+    // Check length | Longer length will automatically be set to the minuend and shorter will be the subtrahend.
     if (num1->length > num2->length) {
         printf("\nNum 1 is longer! It will be set to the minuend...");
 
@@ -217,6 +217,7 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         memcpy(&subtrahend.digits, num1->digits, sizeof(int) * num1->length);
     }
 
+    // Compare two Bignums | If minuend and subtrahend was not found in the previous conditions, i.e. they're of the same sign and length. Compare the two Bignums.
     if (isGreaterThanBignum(num1, num2) && minuend.length == 0) {
         printf("\nThey have the same length and sign, but num 1 is bigger!...");
 
