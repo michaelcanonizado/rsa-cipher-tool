@@ -63,43 +63,6 @@ void intToBignum(Bignum *numStruct, unsigned long long int integer) {
     numStruct->length = count;
 }
 
-void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
-    int sum;
-    int carry = 0;
-    int resultLength = 0;
-    // maxLength will cap out at around 18,446,744,073,709,551,615 (ref: C docs). Therefore the Bignum num1 and num2 can only have a maximum of 18,446,744,073,709,551,615 digits.
-    unsigned long long int maxLength;
-
-    // Find the longest length
-    if (num1->length > num2->length) {
-        maxLength = num1->length;
-    } else if (num2->length > num1->length) {
-        maxLength = num2->length;
-    } else {
-        maxLength = num1->length;
-    }
-
-    // Perform addition
-    for (int i = 0; i < maxLength; i++) {
-        sum = carry;
-        sum += num1->digits[i] + num2->digits[i];
-        carry = sum >= 10 ? 1 : 0;
-        sum = sum % 10;
-
-        result->digits[i] = sum;
-
-        resultLength++;
-    }
-
-    // If there is a remaining carry, append to result. e.g. 8 + 9 = 17 NOT 8 + 9 = 7 (the carry in the buffer was not added)
-    if (carry == 1) {
-        result->digits[resultLength] = carry;
-        resultLength++;
-    }
-
-    // Store result digit length
-    result->length = resultLength;
-}
 
 int isGreaterThanBignum(Bignum *num1, Bignum *num2) {
     if (num1->sign == negative && num2->sign == positive) {
@@ -175,6 +138,45 @@ int isEqualToBignum(Bignum *num1, Bignum *num2) {
     return 1;
 }
 
+
+void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
+    int sum;
+    int carry = 0;
+    int resultLength = 0;
+    // maxLength will cap out at around 18,446,744,073,709,551,615 (ref: C docs). Therefore the Bignum num1 and num2 can only have a maximum of 18,446,744,073,709,551,615 digits.
+    unsigned long long int maxLength;
+
+    // Find the longest length
+    if (num1->length > num2->length) {
+        maxLength = num1->length;
+    } else if (num2->length > num1->length) {
+        maxLength = num2->length;
+    } else {
+        maxLength = num1->length;
+    }
+
+    // Perform addition
+    for (int i = 0; i < maxLength; i++) {
+        sum = carry;
+        sum += num1->digits[i] + num2->digits[i];
+        carry = sum >= 10 ? 1 : 0;
+        sum = sum % 10;
+
+        result->digits[i] = sum;
+
+        resultLength++;
+    }
+
+    // If there is a remaining carry, append to result. e.g. 8 + 9 = 17 NOT 8 + 9 = 7 (the carry in the buffer was not added)
+    if (carry == 1) {
+        result->digits[resultLength] = carry;
+        resultLength++;
+    }
+
+    // Store result digit length
+    result->length = resultLength;
+}
+
 void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     // Compare the 2 integers to determine whether to add or subract (subraction rules) and determine the sign of result.
 
@@ -241,7 +243,7 @@ int main(void) {
     setBignum(&num1, "10007", negative);
     setBignum(&num2, "00000", positive);
 
-    subtractBignum(&result, &num1, &num2);
+    addBignum(&result, &num1, &num2);
 
     printf("\nsgn: %d | len: %d | num 1: ", num1.sign, num1.length);
     for (int i = num1.length - 1; i >= 0 ; i--) {
