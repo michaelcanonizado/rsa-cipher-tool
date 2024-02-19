@@ -231,8 +231,8 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     if (isLessThanBignum(num1, num2) && minuend.length == 0) {
         printf("\nThey have the same length and sign, but num 2 is bigger!...");
 
-        subtrahend.length = num1->length;
         minuend.length = num2->length;
+        subtrahend.length = num1->length;
 
         memcpy(&minuend.digits, num2->digits, sizeof(int) * num2->length);
         memcpy(&subtrahend.digits, num1->digits, sizeof(int) * num1->length);
@@ -247,16 +247,6 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         printf("\nThey have the same length, sign, and is equal!...");
     }
 
-    printf("\n\n");
-    int difference;
-    unsigned long long int resultLength = 0;
-    for (int i = 0; i < subtrahend.length; i++) {
-        if (minuend.digits[i] > subtrahend.digits[i]) {
-            result->digits[i] = minuend.digits[i] - subtrahend.digits[i];
-            resultLength++;
-        }
-    }
-
     printf("\n\nlen: %d | Minuend: ", minuend.length);
     for (int i = minuend.length - 1; i >= 0; i--) {
         printf("%d", minuend.digits[i]);
@@ -265,6 +255,49 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     for (int i = subtrahend.length - 1; i >= 0; i--) {
         printf("%d", subtrahend.digits[i]);
     }
+
+    printf("\n");
+    int difference;
+    unsigned long long int resultLength = 0;
+    for (int i = 0; i < subtrahend.length; i++) {
+        if (minuend.digits[i] > subtrahend.digits[i]) {
+            result->digits[i] = minuend.digits[i] - subtrahend.digits[i];
+            resultLength++;
+                        printf("\nNot Borrowing... : ");
+            printf("%d - %d = %d", minuend.digits[i], subtrahend.digits[i], result->digits[i]);
+        } else if (minuend.digits[i] < subtrahend.digits[i]) {
+            for (int j = i + 1; j < minuend.length; j++) {
+                printf("\n    Looking for borrow...");
+                if (minuend.digits[j] > 0) {
+                    minuend.digits[j] = minuend.digits[j] - 1;
+                    minuend.digits[i] = minuend.digits[i] + 10;
+
+                    break;
+                } else if (minuend.digits[j] == 0) {
+                    minuend.digits[j] = 9;
+                }
+            }
+
+            result->digits[i] = minuend.digits[i] - subtrahend.digits[i];
+            resultLength++;
+            printf("\nBorrowed... : ");
+            printf("%d - %d = %d", minuend.digits[i], subtrahend.digits[i], result->digits[i]);
+        }
+    }
+
+    printf("\n\nlen: %d | Mdf Minuend: ", minuend.length);
+    for (int i = minuend.length - 1; i >= 0; i--) {
+        printf("%d|", minuend.digits[i]);
+    }
+
+    if (minuend.length > subtrahend.length) {
+        printf("\n\nSubtrahend is shorter. Dropping the rest of the numbers... : ");
+        for (int i = subtrahend.length; i < minuend.length; i++) {
+            result->digits[i] = minuend.digits[i];
+            resultLength++;
+        }
+    }
+
     printf("\n");
 
     result->length = resultLength;
@@ -275,8 +308,8 @@ int main(void) {
     Bignum num2 = initBignum(); 
     Bignum result = initBignum();
     
-    setBignum(&num2, "346", positive);
-    setBignum(&num1, "123", positive);
+    setBignum(&num1, "34000", positive);
+    setBignum(&num2, "182", positive);
 
     subtractBignum(&result, &num1, &num2);
 
