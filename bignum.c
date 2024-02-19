@@ -194,7 +194,6 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     }
 
     // Find minuend and subtrahend | Store in a temp Bignum as minuend's Bignum.digits will be manipulated due to carries. This is also needed as minuend can be either of the two parameters(num1 or num2); If minuend is found. the other number will be the subtrahend.
-    unsigned long long int minLength;
     Bignum minuend = initBignum();
     Bignum subtrahend = initBignum();
 
@@ -240,15 +239,27 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         printf("\nThey have the same length, sign, and is equal!...");
     }
 
-    printf("\n\nMinuend: ");
+    printf("\n\n");
+    int difference;
+    unsigned long long int resultLength = 0;
+    for (int i = 0; i < subtrahend.length; i++) {
+        if (minuend.digits[i] > subtrahend.digits[i]) {
+            result->digits[i] = minuend.digits[i] - subtrahend.digits[i];
+            resultLength++;
+        }
+    }
+
+    printf("\n\nlen: %d | Minuend: ", minuend.length);
     for (int i = minuend.length - 1; i >= 0; i--) {
         printf("%d", minuend.digits[i]);
     }
-    printf("\nSubtrahend: ");
+    printf("\nlen: %d | Subtrahend: ", subtrahend.length);
     for (int i = subtrahend.length - 1; i >= 0; i--) {
         printf("%d", subtrahend.digits[i]);
     }
     printf("\n");
+
+    result->length = resultLength;
 }
 
 int main(void) {
@@ -256,8 +267,8 @@ int main(void) {
     Bignum num2 = initBignum(); 
     Bignum result = initBignum();
     
-    setBignum(&num1, "34000", positive);
-    setBignum(&num2, "180", positive);
+    setBignum(&num1, "346", positive);
+    setBignum(&num2, "123", positive);
 
     subtractBignum(&result, &num1, &num2);
 
