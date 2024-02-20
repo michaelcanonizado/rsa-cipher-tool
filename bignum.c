@@ -206,7 +206,9 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
         memcpy(&minuend.digits, num1->digits, sizeof(int) * num1->length);
         memcpy(&subtrahend.digits, num2->digits, sizeof(int) * num2->length);
-    } else if (num2->length > num1->length) {
+
+        result->sign = num1->sign;
+    } else if (num1->length < num2->length) {
         printf("\nNum 2 is longer! It will be set to the minuend...");
 
         minuend.length = num2->length;
@@ -214,6 +216,14 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
         memcpy(&minuend.digits, num2->digits, sizeof(int) * num2->length);
         memcpy(&subtrahend.digits, num1->digits, sizeof(int) * num1->length);
+
+        // If num1 - num2, and bot Bignums have the same sign, and num2 is longer than num1, the result's sign will be the inverse of the sign of the 2 Bignums.
+        // E.g.: (+7) - (+10) = -3 or (-7) - (-10) = 3 
+        if (num1->sign == positive) {
+            result->sign = negative;
+        } else if (num1->sign == negative) {
+            result->sign = positive;
+        }
     }
 
     // Compare two Bignums | If minuend and subtrahend was not found in the previous conditions, i.e. they're of the same sign and length. Compare the two Bignums.
@@ -236,8 +246,8 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         memcpy(&minuend.digits, num2->digits, sizeof(int) * num2->length);
         memcpy(&subtrahend.digits, num1->digits, sizeof(int) * num1->length);
 
-        // If num1 - num2, and bot Bignums have the same sign,  num2 is greater than num1, the result's sign will be the inverse of the sign of the 2 Bignums.
-        // E.g.: (+7) - (+10) = -3 or (-7) - (-10) = 3 
+        // If num1 - num2, and both Bignums have the same sign,  num2 is greater than num1, the result's sign will be the inverse of the sign of the 2 Bignums.
+        // E.g.: (+30) - (+70) = -40 or (-30) - (-70) = 40 
         if (num1->sign == positive) {
             result->sign = negative;
         } else if (num1->sign == negative) {
@@ -330,8 +340,8 @@ int main(void) {
     Bignum num2 = initBignum(); 
     Bignum result = initBignum();
     
-    setBignum(&num1, "13001", negative);
-    setBignum(&num2, "23", negative);
+    setBignum(&num1, "70", positive);
+    setBignum(&num2, "30", positive);
 
     subtractBignum(&result, &num1, &num2);
 
