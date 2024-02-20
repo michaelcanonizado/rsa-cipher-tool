@@ -227,8 +227,7 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         memcpy(&subtrahend.digits, num2->digits, sizeof(int) * num2->length);
 
         result->sign = num1->sign;
-    }
-    if (isLessThanBignum(num1, num2) && minuend.length == 0) {
+    }else if (isLessThanBignum(num1, num2) && minuend.length == 0) {
         printf("\nThey have the same length and sign, but num 2 is bigger!...");
 
         minuend.length = num2->length;
@@ -244,8 +243,7 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         } else if (num1->sign == negative) {
             result->sign = positive;
         }
-    }
-    if (isEqualToBignum(num1, num2)) {
+    } else if (isEqualToBignum(num1, num2)) {
         printf("\nThey have the same length, sign, and is equal!...");
     }
 
@@ -332,8 +330,8 @@ int main(void) {
     Bignum num2 = initBignum(); 
     Bignum result = initBignum();
     
-    setBignum(&num1, "13001", positive);
-    setBignum(&num2, "23", positive);
+    setBignum(&num1, "13001", negative);
+    setBignum(&num2, "23", negative);
 
     subtractBignum(&result, &num1, &num2);
 
