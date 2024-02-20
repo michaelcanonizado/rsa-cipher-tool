@@ -313,6 +313,9 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
             printf("\nBorrowed... : ");
             printf("%d - %d = %d", minuend.digits[i], subtrahend.digits[i], result->digits[i]);
+        } else if (minuend.digits[i] == subtrahend.digits[i]) {
+            result->digits[i] = 0;
+            resultLength++;
         }
     }
 
