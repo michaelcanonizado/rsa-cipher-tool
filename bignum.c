@@ -254,7 +254,13 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
             result->sign = positive;
         }
     } else if (isEqualToBignum(num1, num2)) {
-        printf("\nThey have the same length, sign, and is equal!...");
+        printf("\nThey have the same sign, length, and is equal to each other. Result will be 0...\n");
+
+        result->digits[0] = 0;
+        result->length = 1;
+        result->sign = positive;
+
+        return;
     }
 
     // Print Minuend and Subtrahend.
@@ -345,7 +351,7 @@ int main(void) {
     Bignum result = initBignum();
     
     setBignum(&num1, "70", positive);
-    setBignum(&num2, "30", positive);
+    setBignum(&num2, "70", positive);
 
     subtractBignum(&result, &num1, &num2);
 
