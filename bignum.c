@@ -367,7 +367,7 @@ int main(void) {
     Bignum num2 = initBignum(); 
     Bignum result = initBignum();
     
-    setBignum(&num1, "70", positive);
+    setBignum(&num1, "700", positive);
     setBignum(&num2, "100", positive);
 
     // subtractBignum(&result, &num1, &num2);
