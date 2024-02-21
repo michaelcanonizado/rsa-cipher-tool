@@ -33,9 +33,46 @@ typedef struct {
     INT_SIGN sign;
 } Bignum;
 
+Bignum initBignum();
+void setBignum(Bignum *numStruct, char numStr[], INT_SIGN sign);
+void trimBignum(Bignum *num);
+int isGreaterThanBignum(Bignum *num1, Bignum *num2);
+int isLessThanBignum(Bignum *num1, Bignum *num2);
+int isEqualToBignum(Bignum *num1, Bignum *num2);
 void addBignum(Bignum *result, Bignum *num1, Bignum *num2);
 void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2);
-void trimBignum(Bignum *num);
+
+int main(void) {
+    Bignum num1 = initBignum(); 
+    Bignum num2 = initBignum(); 
+    Bignum result = initBignum();
+    
+    setBignum(&num1, "16", positive);
+    setBignum(&num2, "007", negative);
+
+    addBignum(&result, &num1, &num2);
+
+    printf("\nsgn: %d | len: %d | num 1: ", num1.sign, num1.length);
+    for (int i = num1.length - 1; i >= 0 ; i--) {
+        printf("%d", num1.digits[i]);
+    }
+    printf("\nsgn: %d | len: %d | num 2: ", num2.sign, num2.length);
+    for (int i = num2.length - 1; i >= 0 ; i--) {
+        printf("%d", num2.digits[i]);
+    }
+    printf("\nsgn: %d | len: %d | result: ", result.sign, result.length);
+    for (int i = result.length - 1; i >= 0 ; i--) {
+        printf("%d", result.digits[i]);
+    }
+    
+    printf("\n\nnum 1 > num 2 = %d", isGreaterThanBignum(&num1, &num2));
+    printf("\nnum 1 < num 2 = %d", isLessThanBignum(&num1, &num2));
+    printf("\nnum 1 == num 2 = %d", isEqualToBignum(&num1, &num2));
+    
+    printf("\n\n");
+
+    return 0;
+}
 
 Bignum initBignum() {
     // Initialize Bignum values. This is needed some of the arithmetic function need to know if the Bignum has already been set, and get rid of garbage values.
@@ -429,36 +466,4 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     result->length = resultLength;
     // Trim result. Removing any possible leading 0s
     trimBignum(result);
-}
-
-int main(void) {
-    Bignum num1 = initBignum(); 
-    Bignum num2 = initBignum(); 
-    Bignum result = initBignum();
-    
-    setBignum(&num1, "16", positive);
-    setBignum(&num2, "007", negative);
-
-    addBignum(&result, &num1, &num2);
-
-    printf("\nsgn: %d | len: %d | num 1: ", num1.sign, num1.length);
-    for (int i = num1.length - 1; i >= 0 ; i--) {
-        printf("%d", num1.digits[i]);
-    }
-    printf("\nsgn: %d | len: %d | num 2: ", num2.sign, num2.length);
-    for (int i = num2.length - 1; i >= 0 ; i--) {
-        printf("%d", num2.digits[i]);
-    }
-    printf("\nsgn: %d | len: %d | result: ", result.sign, result.length);
-    for (int i = result.length - 1; i >= 0 ; i--) {
-        printf("%d", result.digits[i]);
-    }
-    
-    printf("\n\nnum 1 > num 2 = %d", isGreaterThanBignum(&num1, &num2));
-    printf("\nnum 1 < num 2 = %d", isLessThanBignum(&num1, &num2));
-    printf("\nnum 1 == num 2 = %d", isEqualToBignum(&num1, &num2));
-    
-    printf("\n\n");
-
-    return 0;
 }
