@@ -422,6 +422,7 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     printf("\n");
 
     result->length = resultLength;
+    // Trim result. Removing any possible leading 0s
     trimBignum(result);
 }
 
