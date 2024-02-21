@@ -182,7 +182,9 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     // maxLength will cap out at around 18,446,744,073,709,551,615 (ref: C docs). Therefore the Bignum num1 and num2 can only have a maximum of 18,446,744,073,709,551,615 digits.
     unsigned long long int maxLength;
 
+    // If the 2 Bignums have different signs. Perform subtraction.
     if (num1->sign != num2->sign) {
+        // Keep track of the original signs of the 2 Bignums. As they need to have the same sign to trigger subtraction in the subtractBignum() function. If they have contrasting signs, subtractBignum() will call addBignum() causing an infinite loop.
         num1Sign = num1->sign;
         num2Sign = num2->sign;
 
@@ -192,21 +194,28 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
             printf("\nThey have different signs, but num 1 is Bigger! Will perform subtraction...");
 
             subtractBignum(result, num1, num2);
+            // The resulting Bignum will have the sign of the bigger number(disregarding signs). E.g. 11 + (-5) = 6.
             result->sign = num1Sign;
+            // Bring back the original signs of the two Bignums.
             num1->sign = num1Sign;
             num2->sign = num2Sign;
+
             return;
         } else if (isLessThanBignum(num1, num2)) {
             printf("\nThey have different signs, but num 2 is Bigger! Will perform subtraction...");
 
             subtractBignum(result, num1, num2);
+            // The resulting Bignum will have the sign of the bigger number(disregarding signs). E.g. 5 + (-11) = -6.
             result->sign = num2Sign;
+            // Bring back the original signs of the two Bignums.
             num1->sign = num1Sign;
             num2->sign = num2Sign;
+
             return;
         } else if (isEqualToBignum(num1, num2)) {
             printf("\nThey have different signs, but are equal to each other! Result will be 0...");
 
+            // If the 2 Bignums have different signs and are equal to each other. the result will be 0.
             result->digits[0] = 0;
             result->length = 1;
             result->sign = positive;
