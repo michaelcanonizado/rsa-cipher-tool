@@ -1,3 +1,18 @@
+// OPERATIONS NEEDED TO BE IMPLEMENTED:
+// Greater Than - Done
+// Less Than - Done
+// Equal To - Done
+// Addition - Ongoing
+// Subtraction - Ongoing
+// Greatet Than Equal To - Not yet started
+// Less Than Equal To - Not yet started
+// Increment - Not yet started
+// Decrement - Not yet started
+// Multiplication - Not yet started
+// Division - Not yet started
+// Modulus - Not yet started
+// Exponents - Not yet started
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
