@@ -421,6 +421,7 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     printf("\n");
 
     result->length = resultLength;
+    trimBignum(result);
 }
 
 int main(void) {
@@ -428,8 +429,8 @@ int main(void) {
     Bignum num2 = initBignum(); 
     Bignum result = initBignum();
     
-    setBignum(&num1, "50", positive);
-    setBignum(&num2, "50", negative);
+    setBignum(&num1, "16", positive);
+    setBignum(&num2, "7", negative);
 
     addBignum(&result, &num1, &num2);
 
