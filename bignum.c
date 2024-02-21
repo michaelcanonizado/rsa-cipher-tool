@@ -138,6 +138,23 @@ int isEqualToBignum(Bignum *num1, Bignum *num2) {
     return 1;
 }
 
+void trimBignum(Bignum *num) {
+    unsigned long long int numOfZeros = 0;
+
+    // Start from the most significant digit, looking for 0s, and keep track of the number of 0s found.
+    for (int i = num->length - 1; i >= 0; i--) {
+        if (num->digits[i] == 0) {
+            numOfZeros++;
+        } else {
+            break;
+        }
+    }
+
+    // If 0s were found, trim the Bignum by adjusting the length.
+    if (numOfZeros != 0) {
+        num->length = num->length - numOfZeros;
+    }
+}
 
 void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     int sum;
@@ -351,9 +368,9 @@ int main(void) {
     Bignum result = initBignum();
     
     setBignum(&num1, "70", positive);
-    setBignum(&num2, "70", positive);
+    setBignum(&num2, "100", positive);
 
-    subtractBignum(&result, &num1, &num2);
+    // subtractBignum(&result, &num1, &num2);
 
     printf("\nsgn: %d | len: %d | num 1: ", num1.sign, num1.length);
     for (int i = num1.length - 1; i >= 0 ; i--) {
