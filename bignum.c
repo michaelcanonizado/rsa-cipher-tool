@@ -66,6 +66,7 @@ void setBignum(Bignum *numStruct, char numStr[], INT_SIGN sign) {
         numStruct->digits[numStruct->length - i - 1] = temp;
     }
 
+    // Trim result. Removing any possible leading 0s. E.g. "0000123" will be [3,2,1]
     trimBignum(numStruct);
 }
 
