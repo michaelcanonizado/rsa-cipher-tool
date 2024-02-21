@@ -35,6 +35,7 @@ typedef struct {
 
 void addBignum(Bignum *result, Bignum *num1, Bignum *num2);
 void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2);
+void trimBignum(Bignum *num);
 
 Bignum initBignum() {
     // Initialize Bignum values. This is needed some of the arithmetic function need to know if the Bignum has already been set, and get rid of garbage values.
@@ -64,6 +65,8 @@ void setBignum(Bignum *numStruct, char numStr[], INT_SIGN sign) {
         numStruct->digits[i] = numStruct->digits[numStruct->length - i - 1];
         numStruct->digits[numStruct->length - i - 1] = temp;
     }
+
+    trimBignum(numStruct);
 }
 
 void intToBignum(Bignum *numStruct, unsigned long long int integer) {
@@ -433,7 +436,7 @@ int main(void) {
     Bignum result = initBignum();
     
     setBignum(&num1, "16", positive);
-    setBignum(&num2, "007", positive);
+    setBignum(&num2, "007", negative);
 
     addBignum(&result, &num1, &num2);
 
