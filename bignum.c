@@ -253,6 +253,7 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
     // Store result digit length
     result->length = resultLength;
+    trimBignum(result);
 }
 
 void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
@@ -430,7 +431,7 @@ int main(void) {
     Bignum result = initBignum();
     
     setBignum(&num1, "16", positive);
-    setBignum(&num2, "7", negative);
+    setBignum(&num2, "007", positive);
 
     addBignum(&result, &num1, &num2);
 
