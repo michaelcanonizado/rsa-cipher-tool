@@ -33,6 +33,9 @@ typedef struct {
     INT_SIGN sign;
 } Bignum;
 
+void addBignum(Bignum *result, Bignum *num1, Bignum *num2);
+void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2);
+
 Bignum initBignum() {
     // Initialize Bignum values. This is needed some of the arithmetic function need to know if the Bignum has already been set, and get rid of garbage values.
     Bignum num;
@@ -172,11 +175,45 @@ void trimBignum(Bignum *num) {
 }
 
 void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
+    INT_SIGN num1Sign, num2Sign;
     int sum;
     int carry = 0;
     int resultLength = 0;
     // maxLength will cap out at around 18,446,744,073,709,551,615 (ref: C docs). Therefore the Bignum num1 and num2 can only have a maximum of 18,446,744,073,709,551,615 digits.
     unsigned long long int maxLength;
+
+    if (num1->sign != num2->sign) {
+        num1Sign = num1->sign;
+        num2Sign = num2->sign;
+
+        num1->sign = num2->sign;
+
+        if (isGreaterThanBignum(num1, num2)) {
+            printf("\nThey have different signs, but num 1 is Bigger! Will perform subtraction...");
+
+            subtractBignum(result, num1, num2);
+            result->sign = num1Sign;
+            num1->sign = num1Sign;
+            num2->sign = num2Sign;
+            return;
+        } else if (isLessThanBignum(num1, num2)) {
+            printf("\nThey have different signs, but num 2 is Bigger! Will perform subtraction...");
+
+            subtractBignum(result, num1, num2);
+            result->sign = num2Sign;
+            num1->sign = num1Sign;
+            num2->sign = num2Sign;
+            return;
+        } else if (isEqualToBignum(num1, num2)) {
+            printf("\nThey have different signs, but are equal to each other! Result will be 0...");
+
+            result->digits[0] = 0;
+            result->length = 1;
+            result->sign = positive;
+
+            return;
+        }
+    }
 
     // Find the longest length
     if (num1->length > num2->length) {
@@ -382,10 +419,10 @@ int main(void) {
     Bignum num2 = initBignum(); 
     Bignum result = initBignum();
     
-    setBignum(&num1, "700", positive);
-    setBignum(&num2, "100", positive);
+    setBignum(&num1, "50", positive);
+    setBignum(&num2, "50", negative);
 
-    // subtractBignum(&result, &num1, &num2);
+    addBignum(&result, &num1, &num2);
 
     printf("\nsgn: %d | len: %d | num 1: ", num1.sign, num1.length);
     for (int i = num1.length - 1; i >= 0 ; i--) {
