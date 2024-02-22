@@ -68,14 +68,25 @@ void intToBignum(Bignum *numStruct, unsigned long long int integer) {
     numStruct->length = count;
 }
 
-long long int bignumToInt(Bignum *numStruct) {
+long long int bignumToInt(Bignum *num) {
     long long int MAX_VALUE_OF_LONG_LONG_INT = LLONG_MAX;
-
-    printf("Max value: %lld", MAX_VALUE_OF_LONG_LONG_INT);
 
     int maxNumOfDigits = (int)log10((double)MAX_VALUE_OF_LONG_LONG_INT) + 1;
 
-    printf("\nMax digits: %d", maxNumOfDigits);
+    if (num->length > maxNumOfDigits) {
+        return 0;
+    }
+
+    long long int result = 0;
+    long long int multiplier = num->sign == negative ? -1 : 1;
+
+    for (int i = 0; i < num->length; i++) {
+        result += num->digits[i] * multiplier;
+       
+        multiplier *= 10;
+    }
+
+    return result;
 }
 
 int isGreaterThanBignum(Bignum *num1, Bignum *num2) {
