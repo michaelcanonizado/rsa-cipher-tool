@@ -20,6 +20,7 @@ typedef struct {
 Bignum initBignum();
 void setBignum(Bignum *numStruct, char numStr[], INT_SIGN sign);
 void intToBignum(Bignum *numStruct, unsigned long long int integer);
+long long int bignumToInt(Bignum *num);
 void trimBignum(Bignum *num);
 int isGreaterThanBignum(Bignum *num1, Bignum *num2);
 int isLessThanBignum(Bignum *num1, Bignum *num2);
