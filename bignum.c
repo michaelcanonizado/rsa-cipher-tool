@@ -64,6 +64,8 @@ void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
 }
 
 void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN sign) {
+    // Unsigned long long int is used and a separate sign parameter is used to increase the integer range of the function. You will just have to conditionally input the sign when calling this function, when needed.
+
     // If integer passed is 0, set numStruct digits to [0], length to 1, and sign to positive.
     if (integer == 0) {
         numStruct->digits[0] = 0;
