@@ -1,7 +1,10 @@
 #ifndef BIGNUM_H
 #define BIGNUM_H
 
+#include <limits.h>
+
 #define MAX_INT_LENGTH 10000
+#define MAX_VALUE_OF_LONG_LONG_INT LLONG_MAX
 
 typedef enum {
     positive = 0,

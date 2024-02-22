@@ -88,8 +88,6 @@ void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN 
 }
 
 long long int bignumToInt(Bignum *num) {
-    long long int MAX_VALUE_OF_LONG_LONG_INT = LLONG_MAX;
-
     int maxNumOfDigits = (int)log10((double)MAX_VALUE_OF_LONG_LONG_INT) + 1;
 
     if (num->length > maxNumOfDigits) {
