@@ -16,6 +16,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <limits.h>
+#include <math.h>
 #include "bignum.h"
 
 Bignum initBignum() {
@@ -66,6 +68,15 @@ void intToBignum(Bignum *numStruct, unsigned long long int integer) {
     numStruct->length = count;
 }
 
+long long int bignumToInt(Bignum *numStruct) {
+    long long int MAX_VALUE_OF_LONG_LONG_INT = LLONG_MAX;
+
+    printf("Max value: %lld", MAX_VALUE_OF_LONG_LONG_INT);
+
+    int maxNumOfDigits = (int)log10((double)MAX_VALUE_OF_LONG_LONG_INT) + 1;
+
+    printf("\nMax digits: %d", maxNumOfDigits);
+}
 
 int isGreaterThanBignum(Bignum *num1, Bignum *num2) {
     if (num1->sign == negative && num2->sign == positive) {
