@@ -53,7 +53,7 @@ void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
     trimBignum(numStruct);
 }
 
-void intToBignum(Bignum *numStruct, unsigned long long int integer) {
+void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN sign) {
     // Use a counter to track indexes and length. Int is used as the unsigned longlong int data type's max digit count is 20
     int count = 0;
 
@@ -66,6 +66,7 @@ void intToBignum(Bignum *numStruct, unsigned long long int integer) {
 
     // Store the count in Bignum.length
     numStruct->length = count;
+    numStruct->sign = sign;
 }
 
 long long int bignumToInt(Bignum *num) {

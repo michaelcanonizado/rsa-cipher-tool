@@ -4,7 +4,7 @@
 int main(void) {
     Bignum num = initBignum();
     
-    setBignum(&num, "9223372036854775807", negative);
+    intToBignum(&num, 9223372036854775807, negative);
 
     printf("\nsgn: %d | len: %d | num 1: ", num.sign, num.length);
     for (int i = num.length - 1; i >= 0 ; i--) {
