@@ -6,7 +6,7 @@
 typedef enum {
     positive = 0,
     negative = 1
-} INT_SIGN;
+} BIGNUM_SIGN;
 
 typedef struct {
     // Integer will be in reverse for easier arithmetic
@@ -14,11 +14,11 @@ typedef struct {
     // Number of digits in integer
     int length;
     // Sign will be 0 (positive) or 1 (negative), following the binary sign bit convention.
-    INT_SIGN sign;
+    BIGNUM_SIGN sign;
 } Bignum;
 
 Bignum initBignum();
-void setBignum(Bignum *numStruct, char numStr[], INT_SIGN sign);
+void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign);
 void intToBignum(Bignum *numStruct, unsigned long long int integer);
 long long int bignumToInt(Bignum *num);
 void trimBignum(Bignum *num);

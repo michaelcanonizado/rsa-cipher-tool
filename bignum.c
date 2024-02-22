@@ -28,7 +28,7 @@ Bignum initBignum() {
     return num;
 }
 
-void setBignum(Bignum *numStruct, char numStr[], INT_SIGN sign) {
+void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
     int temp;
 
     // Store sign enum (1 = negative || 0 = positive)
@@ -182,7 +182,7 @@ void trimBignum(Bignum *num) {
 }
 
 void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
-    INT_SIGN num1Sign, num2Sign;
+    BIGNUM_SIGN num1Sign, num2Sign;
     int sum;
     int carry = 0;
     int resultLength = 0;
