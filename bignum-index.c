@@ -6,8 +6,8 @@ int main(void) {
     Bignum num2 = initBignum(); 
     Bignum result = initBignum();
     
-    setBignum(&num1, "16", positive);
-    setBignum(&num2, "007", negative);
+    setBignum(&num1, "9223372036854775807", negative);
+    setBignum(&num2, "007", positive);
 
     addBignum(&result, &num1, &num2);
 
@@ -28,6 +28,8 @@ int main(void) {
     printf("\nnum 1 < num 2 = %d", isLessThanBignum(&num1, &num2));
     printf("\nnum 1 == num 2 = %d", isEqualToBignum(&num1, &num2));
     
+    printf("\n\n");
+    bignumToInt(&num1);
     printf("\n\n");
 
     return 0;
