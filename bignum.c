@@ -64,6 +64,7 @@ void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
 }
 
 void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN sign) {
+    // If integer passed is 0, set numStruct digits to [0], length to 1, and sign to positive.
     if (integer == 0) {
         numStruct->digits[0] = 0;
         numStruct->length = 1;
