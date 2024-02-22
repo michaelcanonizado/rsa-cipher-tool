@@ -20,6 +20,14 @@
 #include <math.h>
 #include "bignum.h"
 
+int getNumOfDigitsOfInteger(long long int num) {
+    if (num < 0) {
+        num = num * -1;
+    }
+
+    return (int)log10((double)num) + 1;
+}
+
 Bignum initBignum() {
     // Initialize Bignum values. This is needed some of the arithmetic function need to know if the Bignum has already been set, and get rid of garbage values.
     Bignum num;
