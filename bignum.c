@@ -21,7 +21,9 @@
 #include "bignum.h"
 
 int getNumOfDigitsOfInteger(long long int num) {
-    if (num < 0) {
+    if (num == 0) {
+        return 1;
+    } else if (num < 0) {
         num = num * -1;
     }
 
@@ -62,6 +64,13 @@ void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
 }
 
 void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN sign) {
+    if (integer == 0) {
+        numStruct->digits[0] = 0;
+        numStruct->length = 1;
+        numStruct->sign = positive;
+        return;
+    }
+
     // Use a counter to track indexes and length. Int is used as the unsigned longlong int data type's max digit count is 20
     int count = 0;
 
