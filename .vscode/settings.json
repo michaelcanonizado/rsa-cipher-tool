@@ -3,6 +3,7 @@
 		"*.ejs": "html",
 		"stdio.h": "c",
 		"string.h": "c",
-		"limits.h": "c"
+		"limits.h": "c",
+		"bignum.h": "c"
 	}
 }
