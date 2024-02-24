@@ -2,6 +2,7 @@
 #include "../../bignum.h"
 
 int main(void) {
+    // Addition prints wrong
     Bignum num1 = initBignum(); 
     Bignum num2 = initBignum(); 
     Bignum result = initBignum();
