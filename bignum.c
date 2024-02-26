@@ -115,15 +115,18 @@ void printBignum(Bignum *num) {
 }
 
 void printBignumCenter(Bignum *num, unsigned int width) {
-    if (width <= num-> length) {
+    if (width <= num->length) {
         printBignum(num);
         return;
     }
 
     unsigned int remainingWidth = (width - num->length) / 2;
-    
+
     for (int i = 0; i < remainingWidth; i++) {
         printf(" ");
+    }
+    if (num->sign == negative) {
+        printf("-");
     }
     printBignum(num);
     for (int i = 0; i < remainingWidth; i++) {
