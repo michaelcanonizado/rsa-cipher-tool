@@ -20,7 +20,7 @@ typedef struct {
     BIGNUM_SIGN sign;
 } Bignum;
 
-int getNumOfDigitsOfInteger(long long int num);
+int getLengthOfInteger(long long int num);
 Bignum initBignum();
 void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign);
 void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN sign);

@@ -20,7 +20,7 @@
 #include <math.h>
 #include "bignum.h"
 
-int getNumOfDigitsOfInteger(long long int num) {
+int getLengthOfInteger(long long int num) {
     if (num == 0) {
         return 1;
     } else if (num < 0) {
