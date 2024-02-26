@@ -227,7 +227,6 @@ void trimBignum(Bignum *num) {
 }
 
 void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
-    BIGNUM_SIGN num1Sign, num2Sign;
     int sum;
     int carry = 0;
     int resultLength = 0;
@@ -237,8 +236,8 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     // If the 2 Bignums have different signs. Perform subtraction.
     if (num1->sign != num2->sign) {
         // Keep track of the original signs of the 2 Bignums. As they need to have the same sign to trigger subtraction in the subtractBignum() function. If they have contrasting signs, subtractBignum() will call addBignum() causing an infinite loop.
-        num1Sign = num1->sign;
-        num2Sign = num2->sign;
+        BIGNUM_SIGN num1Sign = num1->sign;
+        BIGNUM_SIGN num2Sign = num2->sign;
 
         num1->sign = num2->sign;
 
