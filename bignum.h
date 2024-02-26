@@ -26,6 +26,7 @@ void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign);
 void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN sign);
 long long int bignumToInt(Bignum *num);
 void printBignum(Bignum *num);
+void printBignumCenter(Bignum *num, unsigned int width);
 void trimBignum(Bignum *num);
 int isGreaterThanBignum(Bignum *num1, Bignum *num2);
 int isLessThanBignum(Bignum *num1, Bignum *num2);

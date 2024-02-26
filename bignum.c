@@ -114,6 +114,23 @@ void printBignum(Bignum *num) {
     }
 }
 
+void printBignumCenter(Bignum *num, unsigned int width) {
+    if (width <= num-> length) {
+        printBignum(num);
+        return;
+    }
+
+    unsigned int remainingWidth = (width - num->length) / 2;
+    
+    for (int i = 0; i < remainingWidth; i++) {
+        printf(" ");
+    }
+    printBignum(num);
+    for (int i = 0; i < remainingWidth; i++) {
+        printf(" ");
+    }
+}
+
 int isGreaterThanBignum(Bignum *num1, Bignum *num2) {
     if (num1->sign == negative && num2->sign == positive) {
         return 0;
