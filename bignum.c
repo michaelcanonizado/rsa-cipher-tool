@@ -299,6 +299,7 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
     // Store result digit length
     result->length = resultLength;
+    result->sign = num1->sign;
     // Trim result. Removing any possible leading 0s
     trimBignum(result);
 }
