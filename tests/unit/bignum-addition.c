@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "../../bignum.h"
 
-void test(BIGNUM_SIGN integer1Sign, BIGNUM_SIGN integer2Sign, int numOfInterations) {
+void testSign(BIGNUM_SIGN integer1Sign, BIGNUM_SIGN integer2Sign, int numOfInterations) {
     srand(time(NULL));
 
     for (int i = 0; i < numOfInterations; i++) {
@@ -62,10 +62,10 @@ void test(BIGNUM_SIGN integer1Sign, BIGNUM_SIGN integer2Sign, int numOfInteratio
 
 int main(void) {
 
-    test(positive, positive, 5);
-    test(negative, negative, 5);
-    test(positive, negative, 5);
-    test(negative, positive, 5);
+    testSign(positive, positive, 5);
+    testSign(negative, negative, 5);
+    testSign(positive, negative, 5);
+    testSign(negative, positive, 5);
 
     return 0;
 }
