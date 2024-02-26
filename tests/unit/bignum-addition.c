@@ -2,33 +2,30 @@
 #include "../../bignum.h"
 
 int main(void) {
-    // Addition prints wrong
-    Bignum num1 = initBignum(); 
-    Bignum num2 = initBignum(); 
-    Bignum result = initBignum();
-    
-    setBignum(&num1, "16", positive);
-    setBignum(&num2, "007", negative);
+    long long int integer1 = -12345;
+    long long int integer2 = -67890;
+    long long int integerResult = integer1 + integer2;
 
-    addBignum(&result, &num1, &num2);
+    Bignum bignum1 = initBignum(); 
+    Bignum bignum2 = initBignum(); 
+    Bignum bignumResult = initBignum();
+    intToBignum(&bignum1, 12345, negative);
+    intToBignum(&bignum2, 67890, negative);
+    addBignum(&bignumResult, &bignum1, &bignum2);
 
-    printf("\nsgn: %d | len: %d | num 1: ", num1.sign, num1.length);
-    for (int i = num1.length - 1; i >= 0 ; i--) {
-        printf("%d", num1.digits[i]);
+    printBignumCenter(&bignum1, 10);
+    printf("+");
+    printBignumCenter(&bignum2, 10);
+    printf("=");
+    printBignumCenter(&bignumResult, 10);
+    printf("~ %lld | ", integerResult);
+
+    if (integerResult == bignumToInt(&bignumResult)) {
+        printf("MATCH");
+    } else {
+        printf("MISMATCH");
     }
-    printf("\nsgn: %d | len: %d | num 2: ", num2.sign, num2.length);
-    for (int i = num2.length - 1; i >= 0 ; i--) {
-        printf("%d", num2.digits[i]);
-    }
-    printf("\nsgn: %d | len: %d | result: ", result.sign, result.length);
-    for (int i = result.length - 1; i >= 0 ; i--) {
-        printf("%d", result.digits[i]);
-    }
-    
-    printf("\n\nnum 1 > num 2 = %d", isGreaterThanBignum(&num1, &num2));
-    printf("\nnum 1 < num 2 = %d", isLessThanBignum(&num1, &num2));
-    printf("\nnum 1 == num 2 = %d", isEqualToBignum(&num1, &num2));
-    
+
     printf("\n\n");
 
     return 0;
