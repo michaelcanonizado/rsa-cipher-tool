@@ -243,8 +243,6 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         num1->sign = num2->sign;
 
         if (isGreaterThanBignum(num1, num2)) {
-            printf("\nThey have different signs, but num 1 is Bigger! Will perform subtraction...");
-
             subtractBignum(result, num1, num2);
             // The resulting Bignum will have the sign of the bigger number(disregarding signs). E.g. 11 + (-5) = 6.
             result->sign = num1Sign;
@@ -254,8 +252,6 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
             return;
         } else if (isLessThanBignum(num1, num2)) {
-            printf("\nThey have different signs, but num 2 is Bigger! Will perform subtraction...");
-
             subtractBignum(result, num1, num2);
             // The resulting Bignum will have the sign of the bigger number(disregarding signs). E.g. 5 + (-11) = -6.
             result->sign = num2Sign;
@@ -265,8 +261,6 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
             return;
         } else if (isEqualToBignum(num1, num2)) {
-            printf("\nThey have different signs, but are equal to each other! Result will be 0...");
-
             // If the 2 Bignums have different signs and are equal to each other. the result will be 0.
             result->digits[0] = 0;
             result->length = 1;
@@ -314,12 +308,10 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
     // Check signs | If signs are different, add the two numbers.
     if (num1->sign == positive && num2->sign == negative) {
-        printf("\nThey have different signs! Will perform addition on them...");
         addBignum(result, num1, num2);
         return;
     }
     if (num1->sign == negative && num2->sign == positive) {
-        printf("\nThey have different signs! Will perform addition on them...");
         addBignum(result, num1, num2);
         result->sign = negative;
         return;
@@ -331,8 +323,6 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
     // Check length | Longer length will automatically be set to the minuend and shorter will be the subtrahend.
     if (num1->length > num2->length) {
-        printf("\nNum 1 is longer! It will be set to the minuend...");
-
         minuend.length = num1->length;
         subtrahend.length = num2->length;
 
@@ -341,8 +331,6 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
         result->sign = num1->sign;
     } else if (num1->length < num2->length) {
-        printf("\nNum 2 is longer! It will be set to the minuend...");
-
         minuend.length = num2->length;
         subtrahend.length = num1->length;
 
@@ -360,8 +348,6 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
     // Compare two Bignums | If minuend and subtrahend was not found in the previous conditions, i.e. they're of the same sign and length. Compare the two Bignums.
     if (isGreaterThanBignum(num1, num2) && minuend.length == 0) {
-        printf("\nThey have the same length and sign, but num 1 is bigger!...");
-
         minuend.length = num1->length;
         subtrahend.length = num2->length;
 
@@ -370,8 +356,6 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
         result->sign = num1->sign;
     }else if (isLessThanBignum(num1, num2) && minuend.length == 0) {
-        printf("\nThey have the same length and sign, but num 2 is bigger!...");
-
         minuend.length = num2->length;
         subtrahend.length = num1->length;
 
@@ -386,8 +370,6 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
             result->sign = positive;
         }
     } else if (isEqualToBignum(num1, num2)) {
-        printf("\nThey have the same sign, length, and is equal to each other. Result will be 0...\n");
-
         result->digits[0] = 0;
         result->length = 1;
         result->sign = positive;
@@ -395,18 +377,7 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         return;
     }
 
-    // Print Minuend and Subtrahend.
-    printf("\n\nlen: %d | Minuend: ", minuend.length);
-    for (int i = minuend.length - 1; i >= 0; i--) {
-        printf("%d", minuend.digits[i]);
-    }
-    printf("\nlen: %d | Subtrahend: ", subtrahend.length);
-    for (int i = subtrahend.length - 1; i >= 0; i--) {
-        printf("%d", subtrahend.digits[i]);
-    }
-
     // Once miunend and subtrahends are found, perform subtraction.
-    printf("\n");
     int difference;
     unsigned long long int resultLength = 0;
 
@@ -417,13 +388,9 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
             // Get difference of the current minuend and subtrahend digits and increment the result's digit length counter.
             result->digits[i] = minuend.digits[i] - subtrahend.digits[i];
             resultLength++;
-
-            printf("\nNot Borrowing... : ");
-            printf("%d - %d = %d", minuend.digits[i], subtrahend.digits[i], result->digits[i]);
         } else if (minuend.digits[i] < subtrahend.digits[i]) {
             // If borrowing is needed, start from the next digit after the current index, and traverse through (till the last digit of the minuend) until you find a digit that can give you a borrow (anything greater than 0).
             for (int j = i + 1; j < minuend.length; j++) {
-                printf("\n    Looking for borrow...");
                 if (minuend.digits[j] > 0) {
                     // If a digit that can give a borrow is found. Decrement that digit, then add 10 to the current index that needs a borrow.
                     minuend.digits[j] = minuend.digits[j] - 1;
@@ -448,9 +415,6 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
             // Get difference of the current minuend and subtrahend digits and increment the result's digit length counter.
             result->digits[i] = minuend.digits[i] - subtrahend.digits[i];
             resultLength++;
-
-            printf("\nBorrowed... : ");
-            printf("%d - %d = %d", minuend.digits[i], subtrahend.digits[i], result->digits[i]);
         } else if (minuend.digits[i] == subtrahend.digits[i]) {
             // When minuend's and subtrahend's current iteration digit is equal. Set result's current iteration digit to 0.
             result->digits[i] = 0;
@@ -458,21 +422,13 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         }
     }
 
-    printf("\n\nlen: %d | Mdf Minuend: ", minuend.length);
-    for (int i = minuend.length - 1; i >= 0; i--) {
-        printf("%d|", minuend.digits[i]);
-    }
-
     // If subtrahend is shorter than the minuend, and all neccessary subtractions are finished. Drop down/copy the remaining values of the minuend.
     if (minuend.length > subtrahend.length) {
-        printf("\n\nSubtrahend is shorter. Dropping the rest of the numbers... : ");
         for (int i = subtrahend.length; i < minuend.length; i++) {
             result->digits[i] = minuend.digits[i];
             resultLength++;
         }
     }
-
-    printf("\n");
 
     result->length = resultLength;
     // Trim result. Removing any possible leading 0s
