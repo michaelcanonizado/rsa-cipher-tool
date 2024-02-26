@@ -108,6 +108,12 @@ long long int bignumToInt(Bignum *num) {
     return result;
 }
 
+void printBignum(Bignum *num) {
+    for (int i = num->length - 1; i >= 0; i--) {
+        printf("%d", num->digits[i]);
+    }
+}
+
 int isGreaterThanBignum(Bignum *num1, Bignum *num2) {
     if (num1->sign == negative && num2->sign == positive) {
         return 0;
