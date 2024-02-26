@@ -4,7 +4,7 @@
 #include "../../bignum.h"
 
 void test(BIGNUM_SIGN integer1Sign, BIGNUM_SIGN integer2Sign, int numOfInterations) {
-        srand(time(NULL));
+    srand(time(NULL));
 
     for (int i = 0; i < numOfInterations; i++) {
 
