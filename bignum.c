@@ -299,6 +299,7 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
     // Store result digit length
     result->length = resultLength;
+    // Copy sign of one of the Bignums. E.g. (+1) + (+2) = (+3) & (-1) + (-2) = (-3)
     result->sign = num1->sign;
     // Trim result. Removing any possible leading 0s
     trimBignum(result);
