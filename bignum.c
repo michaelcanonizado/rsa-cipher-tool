@@ -319,11 +319,11 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 }
 
 void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
-    if (num1->length <= 1 && num1->digits[0] == 0) {
+    if (isBignumZero(num1)) {
         copyBignum(result, num2);
         return;
     }
-    if (num2->length <= 1 && num2->digits[0] == 0) {
+    if (isBignumZero(num2)) {
         copyBignum(result, num1);
         return;
     }
