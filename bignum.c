@@ -120,22 +120,33 @@ void printBignum(Bignum *num) {
     }
 }
 
-void printBignumCenter(Bignum *num, unsigned int width) {
-    if (width <= num->length) {
+void printBignumCenter(Bignum *num, unsigned int requiredWidth) {
+    if (requiredWidth <= num->length) {
         printBignum(num);
         return;
     }
 
-    unsigned int remainingWidth = (width - num->length) / 2;
+    unsigned int leftWidth = (requiredWidth - num->length) / 2, rightWidth = (requiredWidth - num->length) / 2;
+    unsigned int totalWidth = leftWidth + rightWidth + num->length;
 
-    for (int i = 0; i < remainingWidth; i++) {
+    if (num->sign == negative) {
+        leftWidth--;
+    }
+
+    if (totalWidth > requiredWidth) {
+        leftWidth--;
+    } else if (totalWidth < requiredWidth) {
+        leftWidth++;
+    }
+
+    for (int i = 0; i < leftWidth; i++) {
         printf(" ");
     }
     if (num->sign == negative) {
         printf("-");
     }
     printBignum(num);
-    for (int i = 0; i < remainingWidth; i++) {
+    for (int i = 0; i < rightWidth; i++) {
         printf(" ");
     }
 }

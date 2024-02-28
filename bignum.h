@@ -28,7 +28,7 @@ long long int bignumToInt(Bignum *num);
 
 void copyBignum(Bignum *result, Bignum *num);
 void printBignum(Bignum *num);
-void printBignumCenter(Bignum *num, unsigned int width);
+void printBignumCenter(Bignum *num, unsigned int requiredWidth);
 void trimBignum(Bignum *num);
 int isGreaterThanBignum(Bignum *num1, Bignum *num2);
 int isLessThanBignum(Bignum *num1, Bignum *num2);
