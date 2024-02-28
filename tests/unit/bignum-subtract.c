@@ -47,13 +47,9 @@ void testSign(BIGNUM_SIGN integer1Sign, BIGNUM_SIGN integer2Sign, int numOfInter
         printBignumCenter(&bignum2, 10);
         printf("=");
         printBignumCenter(&bignumResult, 10);
-        printf("~ %lld | ", integerResult);
+        printf("~ %10lld ", integerResult);
 
-        if (integerResult == bignumToInt(&bignumResult)) {
-            printf("MATCH");
-        } else {
-            printf("MISMATCH");
-        }
+        printf("| %s", integerResult == bignumToInt(&bignumResult) ? "MATCH" : "MISMATCH");
         printf("\n");
     }
 
@@ -95,13 +91,10 @@ void testZero(int numOfInterations) {
         printBignumCenter(&bignum2, 10);
         printf("=");
         printBignumCenter(&bignumResult, 10);
-        printf("~ %lld | ", integerResult);
+        printf("~ %10lld ", integerResult);
 
-        if (integerResult == bignumToInt(&bignumResult)) {
-            printf("MATCH");
-        } else {
-            printf("MISMATCH");
-        }
+        printf("| %s", integerResult == bignumToInt(&bignumResult) ? "MATCH" : "MISMATCH");
+
         printf("\n");
     }
         printf("\n");
@@ -133,17 +126,14 @@ void testZero(int numOfInterations) {
         subtractBignum(&bignumResult, &bignum1, &bignum2);
 
         printBignumCenter(&bignum1, 10);
-        printf("+");
+        printf("-");
         printBignumCenter(&bignum2, 10);
         printf("=");
         printBignumCenter(&bignumResult, 10);
-        printf("~ %lld | ", integerResult);
+        printf("~ %10lld ", integerResult);
 
-        if (integerResult == bignumToInt(&bignumResult)) {
-            printf("MATCH");
-        } else {
-            printf("MISMATCH");
-        }
+        printf("| %s", integerResult == bignumToInt(&bignumResult) ? "MATCH" : "MISMATCH");
+
         printf("\n");
     }
 
