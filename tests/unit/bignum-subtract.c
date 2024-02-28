@@ -88,7 +88,7 @@ void testZero(int numOfInterations) {
             intToBignum(&bignum2, integer2, positive);
         }
 
-        addBignum(&bignumResult, &bignum1, &bignum2);
+        subtractBignum(&bignumResult, &bignum1, &bignum2);
 
         printBignumCenter(&bignum1, 10);
         printf("-");
@@ -130,7 +130,7 @@ void testZero(int numOfInterations) {
             intToBignum(&bignum2, integer2, positive);
         }
 
-        addBignum(&bignumResult, &bignum1, &bignum2);
+        subtractBignum(&bignumResult, &bignum1, &bignum2);
 
         printBignumCenter(&bignum1, 10);
         printf("+");
