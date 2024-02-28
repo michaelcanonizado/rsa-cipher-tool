@@ -309,12 +309,16 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
     // Check signs | If signs are different, add the two numbers.
     if (num1->sign == positive && num2->sign == negative) {
+        num2->sign = positive;
         addBignum(result, num1, num2);
+        num2->sign = negative;
         return;
     }
     if (num1->sign == negative && num2->sign == positive) {
+        num2->sign = negative;
         addBignum(result, num1, num2);
         result->sign = negative;
+        num2->sign = positive;
         return;
     }
 
