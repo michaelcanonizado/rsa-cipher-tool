@@ -315,6 +315,10 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         copyBignum(result, num2);
         return;
     }
+    if (num2->length <= 1 && num2->digits[0] == 0) {
+        copyBignum(result, num1);
+        return;
+    }
 
     // Compare the 2 integers to determine whether to add or subract (subraction rules) and determine the sign of result.
 
