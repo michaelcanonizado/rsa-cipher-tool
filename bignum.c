@@ -108,6 +108,12 @@ long long int bignumToInt(Bignum *num) {
     return result;
 }
 
+void copyBignum(Bignum *result, Bignum *num) {
+    memcpy(result->digits, num->digits, sizeof(int) * num->length);
+    result->length = num->length;
+    result->sign = num->sign;
+}
+
 void printBignum(Bignum *num) {
     for (int i = num->length - 1; i >= 0; i--) {
         printf("%d", num->digits[i]);
@@ -305,6 +311,11 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 }
 
 void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
+    if (num1->length <= 1 && num1->digits[0] == 0) {
+        copyBignum(result, num2);
+        return;
+    }
+
     // Compare the 2 integers to determine whether to add or subract (subraction rules) and determine the sign of result.
 
     // Check signs | If signs are different, add the two numbers.
