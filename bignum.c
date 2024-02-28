@@ -232,6 +232,14 @@ void trimBignum(Bignum *num) {
     }
 }
 
+int isBignumZero(Bignum *num) {
+    if (num->length <= 1 && num->digits[0] == 0) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
 void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     int sum;
     int carry = 0;
