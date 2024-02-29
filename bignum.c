@@ -93,7 +93,8 @@ long long int bignumToInt(Bignum *num) {
     int maxNumOfDigits = (int)log10((double)MAX_VALUE_OF_LONG_LONG_INT) + 1;
 
     if (num->length > maxNumOfDigits) {
-        return 0;
+        fprintf(stderr, "Error! Converting really big Bignum to long long int: Will cause overflow\nExitted at: %s:%d\n", __FILE__, __LINE__);
+        exit(EXIT_FAILURE);
     }
 
     long long int result = 0;
