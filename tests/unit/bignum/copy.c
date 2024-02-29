@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
-#include "../../bignum.h"
+#include "../../../bignum.h"
 
 int main(void) {
     Bignum num = initBignum();

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
-#include "../../bignum.h"
+#include "../../../bignum.h"
 
 int main(void) {
     int errorCounter = 0;

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
-#include "../../bignum.h"
+#include "../../../bignum.h"
 
 void testSign(BIGNUM_SIGN integer1Sign, BIGNUM_SIGN integer2Sign, int numOfInterations) {
     srand(time(NULL));
@@ -22,7 +22,7 @@ void testSign(BIGNUM_SIGN integer1Sign, BIGNUM_SIGN integer2Sign, int numOfInter
             integer2 = rand() % 9000 - 9999;
         }
 
-        long long int integerResult = integer1 + integer2;
+        long long int integerResult = integer1 - integer2;
 
         Bignum bignum1 = initBignum(); 
         Bignum bignum2 = initBignum(); 
@@ -40,20 +40,16 @@ void testSign(BIGNUM_SIGN integer1Sign, BIGNUM_SIGN integer2Sign, int numOfInter
             intToBignum(&bignum2, integer2, positive);
         }
 
-        addBignum(&bignumResult, &bignum1, &bignum2);
+        subtractBignum(&bignumResult, &bignum1, &bignum2);
 
         printBignumCenter(&bignum1, 10);
-        printf("+");
+        printf("-");
         printBignumCenter(&bignum2, 10);
         printf("=");
         printBignumCenter(&bignumResult, 10);
-        printf("~ %lld | ", integerResult);
+        printf("~ %10lld ", integerResult);
 
-        if (integerResult == bignumToInt(&bignumResult)) {
-            printf("MATCH");
-        } else {
-            printf("MISMATCH");
-        }
+        printf("| %s", integerResult == bignumToInt(&bignumResult) ? "MATCH" : "MISMATCH");
         printf("\n");
     }
 
@@ -88,20 +84,17 @@ void testZero(int numOfInterations) {
             intToBignum(&bignum2, integer2, positive);
         }
 
-        addBignum(&bignumResult, &bignum1, &bignum2);
+        subtractBignum(&bignumResult, &bignum1, &bignum2);
 
         printBignumCenter(&bignum1, 10);
-        printf("+");
+        printf("-");
         printBignumCenter(&bignum2, 10);
         printf("=");
         printBignumCenter(&bignumResult, 10);
-        printf("~ %lld | ", integerResult);
+        printf("~ %10lld ", integerResult);
 
-        if (integerResult == bignumToInt(&bignumResult)) {
-            printf("MATCH");
-        } else {
-            printf("MISMATCH");
-        }
+        printf("| %s", integerResult == bignumToInt(&bignumResult) ? "MATCH" : "MISMATCH");
+
         printf("\n");
     }
         printf("\n");
@@ -130,20 +123,17 @@ void testZero(int numOfInterations) {
             intToBignum(&bignum2, integer2, positive);
         }
 
-        addBignum(&bignumResult, &bignum1, &bignum2);
+        subtractBignum(&bignumResult, &bignum1, &bignum2);
 
         printBignumCenter(&bignum1, 10);
-        printf("+");
+        printf("-");
         printBignumCenter(&bignum2, 10);
         printf("=");
         printBignumCenter(&bignumResult, 10);
-        printf("~ %lld | ", integerResult);
+        printf("~ %10lld ", integerResult);
 
-        if (integerResult == bignumToInt(&bignumResult)) {
-            printf("MATCH");
-        } else {
-            printf("MISMATCH");
-        }
+        printf("| %s", integerResult == bignumToInt(&bignumResult) ? "MATCH" : "MISMATCH");
+
         printf("\n");
     }
 
