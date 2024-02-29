@@ -34,7 +34,7 @@ int main(void) {
             errorCounter++;
         }
 
-        if (num.length != getNumOfDigitsOfInteger(result)) {
+        if (num.length != getLengthOfInteger(result)) {
             strcpy(lengthStatus, "MISATCH");
             errorCounter++;
         }
@@ -48,7 +48,7 @@ int main(void) {
             printf("%d", num.digits[i]);
         }
 
-        printf(" ||   %20lld | %6d | %5s  || %8s | %8s |", result, getNumOfDigitsOfInteger(result), result < 0 ? "NEG" : "POS", lengthStatus, signStatus);
+        printf(" ||   %20lld | %6d | %5s  || %8s | %8s |", result, getLengthOfInteger(result), result < 0 ? "NEG" : "POS", lengthStatus, signStatus);
     }
 
     printf("\n-------------------------------------------------------------------------------------------------------------");
