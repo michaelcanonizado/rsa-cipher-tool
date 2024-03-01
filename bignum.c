@@ -32,7 +32,7 @@ int getLengthOfInteger(long long int integer) {
 }
 
 Bignum initBignum() {
-    // Initialize Bignum values. Get rid of garbage values and initialize bignum. Some arithmetic function may need to know if the Bignum has already been set.
+    // Function to initialize Bignum values. Get rid of garbage values and initialize bignum. Some arithmetic function may need to know if the Bignum has already been set.
     Bignum num;
     num.length = 0;
     num.sign = positive;
@@ -40,7 +40,7 @@ Bignum initBignum() {
 }
 
 void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
-    // Main Bignum setter. This function takes a string represented integer, as strings dont have a limit to how long it can be. The each character of the string will then be converted to an integer by offsetting its ASCII value, and will be pushed to Bignum.digits[].
+    // Main Function to set a Bignum. This function takes an integer represented as a string, as strings dont have a limit to how long it can be. The each character of the string will then be converted to an integer by offsetting its ASCII value, and will be pushed to Bignum.digits[].
 
     // Integer will be stored in Bignum.digits[] in reverse for the following reasons: (1) Most operations usually start from the LSD (least significant digit), making it easier to perform operations. (2) The result will usually be greater than or less than the 2 integers being operated on. Eg: 999 (3 digits) + 999 (3 digits) = 1998 (4 digits) & 999 (3 digits) * 999 (3 digits) = 998,001 (6 digits). Hence, the resulting Bignum is free to shrink and grow infinitely. 
 
@@ -75,7 +75,7 @@ void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
 }
 
 void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN sign) {
-    // Unsigned long long int is used and a separate sign parameter is used to increase the integer range of the function. You will just have to conditionally input the sign when calling this function, when needed.
+    // Unsigned long long int and a separate sign parameter is used to increase the integer range of the function. You will have to conditionally input the sign enum when calling this function.
 
     // If integer passed is 0, set numStruct digits to [0], length to 1, and sign to positive.
     if (integer == 0) {
