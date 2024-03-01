@@ -2,11 +2,15 @@
 #include "bignum.h"
 
 int main() {
-    int num = -1230;
+    Bignum num1 = initBignum();
+    
+    intToBignum(&num1, 0123, positive);
 
-    int res = getLengthOfInteger(num);
+    printBignum(&num1);
 
-    printf("length of num: %d\n", res);
+    int num2 = 0123;
+
+    printf("\nInteger: %d", num2);
 
     printf("\n");
 
