@@ -40,27 +40,37 @@ Bignum initBignum() {
 }
 
 void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
+    // Main Bignum setter. This function takes a string represented integer, as strings dont have a limit to how long it can be. The each character of the string will then be converted to an integer by offsetting its ASCII value, and will be pushed to Bignum.digits[].
+
+    // Integer will be stored in Bignum.digits[] in reverse for the following reasons: (1) Most operations usually start from the LSD (least significant digit), making it easier to perform operations. (2) The result will usually be greater than or less than the 2 integers being operated on. Eg: 999 (3 digits) + 999 (3 digits) = 1998 (4 digits) & 999 (3 digits) * 999 (3 digits) = 998,001 (6 digits). Hence, the resulting Bignum is free to shrink and grow infinitely. 
+
+    // NOTE(FEAT): Cases where the strings contain non-numerical characters haven't been set. It will be implemented soon. Eg: "123a678".
+
     int temp;
 
-    // Store sign enum (1 = negative || 0 = positive)
+    // Store sign enum (0 = positive || 1 = negative)
     numStruct->sign = sign;
 
-    // Store number length
+    // Store numStr length
     numStruct->length = strlen(numStr);
 
-    // Load numbers into Bignum.digits
+    // NOTE(REFACTOR): Since the integer will be stored in reverse in Bignum.digits[], you can start to iterate through the string starting from the last character using strlen(numStr). Thus only needing 1 for-loop to convert numStr.
+
+    // Load numbers into Bignum.digits[]
     for (int i = 0; i < numStruct->length; i++) {
+        // Offset ASCII value of the character by the ASCII value of '0'
+        // Eg: '3' - '0' = 3  ->  51 - 48 = 3 
         numStruct->digits[i] = numStr[i] - '0';
     }
 
-    // Reverse Bignum.digits for easier operations to be done
+    // Reverse Bignum.digits
     for (int i = 0; i < numStruct->length / 2; i++) {
         temp = numStruct->digits[i];
         numStruct->digits[i] = numStruct->digits[numStruct->length - i - 1];
         numStruct->digits[numStruct->length - i - 1] = temp;
     }
 
-    // Trim result. Removing any possible leading 0s. E.g. "0000123" will be [3,2,1]
+    // Trim result. Removing any possible leading 0s. E.g. "[3,2,1,0,0,0]" will be [3,2,1]
     trimBignum(numStruct);
 }
 
