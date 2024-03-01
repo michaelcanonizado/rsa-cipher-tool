@@ -75,6 +75,10 @@ void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
 }
 
 void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN sign) {
+    // Function will convert as passed integer to Bignum, instead of passing an integer represented as a string in setBignum().
+
+    // NOTE(FEAT): This function doesn't take into consideration the octal represenation behavior in C. Where integers prefixed with a 0. Eg: 0123 will be 83. 
+
     // Unsigned long long int and a separate sign parameter is used to increase the integer range of the function. You will have to conditionally input the sign enum when calling this function.
 
     // If integer passed is 0, set numStruct digits to [0], length to 1, and sign to positive.
@@ -85,10 +89,10 @@ void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN 
         return;
     }
 
-    // Use a counter to track indexes and length. Int is used as the unsigned longlong int data type's max digit count is 20
+    // Use a counter to track indexes and length
     int count = 0;
 
-    // Push remainder of the modulo of the last digit of the integer to the Bignum struct, then divide the integer by 10 to shift the integer. Do this untill all digits have been pushed.
+    // Determine the LSD (least significant digit) by moduloing the integer by 10. Then push it to Bignum.digits[]. Divide the number by 10 the shift the integer. Do this untill all digits have been pushed.
     while(integer > 0) {
         numStruct->digits[count] = integer % 10;
         integer = integer / 10;
