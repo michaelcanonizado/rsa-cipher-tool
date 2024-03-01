@@ -21,6 +21,7 @@
 #include "bignum.h"
 
 int getLengthOfInteger(long long int integer) {
+    // Function will count the number of digits of positive or negative integer using log based solution. If integer is negative then convert it to positive as it the logarithm function only works with positive real numbers.
     if (integer == 0) {
         return 1;
     } else if (integer < 0) {
