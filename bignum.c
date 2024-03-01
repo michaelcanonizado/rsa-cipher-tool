@@ -20,14 +20,14 @@
 #include <math.h>
 #include "bignum.h"
 
-int getLengthOfInteger(long long int num) {
-    if (num == 0) {
+int getLengthOfInteger(long long int integer) {
+    if (integer == 0) {
         return 1;
-    } else if (num < 0) {
-        num = num * -1;
+    } else if (integer < 0) {
+        integer = integer * -1;
     }
 
-    return (int)log10((double)num) + 1;
+    return (int)log10((double)integer) + 1;
 }
 
 Bignum initBignum() {
