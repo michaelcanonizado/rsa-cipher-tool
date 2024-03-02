@@ -105,15 +105,27 @@ void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN 
 }
 
 long long int bignumToInt(Bignum *num) {
+    // Function will convert a Bignum to an integer.
+
+    // Get maximum number of digits of long long int. 
     int maxNumOfDigits = (int)log10((double)MAX_VALUE_OF_LONG_LONG_INT) + 1;
 
+    // REFACTOR: THIS MUST THROW A PROPER ERROR. A BIGNUM WITH Bignum.digits[] = [0] and Bignum.length = 1 IS A VALID BIGNUM THAT CAN BE CONVERTED TO AN INTEGER. INSTEAD OF RETURNING THE RESULT, USE A POINTER PARAMTER TO POINT TO THE RESULT VARIABLE, AND THE RETURN SHOULD ONLY BE ERROR CODES.
+    // If Bignum is too long to be converted to an integer, throw an error.
     if (num->length > maxNumOfDigits) {
         return 0;
     }
 
     long long int result = 0;
+    // Determine multiplier to achieve proper sign of result
     long long int multiplier = num->sign == negative ? -1 : 1;
 
+    // Bignum.digits will be in reverse so go through each digit, multiplying it by the multiplier, then adding to result. Lastly, multiply multiplier to move place value.
+    // Eg: [3,2,1] 
+    // 3 * 1 = 3, 0 + 3 = 3, 1 * 10 ->
+    // 2 * 10 = 20, 3 + 20 = 23, 10 * 10 = 100 ->
+    // 1 * 100 = 100, 100 * 10 = 1000, 23 + 100 = 123 ->
+    // result = 123 
     for (int i = 0; i < num->length; i++) {
         result += num->digits[i] * multiplier;
        
