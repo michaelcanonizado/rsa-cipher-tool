@@ -44,7 +44,7 @@ void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
 
     // Integer will be stored in Bignum.digits[] in reverse for the following reasons: (1) Most operations usually start from the LSD (least significant digit), making it easier to perform operations. (2) The result will usually be greater than or less than the 2 integers being operated on. Eg: 999 (3 digits) + 999 (3 digits) = 1998 (4 digits) & 999 (3 digits) * 999 (3 digits) = 998,001 (6 digits). Hence, the resulting Bignum is free to shrink and grow infinitely. 
 
-    // NOTE(FEAT): Cases where the strings contain non-numerical characters haven't been set. It will be implemented soon. Eg: "123a678".
+    // FEAT: Cases where the strings contain non-numerical characters haven't been set. It will be implemented soon. Eg: "123a678".
 
     int temp;
 
@@ -54,7 +54,7 @@ void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
     // Store numStr length
     numStruct->length = strlen(numStr);
 
-    // NOTE(REFACTOR): Since the integer will be stored in reverse in Bignum.digits[], you can start to iterate through the string starting from the last character using strlen(numStr). Thus only needing 1 for-loop to convert numStr.
+    // REFACTOR: Since the integer will be stored in reverse in Bignum.digits[], you can start to iterate through the string starting from the last character using strlen(numStr). Thus only needing 1 for-loop to convert numStr.
 
     // Load numbers into Bignum.digits[]
     for (int i = 0; i < numStruct->length; i++) {
@@ -77,7 +77,7 @@ void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
 void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN sign) {
     // Function will convert as passed integer to Bignum, instead of passing an integer represented as a string in setBignum().
 
-    // NOTE(FEAT): This function doesn't take into consideration the octal represenation behavior in C. Where integers prefixed with a 0. Eg: 0123 will be 83. 
+    // FEAT: This function doesn't take into consideration the octal represenation behavior in C. Where integers prefixed with a 0. Eg: 0123 will be 83. 
 
     // Unsigned long long int and a separate sign parameter is used to increase the integer range of the function. You will have to conditionally input the sign enum when calling this function.
 
