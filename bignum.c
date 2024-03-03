@@ -151,18 +151,20 @@ void printBignum(Bignum *num) {
 }
 
 void printBignumCenter(Bignum *num, unsigned int requiredWidth) {
+    // Function to print a Bignum but with a specified width and center aligns it.
+    // It prioritizes the required width over centeredness to stay consistent when used in formatted prints. Bignums with odd lenghts wont be perfectly centered, so it either needs to have equal spaces on both sides (prioritizing centeredness) or 1 side having less space but meet the required width.
+    // Eg: Bignum = -1234 with the required with of 10 spaces, will be __-1234___ not ___-1234___.
+
     // If bignum overflows the required width, just print bignum.
     if (requiredWidth <= num->length) {
         printBignum(num);
         return;
     }
 
-    // This function prioritizes the required width over centeredness to stay consistent when used in formatted prints. Bignums with odd lenghts wont be perfectly centered, so it either needs to have equal spaces on both sides (prioritizing centeredness) or 1 side having less space but meet the required width.
-    // Eg: Bignum = -1234 with the required with of 10 spaces, will be __-1234___ not ___-1234___.
-
     // Calculate left and right widths.
     unsigned int leftWidth = (requiredWidth - num->length) / 2;
     unsigned int rightWidth = (requiredWidth - num->length) / 2;
+    
     // Calculate total width to determine if we have exceeded or receded the required width.
     unsigned int totalWidth = leftWidth + rightWidth + num->length;
 
