@@ -339,12 +339,6 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     //  ----------    -->   ----------  
     //   68 | 112             69 | 12
 
-    int sum;
-    int carry = 0;
-    int resultLength = 0;
-    // Use usigned long long int to match the data type of the length property of Bignum struct.
-    unsigned long long int maxLength;
-
     // Use addition rule: if the two Bignums have different signs. Perform subtraction.
     if (num1->sign != num2->sign) {
         // Keep track of the original signs of the two Bignums. As they need to have the same sign to trigger subtraction in the subtractBignum() function. If they have contrasting signs, subtractBignum() will call addBignum() causing an infinite loop.
@@ -380,6 +374,12 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
             return;
         }
     }
+
+    int sum;
+    int carry = 0;
+    int resultLength = 0;
+    // Use usigned long long int to match the data type of the length property of Bignum struct.
+    unsigned long long int maxLength;
 
     // Find the longest length. This is needed to determine which Bignum.length to use in the for-loop.
     if (num1->length > num2->length) {
