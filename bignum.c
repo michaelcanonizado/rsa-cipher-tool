@@ -211,7 +211,7 @@ int isGreaterThanBignum(Bignum *num1, Bignum *num2) {
         return 1;
     }
 
-    // Worst-case, both Bignums have the same sign anf length. Go through each digit of the two Bignums, starting from the MSD(most significant digit), comparing them. Do this until difference is found.
+    // Worst-case, both Bignums have the same sign and length. Go through each digit of the two Bignums, starting from the MSD(most significant digit), comparing them. Do this until difference is found.
     for (int i = num1->length - 1; i >= 0; i--) {
         if (num1->digits[i] > num2->digits[i]) {
             return 1;
