@@ -107,10 +107,14 @@ void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN 
 long long int bignumToInt(Bignum *num) {
     // Function will convert a Bignum to an integer.
 
+    // NOTE: THIS FUNCTION CONVERTS THE WHOLE BIGNUM TO AN INTEGER, NOT PARTS OF THE BIGNUM.
+    // FEAT: MODIFY THIS FUNCTION OR CREATE ANOTHER FUNCTION TO CONVERT ONLY A PORTION OF THE BIGNUM TO AN INTEGER; WHICH IS NEEDED ON THE ARITHMETIC BIGNUM OPERATIONS.
+
     // Get maximum number of digits of long long int. 
     int maxNumOfDigits = (int)log10((double)MAX_VALUE_OF_LONG_LONG_INT) + 1;
 
     // REFACTOR: THIS MUST THROW A PROPER ERROR. A BIGNUM WITH Bignum.digits[] = [0] and Bignum.length = 1 IS A VALID BIGNUM THAT CAN BE CONVERTED TO AN INTEGER. INSTEAD OF RETURNING THE RESULT, USE A POINTER PARAMTER TO POINT TO THE RESULT VARIABLE, AND THE RETURN SHOULD ONLY BE ERROR CODES.
+
     // If Bignum is too long to be converted to an integer, throw an error.
     if (num->length > maxNumOfDigits) {
         return 0;
