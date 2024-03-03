@@ -1,9 +1,9 @@
 // OPERATIONS NEEDED TO BE IMPLEMENTED:
-// Greater Than - Done
-// Less Than - Done
-// Equal To - Done
-// Addition - Ongoing
-// Subtraction - Ongoing
+// Greater Than - Done & Documented
+// Less Than - Done & Documented
+// Equal To - Done & Documented
+// Addition - Done & Tested & Documented
+// Subtraction - Done & Tested & Documented
 // Greatet Than Equal To - Not yet started
 // Less Than Equal To - Not yet started
 // Increment - Not yet started
