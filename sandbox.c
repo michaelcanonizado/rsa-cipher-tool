@@ -3,14 +3,15 @@
 
 int main() {
     Bignum num1 = initBignum();
-    
-    intToBignum(&num1, 0123, positive);
+    Bignum num2 = initBignum();
+    Bignum result = initBignum();
 
-    printBignum(&num1);
+    setBignum(&num1, "1234", positive);
+    setBignum(&num2, "8", positive);
 
-    int num2 = 0123;
+    addBignum(&result, &num1, &num2);
 
-    printf("\nInteger: %d", num2);
+    printBignum(&result);
 
     printf("\n");
 

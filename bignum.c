@@ -324,15 +324,30 @@ int isBignumZero(Bignum *num) {
 }
 
 void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
+    // Function to add two Bignums together.
+    // Uses basic addition which starts at the LSD (least significant digit) and adds the digits of the addends together, iterating till it reaches the end.
+
+    // NOTE: This function currently iterates and adds 1 digit at a time.
+
+    // REFACTOR: THIS FUNCTION CAN BE REFACTORED IN A WAY THAT DOESN'T ADD 1 DIGIT AT A TIME. YOU CAN ADD THE DIGITS IN GROUPS, USING AND ADHERING TO THE MAXIMUM VALUES OF C. IF THERE ARE ANY EXCESS, CARRY IT TO THE NEXT GROUP.
+    //
+    // Eg: 1234 + 5678
+    // *Adding in groups of 2*
+    //                         1
+    //   12 | 34              12 | 34
+    //  +56 | 78             +56 | 78
+    //  ----------    -->   ----------  
+    //   68 | 112             69 | 12
+
     int sum;
     int carry = 0;
     int resultLength = 0;
-    // maxLength will cap out at around 18,446,744,073,709,551,615 (ref: C docs). Therefore the Bignum num1 and num2 can only have a maximum of 18,446,744,073,709,551,615 digits.
+    // Use usigned long long int to match the data type of the length property of Bignum struct.
     unsigned long long int maxLength;
 
-    // If the 2 Bignums have different signs. Perform subtraction.
+    // Use addition rule: if the two Bignums have different signs. Perform subtraction.
     if (num1->sign != num2->sign) {
-        // Keep track of the original signs of the 2 Bignums. As they need to have the same sign to trigger subtraction in the subtractBignum() function. If they have contrasting signs, subtractBignum() will call addBignum() causing an infinite loop.
+        // Keep track of the original signs of the two Bignums. As they need to have the same sign to trigger subtraction in the subtractBignum() function. If they have contrasting signs, subtractBignum() will call addBignum() causing an infinite loop.
         BIGNUM_SIGN num1Sign = num1->sign;
         BIGNUM_SIGN num2Sign = num2->sign;
 
@@ -366,7 +381,7 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         }
     }
 
-    // Find the longest length
+    // Find the longest length. This is needed to determine which Bignum.length to use in the for-loop.
     if (num1->length > num2->length) {
         maxLength = num1->length;
     } else if (num2->length > num1->length) {
@@ -375,15 +390,22 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         maxLength = num1->length;
     }
 
-    // Perform addition
+    // Perform addition (this for-loop adds 1 digit at a time. Refer to the REFACTOR note above for more info).
     for (int i = 0; i < maxLength; i++) {
+        // FEAT: IF ONE OF THE CURRENT DIGIT IS 0, YOU CAN DIRECTLY SET THE OTHER BIGNUM DIGIT TO CURRENT DIGIT IN RESULT TO SKIP OPERATIONS BEING DONE. 
+
+        // Set sum to the previous carry
         sum = carry;
+        // Add the digits of the addends together
         sum += num1->digits[i] + num2->digits[i];
+        // If sum is more than 1 digit long, set carry to 1.
         carry = sum >= 10 ? 1 : 0;
+        // Modulo sum by 10 to get only 1 digit to be pushed to Bignum result. This works whether sum is more than 1 digit long or not.
+        // Eg: 19 % 10 = 9 or 9 % 10 = 9
         sum = sum % 10;
-
+        // Store sum in result.digits[]
         result->digits[i] = sum;
-
+        // Increment resultLength to keep track of lenght of result Bignum
         resultLength++;
     }
 
