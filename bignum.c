@@ -261,20 +261,26 @@ int isLessThanBignum(Bignum *num1, Bignum *num2) {
 }
 
 int isEqualToBignum(Bignum *num1, Bignum *num2) {
+    // Function that will compare two Bignums, determining whether they are equal.
+
+    // If they have different signs, return false(0)
     if (num1->sign != num2->sign) {
         return 0;
     }
 
+    // If they have different lengths, return false(0)
     if (num1->length != num2->length) {
         return 0;
     }
 
+    // Worst-case, both Bignums have the same sign and length. Go through each digit of the two Bignums, starting from the MSD(most significant digit), comparing them. Do this until difference is found.
     for (int i = num1->length - 1; i >= 0; i--) {
         if (num1->digits[i] != num2->digits[i]) {
             return 0;
         }
     }
 
+    // If no difference is found, it means that the two Bignums are equal. Return true(1)
     return 1;
 }
 
