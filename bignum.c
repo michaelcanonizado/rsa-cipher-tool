@@ -164,7 +164,7 @@ void printBignumCenter(Bignum *num, unsigned int requiredWidth) {
     // Calculate left and right widths.
     unsigned int leftWidth = (requiredWidth - num->length) / 2;
     unsigned int rightWidth = (requiredWidth - num->length) / 2;
-    
+
     // Calculate total width to determine if we have exceeded or receded the required width.
     unsigned int totalWidth = leftWidth + rightWidth + num->length;
 
@@ -194,20 +194,24 @@ void printBignumCenter(Bignum *num, unsigned int requiredWidth) {
 }
 
 int isGreaterThanBignum(Bignum *num1, Bignum *num2) {
+    // Function that will compare two Bignums, and determine which is greater.
+
+    // Check sign difference. If num1 is negative and num2 is positive, immediately return false(0), and vice-versa.
     if (num1->sign == negative && num2->sign == positive) {
         return 0;
     }
     if (num1->sign == positive && num2->sign == negative) {
         return 1;
     }
-
-    if (num1->length > num2->length) {
-        return 1;
-    }
+    // Check length difference. If num1 is shorter than num2, immediately return false(0), and vice-versa.
     if (num1->length < num2->length) {
         return 0;
     }
+    if (num1->length > num2->length) {
+        return 1;
+    }
 
+    // Worst-case, both Bignums have the same sign anf length. Go through each digit of the two Bignums, starting from the MSD(most significant digit), comparing them. Do this until difference is found.
     for (int i = num1->length - 1; i >= 0; i--) {
         if (num1->digits[i] > num2->digits[i]) {
             return 1;
@@ -218,6 +222,7 @@ int isGreaterThanBignum(Bignum *num1, Bignum *num2) {
         }
     }
 
+    // If no difference is found, it means that the two Bignums are equal. Return false(0)
     return 0;
 }
 
