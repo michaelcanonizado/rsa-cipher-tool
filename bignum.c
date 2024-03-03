@@ -307,6 +307,15 @@ void trimBignum(Bignum *num) {
 }
 
 int isBignumZero(Bignum *num) {
+    // Function to determine if a Bignum is zero.
+
+    // A zero can be determined if it is 1 digit long, and the first digit is 0.
+
+    // REFACTOR: ADD MORE CONDITIONS TO VERIFY IS BIGUM IS 0. SUCH AS:
+    //    - CHECKING THE OTHER INDEXES FOR NON-ZEROS (Bignum.digits[0] might be 0, but the following indexes might have non-zeros)
+    //    - A ZERO HAS THE SIGN OF POSITIVE IN Bignum STRUCT DEFINITION.
+    //    - A BIGNUM THAT HASN'T BEEN PROPERLY INITIALIZED, (Ie: initBignum() was not used) WILL BE CONSIDERED AS A ZERO. DECIDE WHETHER THIS IS A WANTED BEHAVIOR
+
     if (num->length <= 1 && num->digits[0] == 0) {
         return 1;
     } else {
