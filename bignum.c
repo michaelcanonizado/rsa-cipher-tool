@@ -136,6 +136,7 @@ long long int bignumToInt(Bignum *num) {
 }
 
 void copyBignum(Bignum *result, Bignum *num) {
+    // Function to copy the contents of a Bignum to another Bignum
     memcpy(result->digits, num->digits, sizeof(int) * num->length);
     result->length = num->length;
     result->sign = num->sign;
