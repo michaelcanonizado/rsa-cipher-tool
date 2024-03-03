@@ -285,13 +285,17 @@ int isEqualToBignum(Bignum *num1, Bignum *num2) {
 }
 
 void trimBignum(Bignum *num) {
+    // Function to trim leading 0s of Bignum. This function works by counting leading 0s encapsulated by the current Bignum.length, and once a non-zero is found, will update the length of Bignum by subtracting the count of leading 0s.
+
     unsigned long long int numOfZeros = 0;
 
     // Start from the most significant digit, looking for 0s, and keep track of the number of 0s found.
     for (int i = num->length - 1; i >= 0; i--) {
         if (num->digits[i] == 0) {
             numOfZeros++;
-        } else {
+        } 
+        // If a non-zero integer is found, it has found the MSB(most significant digit), exit the loop and update Bignum.length.
+        else {
             break;
         }
     }
