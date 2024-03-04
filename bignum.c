@@ -450,17 +450,20 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     // Transpose the signs: Make the two Bignums have the same sign, to trigger addition in the addBignum() function. Having different signs in addBignum() will call subtractBignum(), causing an infinite loop. Once addition is complete, bring back the original sign.
 
     // REFACTOR: INSTEAD OF HARDCODING THE SIGN TRANSPOSE. Ie: num2->sign = positive, use num2->sign = num1->sign.
+    BIGNUM_SIGN num1Sign = num1->sign;
+    BIGNUM_SIGN num2Sign = num2->sign;
+
     if (num1->sign == positive && num2->sign == negative) {
-        num2->sign = positive;
+        num2->sign = num1Sign;
         addBignum(result, num1, num2);
-        num2->sign = negative;
+        num2->sign = num2Sign;
         return;
     }
     if (num1->sign == negative && num2->sign == positive) { 
-        num2->sign = negative;
+        num2->sign = num1Sign;
         addBignum(result, num1, num2);
-        result->sign = negative;
-        num2->sign = positive;
+        result->sign = num1Sign;
+        num2->sign = num2Sign;
         return;
     }
 
