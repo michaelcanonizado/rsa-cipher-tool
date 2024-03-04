@@ -448,7 +448,7 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     // Check signs. If signs are different, add the two numbers.
 
     // Transpose the signs: Make the two Bignums have the same sign, to trigger addition in the addBignum() function. Having different signs in addBignum() will call subtractBignum(), causing an infinite loop. Once addition is complete, bring back the original sign.
-    
+
     // Store Bignum signs in a temporary variable as transposing of signs will happen, and the original sign is needed after addition.
     BIGNUM_SIGN num1Sign = num1->sign;
     BIGNUM_SIGN num2Sign = num2->sign;
@@ -500,7 +500,7 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
     // REFACTOR: YOU CAN CHAIN THIS IF-CONDITIONS TO THE PREVIOUS CONDITION THAT CHECKS LENGTH TO PREVENT THE REDUNDANT CONDITION CHECKS THAT WILL HAPPEN IF A MINUEND HAS ALREADY BEEN FOUND.
 
-    if (isGreaterThanBignum(num1, num2) && minuend.length == 0) {
+    else if (isGreaterThanBignum(num1, num2) && minuend.length == 0) {
         minuend.length = num1->length;
         subtrahend.length = num2->length;
 
