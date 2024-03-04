@@ -448,8 +448,8 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     // Check signs. If signs are different, add the two numbers.
 
     // Transpose the signs: Make the two Bignums have the same sign, to trigger addition in the addBignum() function. Having different signs in addBignum() will call subtractBignum(), causing an infinite loop. Once addition is complete, bring back the original sign.
-
-    // REFACTOR: INSTEAD OF HARDCODING THE SIGN TRANSPOSE. Ie: num2->sign = positive, use num2->sign = num1->sign.
+    
+    // Store Bignum signs in a temporary variable as transposing of signs will happen, and the original sign is needed after addition.
     BIGNUM_SIGN num1Sign = num1->sign;
     BIGNUM_SIGN num2Sign = num2->sign;
 
