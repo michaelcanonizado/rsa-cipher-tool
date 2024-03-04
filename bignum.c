@@ -497,9 +497,7 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     }
 
     // Compare two Bignums. If minuend and subtrahend was not found in the previous conditions, i.e. they're of the same sign and length. Compare the two Bignums.
-
-    // REFACTOR: YOU CAN CHAIN THIS IF-CONDITIONS TO THE PREVIOUS CONDITION THAT CHECKS LENGTH TO PREVENT THE REDUNDANT CONDITION CHECKS THAT WILL HAPPEN IF A MINUEND HAS ALREADY BEEN FOUND.
-
+    // Still chain to the previous condition with else-if to prevent redundant condition checks when a minuend and subtrahend was found earlier.
     else if (isGreaterThanBignum(num1, num2) && minuend.length == 0) {
         minuend.length = num1->length;
         subtrahend.length = num2->length;
