@@ -428,6 +428,12 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 }
 
 void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
+    // Function to subtract two Bignums together.
+    // Uses basic subtraction which starts at the LSD (least significant digit) and subtracts the digits of the minuend and subtrahend together, iterating till it reaches the end. If a borrow is needed, it will loop through the next digits of the minuend until it finds a digit that can give a borrow.
+
+    // NOTE: This function currently iterates and adds 1 digit at a time.
+
+    // If you are subtracting a Bignum with 0, copy the other Bignum to result.
     if (isBignumZero(num1)) {
         copyBignum(result, num2);
         return;
@@ -437,28 +443,35 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         return;
     }
 
-    // Compare the 2 integers to determine whether to add or subract (subraction rules) and determine the sign of result.
+    // NOTE: FUnction will check signs, length, and compare the two Bignums to determine twhat subtraction rule to follow.
 
-    // Check signs | If signs are different, add the two numbers.
+    // Check signs. If signs are different, add the two numbers.
+
+    // Transpose the signs: Make the two Bignums have the same sign, to trigger addition in the addBignum() function. Having different signs in addBignum() will call subtractBignum(), causing an infinite loop. Once addition is complete, bring back the original sign.
+
+    // Store Bignum signs in a temporary variable as transposing of signs will happen, and the original sign is needed after addition.
+    BIGNUM_SIGN num1Sign = num1->sign;
+    BIGNUM_SIGN num2Sign = num2->sign;
+
     if (num1->sign == positive && num2->sign == negative) {
-        num2->sign = positive;
+        num2->sign = num1Sign;
         addBignum(result, num1, num2);
-        num2->sign = negative;
+        num2->sign = num2Sign;
         return;
     }
-    if (num1->sign == negative && num2->sign == positive) {
-        num2->sign = negative;
+    if (num1->sign == negative && num2->sign == positive) { 
+        num2->sign = num1Sign;
         addBignum(result, num1, num2);
-        result->sign = negative;
-        num2->sign = positive;
+        result->sign = num1Sign;
+        num2->sign = num2Sign;
         return;
     }
 
-    // Find minuend and subtrahend | Store in a temp Bignum as minuend's Bignum.digits will be manipulated due to carries. This is also needed as minuend can be either of the two parameters(num1 or num2); If minuend is found. the other number will be the subtrahend.
+    // Find minuend and subtrahend. Store in a temporary Bignum as minuend's Bignum.digits will be manipulated due to borrows. This is also needed as minuend can be either of the two Bignums (num1 or num2); If minuend is found. the other number will be the subtrahend.
     Bignum minuend = initBignum();
     Bignum subtrahend = initBignum();
 
-    // Check length | Longer length will automatically be set to the minuend and shorter will be the subtrahend.
+    // Check length. Longer length will be set to the minuend and shorter will be the subtrahend.
     if (num1->length > num2->length) {
         minuend.length = num1->length;
         subtrahend.length = num2->length;
@@ -483,8 +496,9 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         }
     }
 
-    // Compare two Bignums | If minuend and subtrahend was not found in the previous conditions, i.e. they're of the same sign and length. Compare the two Bignums.
-    if (isGreaterThanBignum(num1, num2) && minuend.length == 0) {
+    // Compare two Bignums. If minuend and subtrahend was not found in the previous conditions, i.e. they're of the same sign and length. Compare the two Bignums.
+    // Still chain to the previous condition with else-if to prevent redundant condition checks when a minuend and subtrahend was found earlier.
+    else if (isGreaterThanBignum(num1, num2) && minuend.length == 0) {
         minuend.length = num1->length;
         subtrahend.length = num2->length;
 
@@ -499,7 +513,7 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         memcpy(&minuend.digits, num2->digits, sizeof(int) * num2->length);
         memcpy(&subtrahend.digits, num1->digits, sizeof(int) * num1->length);
 
-        // If num1 - num2, and both Bignums have the same sign,  num2 is greater than num1, the result's sign will be the inverse of the sign of the 2 Bignums.
+        // If num1 - num2, and both Bignums have the same sign, but num1 is less than num2, the result's sign will be the inverse of the sign of the 2 Bignums.
         // E.g.: (+30) - (+70) = -40 or (-30) - (-70) = 40 
         if (num1->sign == positive) {
             result->sign = negative;
@@ -507,6 +521,7 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
             result->sign = positive;
         }
     } else if (isEqualToBignum(num1, num2)) {
+        // If the two Bignums are equal to each other. Set result to zero.
         result->digits[0] = 0;
         result->length = 1;
         result->sign = positive;
@@ -515,10 +530,14 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     }
 
     // Once miunend and subtrahends are found, perform subtraction.
+
+    // FEAT: A CONDITION TO CHECK IF A MINUEND OR SUBTRAHEND IS ACTUAL FOUND CAN BE IMPLEMENTED TO CONFIRM THAT THE FUNCTION CAN CONTINUE. IF IN ANY CASE IT REACHES THIS POINT BUT SOMEHOW HAVE NOT FOUND A MINUEND AND SUBTRAHEND: THROW AN ERROR.
+
+    // Variable to store the difference of the individual digits of the minuend and subtrahend.
     int difference;
     unsigned long long int resultLength = 0;
 
-    // Start at the least significant digit (index 0). Then iterate through till the min length (subtrahend length).
+    // Start at the LSD (least significant digit). Then iterate through, using the the min length (subtrahend length).
     for (int i = 0; i < subtrahend.length; i++) {
         // If current minuend digit is greater than the current subtrahend digit: No need to borrow.
         if (minuend.digits[i] > subtrahend.digits[i]) {
@@ -526,14 +545,13 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
             result->digits[i] = minuend.digits[i] - subtrahend.digits[i];
             resultLength++;
         } else if (minuend.digits[i] < subtrahend.digits[i]) {
-            // If borrowing is needed, start from the next digit after the current index, and traverse through (till the last digit of the minuend) until you find a digit that can give you a borrow (anything greater than 0).
+            // If borrowing is needed, start from the next digit after the current index, and traverse through till the MSD (most significant digit or the last digit) of the minuend until you find a digit that can give you a borrow (anything greater than 0 can give a borrow).
             for (int j = i + 1; j < minuend.length; j++) {
                 if (minuend.digits[j] > 0) {
-                    // If a digit that can give a borrow is found. Decrement that digit, then add 10 to the current index that needs a borrow.
+                    // If a digit that can give a borrow is found, decrement that digit, then add 10 to the current index that needs a borrow.
                     minuend.digits[j] = minuend.digits[j] - 1;
                     minuend.digits[i] = minuend.digits[i] + 10;
 
-                    // Since a borrow was found. Exit out of loop.
                     // Since a borrow was found. Exit out of loop.
                     break;
                 } else if (minuend.digits[j] == 0) {
@@ -541,6 +559,7 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
                     //
                     // E.g.:
                     // modified minuend:   1,2,9,9,11
+                    // -------------------------------
                     // original minuend:   1,3,0,0, 1
                     //       subtrahend: -  , , ,2, 3
                     //                    ------------
@@ -549,11 +568,11 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
                 }
             }
 
-            // Get difference of the current minuend and subtrahend digits and increment the result's digit length counter.
+            // Once a borrow is found, get difference of the current minuend and subtrahend digits, store the result, and increment the result's digit length counter.
             result->digits[i] = minuend.digits[i] - subtrahend.digits[i];
             resultLength++;
         } else if (minuend.digits[i] == subtrahend.digits[i]) {
-            // When minuend's and subtrahend's current iteration digit is equal. Set result's current iteration digit to 0.
+            // When minuend's and subtrahend's current digit is equal. Set result's current iteration digit to 0, as subtracting them will result in a 0.
             result->digits[i] = 0;
             resultLength++;
         }
@@ -567,6 +586,7 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         }
     }
 
+    // Store the final length of result.
     result->length = resultLength;
     // Trim result. Removing any possible leading 0s
     trimBignum(result);
