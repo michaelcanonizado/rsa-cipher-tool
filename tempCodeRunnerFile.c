@@ -1,3 +1,1 @@
-    Bignum num1 = initBignum(); 
-    Bignum num2 = initBignum(); 
-    Bignum result = initBignum();
+(ac * (pow(10, half*2))) + (ad_plus_bc * pow(10, half)) + bd
