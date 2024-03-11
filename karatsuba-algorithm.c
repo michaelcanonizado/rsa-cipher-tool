@@ -32,6 +32,9 @@ long karatsuba(long X, long Y){
     long multiplier = pow(10, size);
 
     // Get values needed for Karatsuba multiplication
+
+    // REFACTOR: THIS ALGORITHM CURRENTLY DIVIDES THE NUMBER BY THE MULTIPLIER TO GET THE VALUE OF B AND D. THIS FUNCTION SHOULD NOT CONTAIN ANY DIVISION. FIND A WAY TO GET THE VALUES WITHOUT DIVIDING.
+
     long b = X/multiplier;
     long a = X - (b * multiplier);
     long d = Y / multiplier;
