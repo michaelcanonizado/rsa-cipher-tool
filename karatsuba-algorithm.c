@@ -2,6 +2,7 @@
 #include <math.h>
 
 int get_size(long value){
+    // Count number of digits of number
     int count = 0;
     while (value > 0) {
         count++;
