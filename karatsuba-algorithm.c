@@ -1,16 +1,43 @@
 #include <stdio.h>
+#include <math.h>
 
-long long int karatsuba(int multiplicand, int multiplier) {
-    return multiplicand * multiplier;
+int get_size(long);
+long karatsuba(long X, long Y){
+
+   if (X < 10 && Y < 10)
+      return X * Y;
+   
+   int size = fmax(get_size(X), get_size(Y));
+   if(size < 10)
+      return X * Y;
+   
+   size = (size/2) + (size%2);
+
+   long multiplier = pow(10, size);
+
+   long b = X/multiplier;
+   long a = X - (b * multiplier);
+   long d = Y / multiplier;
+   long c = Y - (d * size);
+   long ac = karatsuba(a, c);
+   long a_plus_b_times_c_plus_d = karatsuba(a + b, c + d);
+   long bd = karatsuba(b, d);
+   return ac + ((a_plus_b_times_c_plus_d - ac - bd) * multiplier) + (bd * (long)(pow(10, 2 * size)));
 }
+int get_size(long value){
+   int count = 0;
+   while (value > 0) {
+      count++;
+      value /= 10;
+   }
+   return count;
+}
+int main(){
+   long x = 5678;
+   long y = 1234;
 
-int main(void) {
-    int num1 = 1234;
-    int num2 = 5678;
+   printf("\nExpected Result: %ld * %ld = %ld", x, y, x * y);
+   printf("\nKA Result: %ld * %ld = %ld\n\n", x, y, karatsuba(x, y));
 
-    int result = karatsuba(num1, num2);
-
-    printf("%d * %d = %d\n", num1, num2, result);
-
-    return 0;
+   return 0;
 }
