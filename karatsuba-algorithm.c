@@ -134,13 +134,13 @@ int main(){
     long y = 123;
 
     Bignum num = initBignum();
-    Bignum result = initBignum();
+    Bignum leftHalf = initBignum();
 
     setBignum(&num, "123456", positive);
 
-    karatsubaBignumGetLeftHalf(&result, &num, 3);
+    karatsubaBignumGetLeftHalf(&leftHalf, &num, 3);
     printf("\nBignum: ");
-    printBignum(&result);
+    printBignum(&leftHalf);
     printf("\n\n");
 
     long resKA1 = karatsuba1(x, y);
