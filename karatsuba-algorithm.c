@@ -85,16 +85,19 @@ long karatsuba2(long x, long y) {
     long c = floor(y / multiplier);
     long d = y % multiplier;
 
+    printf("\nn/2: %ld", half);
+    printf("\nmultiplier: %ld", multiplier);
+    printf("\na: %ld | b: %ld | c: %ld | d: %ld", a,b,c,d);
+    printf("\n-------------------------------\n");
+
     // Recursive calls
     long ac = karatsuba2(a,c);
     long bd = karatsuba2(b,d);
     long ad_plus_bc = karatsuba2(a+b,c+d)-ac-bd;
 
-    // printf("\nn/2: %ld", half);
-    // printf("\nmultiplier: %ld", multiplier);
-    // printf("\na: %ld | b: %ld | c: %ld | d: %ld", a,b,c,d);
-    // printf("\nad+bc: %ld", ad_plus_bc);
-    // printf("\n-------------------------------\n");
+    printf("\nac: %ld", ac);
+    printf("\nbd: %ld", bd);
+    printf("\nad+bc: %ld", ad_plus_bc);
 
     // Collect results
     long result = (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd;
@@ -103,8 +106,8 @@ long karatsuba2(long x, long y) {
 }
 
 int main(){
-    long x = 1313123;
-    long y = 1321;
+    long x = 456;
+    long y = 123;
 
     long resKA1 = karatsuba1(x, y);
     long resKA2 = karatsuba2(x, y);
