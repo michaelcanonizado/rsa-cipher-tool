@@ -129,18 +129,32 @@ int karatsubaBignumGetLeftHalf(Bignum *result, Bignum *num, unsigned long long i
     result->length = shiftPlaces;
 }
 
+int karatsubaBignumGetRightHalf(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
+    for (unsigned long int i = 0; i < shiftPlaces; i++) {
+        result->digits[i] = num->digits[i];
+    }
+
+    result->length = shiftPlaces;
+}
+
 int main(){
     long x = 456;
     long y = 123;
 
     Bignum num = initBignum();
     Bignum leftHalf = initBignum();
+    Bignum rightHalf = initBignum();
 
     setBignum(&num, "123456", positive);
 
     karatsubaBignumGetLeftHalf(&leftHalf, &num, 3);
+    karatsubaBignumGetRightHalf(&rightHalf, &num, 3);
     printf("\nBignum: ");
+    printBignum(&num);
+    printf("\nLeft: ");
     printBignum(&leftHalf);
+    printf("\nRight: ");
+    printBignum(&rightHalf);
     printf("\n\n");
 
     long resKA1 = karatsuba1(x, y);
