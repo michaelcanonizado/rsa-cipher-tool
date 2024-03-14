@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 #include "bignum.h"
 
 // BIGNUM FUNCTIONS NEEDED:
@@ -106,18 +107,27 @@ long karatsuba2(long x, long y) {
     return result;
 }
 
+int karatsubaBignumGetLeftHalf(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
+    memset(result->digits, 0, sizeof(int) * shiftPlaces);
+
+    for (unsigned long int i = shiftPlaces; i < num->length; i++) {
+        result->digits[i] = num->digits[i];
+        shiftPlaces++;
+    }
+
+    result->length = shiftPlaces;
+}
+
 int main(){
     long x = 456;
     long y = 123;
 
-    Bignum num1 = initBignum();
-    Bignum num2 = initBignum();
+    Bignum num = initBignum();
     Bignum result = initBignum();
 
-    setBignum(&num1, "456", positive);
-    setBignum(&num2, "123", positive);
+    setBignum(&num, "123456", positive);
 
-    addBignum(&result, &num1, &num2);
+    karatsubaBignumGetLeftHalf(&result, &num, 3);
     printf("\nBignum: ");
     printBignum(&result);
     printf("\n\n");
