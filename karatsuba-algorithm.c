@@ -130,6 +130,17 @@ int karatsubaBignumGetLeftHalf(Bignum *result, Bignum *num, unsigned long long i
 }
 
 int karatsubaBignumGetRightHalf(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
+    if (shiftPlaces < 0) {
+        printf("Shifting Bignum by negative value.\n");
+        return -2;
+    }
+
+    if (num->length < shiftPlaces) {
+        printf("Bignum length: %llu | shifting by: %llu\n", num->length, shiftPlaces);
+        printf("Shifting Bignum by place that will go out of bounds.\n");
+        return -1;
+    }
+
     for (unsigned long int i = 0; i < shiftPlaces; i++) {
         result->digits[i] = num->digits[i];
     }
