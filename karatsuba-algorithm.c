@@ -129,25 +129,84 @@ int karatsubaBignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int
     result->length = shiftPlaces;
 }
 
-int karatsubaBignumGetRightHalf(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
-    if (shiftPlaces < 0) {
+int karatsubaBignumGetLeftHalf(Bignum *result, Bignum *num, unsigned long long int splitIndex) {
+
+}
+int karatsubaBignumGetRightHalf(Bignum *result, Bignum *num, unsigned long long int splitIndex) {
+    if (splitIndex < 0) {
         printf("Shifting Bignum by negative value.\n");
         return -2;
     }
 
-    if (num->length < shiftPlaces) {
-        printf("Bignum length: %llu | shifting by: %llu\n", num->length, shiftPlaces);
+    if (num->length < splitIndex) {
+        printf("Bignum length: %llu | shifting by: %llu\n", num->length, splitIndex);
         printf("Shifting Bignum by place that will go out of bounds.\n");
         return -1;
     }
 
-    for (unsigned long int i = 0; i < shiftPlaces; i++) {
+    for (unsigned long int i = 0; i < splitIndex; i++) {
         result->digits[i] = num->digits[i];
     }
 
-    result->length = shiftPlaces;
+    result->length = splitIndex;
 }
 
+int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
+    // Base case
+    if (x->length == 1 || y->length == 1) {
+        long long int xInt = bignumToInt(x);
+        long long int yInt = bignumToInt(y);
+        intToBignum(result, xInt * yInt, positive);
+        return 0;
+    }
+
+    // int n = fmax(get_size(x), get_size(y));
+    unsigned long long int n = fmax(x->length, y->length);
+
+    unsigned long long int half = floor((double)n / 2.0);
+
+    Bignum a = initBignum();
+    Bignum b = initBignum();
+    Bignum c = initBignum();
+    Bignum d = initBignum();
+    Bignum ac = initBignum();
+    Bignum bd = initBignum();
+    Bignum ad_plus_bc = initBignum();
+
+    karatsubaBignumShiftLeft(&a, x, half);
+    karatsubaBignumGetRightHalf(&b, x, half);
+    karatsubaBignumShiftLeft(&c, y, half);
+    karatsubaBignumGetRightHalf(&d, y, half);
+
+    // long a = floor(x / multiplier);
+    // long b = x % multiplier;
+    // long c = floor(y / multiplier);
+    // long d = y % multiplier;
+
+    printf("\nn/2: %ld", half);
+    printf("\nhalf: %ld\n", half);
+    printBignum(&a);
+    printf("\n");
+    printBignum(&b);
+    printf("\n");
+    printBignum(&c);
+    printf("\n");
+    printBignum(&d);
+    
+    // printf("\n-------------------------------\n");
+
+    // long ac = karatsuba2(a,c);
+    // long bd = karatsuba2(b,d);
+    // long ad_plus_bc = karatsuba2(a+b,c+d)-ac-bd;
+
+    // printf("\nac: %ld", ac);
+    // printf("\nbd: %ld", bd);
+    // printf("\nad+bc: %ld", ad_plus_bc);
+
+    // long result = (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd;
+
+    // return result;
+}
 
 int main(){
     long x = 123;
