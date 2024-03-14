@@ -97,7 +97,9 @@ long karatsuba2(long x, long y) {
     // printf("\n-------------------------------\n");
 
     // Collect results
-    return (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd;
+    long result = (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd;
+
+    return result;
 }
 
 int main(){
