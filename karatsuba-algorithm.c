@@ -65,22 +65,27 @@ long karatsuba1(long X, long Y){
 }
 
 long karatsuba2(long x, long y) {
+    // Base case
     if (x < 10 || y < 10) {
         return x * y;
     }
 
+    // Get max length of the 2 integers
     int n = fmax(get_size(x), get_size(y));
 
+    // Get n/2
     long half = floor((double)n / 2.0);
 
-
+    // Get 10^(n/2)
     long multiplier = custom_pow(10, half);
 
+    // Split the integers
     long a = floor(x / multiplier);
     long b = x % multiplier;
     long c = floor(y / multiplier);
     long d = y % multiplier;
 
+    // Recursive calls
     long ac = karatsuba2(a,c);
     long bd = karatsuba2(b,d);
     long ad_plus_bc = karatsuba2(a+b,c+d)-ac-bd;
@@ -91,7 +96,7 @@ long karatsuba2(long x, long y) {
     // printf("\nad+bc: %ld", ad_plus_bc);
     // printf("\n-------------------------------\n");
 
-
+    // Collect results
     return (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd;
 }
 
