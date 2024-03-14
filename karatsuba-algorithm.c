@@ -18,7 +18,7 @@ int get_size(long value){
     return count;
 }
 
-long karatsuba(long X, long Y){
+long karatsuba1(long X, long Y){
     // Base case 1
     if (X < 10 && Y < 10) {
         return X * Y;
@@ -46,11 +46,11 @@ long karatsuba(long X, long Y){
     long a = X - (b * multiplier);
     long d = Y / multiplier;
     long c = Y - (d * size);
-    long a_plus_b_times_c_plus_d = karatsuba(a + b, c + d);
+    long a_plus_b_times_c_plus_d = karatsuba1(a + b, c + d);
 
     // Recursive call
-    long ac = karatsuba(a, c);
-    long bd = karatsuba(b, d);
+    long ac = karatsuba1(a, c);
+    long bd = karatsuba1(b, d);
 
     // Collect recursed results
     return ac + ((a_plus_b_times_c_plus_d - ac - bd) * multiplier) + (bd * (long)(pow(10, 2 * size)));
@@ -61,7 +61,7 @@ int main(){
     long y = 1234;
 
     printf("\nExpected Result: %ld * %ld = %ld", x, y, x * y);
-    printf("\nKA Result: %ld * %ld = %ld\n\n", x, y, karatsuba(x, y));
+    printf("\nKA Result: %ld * %ld = %ld\n\n", x, y, karatsuba1(x, y));
 
     return 0;
 }
