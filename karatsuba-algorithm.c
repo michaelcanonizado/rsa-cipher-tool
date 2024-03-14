@@ -8,7 +8,7 @@
 // 2. (N/A) - Cut Bignum in half to get a,b,c,d (left and right parts of the multiplicand and multiplier)
 // 3. (Done) - Bignum Addition
 // 4. (Done) - Bignum Subtraction
-// 5. (N/A) - Shift Bignum with 0s | [2,1] -> [0,0,2,1]
+// 5. (Done) - Shift Bignum with 0s | [2,1] -> [0,0,2,1]
 
 int get_size(long value){
     // Count number of digits of number
