@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#include "bignum.h"
 
 // BIGNUM FUNCTIONS NEEDED:
 // 1. (N/A) - Bignum to Integer
@@ -108,6 +109,18 @@ long karatsuba2(long x, long y) {
 int main(){
     long x = 456;
     long y = 123;
+
+    Bignum num1 = initBignum();
+    Bignum num2 = initBignum();
+    Bignum result = initBignum();
+
+    setBignum(&num1, "456", positive);
+    setBignum(&num2, "123", positive);
+
+    addBignum(&result, &num1, &num2);
+    printf("\nBignum: ");
+    printBignum(&result);
+    printf("\n\n");
 
     long resKA1 = karatsuba1(x, y);
     long resKA2 = karatsuba2(x, y);
