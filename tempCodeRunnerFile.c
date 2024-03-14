@@ -1,1 +1,1 @@
-(ac * (pow(10, half*2))) + (ad_plus_bc * pow(10, half)) + bd
+    // printf("\nmultiplier: %ld", multiplier);

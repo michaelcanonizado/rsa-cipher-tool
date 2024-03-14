@@ -18,6 +18,14 @@ int get_size(long value){
     return count;
 }
 
+long custom_pow(long base, long exponent) {
+    long result = 1;
+    for (int i = 0; i < exponent; ++i) {
+        result *= base;
+    }
+    return result;
+}
+
 long karatsuba1(long X, long Y){
     // Base case 1
     if (X < 10 && Y < 10) {
@@ -56,12 +64,47 @@ long karatsuba1(long X, long Y){
     return ac + ((a_plus_b_times_c_plus_d - ac - bd) * multiplier) + (bd * (long)(pow(10, 2 * size)));
 }
 
-int main(){
-    long x = 5678;
-    long y = 1234;
+long karatsuba2(long x, long y) {
+    if (x < 10 || y < 10) {
+        return x * y;
+    }
 
-    printf("\nExpected Result: %ld * %ld = %ld", x, y, x * y);
-    printf("\nKA Result: %ld * %ld = %ld\n\n", x, y, karatsuba1(x, y));
+    int n = fmax(get_size(x), get_size(y));
+
+    long half = floor((double)n / 2.0);
+
+
+    long multiplier = custom_pow(10, half);
+
+    long a = floor(x / multiplier);
+    long b = x % multiplier;
+    long c = floor(y / multiplier);
+    long d = y % multiplier;
+
+    long ac = karatsuba2(a,c);
+    long bd = karatsuba2(b,d);
+    long ad_plus_bc = karatsuba2(a+b,c+d)-ac-bd;
+
+    // printf("\nn/2: %ld", half);
+    // printf("\nmultiplier: %ld", multiplier);
+    // printf("\na: %ld | b: %ld | c: %ld | d: %ld", a,b,c,d);
+    // printf("\nad+bc: %ld", ad_plus_bc);
+    // printf("\n-------------------------------\n");
+
+
+    return (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd;
+}
+
+int main(){
+    long x = 1313123;
+    long y = 1321;
+
+    long resKA1 = karatsuba1(x, y);
+    long resKA2 = karatsuba2(x, y);
+
+    printf("\n\nExpected Result: %ld * %ld = %ld", x, y, x * y);
+    printf("\nKA1 Result: %ld * %ld = %ld", x, y, resKA1);
+    printf("\nKA2 Result: %ld * %ld = %ld\n\n", x, y, resKA2);
 
     return 0;
 }
