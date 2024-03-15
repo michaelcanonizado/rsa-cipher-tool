@@ -165,6 +165,99 @@ int karatsubaBignumGetRightHalf(Bignum *result, Bignum *num, unsigned long long 
     result->length = splitIndex;
 }
 
+int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
+    // Base case
+    if (x->length == 1 || y->length == 1) {
+        long long int xInt = bignumToInt(x);
+        long long int yInt = bignumToInt(y);
+        intToBignum(result, xInt * yInt, positive);
+        return 0;
+    }
+
+    // int n = fmax(get_size(x), get_size(y));
+    unsigned long long int n = fmax(x->length, y->length);
+
+    unsigned long long int half = floor((double)n / 2.0);
+
+    Bignum a = initBignum();
+    Bignum b = initBignum();
+    Bignum c = initBignum();
+    Bignum d = initBignum();
+
+    Bignum ac = initBignum();
+    Bignum bd = initBignum();
+
+    Bignum a_plus_b = initBignum();
+    Bignum c_plus_d = initBignum();
+    Bignum ac_minus_bd = initBignum();
+    Bignum a_plus_b_times_c_plus_d = initBignum();
+    Bignum ad_plus_bc = initBignum();
+
+    Bignum ac_left_shift = initBignum();
+    Bignum ad_plus_bc_left_shift = initBignum();
+
+    karatsubaBignumGetLeftHalf(&a, x, half);
+    karatsubaBignumGetRightHalf(&b, x, half);
+    karatsubaBignumGetLeftHalf(&c, y, half);
+    karatsubaBignumGetRightHalf(&d, y, half);
+
+    karatsuba3(&ac, &a, &c);
+    karatsuba3(&bd, &b, &d);
+    addBignum(&a_plus_b, &a, &b);
+    addBignum(&c_plus_d, &c, &d);
+    karatsuba3(&a_plus_b_times_c_plus_d, &a_plus_b, &c_plus_d);
+    subtractBignum(&ac_minus_bd, &ac, &bd);
+    subtractBignum(&ad_plus_bc, &a_plus_b_times_c_plus_d, &ac_minus_bd);
+    // long ad_plus_bc = karatsuba2(a+b,c+d)-ac-bd;
+
+    // karatsubaBignumShiftLeft(&ac_left_shift, &ac, half * 2);
+    // karatsubaBignumShiftLeft(&ad_plus_bc_left_shift, &ad_plus_bc, half);
+    // long result = (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd;
+
+    // long a = floor(x / multiplier);
+    // long b = x % multiplier;
+    // long c = floor(y / multiplier);
+    // long d = y % multiplier;
+
+    printf("\n------------------------------");
+    printf("\nn/2: %ld", half);
+    printf("\nhalf: %ld", half);
+    printf("\na: ");
+    printBignum(&a);
+    printf(" b: ");
+    printBignum(&b);
+    printf(" c: ");
+    printBignum(&c);
+    printf(" d: ");
+    printBignum(&d);
+    printf("\n\nac: ");
+    printBignum(&ac);
+    printf("\nbd: ");
+    printBignum(&bd);
+
+    printf("\nad+bc: ");
+    printBignum(&ad_plus_bc);
+
+    printf("\n\nac left shift: ");
+    printBignum(&ac_left_shift);
+    printf("\nad plus bc left shift: ");
+    printBignum(&ad_plus_bc_left_shift);
+    printf("\nbd: ");
+    printBignum(&bd);
+    
+    // printf("\n-------------------------------\n");
+
+    // long ac = karatsuba2(a,c);
+    // long bd = karatsuba2(b,d);
+    // long ad_plus_bc = karatsuba2(a+b,c+d)-ac-bd;
+
+    // printf("\nac: %ld", ac);
+    // printf("\nbd: %ld", bd);
+    // printf("\nad+bc: %ld", ad_plus_bc);
+
+    // return result;
+}
+
 int main(){
     long x = 12;
     long y = 45;
