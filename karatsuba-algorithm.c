@@ -101,37 +101,41 @@ long karatsuba2(long x, long y) {
     printf("\nbd: %ld", bd);
     printf("\nad+bc: %ld", ad_plus_bc);
 
+    printf("\n\nac shift left: %ld", ac * custom_pow(10, 2 * half));
+    printf("\nad+bc shift left: %ld", ad_plus_bc * multiplier);
+    printf("\nbd: %ld", bd);
+
     // Collect results
     long result = (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd;
 
     return result;
 }
 
-int karatsubaBignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
-    if (shiftPlaces < 0) {
-        printf("Shifting Bignum by negative value.\n");
+int karatsubaBignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int placeValue, unsigned long long int shiftPlaces) {
+    if (shiftPlaces < 0 || placeValue < 0) {
+        printf("Shifting Bignum by negative value/s.\n");
         return -2;
     }
 
-    if (num->length < shiftPlaces) {
-        printf("Bignum length: %llu | shifting by: %llu\n", num->length, shiftPlaces);
-        printf("Shifting Bignum by place that will go out of bounds.\n");
+    if (getLengthOfInteger(num->length) < placeValue) {
+        printf("Place value entered exceeds Bignum!\nPlace value entered: %llu\nBignum length: %lld\n\n", placeValue, num->length);
         return -1;
     }
 
+    unsigned long long int resultLength = shiftPlaces;
+
     memset(result->digits, 0, sizeof(int) * shiftPlaces);
 
-    for (unsigned long int i = shiftPlaces; i < num->length; i++) {
-        result->digits[i] = num->digits[i];
-        shiftPlaces++;
+    for (unsigned long int i = shiftPlaces, j = placeValue; j < num->length; i++, j++) {
+        result->digits[i] = num->digits[j];
+        
+        resultLength++;
     }
 
-    result->length = shiftPlaces;
+    result->length = resultLength;
 }
 
 int karatsubaBignumGetLeftHalf(Bignum *result, Bignum *num, unsigned long long int splitIndex) {
-    printf("\nlen: %llu, split: %llu\n", num->length, splitIndex);
-
     unsigned long long int resultLength = 0;
 
     for (unsigned long int i = splitIndex, j = 0; i < num->length; i++, j++) {
@@ -141,6 +145,7 @@ int karatsubaBignumGetLeftHalf(Bignum *result, Bignum *num, unsigned long long i
 
     result->length = resultLength;
 }
+
 int karatsubaBignumGetRightHalf(Bignum *result, Bignum *num, unsigned long long int splitIndex) {
     if (splitIndex < 0) {
         printf("Shifting Bignum by negative value.\n");
@@ -161,19 +166,25 @@ int karatsubaBignumGetRightHalf(Bignum *result, Bignum *num, unsigned long long 
 }
 
 int main(){
-    long x = 123;
-    long y = 456;
+    long x = 12;
+    long y = 45;
 
     Bignum num = initBignum();
+    Bignum numRes = initBignum();
     Bignum num1 = initBignum();
     Bignum num2 = initBignum();
     Bignum result = initBignum();
     Bignum leftHalf = initBignum();
     Bignum rightHalf = initBignum();
 
-    setBignum(&num, "123456", positive);
-    setBignum(&num1, "123", positive);
-    setBignum(&num2, "456", positive);
+    setBignum(&num, "4", positive);
+    setBignum(&num1, "12", positive);
+    setBignum(&num2, "45", positive);
+
+    karatsubaBignumShiftLeft(&numRes, &num, 2, 3);
+    printf("\nNum shift left: ");
+    printBignum(&numRes);
+    printf("\n");
 
     karatsuba3(&result, &num1, &num2);
 
@@ -181,7 +192,7 @@ int main(){
     printBignum(&num);
     printf("\nresult: ");
     printBignum(&result);
-    printf("\n\n");
+    printf("\n\n\n####################################\n\n");
 
     long resKA1 = karatsuba1(x, y);
     long resKA2 = karatsuba2(x, y);
