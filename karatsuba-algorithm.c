@@ -95,10 +95,17 @@ long karatsuba2(long x, long y) {
     // Recursive calls
     long ac = karatsuba2(a,c);
     long bd = karatsuba2(b,d);
-    long ad_plus_bc = karatsuba2(a+b,c+d)-ac-bd;
+
+    int a_plus_b = a + b;
+    int c_plus_d = c + d;
+    long a_plus_b_times_c_plus_d = karatsuba2(a_plus_b,c_plus_d);
+    long ad_plus_bc = a_plus_b_times_c_plus_d-ac-bd;
 
     printf("\nac: %ld", ac);
     printf("\nbd: %ld", bd);
+    printf("\na+b: %ld", a_plus_b);
+    printf("\nc+d: %ld", c_plus_d);
+    printf("\n\na+b * c+d: : %ld", a_plus_b_times_c_plus_d);
     printf("\nad+bc: %ld", ad_plus_bc);
 
     printf("\n\nac shift left: %ld", ac * custom_pow(10, 2 * half));
@@ -191,6 +198,7 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
     Bignum c_plus_d = initBignum();
     Bignum ac_minus_bd = initBignum();
     Bignum a_plus_b_times_c_plus_d = initBignum();
+    Bignum a_plus_b_times_c_plus_d_minus_ac = initBignum();
     Bignum ad_plus_bc = initBignum();
 
     Bignum ac_left_shift = initBignum();
@@ -203,11 +211,12 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
 
     karatsuba3(&ac, &a, &c);
     karatsuba3(&bd, &b, &d);
+
     addBignum(&a_plus_b, &a, &b);
     addBignum(&c_plus_d, &c, &d);
     karatsuba3(&a_plus_b_times_c_plus_d, &a_plus_b, &c_plus_d);
-    subtractBignum(&ac_minus_bd, &ac, &bd);
-    subtractBignum(&ad_plus_bc, &a_plus_b_times_c_plus_d, &ac_minus_bd);
+    subtractBignum(&a_plus_b_times_c_plus_d_minus_ac, &a_plus_b_times_c_plus_d, &ac);
+    subtractBignum(&ad_plus_bc, &a_plus_b_times_c_plus_d_minus_ac, &bd);
     // long ad_plus_bc = karatsuba2(a+b,c+d)-ac-bd;
 
     // karatsubaBignumShiftLeft(&ac_left_shift, &ac, half * 2);
@@ -235,6 +244,12 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
     printf("\nbd: ");
     printBignum(&bd);
 
+    printf("\na+b: ");
+    printBignum(&a_plus_b);
+    printf("\nc+d: ");
+    printBignum(&c_plus_d);
+    printf("\na+b * c+d: ");
+    printBignum(&a_plus_b_times_c_plus_d);
     printf("\nad+bc: ");
     printBignum(&ad_plus_bc);
 
