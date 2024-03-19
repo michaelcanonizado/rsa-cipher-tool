@@ -326,6 +326,8 @@ int main(){
     printf("\n\nExpected Result: %ld * %ld = %ld", x, y, x * y);
     printf("\nKA1 Result: %ld * %ld = %ld", x, y, resKA1);
     printf("\nKA2 Result: %ld * %ld = %ld\n\n", x, y, resKA2);
+    printf("\nKA3 Result: ");
+    printBignum(&result);
 
     return 0;
 }
