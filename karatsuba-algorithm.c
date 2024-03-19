@@ -108,12 +108,15 @@ long karatsuba2(long x, long y) {
     printf("\n\na+b * c+d: : %ld", a_plus_b_times_c_plus_d);
     printf("\nad+bc: %ld", ad_plus_bc);
 
+    // Collect results
+    long result = (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd;
+
     printf("\n\nac shift left: %ld", ac * custom_pow(10, 2 * half));
     printf("\nad+bc shift left: %ld", ad_plus_bc * multiplier);
     printf("\nbd: %ld", bd);
-
-    // Collect results
-    long result = (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd;
+    printf("\nac shift left + ad+bc shift left: %ld", (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier));
+    printf("\nac shift left + ad+bc shift left + bd: %ld", (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd);
+    printf("\nresult: %ld", result);
 
     return result;
 }
@@ -203,6 +206,10 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
 
     Bignum ac_left_shift = initBignum();
     Bignum ad_plus_bc_left_shift = initBignum();
+    Bignum ac_left_shift_plus_ad_plus_bc_left_shift = initBignum();
+    Bignum ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd = initBignum();
+    Bignum zero = initBignum();
+    setBignum(&zero, "0", positive);
 
     karatsubaBignumGetLeftHalf(&a, x, half);
     karatsubaBignumGetRightHalf(&b, x, half);
@@ -221,7 +228,12 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
 
     karatsubaBignumShiftLeft(&ac_left_shift, &ac, 0, half * 2);
     karatsubaBignumShiftLeft(&ad_plus_bc_left_shift, &ad_plus_bc, 0, half);
+
     // long result = (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd;
+    addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift, &ac_left_shift, &ad_plus_bc_left_shift);
+    addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &ac_left_shift_plus_ad_plus_bc_left_shift, &bd);
+    addBignum(result, &ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &zero);
+
 
     // long a = floor(x / multiplier);
     // long b = x % multiplier;
@@ -259,6 +271,12 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
     printBignum(&ad_plus_bc_left_shift);
     printf("\nbd: ");
     printBignum(&bd);
+    printf("\nac shift left + ad+bc shift left:  ");
+    printBignum(&ac_left_shift_plus_ad_plus_bc_left_shift);
+    printf("\nac shift left + ad+bc shift left + bd: ");
+    printBignum(&ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd);
+    printf("\nresult: ");
+    printBignum(result);
     
     // printf("\n-------------------------------\n");
 
@@ -274,7 +292,7 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
 }
 
 int main(){
-    long x = 12;
+    long x = 123;
     long y = 45;
 
     Bignum num = initBignum();
@@ -286,7 +304,7 @@ int main(){
     Bignum rightHalf = initBignum();
 
     setBignum(&num, "4", positive);
-    setBignum(&num1, "12", positive);
+    setBignum(&num1, "123", positive);
     setBignum(&num2, "45", positive);
 
     karatsubaBignumShiftLeft(&numRes, &num, 2, 3);
