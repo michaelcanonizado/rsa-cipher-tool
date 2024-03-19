@@ -219,8 +219,8 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
     subtractBignum(&ad_plus_bc, &a_plus_b_times_c_plus_d_minus_ac, &bd);
     // long ad_plus_bc = karatsuba2(a+b,c+d)-ac-bd;
 
-    // karatsubaBignumShiftLeft(&ac_left_shift, &ac, half * 2);
-    // karatsubaBignumShiftLeft(&ad_plus_bc_left_shift, &ad_plus_bc, half);
+    karatsubaBignumShiftLeft(&ac_left_shift, &ac, 0, half * 2);
+    karatsubaBignumShiftLeft(&ad_plus_bc_left_shift, &ad_plus_bc, 0, half);
     // long result = (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd;
 
     // long a = floor(x / multiplier);
