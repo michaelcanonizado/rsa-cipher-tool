@@ -81,28 +81,37 @@ long karatsuba2(long x, long y) {
     // Get 10^(n/2)
     long multiplier = custom_pow(10, half);
 
+    printf("\nn/2: %ld", half);
+
+
+
     // Split the integers
+    printf("\nGetting a,b,c,d...\n\n");
     long a = floor(x / multiplier);
     long b = x % multiplier;
     long c = floor(y / multiplier);
     long d = y % multiplier;
 
-    printf("\nn/2: %ld", half);
-    printf("\nmultiplier: %ld", multiplier);
     printf("\na: %ld | b: %ld | c: %ld | d: %ld", a,b,c,d);
     printf("\n-------------------------------\n");
 
+
+
     // Recursive calls
+    printf("\nGetting ac and bd...\n\n");
     long ac = karatsuba2(a,c);
     long bd = karatsuba2(b,d);
 
+    printf("\nac: %ld", ac);
+    printf("\nbd: %ld", bd);
+
+
+    printf("\nGetting ad+bc...\n\n");
     int a_plus_b = a + b;
     int c_plus_d = c + d;
     long a_plus_b_times_c_plus_d = karatsuba2(a_plus_b,c_plus_d);
     long ad_plus_bc = a_plus_b_times_c_plus_d-ac-bd;
 
-    printf("\nac: %ld", ac);
-    printf("\nbd: %ld", bd);
     printf("\na+b: %ld", a_plus_b);
     printf("\nc+d: %ld", c_plus_d);
     printf("\n\na+b * c+d: : %ld", a_plus_b_times_c_plus_d);
@@ -110,7 +119,8 @@ long karatsuba2(long x, long y) {
 
     // Collect results
     long result = (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd;
-
+    
+    printf("\nShifting ac and ad+bc...\n\n");
     printf("\n\nac shift left: %ld", ac * custom_pow(10, 2 * half));
     printf("\nad+bc shift left: %ld", ad_plus_bc * multiplier);
     printf("\nbd: %ld", bd);
@@ -263,7 +273,7 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
 
     printf("\n\nac left shift: ");
     printBignum(&ac_left_shift);
-    printf("\nad plus bc left shift: ");
+    printf("\nad+bc left shift: ");
     printBignum(&ad_plus_bc_left_shift);
 
 
