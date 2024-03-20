@@ -134,6 +134,33 @@ long karatsuba2(long x, long y) {
     return result;
 }
 
+long karatsuba2Compressed(long x, long y) {
+    if (x < 10 || y < 10) {
+        return x * y;
+    }
+
+    int n = fmax(get_size(x), get_size(y));
+    long half = floor((double)n / 2.0);
+    long multiplier = custom_pow(10, half);
+
+    long a = floor(x / multiplier);
+    long b = x % multiplier;
+    long c = floor(y / multiplier);
+    long d = y % multiplier;
+
+    long ac = karatsuba2(a,c);
+    long bd = karatsuba2(b,d);
+
+    int a_plus_b = a + b;
+    int c_plus_d = c + d;
+    long a_plus_b_times_c_plus_d = karatsuba2(a_plus_b,c_plus_d);
+    long ad_plus_bc = a_plus_b_times_c_plus_d-ac-bd;
+
+    long result = (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd;
+
+    return result;
+}
+
 int karatsubaBignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
     if (shiftPlaces < 0) {
         printf("Shifting Bignum by negative value/s.\n");
@@ -358,7 +385,7 @@ int main(){
     printf("\n\n\n####################################\n\n");
 
     long resKA1 = karatsuba1(x, y);
-    long resKA2 = karatsuba2(x, y);
+    long resKA2 = karatsuba2Compressed(x, y);
 
     printf("\n\nExpected Result: %ld * %ld = %ld", x, y, x * y);
     printf("\nKA1 Result: %ld * %ld = %ld", x, y, resKA1);
