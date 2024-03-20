@@ -67,6 +67,9 @@ long karatsuba1(long X, long Y){
 }
 
 long karatsuba2(long x, long y) {
+    printf("\n------------------------------");
+    printf("\n\nK3 for x: %ld and y: %ld\n", x, y);
+
     // Base case
     if (x < 10 || y < 10) {
         return x * y;
@@ -181,6 +184,13 @@ int karatsubaBignumGetRightHalf(Bignum *result, Bignum *num, unsigned long long 
 }
 
 int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
+    printf("\n------------------------------");
+    printf("\n\nK3 for x: ");
+    printBignum(x);
+    printf(" and y: ");
+    printBignum(y);
+    printf("\n");
+
     // Base case
     if (x->length == 1 || y->length == 1) {
         long long int xInt = bignumToInt(x);
@@ -191,10 +201,9 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
 
     // int n = fmax(get_size(x), get_size(y));
     unsigned long long int n = fmax(x->length, y->length);
-    unsigned long long int half = floor((double)n / 2.0);
+    unsigned long long int half = floor(n / 2.0);
 
-    printf("\n------------------------------");
-    printf("\nn/2: %ld", half);
+    printf("\nn/2: %llu", half);
 
 
 
