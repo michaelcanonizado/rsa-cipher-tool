@@ -383,15 +383,14 @@ int main(){
     printf("\nresult: ");
     printBignum(&result);
     printf("\n\n\n####################################\n\n");
-
-    long resKA1 = karatsuba1(x, y);
+;
     long resKA2 = karatsuba2Compressed(x, y);
 
     printf("\n\nExpected Result: %ld * %ld = %ld", x, y, x * y);
-    printf("\nKA1 Result: %ld * %ld = %ld", x, y, resKA1);
-    printf("\nKA2 Result: %ld * %ld = %ld\n\n", x, y, resKA2);
+    printf("\nKA2 Result: %ld * %ld = %ld", x, y, resKA2);
     printf("\nKA3 Result: ");
     printBignum(&result);
 
+    printf("\n\n\n");
     return 0;
 }
