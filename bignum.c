@@ -83,6 +83,7 @@ void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN 
     // Unsigned long long int and a separate sign parameter is used to increase the integer range of the function. You will have to conditionally input the sign enum when calling this function.
 
     // If integer passed is 0, set numStruct digits to [0], length to 1, and sign to positive.
+    // REFACTOR: setBignum() can be used to set it to 0, instead of settings the struct members manually.
     if (integer == 0) {
         numStruct->digits[0] = 0;
         numStruct->length = 1;
@@ -93,7 +94,7 @@ void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN 
     // Use a counter to track indexes and length
     int count = 0;
 
-    // Determine the LSD (least significant digit) by moduloing the integer by 10. Then push it to Bignum.digits[]. Divide the number by 10 the shift the integer. Do this untill all digits have been pushed.
+    // Determine the LSD (least significant digit) by moduloing the integer by 10. Then push it to Bignum.digits[]. Divide the number by 10 to shift the integer. Do this until all digits have been pushed.
     while(integer > 0) {
         numStruct->digits[count] = integer % 10;
         integer = integer / 10;
@@ -108,15 +109,13 @@ void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN 
 long long int bignumToInt(Bignum *num) {
     // Function will convert a Bignum to an integer.
 
-    // NOTE: THIS FUNCTION CONVERTS THE WHOLE BIGNUM TO AN INTEGER, NOT PARTS OF THE BIGNUM.
-    // FEAT: MODIFY THIS FUNCTION OR CREATE ANOTHER FUNCTION TO CONVERT ONLY A PORTION OF THE BIGNUM TO AN INTEGER; WHICH IS NEEDED ON THE ARITHMETIC BIGNUM OPERATIONS.
-
     // Get maximum number of digits of long long int. 
     int maxNumOfDigits = (int)log10((double)MAX_VALUE_OF_LONG_LONG_INT) + 1;
 
-    // REFACTOR: THIS MUST THROW A PROPER ERROR. A BIGNUM WITH Bignum.digits[] = [0] and Bignum.length = 1 IS A VALID BIGNUM THAT CAN BE CONVERTED TO AN INTEGER. INSTEAD OF RETURNING THE RESULT, USE A POINTER PARAMTER TO POINT TO THE RESULT VARIABLE, AND THE RETURN SHOULD ONLY BE ERROR CODES.
+    // REFACTOR: THIS MUST THROW A PROPER ERROR. A BIGNUM WITH Bignum.digits[] = [0] and Bignum.length = 1 IS A VALID BIGNUM THAT CAN BE CONVERTED TO AN INTEGER. INSTEAD OF RETURNING THE RESULT, USE A POINTER PARAMETER TO POINT TO THE RESULT VARIABLE, AND THE RETURN SHOULD ONLY BE ERROR CODES.
 
     // If Bignum is too long to be converted to an integer, throw an error.
+    // FIX: THIS DOESN'T COMPLETELY HANDLE ALL OVER FLOW CASES AS IT ONLY CHECKS Bignum.length. I.E UULONG_MAX IS: 18,446,744,073,709,551,615 (20 digits) BUT IF  A BIGNUM WITH THE DIGITS OF 99,999,999,999,999,999,999 (also 20 digits) IS PASSED, IT WILL NOT THROW AN ERROR. A SIMPLE SOLUTION WOULD BE TO USE >= INSTEAD OF ONLY > TO ONLY ACCEPT A MAXIMUM BIGNUM LENGTH OF 19 DIGITS
     if (num->length > maxNumOfDigits) {
         return 0;
     }
