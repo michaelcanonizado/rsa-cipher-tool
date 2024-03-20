@@ -181,8 +181,12 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
 
     // int n = fmax(get_size(x), get_size(y));
     unsigned long long int n = fmax(x->length, y->length);
-
     unsigned long long int half = floor((double)n / 2.0);
+
+    printf("\n------------------------------");
+    printf("\nn/2: %ld", half);
+
+
 
     Bignum a = initBignum();
     Bignum b = initBignum();
@@ -206,38 +210,12 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
     Bignum zero = initBignum();
     setBignum(&zero, "0", positive);
 
+    printf("\nGetting a,b,c,d...\n\n");
     karatsubaBignumGetLeftHalf(&a, x, half);
     karatsubaBignumGetRightHalf(&b, x, half);
     karatsubaBignumGetLeftHalf(&c, y, half);
     karatsubaBignumGetRightHalf(&d, y, half);
-
-    karatsuba3(&ac, &a, &c);
-    karatsuba3(&bd, &b, &d);
-
-    addBignum(&a_plus_b, &a, &b);
-    addBignum(&c_plus_d, &c, &d);
-    karatsuba3(&a_plus_b_times_c_plus_d, &a_plus_b, &c_plus_d);
-    subtractBignum(&a_plus_b_times_c_plus_d_minus_ac, &a_plus_b_times_c_plus_d, &ac);
-    subtractBignum(&ad_plus_bc, &a_plus_b_times_c_plus_d_minus_ac, &bd);
-    // long ad_plus_bc = karatsuba2(a+b,c+d)-ac-bd;
-
-    karatsubaBignumShiftLeft(&ac_left_shift, &ac, half * 2);
-    karatsubaBignumShiftLeft(&ad_plus_bc_left_shift, &ad_plus_bc, half);
-
-    // long result = (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd;
-    addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift, &ac_left_shift, &ad_plus_bc_left_shift);
-    addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &ac_left_shift_plus_ad_plus_bc_left_shift, &bd);
-    addBignum(result, &ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &zero);
-
-
-    // long a = floor(x / multiplier);
-    // long b = x % multiplier;
-    // long c = floor(y / multiplier);
-    // long d = y % multiplier;
-
-    printf("\n------------------------------");
-    printf("\nn/2: %ld", half);
-    printf("\nhalf: %ld", half);
+    
     printf("\na: ");
     printBignum(&a);
     printf(" b: ");
@@ -245,11 +223,28 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
     printf(" c: ");
     printBignum(&c);
     printf(" d: ");
+
+
+
+    printf("\nGetting ac and bd...\n\n");
+    karatsuba3(&ac, &a, &c);
+    karatsuba3(&bd, &b, &d);
+
     printBignum(&d);
     printf("\n\nac: ");
     printBignum(&ac);
     printf("\nbd: ");
     printBignum(&bd);
+
+
+
+    printf("\nGetting ad+bc...\n\n");
+    addBignum(&a_plus_b, &a, &b);
+    addBignum(&c_plus_d, &c, &d);
+    karatsuba3(&a_plus_b_times_c_plus_d, &a_plus_b, &c_plus_d);
+    subtractBignum(&a_plus_b_times_c_plus_d_minus_ac, &a_plus_b_times_c_plus_d, &ac);
+    subtractBignum(&ad_plus_bc, &a_plus_b_times_c_plus_d_minus_ac, &bd);
+    // long ad_plus_bc = karatsuba2(a+b,c+d)-ac-bd;
 
     printf("\na+b: ");
     printBignum(&a_plus_b);
@@ -260,10 +255,25 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
     printf("\nad+bc: ");
     printBignum(&ad_plus_bc);
 
+
+
+    printf("\nShifting ac and ad+bc...\n\n");
+    karatsubaBignumShiftLeft(&ac_left_shift, &ac, half * 2);
+    karatsubaBignumShiftLeft(&ad_plus_bc_left_shift, &ad_plus_bc, half);
+
     printf("\n\nac left shift: ");
     printBignum(&ac_left_shift);
     printf("\nad plus bc left shift: ");
     printBignum(&ad_plus_bc_left_shift);
+
+
+
+    // long result = (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd;
+    printf("\nCompilig results...\n\n");
+    addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift, &ac_left_shift, &ad_plus_bc_left_shift);
+    addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &ac_left_shift_plus_ad_plus_bc_left_shift, &bd);
+    addBignum(result, &ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &zero);
+
     printf("\nbd: ");
     printBignum(&bd);
     printf("\nac shift left + ad+bc shift left:  ");
@@ -272,6 +282,13 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
     printBignum(&ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd);
     printf("\nresult: ");
     printBignum(result);
+
+
+
+    // long a = floor(x / multiplier);
+    // long b = x % multiplier;
+    // long c = floor(y / multiplier);
+    // long d = y % multiplier;
     
     // printf("\n-------------------------------\n");
 
@@ -306,6 +323,12 @@ int main(){
     printf("\nNum shift left: ");
     printBignum(&numRes);
     printf("\n");
+
+    printf("\nMultiplying ");
+    printBignum(&num1);
+    printf(" and ");
+    printBignum(&num2);
+    printf(":\n\n");
 
     karatsuba3(&result, &num1, &num2);
 
