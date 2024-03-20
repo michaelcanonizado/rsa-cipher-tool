@@ -350,8 +350,8 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
 }
 
 int main(){
-    long x = 456;
-    long y = 123;
+    unsigned long long int x = ULLONG_MAX;
+    unsigned long long int y = ULLONG_MAX;
 
     Bignum num = initBignum();
     Bignum numRes = initBignum();
@@ -364,6 +364,9 @@ int main(){
     intToBignum(&num, 4, positive);
     intToBignum(&num1, x, positive);
     intToBignum(&num2, y, positive);
+
+    setBignum(&num1, "70083693508915213745197637360864101925485320672729", positive);
+    setBignum(&num2, "54731509709293787933100356408829236967995835556926", positive);
 
     karatsubaBignumShiftLeft(&numRes, &num, 4);
     printf("\nNum shift left: ");
@@ -386,8 +389,8 @@ int main(){
 ;
     long resKA2 = karatsuba2Compressed(x, y);
 
-    printf("\n\nExpected Result: %ld * %ld = %ld", x, y, x * y);
-    printf("\nKA2 Result: %ld * %ld = %ld", x, y, resKA2);
+    //printf("\n\nExpected Result: %llu * %llu = %llu", x, y, x * y);
+    //printf("\nKA2 Result: %llu * %llu = %llu", x, y, resKA2);
     printf("\nKA3 Result: ");
     printBignum(&result);
 
