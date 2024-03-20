@@ -121,14 +121,9 @@ long karatsuba2(long x, long y) {
     return result;
 }
 
-int karatsubaBignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int placeValue, unsigned long long int shiftPlaces) {
-    if (shiftPlaces < 0 || placeValue < 0) {
+int karatsubaBignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
+    if (shiftPlaces < 0) {
         printf("Shifting Bignum by negative value/s.\n");
-        return -2;
-    }
-
-    if (getLengthOfInteger(num->length) < placeValue) {
-        printf("Place value entered exceeds Bignum!\nPlace value entered: %llu\nBignum length: %lld\n\n", placeValue, num->length);
         return -1;
     }
 
@@ -136,7 +131,7 @@ int karatsubaBignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int
 
     memset(result->digits, 0, sizeof(int) * shiftPlaces);
 
-    for (unsigned long int i = shiftPlaces, j = placeValue; j < num->length; i++, j++) {
+    for (unsigned long int i = shiftPlaces, j = 0; j < num->length; i++, j++) {
         result->digits[i] = num->digits[j];
         
         resultLength++;
@@ -226,8 +221,8 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
     subtractBignum(&ad_plus_bc, &a_plus_b_times_c_plus_d_minus_ac, &bd);
     // long ad_plus_bc = karatsuba2(a+b,c+d)-ac-bd;
 
-    karatsubaBignumShiftLeft(&ac_left_shift, &ac, 0, half * 2);
-    karatsubaBignumShiftLeft(&ad_plus_bc_left_shift, &ad_plus_bc, 0, half);
+    karatsubaBignumShiftLeft(&ac_left_shift, &ac, half * 2);
+    karatsubaBignumShiftLeft(&ad_plus_bc_left_shift, &ad_plus_bc, half);
 
     // long result = (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd;
     addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift, &ac_left_shift, &ad_plus_bc_left_shift);
@@ -292,8 +287,8 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
 }
 
 int main(){
-    long x = 123;
-    long y = 45;
+    long x = 456;
+    long y = 123;
 
     Bignum num = initBignum();
     Bignum numRes = initBignum();
@@ -303,11 +298,11 @@ int main(){
     Bignum leftHalf = initBignum();
     Bignum rightHalf = initBignum();
 
-    setBignum(&num, "4", positive);
-    setBignum(&num1, "123", positive);
-    setBignum(&num2, "45", positive);
+    intToBignum(&num, 4, positive);
+    intToBignum(&num1, x, positive);
+    intToBignum(&num2, y, positive);
 
-    karatsubaBignumShiftLeft(&numRes, &num, 2, 3);
+    karatsubaBignumShiftLeft(&numRes, &num, 4);
     printf("\nNum shift left: ");
     printBignum(&numRes);
     printf("\n");
