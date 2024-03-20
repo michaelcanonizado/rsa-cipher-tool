@@ -89,7 +89,7 @@ long karatsuba2(long x, long y) {
 
 
     // Split the integers
-    printf("\nGetting a,b,c,d with half: %llu......\n\n", half);
+    printf("\nGetting a,b,c,d...\n\n", half);
     long a = floor(x / multiplier);
     long b = x % multiplier;
     long c = floor(y / multiplier);
@@ -229,7 +229,7 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
     Bignum zero = initBignum();
     setBignum(&zero, "0", positive);
 
-    printf("\nGetting a,b,c,d with half: %llu...\n\n", half);
+    printf("\nGetting a,b,c,d...\n\n");
     karatsubaBignumGetLeftHalf(&a, x, half);
     karatsubaBignumGetRightHalf(&b, x, half);
     karatsubaBignumGetLeftHalf(&c, y, half);
@@ -242,7 +242,7 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
     printf(" c: ");
     printBignum(&c);
     printf(" d: ");
-
+    printBignum(&d);
 
 
     printf("\nGetting ac and bd...\n\n");
