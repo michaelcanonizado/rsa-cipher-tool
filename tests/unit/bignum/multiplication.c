@@ -142,6 +142,9 @@ void testZero(int numOfInterations) {
 
 int main(void) {
 
+    printf("\n%7s   * %7s   = %7s    ~ %10s | %s\n", "BN1", "BN2", "RESULT", "EXPECTED RESULT", "STATUS");
+    printf("\n-----------------------------------------------------\n\n");
+
     testSign(positive, positive, 5);
     testSign(negative, negative, 5);
     testSign(positive, negative, 5);
