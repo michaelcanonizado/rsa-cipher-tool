@@ -46,6 +46,6 @@ int isBignumZero(Bignum *num);
 
 void addBignum(Bignum *result, Bignum *num1, Bignum *num2);
 void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2);
-int multiplyBignum(Bignum *result, Bignum *x, Bignum *y)
+int multiplyBignum(Bignum *result, Bignum *x, Bignum *y);
 
 #endif /* BIGNUM_H */
