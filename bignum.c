@@ -149,6 +149,9 @@ void copyBignum(Bignum *result, Bignum *num) {
 void printBignum(Bignum *num) {
     // Function to print Bignum.digits[]
     // This won't print any \n or spaces, just the Bignum
+    if (num->sign == negative) {
+        printf("-");
+    }
     for (int i = num->length - 1; i >= 0; i--) {
         printf("%d", num->digits[i]);
     }
