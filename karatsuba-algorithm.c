@@ -351,6 +351,7 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
 
 int karatsuba3Compressed(Bignum *result, Bignum *x, Bignum *y) {
     if (x->length == 1 || y->length == 1) {
+        result->sign = negative;
         long long int xInt = bignumToInt(x);
         long long int yInt = bignumToInt(y);
         intToBignum(result, xInt * yInt, positive);
@@ -402,6 +403,12 @@ int karatsuba3Compressed(Bignum *result, Bignum *x, Bignum *y) {
     addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift, &ac_left_shift, &ad_plus_bc_left_shift);
     addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &ac_left_shift_plus_ad_plus_bc_left_shift, &bd);
     addBignum(result, &ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &zero);
+    
+    if ((x->sign == positive && y->sign == positive) || x->sign == negative && y->sign == negative) {
+        result->sign = positive;
+    } else {
+        result->sign = negative;
+    }
 }
 
 int main(){
@@ -413,7 +420,7 @@ int main(){
     Bignum result = initBignum();
 
     intToBignum(&num1, x, positive);
-    intToBignum(&num2, y, positive);
+    intToBignum(&num2, y, negative);
 
     // setBignum(&num1, "70083693508915213745197637360864101925485320672729", positive);
     // setBignum(&num2, "54731509709293787933100356408829236967995835556926", positive);
@@ -435,6 +442,8 @@ int main(){
     printBignum(&num2);
     printf(" = ");
     printBignum(&result);
+
+    printf("\nKA3 Result Sign: %d", result.sign);
 
     printf("\n\n\n");
     return 0;
