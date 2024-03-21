@@ -68,7 +68,7 @@ long karatsuba1(long X, long Y){
 
 long karatsuba2(long x, long y) {
     printf("\n------------------------------");
-    printf("\n\nK3 for x: %ld and y: %ld\n", x, y);
+    printf("\n\nK2 for x: %ld and y: %ld\n", x, y);
 
     // Base case
     if (x < 10 || y < 10) {
@@ -148,12 +148,12 @@ long karatsuba2Compressed(long x, long y) {
     long c = floor(y / multiplier);
     long d = y % multiplier;
 
-    long ac = karatsuba2(a,c);
-    long bd = karatsuba2(b,d);
+    long ac = karatsuba2Compressed(a,c);
+    long bd = karatsuba2Compressed(b,d);
 
     int a_plus_b = a + b;
     int c_plus_d = c + d;
-    long a_plus_b_times_c_plus_d = karatsuba2(a_plus_b,c_plus_d);
+    long a_plus_b_times_c_plus_d = karatsuba2Compressed(a_plus_b,c_plus_d);
     long ad_plus_bc = a_plus_b_times_c_plus_d-ac-bd;
 
     long result = (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd;
@@ -418,15 +418,15 @@ int karatsuba3Compressed(Bignum *result, Bignum *x, Bignum *y) {
 }
 
 int main(){
-    unsigned long long int x = LLONG_MAX;
-    unsigned long long int y = LLONG_MAX;
+    long long int x = 123;
+    long long int y = 123;
 
     Bignum num1 = initBignum();
     Bignum num2 = initBignum();
     Bignum result = initBignum();
 
     intToBignum(&num1, x, positive);
-    intToBignum(&num2, y, negative);
+    intToBignum(&num2, y, positive);
 
     // setBignum(&num1, "70083693508915213745197637360864101925485320672729", positive);
     // setBignum(&num2, "54731509709293787933100356408829236967995835556926", positive);
