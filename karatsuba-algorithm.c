@@ -349,6 +349,61 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
     // return result;
 }
 
+int karatsuba3Compressed(Bignum *result, Bignum *x, Bignum *y) {
+    if (x->length == 1 || y->length == 1) {
+        long long int xInt = bignumToInt(x);
+        long long int yInt = bignumToInt(y);
+        intToBignum(result, xInt * yInt, positive);
+        return 0;
+    }
+
+    unsigned long long int n = fmax(x->length, y->length);
+    unsigned long long int half = floor(n / 2.0);
+
+    Bignum a = initBignum();
+    Bignum b = initBignum();
+    Bignum c = initBignum();
+    Bignum d = initBignum();
+
+    Bignum ac = initBignum();
+    Bignum bd = initBignum();
+
+    Bignum a_plus_b = initBignum();
+    Bignum c_plus_d = initBignum();
+    Bignum ac_minus_bd = initBignum();
+    Bignum a_plus_b_times_c_plus_d = initBignum();
+    Bignum a_plus_b_times_c_plus_d_minus_ac = initBignum();
+    Bignum ad_plus_bc = initBignum();
+
+    Bignum ac_left_shift = initBignum();
+    Bignum ad_plus_bc_left_shift = initBignum();
+    Bignum ac_left_shift_plus_ad_plus_bc_left_shift = initBignum();
+    Bignum ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd = initBignum();
+    Bignum zero = initBignum();
+    setBignum(&zero, "0", positive);
+
+    karatsubaBignumGetLeftHalf(&a, x, half);
+    karatsubaBignumGetRightHalf(&b, x, half);
+    karatsubaBignumGetLeftHalf(&c, y, half);
+    karatsubaBignumGetRightHalf(&d, y, half);
+    
+    karatsuba3Compressed(&ac, &a, &c);
+    karatsuba3Compressed(&bd, &b, &d);
+
+    addBignum(&a_plus_b, &a, &b);
+    addBignum(&c_plus_d, &c, &d);
+    karatsuba3Compressed(&a_plus_b_times_c_plus_d, &a_plus_b, &c_plus_d);
+    subtractBignum(&a_plus_b_times_c_plus_d_minus_ac, &a_plus_b_times_c_plus_d, &ac);
+    subtractBignum(&ad_plus_bc, &a_plus_b_times_c_plus_d_minus_ac, &bd);
+
+    karatsubaBignumShiftLeft(&ac_left_shift, &ac, half * 2);
+    karatsubaBignumShiftLeft(&ad_plus_bc_left_shift, &ad_plus_bc, half);
+
+    addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift, &ac_left_shift, &ad_plus_bc_left_shift);
+    addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &ac_left_shift_plus_ad_plus_bc_left_shift, &bd);
+    addBignum(result, &ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &zero);
+}
+
 int main(){
     unsigned long long int x = ULLONG_MAX;
     unsigned long long int y = ULLONG_MAX;
@@ -379,7 +434,7 @@ int main(){
     printBignum(&num2);
     printf(":\n\n");
 
-    karatsuba3(&result, &num1, &num2);
+    karatsuba3Compressed(&result, &num1, &num2);
 
     printf("\n\nBignum: ");
     printBignum(&num);
