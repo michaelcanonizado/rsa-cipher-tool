@@ -320,6 +320,12 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
     addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &ac_left_shift_plus_ad_plus_bc_left_shift, &bd);
     addBignum(result, &ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &zero);
 
+    if ((x->sign == positive && y->sign == positive) || x->sign == negative && y->sign == negative) {
+        result->sign = positive;
+    } else {
+        result->sign = negative;
+    }
+
     printf("\nbd: ");
     printBignum(&bd);
     printf("\nac shift left + ad+bc shift left:  ");
