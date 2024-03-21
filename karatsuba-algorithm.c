@@ -436,8 +436,8 @@ int main(){
     printf(" and ");
     printBignum(&num2);
 
-    karatsuba3Compressed(&result, &num1, &num2);
-;
+    multiplyBignum(&result, &num1, &num2);
+
     long resKA2 = karatsuba2Compressed(x, y);
 
     printf("\n\n%-15s %llu * %llu = %llu","Native Result:", x, y, x * y);
