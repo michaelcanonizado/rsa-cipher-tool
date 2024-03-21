@@ -616,6 +616,17 @@ int multiplyBignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int 
 }
 
 int multiplyBignumGetLeftHalf(Bignum *result, Bignum *num, unsigned long long int splitIndex) {
+    if (splitIndex < 0) {
+        printf("Shifting Bignum by negative value.\n");
+        return -2;
+    }
+
+    if (num->length < splitIndex) {
+        printf("Bignum length: %llu | shifting by: %llu\n", num->length, splitIndex);
+        printf("Shifting Bignum left by place that will go out of bounds.\n");
+        return -1;
+    }
+
     unsigned long long int resultLength = 0;
 
     for (unsigned long int i = splitIndex, j = 0; i < num->length; i++, j++) {
@@ -634,7 +645,7 @@ int multiplyBignumGetRightHalf(Bignum *result, Bignum *num, unsigned long long i
 
     if (num->length < splitIndex) {
         printf("Bignum length: %llu | shifting by: %llu\n", num->length, splitIndex);
-        printf("Shifting Bignum by place that will go out of bounds.\n");
+        printf("Shifting Bignum right by place that will go out of bounds.\n");
         return -1;
     }
 
