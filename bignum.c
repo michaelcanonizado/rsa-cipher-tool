@@ -191,9 +191,6 @@ void printBignumCenter(Bignum *num, unsigned int requiredWidth) {
     for (int i = 0; i < leftWidth; i++) {
         printf(" ");
     }
-    if (num->sign == negative) {
-        printf("-");
-    }
     printBignum(num);
     for (int i = 0; i < rightWidth; i++) {
         printf(" ");
