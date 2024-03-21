@@ -405,48 +405,35 @@ int karatsuba3Compressed(Bignum *result, Bignum *x, Bignum *y) {
 }
 
 int main(){
-    unsigned long long int x = ULLONG_MAX;
-    unsigned long long int y = ULLONG_MAX;
+    unsigned long long int x = LLONG_MAX;
+    unsigned long long int y = LLONG_MAX;
 
-    Bignum num = initBignum();
-    Bignum numRes = initBignum();
     Bignum num1 = initBignum();
     Bignum num2 = initBignum();
     Bignum result = initBignum();
-    Bignum leftHalf = initBignum();
-    Bignum rightHalf = initBignum();
 
-    intToBignum(&num, 4, positive);
     intToBignum(&num1, x, positive);
     intToBignum(&num2, y, positive);
 
-    setBignum(&num1, "70083693508915213745197637360864101925485320672729", positive);
-    setBignum(&num2, "54731509709293787933100356408829236967995835556926", positive);
-
-    karatsubaBignumShiftLeft(&numRes, &num, 4);
-    printf("\nNum shift left: ");
-    printBignum(&numRes);
-    printf("\n");
+    // setBignum(&num1, "70083693508915213745197637360864101925485320672729", positive);
+    // setBignum(&num2, "54731509709293787933100356408829236967995835556926", positive);
 
     printf("\nMultiplying ");
     printBignum(&num1);
     printf(" and ");
     printBignum(&num2);
-    printf(":\n\n");
 
     karatsuba3Compressed(&result, &num1, &num2);
-
-    printf("\n\nBignum: ");
-    printBignum(&num);
-    printf("\nresult: ");
-    printBignum(&result);
-    printf("\n\n\n####################################\n\n");
 ;
     long resKA2 = karatsuba2Compressed(x, y);
 
-    //printf("\n\nExpected Result: %llu * %llu = %llu", x, y, x * y);
-    //printf("\nKA2 Result: %llu * %llu = %llu", x, y, resKA2);
-    printf("\nKA3 Result: ");
+    printf("\n\n%-15s %llu * %llu = %llu","Native Result:", x, y, x * y);
+    printf("\n%-15s %llu * %llu = %llu","KA2 Result:", x, y, resKA2);
+    printf("\n%-15s ","KA3 Result:");
+    printBignum(&num1);
+    printf(" * ");
+    printBignum(&num2);
+    printf(" = ");
     printBignum(&result);
 
     printf("\n\n\n");
