@@ -594,3 +594,188 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     // Trim result. Removing any possible leading 0s
     trimBignum(result);
 }
+
+
+int multiplyBignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
+    if (shiftPlaces < 0) {
+        printf("Shifting Bignum by negative value/s.\n");
+        return -1;
+    }
+
+    unsigned long long int resultLength = shiftPlaces;
+
+    memset(result->digits, 0, sizeof(int) * shiftPlaces);
+
+    for (unsigned long int i = shiftPlaces, j = 0; j < num->length; i++, j++) {
+        result->digits[i] = num->digits[j];
+        
+        resultLength++;
+    }
+
+    result->length = resultLength;
+}
+
+int multiplyBignumGetLeftHalf(Bignum *result, Bignum *num, unsigned long long int splitIndex) {
+    unsigned long long int resultLength = 0;
+
+    for (unsigned long int i = splitIndex, j = 0; i < num->length; i++, j++) {
+        result->digits[j] = num->digits[i];
+        resultLength++;
+    }
+
+    result->length = resultLength;
+}
+
+int multiplyBignumGetRightHalf(Bignum *result, Bignum *num, unsigned long long int splitIndex) {
+    if (splitIndex < 0) {
+        printf("Shifting Bignum by negative value.\n");
+        return -2;
+    }
+
+    if (num->length < splitIndex) {
+        printf("Bignum length: %llu | shifting by: %llu\n", num->length, splitIndex);
+        printf("Shifting Bignum by place that will go out of bounds.\n");
+        return -1;
+    }
+
+    for (unsigned long int i = 0; i < splitIndex; i++) {
+        result->digits[i] = num->digits[i];
+    }
+
+    result->length = splitIndex;
+}
+
+int multiplyBignum(Bignum *result, Bignum *x, Bignum *y) {
+    printf("\n------------------------------");
+    printf("\n\nK3 for x: ");
+    printBignum(x);
+    printf(" and y: ");
+    printBignum(y);
+    printf("\n");
+
+    // Base case
+    if (x->length == 1 || y->length == 1) {
+        long long int xInt = bignumToInt(x);
+        long long int yInt = bignumToInt(y);
+        intToBignum(result, xInt * yInt, positive);
+        return 0;
+    }
+
+    // int n = fmax(get_size(x), get_size(y));
+    unsigned long long int n = fmax(x->length, y->length);
+    unsigned long long int half = floor(n / 2.0);
+
+    printf("\nn/2: %llu", half);
+
+
+
+    Bignum a = initBignum();
+    Bignum b = initBignum();
+    Bignum c = initBignum();
+    Bignum d = initBignum();
+
+    Bignum ac = initBignum();
+    Bignum bd = initBignum();
+
+    Bignum a_plus_b = initBignum();
+    Bignum c_plus_d = initBignum();
+    Bignum ac_minus_bd = initBignum();
+    Bignum a_plus_b_times_c_plus_d = initBignum();
+    Bignum a_plus_b_times_c_plus_d_minus_ac = initBignum();
+    Bignum ad_plus_bc = initBignum();
+
+    Bignum ac_left_shift = initBignum();
+    Bignum ad_plus_bc_left_shift = initBignum();
+    Bignum ac_left_shift_plus_ad_plus_bc_left_shift = initBignum();
+    Bignum ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd = initBignum();
+    Bignum zero = initBignum();
+    setBignum(&zero, "0", positive);
+
+    printf("\nGetting a,b,c,d...\n\n");
+    multiplyBignumGetLeftHalf(&a, x, half);
+    multiplyBignumGetRightHalf(&b, x, half);
+    multiplyBignumGetLeftHalf(&c, y, half);
+    multiplyBignumGetRightHalf(&d, y, half);
+    
+    printf("\na: ");
+    printBignum(&a);
+    printf(" b: ");
+    printBignum(&b);
+    printf(" c: ");
+    printBignum(&c);
+    printf(" d: ");
+    printBignum(&d);
+
+
+    printf("\nGetting ac and bd...\n\n");
+    multiplyBignum(&ac, &a, &c);
+    multiplyBignum(&bd, &b, &d);
+
+    printBignum(&d);
+    printf("\n\nac: ");
+    printBignum(&ac);
+    printf("\nbd: ");
+    printBignum(&bd);
+
+
+
+    printf("\nGetting ad+bc...\n\n");
+    addBignum(&a_plus_b, &a, &b);
+    addBignum(&c_plus_d, &c, &d);
+    multiplyBignum(&a_plus_b_times_c_plus_d, &a_plus_b, &c_plus_d);
+    subtractBignum(&a_plus_b_times_c_plus_d_minus_ac, &a_plus_b_times_c_plus_d, &ac);
+    subtractBignum(&ad_plus_bc, &a_plus_b_times_c_plus_d_minus_ac, &bd);
+    // long ad_plus_bc = karatsuba2(a+b,c+d)-ac-bd;
+
+    printf("\na+b: ");
+    printBignum(&a_plus_b);
+    printf("\nc+d: ");
+    printBignum(&c_plus_d);
+    printf("\na+b * c+d: ");
+    printBignum(&a_plus_b_times_c_plus_d);
+    printf("\nad+bc: ");
+    printBignum(&ad_plus_bc);
+
+    printf("\nShifting ac and ad+bc...\n\n");
+    multiplyBignumShiftLeft(&ac_left_shift, &ac, half * 2);
+    multiplyBignumShiftLeft(&ad_plus_bc_left_shift, &ad_plus_bc, half);
+
+    printf("\n\nac left shift: ");
+    printBignum(&ac_left_shift);
+    printf("\nad+bc left shift: ");
+    printBignum(&ad_plus_bc_left_shift);
+
+
+
+    // long result = (ac * custom_pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd;
+    printf("\nCompilig results...\n\n");
+    addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift, &ac_left_shift, &ad_plus_bc_left_shift);
+    addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &ac_left_shift_plus_ad_plus_bc_left_shift, &bd);
+    addBignum(result, &ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &zero);
+
+    if ((x->sign == positive && y->sign == positive) || x->sign == negative && y->sign == negative) {
+        result->sign = positive;
+    } else {
+        result->sign = negative;
+    }
+
+    printf("\nbd: ");
+    printBignum(&bd);
+    printf("\nac shift left + ad+bc shift left:  ");
+    printBignum(&ac_left_shift_plus_ad_plus_bc_left_shift);
+    printf("\nac shift left + ad+bc shift left + bd: ");
+    printBignum(&ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd);
+    printf("\nresult: ");
+    printBignum(result);
+
+    return 0;
+
+    // long a = floor(x / multiplier);
+    // long b = x % multiplier;
+    // long c = floor(y / multiplier);
+    // long d = y % multiplier;
+
+    // long ac = karatsuba2(a,c);
+    // long bd = karatsuba2(b,d);
+    // long ad_plus_bc = karatsuba2(a+b,c+d)-ac-bd;
+}
