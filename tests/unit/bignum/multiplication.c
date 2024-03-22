@@ -11,15 +11,15 @@ void testSign(BIGNUM_SIGN integer1Sign, BIGNUM_SIGN integer2Sign, int numOfInter
         long long int integer1, integer2;
     
         if (integer1Sign == positive) {
-            integer1 = rand() % 999999 - 100000;
+            integer1 = 100000 + rand() % (999999 - 100000 + 1);
         } else {
-            integer1 = rand() % 900000 - 999999;
+            integer1 = -999999 + rand() % (-100000 - -999999 + 1);
         }
 
         if (integer2Sign == positive) {
-            integer2 = rand() % 999999 - 100000;
+            integer2 = 100000 + rand() % (999999 - 100000 + 1);
         } else {
-            integer2 = rand() % 900000 - 999999;
+            integer2 = -999999 + rand() % (-100000 - -999999 + 1);
         }
 
         long long int integerResult = integer1 * integer2;

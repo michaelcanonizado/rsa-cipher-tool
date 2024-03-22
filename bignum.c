@@ -689,6 +689,21 @@ int multiplyBignum(Bignum *result, Bignum *x, Bignum *y) {
     Bignum zero = initBignum();
     setBignum(&zero, "0", positive);
 
+    // if (x->length == 0 && half > x->length) {
+    //     printf("\n\n");
+    //     // printBignum(x);
+    //     printf("  sign: %d | length: %d\n", x->sign, x->length);
+    //     printf(" - %llu", half);
+    //     printf("\n\n");
+    // }
+    // if (y->length == 0 && half > y->length) {
+    //     printf("\n\n");
+    //     // printBignum(y);
+    //     printf("  sign: %d | length: %d\n", y->sign, y->length);
+    //     printf(" - %llu", half);
+    //     printf("\n\n");
+    // }
+
     multiplyBignumGetLeftHalf(&a, x, half);
     multiplyBignumGetRightHalf(&b, x, half);
     multiplyBignumGetLeftHalf(&c, y, half);

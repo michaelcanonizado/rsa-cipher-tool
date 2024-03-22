@@ -418,15 +418,15 @@ int karatsuba3Compressed(Bignum *result, Bignum *x, Bignum *y) {
 }
 
 int main(){
-    long long int x = 123;
-    long long int y = 123;
+    long long int x = 109333;
+    long long int y = -980606;
 
     Bignum num1 = initBignum();
     Bignum num2 = initBignum();
     Bignum result = initBignum();
 
     intToBignum(&num1, x, positive);
-    intToBignum(&num2, y, positive);
+    intToBignum(&num2, y * (-1), negative);
 
     // setBignum(&num1, "70083693508915213745197637360864101925485320672729", positive);
     // setBignum(&num2, "54731509709293787933100356408829236967995835556926", positive);
@@ -438,10 +438,10 @@ int main(){
 
     multiplyBignum(&result, &num1, &num2);
 
-    long resKA2 = karatsuba2Compressed(x, y);
+    long long resKA2 = karatsuba2Compressed(x, y);
 
-    printf("\n\n%-15s %llu * %llu = %llu","Native Result:", x, y, x * y);
-    printf("\n%-15s %llu * %llu = %llu","KA2 Result:", x, y, resKA2);
+    printf("\n\n%-15s %lld * %lld = %lld","Native Result:", x, y, x * y );
+    printf("\n%-15s %lld * %lld = %lld","KA2 Result:", x, y, resKA2);
     printf("\n%-15s ","KA3 Result:");
     printBignum(&num1);
     printf(" * ");
