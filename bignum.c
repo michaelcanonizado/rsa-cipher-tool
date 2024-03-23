@@ -645,6 +645,10 @@ int multiplyBignumGetRightHalf(Bignum *result, Bignum *num, unsigned long long i
 }
 
 int multiplyBignum(Bignum *result, Bignum *x, Bignum *y) {
+    // Function that multiplies 2 Bignums together.
+    // Uses the karatsuba multiplication algorithm (https://www.youtube.com/watch?v=yWI2K4jOjFQ&t=6s) that has a time complexity of O(n^1.6). Which is faster than the traditional multiplication algorithm with a time complexity of O(n^2).
+
+    // Base Case
     if (x->length == 1 || y->length == 1) {
         long long int xInt = bignumToInt(x);
         long long int yInt = bignumToInt(y);
@@ -652,9 +656,11 @@ int multiplyBignum(Bignum *result, Bignum *x, Bignum *y) {
         return 0;
     }
     
+    // Get maximum length (n) and half (n/2)
     unsigned long long int n = fmax(x->length, y->length);
     unsigned long long int half = floor(n / 2.0);
 
+    // Initialize nessessary Bignums
     Bignum a = initBignum();
     Bignum b = initBignum();
     Bignum c = initBignum();
@@ -677,27 +683,46 @@ int multiplyBignum(Bignum *result, Bignum *x, Bignum *y) {
     Bignum zero = initBignum();
     setBignum(&zero, "0", positive);
 
+    // Split the multiplicand and multiplier.
+    // E.g: x = 1234 & y = 4567
+    // a = 12 | b = 34 | c = 45 | d = 67
+    // Custom utility functions for multiplyBignum() are made to split x and y in half using the specified half. This is so that we don't half to use modulo and division in multiplyBignum().
+    // 
+    // a = x / (pow(10, half))
     multiplyBignumGetLeftHalf(&a, x, half);
+    // b = x % (pow(10, half))
     multiplyBignumGetRightHalf(&b, x, half);
+    // c = y / (pow(10, half))
     multiplyBignumGetLeftHalf(&c, y, half);
+    // d = y % (pow(10, half))
     multiplyBignumGetRightHalf(&d, y, half);
     
+    // Recursive call #1
     multiplyBignum(&ac, &a, &c);
+    // Recursive call #2
     multiplyBignum(&bd, &b, &d);
 
+    // Recursive call #3
+    // ad_plus_bc = multiplyBignum(a+b, c+d) - ac - bd
     addBignum(&a_plus_b, &a, &b);
     addBignum(&c_plus_d, &c, &d);
     multiplyBignum(&a_plus_b_times_c_plus_d, &a_plus_b, &c_plus_d);
+
+    // Collect results
+    // result = ac * (pow(10, half * 2)) + (ad_plus_bc * (pow(10, half))) + bd
     subtractBignum(&a_plus_b_times_c_plus_d_minus_ac, &a_plus_b_times_c_plus_d, &ac);
     subtractBignum(&ad_plus_bc, &a_plus_b_times_c_plus_d_minus_ac, &bd);
-
     multiplyBignumShiftLeft(&ac_left_shift, &ac, half * 2);
     multiplyBignumShiftLeft(&ad_plus_bc_left_shift, &ad_plus_bc, half);
-
     addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift, &ac_left_shift, &ad_plus_bc_left_shift);
     addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &ac_left_shift_plus_ad_plus_bc_left_shift, &bd);
     addBignum(result, &ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &zero);
 
+    // Determine sign of result using multiplication rules:
+    // +x * +y = +
+    // -x * -y = +
+    // +x * -y = -
+    // -x * +y = -
     if ((x->sign == positive && y->sign == positive) || x->sign == negative && y->sign == negative) {
         result->sign = positive;
     } else {
