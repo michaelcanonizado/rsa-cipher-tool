@@ -436,20 +436,36 @@ int main(){
     printf(" and ");
     printBignum(&num2);
 
-    multiplyBignum(&result, &num1, &num2);
+    // multiplyBignum(&result, &num1, &num2);
 
-    long long resKA2 = karatsuba2Compressed(x, y);
+    // long long resKA2 = karatsuba2Compressed(x, y);
 
-    printf("\n\n%-15s %lld * %lld = %lld","Native Result:", x, y, x * y );
-    printf("\n%-15s %lld * %lld = %lld","KA2 Result:", x, y, resKA2);
-    printf("\n%-15s ","KA3 Result:");
-    printBignum(&num1);
-    printf(" * ");
-    printBignum(&num2);
-    printf(" = ");
-    printBignum(&result);
+    // printf("\n\n%-15s %lld * %lld = %lld","Native Result:", x, y, x * y );
+    // printf("\n%-15s %lld * %lld = %lld","KA2 Result:", x, y, resKA2);
+    // printf("\n%-15s ","KA3 Result:");
+    // printBignum(&num1);
+    // printf(" * ");
+    // printBignum(&num2);
+    // printf(" = ");
+    // printBignum(&result);
 
-    printf("\nKA3 Result Sign: %d", result.sign);
+    // printf("\nKA3 Result Sign: %d", result.sign);
+
+    Bignum num = initBignum();
+    Bignum resLeft = initBignum();
+    Bignum resRight = initBignum();
+    setBignum(&num, "1123", positive);
+    // num.length = 0;
+    karatsubaBignumGetLeftHalf(&resLeft, &num, 4);
+    karatsubaBignumGetRightHalf(&resRight, &num, 4);
+
+    printf("\nNum: ");
+    printBignum(&num);
+    printf(" | Num length: %d | Left: ", num.length);
+    printBignum(&resLeft);
+    printf(" | Right: ");
+    printBignum(&resRight);
+    printf("\n\n");
 
     printf("\n\n\n");
     return 0;
