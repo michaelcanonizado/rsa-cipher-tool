@@ -655,7 +655,7 @@ int multiplyBignumGetRightHalf(Bignum *result, Bignum *num, unsigned long long i
     result->length = resultLength;
 }
 
-int multiplyBignum(Bignum *result, Bignum *x, Bignum *y) {
+int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     // Function that multiplies 2 Bignums together.
     // Uses the karatsuba multiplication algorithm (https://www.youtube.com/watch?v=yWI2K4jOjFQ&t=6s) that has a time complexity of O(n^1.6). Which is faster than the traditional multiplication algorithm with a time complexity of O(n^2).
 
@@ -665,15 +665,15 @@ int multiplyBignum(Bignum *result, Bignum *x, Bignum *y) {
     // x = 999,999,999 | y = 999,999,999
     // result = x * y (x * y = 999,999,998,000,000,001)
     // intToBignum(result);
-    if (x->length == 1 || y->length == 1) {
-        long long int xInt = bignumToInt(x);
-        long long int yInt = bignumToInt(y);
-        intToBignum(result, xInt * yInt, positive);
+    if (multiplicand->length == 1 || multiplier->length == 1) {
+        long long int multiplicandInt = bignumToInt(multiplicand);
+        long long int multiplierInt = bignumToInt(multiplier);
+        intToBignum(result, multiplicandInt * multiplierInt, positive);
         return 0;
     }
     
     // Get maximum length (n) and half (n/2)
-    unsigned long long int n = fmax(x->length, y->length);
+    unsigned long long int n = fmax(multiplicand->length, multiplier->length);
     unsigned long long int half = floor(n / 2.0);
 
     // Initialize nessessary Bignums
@@ -705,13 +705,13 @@ int multiplyBignum(Bignum *result, Bignum *x, Bignum *y) {
     // Custom utility functions for multiplyBignum() are made to split x and y in half using the specified half. This is so that we don't half to use modulo and division in multiplyBignum().
     // 
     // a = x / (pow(10, half))
-    multiplyBignumGetLeftHalf(&a, x, half);
+    multiplyBignumGetLeftHalf(&a, multiplicand, half);
     // b = x % (pow(10, half))
-    multiplyBignumGetRightHalf(&b, x, half);
+    multiplyBignumGetRightHalf(&b, multiplicand, half);
     // c = y / (pow(10, half))
-    multiplyBignumGetLeftHalf(&c, y, half);
+    multiplyBignumGetLeftHalf(&c, multiplier, half);
     // d = y % (pow(10, half))
-    multiplyBignumGetRightHalf(&d, y, half);
+    multiplyBignumGetRightHalf(&d, multiplier, half);
     
     // Recursive call #1
     multiplyBignum(&ac, &a, &c);
@@ -739,7 +739,7 @@ int multiplyBignum(Bignum *result, Bignum *x, Bignum *y) {
     // -x * -y = +
     // +x * -y = -
     // -x * +y = -
-    if ((x->sign == positive && y->sign == positive) || x->sign == negative && y->sign == negative) {
+    if ((multiplicand->sign == positive && multiplier->sign == positive) || multiplicand->sign == negative && multiplier->sign == negative) {
         result->sign = positive;
     } else {
         result->sign = negative;
