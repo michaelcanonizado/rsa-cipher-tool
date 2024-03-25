@@ -672,7 +672,7 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
         return 0;
     }
     
-    // Get maximum length (n) and half (n/2)
+    // Determine the maximum length (n) and half (n/2) of multiplicand and multiplier.
     unsigned long long int n = fmax(multiplicand->length, multiplier->length);
     unsigned long long int half = floor(n / 2.0);
 
@@ -702,7 +702,7 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     // Split the multiplicand and multiplier.
     // E.g: x = 1234 & y = 4567
     // a = 12 | b = 34 | c = 45 | d = 67
-    // Custom utility functions for multiplyBignum() are made to split x and y in half using the specified half. This is so that we don't half to use modulo and division in multiplyBignum().
+    // Custom utility functions that uses for-loops to split the Bignum are made to split the multiplicand and multiplier using the specified half (n/2). This is so that we don't have to use modulo and division in multiplyBignum().
     // 
     // a = x / (pow(10, half))
     multiplyBignumGetLeftHalf(&a, multiplicand, half);
@@ -735,10 +735,10 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     addBignum(result, &ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &zero);
 
     // Determine sign of result using multiplication rules:
-    // +x * +y = +
-    // -x * -y = +
-    // +x * -y = -
-    // -x * +y = -
+    // +x * +y = +r
+    // -x * -y = +r
+    // +x * -y = -r
+    // -x * +y = -r
     if ((multiplicand->sign == positive && multiplier->sign == positive) || multiplicand->sign == negative && multiplier->sign == negative) {
         result->sign = positive;
     } else {
