@@ -723,11 +723,11 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     addBignum(&a_plus_b, &a, &b);
     addBignum(&c_plus_d, &c, &d);
     multiplyBignum(&a_plus_b_times_c_plus_d, &a_plus_b, &c_plus_d);
+    subtractBignum(&a_plus_b_times_c_plus_d_minus_ac, &a_plus_b_times_c_plus_d, &ac);
+    subtractBignum(&ad_plus_bc, &a_plus_b_times_c_plus_d_minus_ac, &bd);
 
     // Collect results
     // result = ac * (pow(10, half * 2)) + (ad_plus_bc * (pow(10, half))) + bd
-    subtractBignum(&a_plus_b_times_c_plus_d_minus_ac, &a_plus_b_times_c_plus_d, &ac);
-    subtractBignum(&ad_plus_bc, &a_plus_b_times_c_plus_d_minus_ac, &bd);
     multiplyBignumShiftLeft(&ac_left_shift, &ac, half * 2);
     multiplyBignumShiftLeft(&ad_plus_bc_left_shift, &ad_plus_bc, half);
     addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift, &ac_left_shift, &ad_plus_bc_left_shift);
