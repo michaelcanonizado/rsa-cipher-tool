@@ -1,38 +1,67 @@
 #include <stdio.h>
 #include "bignum.h"
 
-int karatsubaBignumGetRightHalf(Bignum *result, Bignum *num, unsigned long long int splitIndex) {
-    if (splitIndex < 0) {
-        printf("Shifting Bignum by negative value.\n");
-        return -2;
-    }
-
-    if (num->length < splitIndex) {
-        printf("Bignum length: %llu | shifting by: %llu\n", num->length, splitIndex);
-        printf("Shifting Bignum by place that will go out of bounds.\n");
-        return -1;
-    }
-
-    for (unsigned long int i = 0; i < splitIndex; i++) {
-        result->digits[i] = num->digits[i];
-    }
-
-    result->length = splitIndex;
-}
-
 int main() {
-    Bignum num1 = initBignum();
-    Bignum num2 = initBignum();
-    Bignum result = initBignum();
+    /* 
 
-    setBignum(&num1, "123", positive);
-    setBignum(&num2, "8", positive);
+     x  /  y  = 5
+    101 / 20  = 5
 
-    karatsubaBignumGetRightHalf(&result, &num1, 1);
+    20 * 1 = 20
+    20 * 2 = 40
+    20 * 3 = 60
+    20 * 4 = 80
+    20 * 5 = 100 <-
+    20 * 6 = 120
 
-    printBignum(&result);
 
-    printf("\n");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+   Bignum x = initBignum();
+
+   setBignum(&x, 1235445645645, positive);
+
+
+
+
+
+
+
+
+
+
+
+
+
+      1234 -> [4,3,2,1]
+    x 5678 -> [8,7,6,5]
+    ----------------------
+      7,006,652 -> [2,5,6,6,0,0,7]
+    
+    
+    
+    
+    */
 
     return 0;
 }
