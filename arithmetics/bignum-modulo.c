@@ -20,6 +20,7 @@ int arrayModulo(int arr[], int size, int divisor) {
     return remainder;
 }
 
+// NOTE: This function was copied from multiplyBignumShiftLeft() in ../bignum.c. Rename multiplyBignumShiftLeft() to bignumShiftLeft as it can be used in other bignum.c functions other than multiplyBignum().
 int bignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
     // Function that shifts a Bigum with the ampunt of 0s specified (x * pow(10, n)).
     // E.g: Integer: 123 -> 12300
