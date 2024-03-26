@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <string.h>
+#include <limits.h>
+#include <math.h>
 #include "../bignum.h"
 
 // Function to calculate modulo of an array of digits
@@ -48,6 +50,40 @@ int bignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPla
     result->length = resultLength;
 }
 
+unsigned long long int modulo(unsigned long long int dividend, unsigned long long int divisor) {
+    unsigned long long int multiplyResult = 0, count;
+
+    unsigned long long int countLowerLimit = pow(10, getLengthOfInteger(dividend) - (getLengthOfInteger(divisor) + 1));
+    unsigned long long int countUpperLimit = pow(10, getLengthOfInteger(dividend) - (getLengthOfInteger(divisor) - 1));
+    
+    
+    while(1) {
+        count = (countUpperLimit + countLowerLimit) / 2;
+
+        printf("L: %llu | R: %llu | Mid: %llu", countLowerLimit, countUpperLimit, count);
+
+        multiplyResult = divisor * count;
+        printf("\ndivisor: %llu * count: %llu = %llu | dividend: %llu\n\n", divisor, count, multiplyResult, dividend);
+        if (multiplyResult > dividend) {
+            countUpperLimit = count;
+        } else if (multiplyResult < dividend) {
+            countLowerLimit = count;
+        }
+
+        if (
+            ((dividend - multiplyResult) < dividend) && 
+            (
+                (dividend - multiplyResult) >= 0 && 
+                (dividend - multiplyResult) < divisor
+            )) {
+            printf("\n\nLAST COUNT: %llu\n", count);
+            break;
+        }
+    }
+
+    return dividend - (count * divisor);
+}
+
 int bignumModulo(Bignum *dividend, int divisor) {
     int remainder = 0;
 
@@ -79,18 +115,25 @@ int main() {
 
     setBignum(&bignumDividend, "60436891", positive);
 
-    printf("\n");
-    for(int i = 0; i < sizeof(numberArray)/sizeof(numberArray[0]); i++) {
-        printf("%d", numberArray[i]);
-    }
-    printf(" modulo %d is:\n", divisor);
+    // printf("\n");
+    // for(int i = 0; i < sizeof(numberArray)/sizeof(numberArray[0]); i++) {
+    //     printf("%d", numberArray[i]);
+    // }
+    // printf(" modulo %d is:\n", divisor);
 
     // int moduloResult = arrayModulo(numberArray, arraySize, divisor);
-    int bignumModuloResult = bignumModulo(&bignumDividend, divisor);
+    // int bignumModuloResult = bignumModulo(&bignumDividend, divisor);
 
     // Display the result
     // printf("Modulo result: %d\n", moduloResult);
-    printf("Bignum Modulo result: %d\n", bignumModuloResult);
+    // printf("Bignum Modulo result: %d\n", bignumModuloResult);
+
+    long long int x = LLONG_MAX;
+    long long int y = 2;
+    // int x = 111;
+    // int y = 20;
+
+    printf("\n\n%llu %% %llu = %llu\n\n", x, y, modulo(x, y));
 
     return 0;
 }
