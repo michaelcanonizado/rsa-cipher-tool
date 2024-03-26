@@ -24,11 +24,7 @@ int arrayModulo(int arr[], int size, int divisor) {
 }
 
 // NOTE: This function was copied from multiplyBignumShiftLeft() in ../bignum.c. Rename multiplyBignumShiftLeft() to bignumShiftLeft as it can be used in other bignum.c functions other than multiplyBignum().
-int bignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
-    // Function that shifts a Bigum with the ampunt of 0s specified (x * pow(10, n)).
-    // E.g: Integer: 123 -> 12300
-    // E.g: Bignum: [3,2,1] -> [0,0,3,2,1]
-    
+int bignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {  
     if (shiftPlaces < 0) {
         printf("Shifting Bignum by negative value/s.\n");
         return -1;
@@ -36,11 +32,8 @@ int bignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPla
 
     unsigned long long int resultLength = shiftPlaces;
 
-    // Set the LSD (least significant digit) of result.digit to the amount of 0s specified.
-    // REFACTOR: THIS EXPRESSION CAN BE REMOVED AS initBignum() SETS ALL ELEMENTS OF Bignum.digits[] TO 0. IF THIS REFACTOR FAVTOR IS BEING APPLIED, DONT FORGET TO RETEST multiplyBignum()
     memset(result->digits, 0, sizeof(int) * shiftPlaces);
 
-    // Copy the rest of num.digits to result.digits
     for (unsigned long int i = shiftPlaces, j = 0; j < num->length; i++, j++) {
         result->digits[i] = num->digits[j];
         
