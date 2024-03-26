@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "../bignum.h"
 
 // Function to calculate modulo of an array of digits
@@ -47,15 +48,15 @@ int bignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPla
     result->length = resultLength;
 }
 
-int bignumModulo(Bignum *num, int divisor) {
+int bignumModulo(Bignum *dividend, int divisor) {
     int remainder = 0;
 
     // Iterate through the array from left to right
-    for (int i = num->length - 1; i >= 0; i--) {
+    for (int i = dividend->length - 1; i >= 0; i--) {
         
         // Calculate the current result including the next digit
-        int currentResult = remainder * 10 + num->digits[i];
-        printf("\nr: %d * %d + curr_val: %d = cur_r: %d", remainder, 10, num->digits[i], currentResult);
+        int currentResult = remainder * 10 + dividend->digits[i];
+        printf("\nr: %d * %d + curr_val: %d = cur_r: %d", remainder, 10, dividend->digits[i], currentResult);
         // Update the remainder for the next iteration
         remainder = currentResult % divisor;
         printf("\ncur_r: %d %% %d = upd_r: %d\n\n", currentResult, divisor, remainder);
