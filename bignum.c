@@ -665,7 +665,13 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     // x = 999,999,999 | y = 999,999,999
     // result = x * y (x * y = 999,999,998,000,000,001)
     // intToBignum(result);
-    if (multiplicand->length == 1 || multiplier->length == 1) {
+    if (
+        (multiplicand->length <= 9 || multiplier->length <= 9) &&
+        (
+            multiplicand->length < 9 && 
+            multiplier->length < 9
+        )
+        ) {
         long long int multiplicandInt = bignumToInt(multiplicand);
         long long int multiplierInt = bignumToInt(multiplier);
         intToBignum(result, multiplicandInt * multiplierInt, positive);
