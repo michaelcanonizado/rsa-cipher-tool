@@ -276,6 +276,70 @@ int bignumModulo(Bignum *result, Bignum *dividend, Bignum *divisor) {
     // return remainder;
 }
 
+int moduloBignumCompressed(Bignum *result, Bignum *dividend, Bignum *divisor) {
+    unsigned long long int countInt;
+
+    if (isLessThanBignum(dividend, divisor)) {
+        copyBignum(result, dividend);
+        return 0;
+    }
+
+    Bignum tempOne = initBignum();
+    Bignum counterLeftIndex = initBignum();
+    Bignum counterRightIndex = initBignum();
+    Bignum counterMiddleIndex = initBignum();
+
+    setBignum(&tempOne, "1", positive);
+
+    unsigned long long int leftShiftBy = 0;
+    unsigned long long int rightShiftBy = dividend->length - (divisor->length - 1);
+
+    if ((divisor->length + 1) < dividend->length) {
+        leftShiftBy = dividend->length - (divisor->length + 1);
+    }
+
+    bignumShiftLeft(&counterLeftIndex, &tempOne, leftShiftBy);
+    bignumShiftLeft(&counterRightIndex, &tempOne, rightShiftBy);
+
+    unsigned long long int countLowerLimit = pow(10, dividend->length - (divisor->length + 1));
+    unsigned long long int countUpperLimit = pow(10, dividend->length - (divisor->length - 1));
+    
+    Bignum multiplyResult = initBignum();
+    setBignum(&multiplyResult, "0", positive);
+
+    while(1) {
+        multiplyResult = initBignum();
+
+        getAverage(&counterMiddleIndex, &counterLeftIndex, &counterRightIndex);
+
+        multiplyBignum(&multiplyResult, divisor, &counterMiddleIndex);
+
+        printf("\nMultiply Result: ");
+        printBignum(&multiplyResult);
+
+        if (isGreaterThanBignum(&multiplyResult, dividend)) {
+            printf("\nMR is greater than dividend...");
+            copyBignum(&counterRightIndex, &counterMiddleIndex);
+        } else if (isLessThanBignum(&multiplyResult, dividend)) {
+            printf("\nMR is less than dividend...");
+            copyBignum(&counterLeftIndex, &counterMiddleIndex);
+        }
+
+        Bignum dividendMinusMultiplyResult = initBignum();
+        subtractBignum(&dividendMinusMultiplyResult, dividend, &multiplyResult);
+
+        if (
+            (isLessThanBignum(&dividendMinusMultiplyResult, divisor)) && 
+            dividendMinusMultiplyResult.sign == positive
+            ) {
+            break;
+        }
+
+    }
+    Bignum countTimesDivisor = initBignum();
+    subtractBignum(result, dividend, &multiplyResult);
+}
+
 int main() {
     // Example: Number 256 represented as [2, 5, 6]
     int numberArray[] = {6,0,4,3,6,8,9,1};
