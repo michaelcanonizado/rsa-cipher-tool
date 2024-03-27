@@ -43,6 +43,27 @@ int bignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPla
     result->length = resultLength;
 }
 
+int getAverage(Bignum *result, Bignum *num1, Bignum *num2) {
+    Bignum num1PlusNum2 = initBignum();
+
+    addBignum(&num1PlusNum2, num1, num2);
+
+    int carry = 0;
+
+    for (int i = num1PlusNum2.length - 1; i >= 0; i--) {
+        result->digits[i] = (num1PlusNum2.digits[i] / 2) + carry;
+
+        if (num1PlusNum2.digits[i] % 2 != 0) {
+            carry = 5;
+        } else {
+            carry = 0;
+        }
+    }
+
+    result->length = num1PlusNum2.length;
+    trimBignum(result);
+}
+
 unsigned long long int modulo(unsigned long long int dividend, unsigned long long int divisor) {
     unsigned long long int multiplyResult = 0, count;
 
@@ -167,27 +188,6 @@ int bignumModulo(Bignum *dividend, int divisor) {
     return remainder;
 }
 
-int getAverage(Bignum *result, Bignum *num1, Bignum *num2) {
-    Bignum num1PlusNum2 = initBignum();
-
-    addBignum(&num1PlusNum2, num1, num2);
-
-    int carry = 0;
-
-    for (int i = num1PlusNum2.length - 1; i >= 0; i--) {
-        result->digits[i] = (num1PlusNum2.digits[i] / 2) + carry;
-
-        if (num1PlusNum2.digits[i] % 2 != 0) {
-            carry = 5;
-        } else {
-            carry = 0;
-        }
-    }
-
-    result->length = num1PlusNum2.length;
-    trimBignum(result);
-}
-
 int main() {
     // Example: Number 256 represented as [2, 5, 6]
     int numberArray[] = {6,0,4,3,6,8,9,1};
@@ -226,14 +226,11 @@ int main() {
     intToBignum(&bignumX, x, positive);
     intToBignum(&bignumY, y, positive);
 
-    // printf("\n\nCALCULATING: %lld %% %lld\n\n\n", x, y);
+    printf("\n\nCALCULATING: %lld %% %lld\n\n\n", x, y);
 
-    // modulo2(&bignumRes, &bignumX, &bignumY);
+    modulo2(&bignumRes, &bignumX, &bignumY);
 
-    getAverage(&bignumRes, &bignumX, &bignumY);
-
-    // printf("\n\n%lld %% %lld = ", x, y);
-    printf("\n\nAverage of %lld and %lld: ", x, y);
+    printf("\n\n%lld %% %lld = ", x, y);
     printBignum(&bignumRes);
     printf("\n\n");
 
