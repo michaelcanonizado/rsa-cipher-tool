@@ -76,6 +76,78 @@ unsigned long long int modulo(unsigned long long int dividend, unsigned long lon
 
     return dividend - (count * divisor);
 }
+int modulo2(Bignum *result, Bignum *dividend, Bignum *divisor) {
+    unsigned long long int countInt;
+
+    unsigned long long int countLowerLimit = pow(10, dividend->length - (divisor->length + 1));
+    unsigned long long int countUpperLimit = pow(10, dividend->length - (divisor->length - 1));
+    
+    Bignum multiplyResult = initBignum();
+    setBignum(&multiplyResult, "0", positive);
+
+    while(1) {
+        multiplyResult = initBignum();
+
+        countInt = (countUpperLimit + countLowerLimit) / 2;
+        Bignum countBignum = initBignum();
+        intToBignum(&countBignum, countInt, positive);     
+
+        // printf("L: %llu | R: %llu | Mid: %llu", countLowerLimit, countUpperLimit, count);
+        printf("\n\nL: %llu | M: %llu | R: %llu\n\n", countLowerLimit, countInt, countUpperLimit);
+
+        // multiplyResult = divisor * countInt;
+        multiplyBignum(&multiplyResult, divisor, &countBignum);
+
+
+        printf("\nMultiply Result: ");
+        printBignum(&multiplyResult);
+
+        // if (multiplyResult > dividend) {
+        //     countUpperLimit = count;
+        // } else if (multiplyResult < dividend) {
+        //     countLowerLimit = count;
+        // }
+        if (isGreaterThanBignum(&multiplyResult, dividend)) {
+            printf("\nMR is greater than dividend...");
+            countUpperLimit = countInt;
+        } else if (isLessThanBignum(&multiplyResult, dividend)) {
+            printf("\nMR is less than dividend...");
+            countLowerLimit = countInt;
+        }
+
+        // if (
+        //     ((dividend - multiplyResult) < dividend) && 
+        //     (
+        //         (dividend - multiplyResult) >= 0 && 
+        //         (dividend - multiplyResult) < divisor
+        //     )) {
+        //     printf("\n\nLAST COUNT: %llu\n", count);
+        //     break;
+        // }
+        Bignum dividendMinusMultiplyResult = initBignum();
+        subtractBignum(&dividendMinusMultiplyResult, dividend, &multiplyResult);
+
+        printf("\n\n---------------------------------------------\n");
+
+        if (
+            (isLessThanBignum(&dividendMinusMultiplyResult, divisor)) && 
+            // (
+            //     isGreaterThanBignum(&dividendMinusMultiplyResult, dividend) && 
+            //     isLessThanBignum(&dividendMinusMultiplyResult, divisor)
+            // )
+            dividendMinusMultiplyResult.sign == positive
+            ) {
+            printf("\n\nLAST COUNT: %llu\n", countInt);
+            break;
+        }
+
+    }
+
+    // return dividend - (count * divisor);
+    Bignum countTimesDivisor = initBignum();
+    // multiplyBignum(&countTimesDivisor, &count)
+    subtractBignum(result, dividend, &multiplyResult);
+}
 
 int bignumModulo(Bignum *dividend, int divisor) {
     int remainder = 0;
@@ -122,11 +194,24 @@ int main() {
     // printf("Bignum Modulo result: %d\n", bignumModuloResult);
 
     long long int x = LLONG_MAX;
-    long long int y = 2;
-    // int x = 111;
-    // int y = 20;
+    long long int y = 48498159;
+    
+    Bignum bignumX = initBignum();
+    Bignum bignumY = initBignum();
+    Bignum bignumRes = initBignum();
 
-    printf("\n\n%llu %% %llu = %llu\n\n", x, y, modulo(x, y));
+    intToBignum(&bignumX, x, positive);
+    intToBignum(&bignumY, y, positive);
+
+    printf("\n\nCALCULATING: %lld %% %lld\n\n\n", x, y);
+
+    modulo2(&bignumRes, &bignumX, &bignumY);
+
+    // printf("\n\n%lld %% %lld = %lld\n\n", x, y, modulo(x, y));
+
+    printf("\n\n%lld %% %lld = ", x, y);
+    printBignum(&bignumRes);
+    printf("\n\n");
 
     return 0;
 }

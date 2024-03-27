@@ -5,6 +5,7 @@
 		"string.h": "c",
 		"limits.h": "c",
 		"bignum.h": "c",
-		"stdlib.h": "c"
+		"stdlib.h": "c",
+		"algorithm": "c"
 	}
 }
