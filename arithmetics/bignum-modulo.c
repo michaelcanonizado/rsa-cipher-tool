@@ -314,14 +314,9 @@ int moduloBignumCompressed(Bignum *result, Bignum *dividend, Bignum *divisor) {
 
         multiplyBignum(&multiplyResult, divisor, &counterMiddleIndex);
 
-        printf("\nMultiply Result: ");
-        printBignum(&multiplyResult);
-
         if (isGreaterThanBignum(&multiplyResult, dividend)) {
-            printf("\nMR is greater than dividend...");
             copyBignum(&counterRightIndex, &counterMiddleIndex);
         } else if (isLessThanBignum(&multiplyResult, dividend)) {
-            printf("\nMR is less than dividend...");
             copyBignum(&counterLeftIndex, &counterMiddleIndex);
         }
 
