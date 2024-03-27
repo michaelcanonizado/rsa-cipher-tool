@@ -233,27 +233,20 @@ int main() {
     // Display the result
     // printf("Modulo result: %d\n", moduloResult);
     // printf("Bignum Modulo result: %d\n", bignumModuloResult);
-
-    long long int x = LLONG_MAX;
-    long long int y = 12389;
-    // long long int x = 99;
-    // long long int y = 1;
     
     Bignum bignumX = initBignum();
     Bignum bignumY = initBignum();
     Bignum bignumRes = initBignum();
 
-    // intToBignum(&bignumX, x, positive);
-    // intToBignum(&bignumY, y, positive);
+    char x[] = "319859002539822367271325721997453701681203069948220192430643454394602894";
+    char y[] = "985900253982236727132572199745370168120306994822";
 
-    setBignum(&bignumX, "319859002539822367271325721997453701681203069948220192430643454394602894", positive);
-    setBignum(&bignumY, "985900253982236727132572199745370168120306994822", positive);
-
-    printf("\n\nCALCULATING: %lld %% %lld\n\n\n", x, y);
+    setBignum(&bignumX, x, positive);
+    setBignum(&bignumY, y, positive);
 
     modulo2(&bignumRes, &bignumX, &bignumY);
 
-    printf("\n\n%lld %% %lld = ", x, y);
+    printf("\n\n%s Mod %s = \n", x, y);
     printBignum(&bignumRes);
     printf("\n\n");
 
