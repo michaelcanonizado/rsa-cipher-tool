@@ -118,6 +118,11 @@ unsigned long long int moduloInt(unsigned long long int dividend, unsigned long 
 int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     unsigned long long int countInt;
 
+    if (isLessThanBignum(dividend, divisor)) {
+        copyBignum(result, dividend);
+        return 0;
+    }
+
     Bignum tempOne = initBignum();
     Bignum counterLeftIndex = initBignum();
     Bignum counterRightIndex = initBignum();
@@ -125,8 +130,23 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
 
     setBignum(&tempOne, "1", positive);
 
-    bignumShiftLeft(&counterLeftIndex, &tempOne, dividend->length - (divisor->length + 1));
-    bignumShiftLeft(&counterRightIndex, &tempOne, dividend->length - (divisor->length - 1));
+    unsigned long long int leftShiftBy = 0;
+    unsigned long long int rightShiftBy = dividend->length - (divisor->length - 1);
+
+    // Check if dividend.length - (divisor.length + 1) is a negative number. I.e: The dividend and divisor is of the same digits. If yes, keep leftShiftBy as 0, as the quotient will be only 1 digit long.
+    if ((divisor->length + 1) < dividend->length) {
+        leftShiftBy = dividend->length - (divisor->length + 1);
+    }
+
+    // unsigned long long int rightShiftBy = dividend->length - (divisor->length + 1) < 0 ? 2 : dividend->length - (divisor->length + 1);
+    printf("\nleft shift->  %lld\nright shift->  %lld", leftShiftBy, rightShiftBy);
+
+    printf("\nLSB: %llu | RSB: %llu", leftShiftBy, rightShiftBy);
+
+    bignumShiftLeft(&counterLeftIndex, &tempOne, leftShiftBy);
+    bignumShiftLeft(&counterRightIndex, &tempOne, rightShiftBy);
+    // bignumShiftLeft(&counterLeftIndex, &tempOne, dividend->length - (divisor->length + 1));
+    // bignumShiftLeft(&counterRightIndex, &tempOne, dividend->length - (divisor->length - 1));
 
     unsigned long long int countLowerLimit = pow(10, dividend->length - (divisor->length + 1));
     unsigned long long int countUpperLimit = pow(10, dividend->length - (divisor->length - 1));
@@ -288,16 +308,16 @@ int main() {
 
     // char x[] = "1";
     // char y[] = "20";
-    char x[] = "111";
-    char y[] = "20";
-    // char x[] = "5770006211367438645738846923103019093676944772562452020385513091639388860966725675839337369352270554";
-    // char y[] = "83229083364470435010488347620930684553892670457201390740089766094502884007293211299596918";
+    // char x[] = "111";
+    // char y[] = "20";
+    char x[] = "5770006211367438645738846923103019093676944772562452020385513091639388860966725675839337369352270554";
+    char y[] = "83229083364470435010488347620930684553892670457201390740089766094502884007293211299596918";
 
     setBignum(&bignumX, x, positive);
     setBignum(&bignumY, y, positive);
 
-    moduloBignum(&bignumRes, &bignumX, &bignumY);
-    //bignumModulo(&bignumRes, &bignumX, &bignumY);
+    //moduloBignum(&bignumRes, &bignumX, &bignumY);
+    bignumModulo(&bignumRes, &bignumX, &bignumY);
 
     printf("\n\n%s \nMod\n%s \nRESULT:\n", x, y);
     printBignum(&bignumRes);
