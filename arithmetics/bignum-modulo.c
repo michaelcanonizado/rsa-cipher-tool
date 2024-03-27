@@ -65,27 +65,45 @@ int getAverage(Bignum *result, Bignum *num1, Bignum *num2) {
 }
 
 unsigned long long int modulo(unsigned long long int dividend, unsigned long long int divisor) {
+    // Function will use repeated multiplication to find the quotient of the dividend and divisor. dividend - (quotient * divisor) will then give the remainder/modulo
+    // 111 / 20
+    // 20 * 1 = 20
+    // 20 * 2 = 40
+    // 20 * 3 = 60
+    // 20 * 4 = 80
+    // 20 * 5 = 100
+    // 111 - 100 = 11 <- remainder/modulo
+    // But it will use binary search to look for the quotient for faster calculations.
+    //The left and right values limits will start from the min and max number of digits of the quotient. The estimated number of digits of the quotient can be determined by: num of digits of divident - num of digits of divisor.
+
     unsigned long long int multiplyResult = 0, count;
 
+    // Get left and right limits
     unsigned long long int countLowerLimit = pow(10, getLengthOfInteger(dividend) - (getLengthOfInteger(divisor) + 1));
     unsigned long long int countUpperLimit = pow(10, getLengthOfInteger(dividend) - (getLengthOfInteger(divisor) - 1));
     
-    
+    // Perform binary search to find the quotient
     while(1) {
+        // Get the middle value. This will be used as a multiple to the divisor
         count = (countUpperLimit + countLowerLimit) / 2;
 
         printf("L: %llu | R: %llu | Mid: %llu", countLowerLimit, countUpperLimit, count);
 
+        // Get product
         multiplyResult = divisor * count;
         printf("\ndivisor: %llu * count: %llu = %llu | dividend: %llu\n\n", divisor, count, multiplyResult, dividend);
+
+        // CHeck if product is in the left or right half. Adjust the limits accordingly
         if (multiplyResult > dividend) {
             countUpperLimit = count;
         } else if (multiplyResult < dividend) {
             countLowerLimit = count;
         }
 
+        // Check if the product is fit to be a quotient.
+        // I.e: (Dividend - Product) < Divisor && (Dividend - Product) >= 0
         if (
-            ((dividend - multiplyResult) < dividend) && 
+            ((dividend - multiplyResult) > ) && 
             (
                 (dividend - multiplyResult) >= 0 && 
                 (dividend - multiplyResult) < divisor
