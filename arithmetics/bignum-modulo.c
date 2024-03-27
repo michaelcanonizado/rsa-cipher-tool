@@ -178,7 +178,7 @@ int modulo2(Bignum *result, Bignum *dividend, Bignum *divisor) {
             dividendMinusMultiplyResult.sign == positive
             ) {
             // printf("\n\nLAST COUNT: %llu\n", countInt);
-            printf("\n\nLAST COUNT: %llu\n", counterMiddleIndex);
+            printf("\n\nLAST COUNT/QUOTIENT: %llu\n", counterMiddleIndex);
             break;
         }
 
@@ -238,15 +238,15 @@ int main() {
     Bignum bignumY = initBignum();
     Bignum bignumRes = initBignum();
 
-    char x[] = "319859002539822367271325721997453701681203069948220192430643454394602894";
-    char y[] = "985900253982236727132572199745370168120306994822";
+    char x[] = "5770006211367438645738846923103019093676944772562452020385513091639388860966725675839337369352270554";
+    char y[] = "83229083364470435010488347620930684553892670457201390740089766094502884007293211299596918";
 
     setBignum(&bignumX, x, positive);
     setBignum(&bignumY, y, positive);
 
     modulo2(&bignumRes, &bignumX, &bignumY);
 
-    printf("\n\n%s Mod %s = \n", x, y);
+    printf("\n\n%s \nMod\n%s \nRESULT:\n", x, y);
     printBignum(&bignumRes);
     printf("\n\n");
 
