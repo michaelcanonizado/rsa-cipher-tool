@@ -103,10 +103,9 @@ unsigned long long int modulo(unsigned long long int dividend, unsigned long lon
         // Check if the product is fit to be a quotient.
         // I.e: (Dividend - Product) < Divisor && (Dividend - Product) >= 0
         if (
-            ((dividend - multiplyResult) > ) && 
+            ((dividend - multiplyResult) < divisor) && 
             (
-                (dividend - multiplyResult) >= 0 && 
-                (dividend - multiplyResult) < divisor
+                (dividend - multiplyResult) >= 0
             )) {
             printf("\n\nLAST COUNT: %llu\n", count);
             break;
