@@ -340,6 +340,25 @@ int moduloBignumCompressed(Bignum *result, Bignum *dividend, Bignum *divisor) {
     subtractBignum(result, dividend, &multiplyResult);
 }
 
+int bignumModuloCompressed(Bignum *result, Bignum *dividend, Bignum *divisor) {
+    Bignum remainder = initBignum();
+    Bignum ten = initBignum();
+    setBignum(&remainder, "0", positive);
+    setBignum(&ten, "10", positive);
+
+    for (int i = dividend->length - 1; i >= 0; i--) {
+        Bignum remainderTimesTen = initBignum();
+        Bignum currentResult = initBignum();
+        Bignum currentDividendDigit = initBignum();
+        multiplyBignum(&remainderTimesTen, &remainder, &ten);
+        intToBignum(&currentDividendDigit, dividend->digits[i], positive);
+        addBignum(&currentResult, &remainderTimesTen, &currentDividendDigit);
+        moduloBignumCompressed(&remainder, &currentResult, divisor);
+    }
+
+    copyBignum(result, &remainder);
+}
+
 int main() {
     // Example: Number 256 represented as [2, 5, 6]
     int numberArray[] = {6,0,4,3,6,8,9,1};
@@ -381,7 +400,7 @@ int main() {
     setBignum(&bignumY, y, positive);
 
     //moduloBignum(&bignumRes, &bignumX, &bignumY);
-    bignumModulo(&bignumRes, &bignumX, &bignumY);
+    bignumModuloCompressed(&bignumRes, &bignumX, &bignumY);
 
     printf("\n\n%s \nMod\n%s \nRESULT:\n", x, y);
     printBignum(&bignumRes);
