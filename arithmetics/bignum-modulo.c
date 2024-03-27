@@ -208,22 +208,52 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     subtractBignum(result, dividend, &multiplyResult);
 }
 
-int bignumModulo(Bignum *dividend, int divisor) {
-    int remainder = 0;
+int bignumModulo(Bignum *result, Bignum *dividend, Bignum *divisor) {
+    Bignum remainder = initBignum();
+    Bignum ten = initBignum();
+    setBignum(&remainder, "0", positive);
+    setBignum(&ten, "10", positive);
 
     // Iterate through the array from left to right
     for (int i = dividend->length - 1; i >= 0; i--) {
-        
+        printf("\ntest 1\n");
         // Calculate the current result including the next digit
-        int currentResult = remainder * 10 + dividend->digits[i];
-        printf("\nr: %d * %d + curr_val: %d = cur_r: %d", remainder, 10, dividend->digits[i], currentResult);
+        // int currentResult = remainder * 10 + dividend->digits[i];
+        Bignum remainderTimesTen = initBignum();
+        Bignum currentResult = initBignum();
+        Bignum currentDividendDigit = initBignum();
+        printf("\ntest 2\n");
+        // bignumShiftLeft(&remainderTimesTen, &remainder, 1);
+        multiplyBignum(&remainderTimesTen, &remainder, &ten);
+        printf("\ntest 3\n");
+        intToBignum(&currentDividendDigit, dividend->digits[i], positive);
+        printf("\ntest 4\n");
+        addBignum(&currentResult, &remainderTimesTen, &currentDividendDigit);
+        printf("\ntest 5\n");
+
+        printf("\nr: ");
+        printBignum(&remainder);
+        printf(" * 10 + ");
+        printBignum(&currentDividendDigit);
+        printf(" = ");
+        printBignum(&currentResult);
+        printf("\n\n");
+        printBignum(&currentResult);
+        printf("  mod  ");
+        printBignum(divisor);
+
+        // printf("\nr: %d * %d + curr_val: %d = cur_r: %d", remainder, 10, dividend->digits[i], currentResult);
         // Update the remainder for the next iteration
-        remainder = currentResult % divisor;
-        printf("\ncur_r: %d %% %d = upd_r: %d\n\n", currentResult, divisor, remainder);
+        // remainder = currentResult % divisor;
+        moduloBignum(&remainder, &currentResult, divisor);
+        printf("\ntest 6\n");
+        // printf("\ncur_r: %d %% %d = upd_r: %d\n\n", currentResult, divisor, remainder);
     }
 
+    copyBignum(result, &remainder);
+
     // The final remainder is the result of the modulo operation
-    return remainder;
+    // return remainder;
 }
 
 int main() {
@@ -256,13 +286,18 @@ int main() {
     Bignum bignumY = initBignum();
     Bignum bignumRes = initBignum();
 
-    char x[] = "5770006211367438645738846923103019093676944772562452020385513091639388860966725675839337369352270554";
-    char y[] = "83229083364470435010488347620930684553892670457201390740089766094502884007293211299596918";
+    // char x[] = "1";
+    // char y[] = "20";
+    char x[] = "111";
+    char y[] = "20";
+    // char x[] = "5770006211367438645738846923103019093676944772562452020385513091639388860966725675839337369352270554";
+    // char y[] = "83229083364470435010488347620930684553892670457201390740089766094502884007293211299596918";
 
     setBignum(&bignumX, x, positive);
     setBignum(&bignumY, y, positive);
 
     moduloBignum(&bignumRes, &bignumX, &bignumY);
+    //bignumModulo(&bignumRes, &bignumX, &bignumY);
 
     printf("\n\n%s \nMod\n%s \nRESULT:\n", x, y);
     printBignum(&bignumRes);
