@@ -2,6 +2,7 @@
 #include <string.h>
 #include <limits.h>
 #include <math.h>
+#include <time.h> 
 #include "../bignum.h"
 
 // Function to calculate modulo of an array of digits
@@ -393,9 +394,15 @@ int main() {
 
     setBignum(&bignumX, x, positive);
     setBignum(&bignumY, y, positive);
+    
+    clock_t start_time = clock();
 
-    //moduloBignum(&bignumRes, &bignumX, &bignumY);
-    bignumModuloCompressed(&bignumRes, &bignumX, &bignumY);
+    moduloBignumCompressed(&bignumRes, &bignumX, &bignumY);
+    // bignumModuloCompressed(&bignumRes, &bignumX, &bignumY);
+
+    clock_t end_time = clock();
+    double CPU_TIME_USED = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
+    printf("\n\nCPU TIME USED: %lf secs", CPU_TIME_USED);
 
     printf("\n\n%s \nMod\n%s \nRESULT:\n", x, y);
     printBignum(&bignumRes);
