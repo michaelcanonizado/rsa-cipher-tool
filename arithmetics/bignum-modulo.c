@@ -114,7 +114,8 @@ unsigned long long int moduloInt(unsigned long long int dividend, unsigned long 
 
     return dividend - (count * divisor);
 }
-int modulo2(Bignum *result, Bignum *dividend, Bignum *divisor) {
+
+int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     unsigned long long int countInt;
 
     Bignum tempOne = initBignum();
@@ -261,7 +262,7 @@ int main() {
     setBignum(&bignumX, x, positive);
     setBignum(&bignumY, y, positive);
 
-    modulo2(&bignumRes, &bignumX, &bignumY);
+    moduloBignum(&bignumRes, &bignumX, &bignumY);
 
     printf("\n\n%s \nMod\n%s \nRESULT:\n", x, y);
     printBignum(&bignumRes);
