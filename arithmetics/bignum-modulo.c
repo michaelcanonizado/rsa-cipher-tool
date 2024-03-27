@@ -100,6 +100,16 @@ unsigned long long int modulo(unsigned long long int dividend, unsigned long lon
 int modulo2(Bignum *result, Bignum *dividend, Bignum *divisor) {
     unsigned long long int countInt;
 
+    Bignum tempOne = initBignum();
+    Bignum counterLeftIndex = initBignum();
+    Bignum counterRightIndex = initBignum();
+    Bignum counterMiddleIndex = initBignum();
+
+    setBignum(&tempOne, "1", positive);
+
+    bignumShiftLeft(&counterLeftIndex, &tempOne, dividend->length - (divisor->length + 1));
+    bignumShiftLeft(&counterRightIndex, &tempOne, dividend->length - (divisor->length - 1));
+
     unsigned long long int countLowerLimit = pow(10, dividend->length - (divisor->length + 1));
     unsigned long long int countUpperLimit = pow(10, dividend->length - (divisor->length - 1));
     
@@ -109,15 +119,24 @@ int modulo2(Bignum *result, Bignum *dividend, Bignum *divisor) {
     while(1) {
         multiplyResult = initBignum();
 
-        countInt = (countUpperLimit + countLowerLimit) / 2;
-        Bignum countBignum = initBignum();
-        intToBignum(&countBignum, countInt, positive);     
+        // countInt = (countUpperLimit + countLowerLimit) / 2;
+        // Bignum countBignum = initBignum();
+        // intToBignum(&countBignum, countInt, positive);     
+        getAverage(&counterMiddleIndex, &counterLeftIndex, &counterRightIndex);
 
         // printf("L: %llu | R: %llu | Mid: %llu", countLowerLimit, countUpperLimit, count);
-        printf("\n\nL: %llu | M: %llu | R: %llu\n\n", countLowerLimit, countInt, countUpperLimit);
+        // printf("\n\nL: %llu | M: %llu | R: %llu\n\n", countLowerLimit, countInt, countUpperLimit);
+        printf("\n\nL:");
+        printBignum(&counterLeftIndex);
+        printf(" ---- M:");
+        printBignum(&counterMiddleIndex);
+        printf(" ---- R:");
+        printBignum(&counterRightIndex);
+        printf("\n");
 
         // multiplyResult = divisor * countInt;
-        multiplyBignum(&multiplyResult, divisor, &countBignum);
+        // multiplyBignum(&multiplyResult, divisor, &countBignum);
+        multiplyBignum(&multiplyResult, divisor, &counterMiddleIndex);
 
 
         printf("\nMultiply Result: ");
@@ -130,10 +149,10 @@ int modulo2(Bignum *result, Bignum *dividend, Bignum *divisor) {
         // }
         if (isGreaterThanBignum(&multiplyResult, dividend)) {
             printf("\nMR is greater than dividend...");
-            countUpperLimit = countInt;
+            copyBignum(&counterRightIndex, &counterMiddleIndex);
         } else if (isLessThanBignum(&multiplyResult, dividend)) {
             printf("\nMR is less than dividend...");
-            countLowerLimit = countInt;
+            copyBignum(&counterLeftIndex, &counterMiddleIndex);
         }
 
         // if (
@@ -158,7 +177,8 @@ int modulo2(Bignum *result, Bignum *dividend, Bignum *divisor) {
             // )
             dividendMinusMultiplyResult.sign == positive
             ) {
-            printf("\n\nLAST COUNT: %llu\n", countInt);
+            // printf("\n\nLAST COUNT: %llu\n", countInt);
+            printf("\n\nLAST COUNT: %llu\n", counterMiddleIndex);
             break;
         }
 
@@ -214,8 +234,8 @@ int main() {
     // printf("Modulo result: %d\n", moduloResult);
     // printf("Bignum Modulo result: %d\n", bignumModuloResult);
 
-    long long int x = 111;
-    long long int y = 20;
+    long long int x = LLONG_MAX;
+    long long int y = 12389;
     // long long int x = 99;
     // long long int y = 1;
     
@@ -223,8 +243,11 @@ int main() {
     Bignum bignumY = initBignum();
     Bignum bignumRes = initBignum();
 
-    intToBignum(&bignumX, x, positive);
-    intToBignum(&bignumY, y, positive);
+    // intToBignum(&bignumX, x, positive);
+    // intToBignum(&bignumY, y, positive);
+
+    setBignum(&bignumX, "319859002539822367271325721997453701681203069948220192430643454394602894", positive);
+    setBignum(&bignumY, "985900253982236727132572199745370168120306994822", positive);
 
     printf("\n\nCALCULATING: %lld %% %lld\n\n\n", x, y);
 
