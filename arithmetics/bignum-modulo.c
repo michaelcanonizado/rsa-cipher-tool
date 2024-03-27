@@ -64,7 +64,7 @@ int getAverage(Bignum *result, Bignum *num1, Bignum *num2) {
     trimBignum(result);
 }
 
-unsigned long long int modulo(unsigned long long int dividend, unsigned long long int divisor) {
+unsigned long long int moduloInt(unsigned long long int dividend, unsigned long long int divisor) {
     // Function will use repeated multiplication to find the quotient of the dividend and divisor. dividend - (quotient * divisor) will then give the remainder/modulo
     // 111 / 20
     // 20 * 1 = 20
