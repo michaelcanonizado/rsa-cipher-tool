@@ -325,31 +325,6 @@ int bignumModuloCompressed(Bignum *result, Bignum *dividend, Bignum *divisor) {
 }
 
 int main() {
-    // Example: Number 256 represented as [2, 5, 6]
-    int numberArray[] = {6,0,4,3,6,8,9,1};
-    int divisor = 56;
-    // int numberArray[] = {6,0,4,3,3,0,5,2,8,8,2,7,6,1,1,8,4,3};
-    int arraySize = 4;
-
-    Bignum bignumDividend = initBignum();
-    Bignum bignumDivisor = initBignum();
-    Bignum bignumResult = initBignum();
-
-    setBignum(&bignumDividend, "60436891", positive);
-
-    // printf("\n");
-    // for(int i = 0; i < sizeof(numberArray)/sizeof(numberArray[0]); i++) {
-    //     printf("%d", numberArray[i]);
-    // }
-    // printf(" modulo %d is:\n", divisor);
-
-    // int moduloResult = arrayModulo(numberArray, arraySize, divisor);
-    // int bignumModuloResult = bignumModulo(&bignumDividend, divisor);
-
-    // Display the result
-    // printf("Modulo result: %d\n", moduloResult);
-    // printf("Bignum Modulo result: %d\n", bignumModuloResult);
-    
     Bignum bignumX = initBignum();
     Bignum bignumY = initBignum();
     Bignum bignumRes = initBignum();
@@ -376,8 +351,6 @@ int main() {
     printf("\n\n%s \nMod\n%s \nRESULT:\n", x, y);
     printBignum(&bignumRes);
     printf("\n\n");
-
-
 
     return 0;
 }
