@@ -594,6 +594,7 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
 int bignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
     // Function that shifts a Bigum with the ampunt of 0s specified (x * pow(10, n)).
+    // I.e: x * 10^n
     // E.g: Integer: 123 -> 12300
     // E.g: Bignum: [3,2,1] -> [0,0,3,2,1]
     
