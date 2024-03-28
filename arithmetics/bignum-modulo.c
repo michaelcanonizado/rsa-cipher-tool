@@ -116,7 +116,7 @@ unsigned long long int moduloInt(unsigned long long int dividend, unsigned long 
     return dividend - (count * divisor);
 }
 
-int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
+int moduloBignumPrototype(Bignum *result, Bignum *dividend, Bignum *divisor) {
     unsigned long long int countInt;
 
     if (isLessThanBignum(dividend, divisor)) {
