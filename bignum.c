@@ -592,7 +592,6 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     trimBignum(result);
 }
 
-
 int multiplyBignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
     // Function that shifts a Bigum with the ampunt of 0s specified (x * pow(10, n)).
     // E.g: Integer: 123 -> 12300
@@ -754,6 +753,27 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     return 0;
 }
 
+int getTwoBignumAverage(Bignum *result, Bignum *num1, Bignum *num2) {
+    Bignum num1PlusNum2 = initBignum();
+
+    addBignum(&num1PlusNum2, num1, num2);
+
+    int carry = 0;
+
+    for (int i = num1PlusNum2.length - 1; i >= 0; i--) {
+        result->digits[i] = (num1PlusNum2.digits[i] / 2) + carry;
+
+        if (num1PlusNum2.digits[i] % 2 != 0) {
+            carry = 5;
+        } else {
+            carry = 0;
+        }
+    }
+
+    result->length = num1PlusNum2.length;
+    trimBignum(result);
+}
+
 int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     unsigned long long int countInt;
 
@@ -788,7 +808,7 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     while(1) {
         multiplyResult = initBignum();
 
-        getAverage(&counterMiddleIndex, &counterLeftIndex, &counterRightIndex);
+        getTwoBignumAverage(&counterMiddleIndex, &counterLeftIndex, &counterRightIndex);
 
         multiplyBignum(&multiplyResult, divisor, &counterMiddleIndex);
 
