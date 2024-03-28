@@ -802,9 +802,6 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     //    : The left and right indexes will be: 10 - 10000 
     // Therefore, the left and right indexes should be given extra place values.
 
-    // Remove this expressions
-    unsigned long long int countInt;
-
     // If dividend is less than the divisor. It is the remainder/modulo
     // 123 % 987654321 = 123
     if (isLessThanBignum(dividend, divisor)) {
@@ -831,10 +828,6 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     // Get left and right Bignum indexes
     bignumShiftLeft(&counterLeftIndex, &tempOne, leftShiftBy);
     bignumShiftLeft(&counterRightIndex, &tempOne, rightShiftBy);
-
-    // Remove these 2 expressions
-    unsigned long long int countLowerLimit = pow(10, dividend->length - (divisor->length + 1));
-    unsigned long long int countUpperLimit = pow(10, dividend->length - (divisor->length - 1));
     
     // Initialize multiplyResult which will be the Bignum that will hold the test quotient. I.e: divisor * count = multiplyResult.
     Bignum multiplyResult = initBignum();
