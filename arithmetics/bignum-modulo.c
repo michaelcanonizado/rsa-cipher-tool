@@ -138,16 +138,12 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     if ((divisor->length + 1) < dividend->length) {
         leftShiftBy = dividend->length - (divisor->length + 1);
     }
-
-    // unsigned long long int rightShiftBy = dividend->length - (divisor->length + 1) < 0 ? 2 : dividend->length - (divisor->length + 1);
     printf("\nleft shift->  %lld\nright shift->  %lld", leftShiftBy, rightShiftBy);
 
     printf("\nLSB: %llu | RSB: %llu", leftShiftBy, rightShiftBy);
 
     bignumShiftLeft(&counterLeftIndex, &tempOne, leftShiftBy);
     bignumShiftLeft(&counterRightIndex, &tempOne, rightShiftBy);
-    // bignumShiftLeft(&counterLeftIndex, &tempOne, dividend->length - (divisor->length + 1));
-    // bignumShiftLeft(&counterRightIndex, &tempOne, dividend->length - (divisor->length - 1));
 
     unsigned long long int countLowerLimit = pow(10, dividend->length - (divisor->length + 1));
     unsigned long long int countUpperLimit = pow(10, dividend->length - (divisor->length - 1));
@@ -157,14 +153,8 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
 
     while(1) {
         multiplyResult = initBignum();
-
-        // countInt = (countUpperLimit + countLowerLimit) / 2;
-        // Bignum countBignum = initBignum();
-        // intToBignum(&countBignum, countInt, positive);     
         getAverage(&counterMiddleIndex, &counterLeftIndex, &counterRightIndex);
 
-        // printf("L: %llu | R: %llu | Mid: %llu", countLowerLimit, countUpperLimit, count);
-        // printf("\n\nL: %llu | M: %llu | R: %llu\n\n", countLowerLimit, countInt, countUpperLimit);
         printf("\n\nL:");
         printBignum(&counterLeftIndex);
         printf(" ---- M:");
@@ -173,19 +163,12 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
         printBignum(&counterRightIndex);
         printf("\n");
 
-        // multiplyResult = divisor * countInt;
-        // multiplyBignum(&multiplyResult, divisor, &countBignum);
         multiplyBignum(&multiplyResult, divisor, &counterMiddleIndex);
 
 
         printf("\nMultiply Result: ");
         printBignum(&multiplyResult);
 
-        // if (multiplyResult > dividend) {
-        //     countUpperLimit = count;
-        // } else if (multiplyResult < dividend) {
-        //     countLowerLimit = count;
-        // }
         if (isGreaterThanBignum(&multiplyResult, dividend)) {
             printf("\nMR is greater than dividend...");
             copyBignum(&counterRightIndex, &counterMiddleIndex);
@@ -194,15 +177,6 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
             copyBignum(&counterLeftIndex, &counterMiddleIndex);
         }
 
-        // if (
-        //     ((dividend - multiplyResult) < dividend) && 
-        //     (
-        //         (dividend - multiplyResult) >= 0 && 
-        //         (dividend - multiplyResult) < divisor
-        //     )) {
-        //     printf("\n\nLAST COUNT: %llu\n", count);
-        //     break;
-        // }
         Bignum dividendMinusMultiplyResult = initBignum();
         subtractBignum(&dividendMinusMultiplyResult, dividend, &multiplyResult);
 
@@ -210,13 +184,8 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
 
         if (
             (isLessThanBignum(&dividendMinusMultiplyResult, divisor)) && 
-            // (
-            //     isGreaterThanBignum(&dividendMinusMultiplyResult, dividend) && 
-            //     isLessThanBignum(&dividendMinusMultiplyResult, divisor)
-            // )
             dividendMinusMultiplyResult.sign == positive
             ) {
-            // printf("\n\nLAST COUNT: %llu\n", countInt);
             printf("\n\nLAST COUNT/QUOTIENT: %llu\n", counterMiddleIndex);
             break;
         }
