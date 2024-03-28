@@ -592,7 +592,7 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     trimBignum(result);
 }
 
-int multiplyBignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
+int bignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
     // Function that shifts a Bigum with the ampunt of 0s specified (x * pow(10, n)).
     // E.g: Integer: 123 -> 12300
     // E.g: Bignum: [3,2,1] -> [0,0,3,2,1]
@@ -733,8 +733,8 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
 
     // Collect results
     // result = ac * (pow(10, half * 2)) + (ad_plus_bc * (pow(10, half))) + bd
-    multiplyBignumShiftLeft(&ac_left_shift, &ac, half * 2);
-    multiplyBignumShiftLeft(&ad_plus_bc_left_shift, &ad_plus_bc, half);
+    bignumShiftLeft(&ac_left_shift, &ac, half * 2);
+    bignumShiftLeft(&ad_plus_bc_left_shift, &ad_plus_bc, half);
     addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift, &ac_left_shift, &ad_plus_bc_left_shift);
     addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &ac_left_shift_plus_ad_plus_bc_left_shift, &bd);
     addBignum(result, &ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &zero);
