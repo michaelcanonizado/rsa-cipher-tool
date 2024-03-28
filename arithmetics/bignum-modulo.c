@@ -191,7 +191,7 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
         }
 
     }
-    
+
     subtractBignum(result, dividend, &multiplyResult);
 }
 
