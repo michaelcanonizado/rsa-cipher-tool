@@ -191,10 +191,7 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
         }
 
     }
-
-    // return dividend - (count * divisor);
-    Bignum countTimesDivisor = initBignum();
-    // multiplyBignum(&countTimesDivisor, &count)
+    
     subtractBignum(result, dividend, &multiplyResult);
 }
 
