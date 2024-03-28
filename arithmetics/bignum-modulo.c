@@ -24,8 +24,8 @@ int arrayModulo(int arr[], int size, int divisor) {
     return remainder;
 }
 
-// NOTE: This function was copied from multiplyBignumShiftLeft() in ../bignum.c. Rename multiplyBignumShiftLeft() to bignumShiftLeft as it can be used in other bignum.c functions other than multiplyBignum().
-int bignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {  
+// NOTE: This function was copied from multiplyBignumShiftLeft() in ../bignum.c, as it is a private function in bignum.c.
+int bignumShiftLeftPrototype(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {  
     if (shiftPlaces < 0) {
         printf("Shifting Bignum by negative value/s.\n");
         return -1;
@@ -142,8 +142,8 @@ int moduloBignumPrototype(Bignum *result, Bignum *dividend, Bignum *divisor) {
 
     printf("\nLSB: %llu | RSB: %llu", leftShiftBy, rightShiftBy);
 
-    bignumShiftLeft(&counterLeftIndex, &tempOne, leftShiftBy);
-    bignumShiftLeft(&counterRightIndex, &tempOne, rightShiftBy);
+    bignumShiftLeftPrototype(&counterLeftIndex, &tempOne, leftShiftBy);
+    bignumShiftLeftPrototype(&counterRightIndex, &tempOne, rightShiftBy);
 
     unsigned long long int countLowerLimit = pow(10, dividend->length - (divisor->length + 1));
     unsigned long long int countUpperLimit = pow(10, dividend->length - (divisor->length - 1));
@@ -210,7 +210,7 @@ int bignumModulo(Bignum *result, Bignum *dividend, Bignum *divisor) {
         Bignum currentResult = initBignum();
         Bignum currentDividendDigit = initBignum();
         printf("\ntest 2\n");
-        // bignumShiftLeft(&remainderTimesTen, &remainder, 1);
+        // bignumShiftLeftPrototype(&remainderTimesTen, &remainder, 1);
         multiplyBignum(&remainderTimesTen, &remainder, &ten);
         printf("\ntest 3\n");
         intToBignum(&currentDividendDigit, dividend->digits[i], positive);
@@ -265,8 +265,8 @@ int moduloBignumCompressed(Bignum *result, Bignum *dividend, Bignum *divisor) {
         leftShiftBy = dividend->length - (divisor->length + 1);
     }
 
-    bignumShiftLeft(&counterLeftIndex, &tempOne, leftShiftBy);
-    bignumShiftLeft(&counterRightIndex, &tempOne, rightShiftBy);
+    bignumShiftLeftPrototype(&counterLeftIndex, &tempOne, leftShiftBy);
+    bignumShiftLeftPrototype(&counterRightIndex, &tempOne, rightShiftBy);
 
     unsigned long long int countLowerLimit = pow(10, dividend->length - (divisor->length + 1));
     unsigned long long int countUpperLimit = pow(10, dividend->length - (divisor->length - 1));
