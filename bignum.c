@@ -776,52 +776,92 @@ int getTwoBignumAverage(Bignum *result, Bignum *num1, Bignum *num2) {
 }
 
 int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
+    // Function that will find the modulo of two Bignums. Uses repeated multiplication to find the quotient of the dividend and divisor. dividend - (quotient * divisor) will then give the remainder/modulo.
+    // E.g: 111 / 20:
+    //      20 * 1 = 20
+    //      20 * 2 = 40
+    //      20 * 3 = 60
+    //      20 * 4 = 80
+    //      20 * 5 = 100
+    //      111 - (20 * 5) = 11 <-- remainder/modulo
+    //
+    // It uses binary search to look for the quotient for faster.
+    // The left and right indexes will start from the estimated min and max number of digits of the quotient. The estimated number of digits of the quotient can be determined by: num of digits of divident - num of digits of divisor.
+    // E.g:  123456  /   789    =    156
+    //      6 Digits - 3 Digits = 3 Digits
+    //                          => 1 * 10^(6 - (3 - 1)) = 10000 
+    //    : The left and right indexes will be: 10 - 10000
+    //
+    // The left and right indexes are given extra place values as there are some cases where the quotient receeds or exceeds the estimated number of digits of the quotient.
+    // E.g:    987   /    123   =    8
+    //      3 Digits - 3 Digits = 0 Digit (quotient is actually 1 digits long not 0)
+    //    : The left and right indexes will be: 1 - 10
+    //              
+    // E.g:  999999  /   100    =   9999
+    //      6 Digits - 3 Digits = 3 Digit (quotient is actually 4 digits long not 3)
+    //    : The left and right indexes will be: 10 - 10000 
+    // Therefore, the left and right indexes should be given extra place values.
+
+    // Remove this expressions
     unsigned long long int countInt;
 
+    // If dividend is less than the divisor. It is the remainder/modulo
+    // 123 % 987654321 = 123
     if (isLessThanBignum(dividend, divisor)) {
         copyBignum(result, dividend);
         return 0;
     }
 
+    // A temporary Bignum set as 1 is used as bignumShiftLeft doesn't modify the actual Bignum that is passed. But modifies a separate resulting Bignum.
     Bignum tempOne = initBignum();
+    setBignum(&tempOne, "1", positive);
     Bignum counterLeftIndex = initBignum();
     Bignum counterRightIndex = initBignum();
     Bignum counterMiddleIndex = initBignum();
 
-    setBignum(&tempOne, "1", positive);
-
+    // Identify the left and right indexes. I.e: 1 * 10^n
     unsigned long long int leftShiftBy = 0;
     unsigned long long int rightShiftBy = dividend->length - (divisor->length - 1);
 
+    // If estimated left index is a valid index, use the formula. Else, use 0 to default the left index to 1.
     if ((divisor->length + 1) < dividend->length) {
         leftShiftBy = dividend->length - (divisor->length + 1);
     }
 
+    // Get left and right Bignum indexes
     bignumShiftLeft(&counterLeftIndex, &tempOne, leftShiftBy);
     bignumShiftLeft(&counterRightIndex, &tempOne, rightShiftBy);
 
+    // Remove these 2 expressions
     unsigned long long int countLowerLimit = pow(10, dividend->length - (divisor->length + 1));
     unsigned long long int countUpperLimit = pow(10, dividend->length - (divisor->length - 1));
     
+    // Initialize multiplyResult which will be the Bignum that will hold the test quotient. I.e: divisor * count = multiplyResult.
     Bignum multiplyResult = initBignum();
     setBignum(&multiplyResult, "0", positive);
 
+    // Perform binary search to find the quotient.
     while(1) {
+        // Reinitialize multiplyResult to reset its members.
         multiplyResult = initBignum();
 
+        // Get the middle index of the left and right index.
         getTwoBignumAverage(&counterMiddleIndex, &counterLeftIndex, &counterRightIndex);
 
+        // Multiply the divisor with the middle index
         multiplyBignum(&multiplyResult, divisor, &counterMiddleIndex);
 
+        // Determine which half, left or right, the quotient lies, and adjust the left and right indexes accordingly.  
         if (isGreaterThanBignum(&multiplyResult, dividend)) {
             copyBignum(&counterRightIndex, &counterMiddleIndex);
         } else if (isLessThanBignum(&multiplyResult, dividend)) {
             copyBignum(&counterLeftIndex, &counterMiddleIndex);
         }
 
+        // Check if the product is fit to be the quotient.
+        // I.e: (Dividend - Product) < Divisor && (Dividend - Product) >= 0
         Bignum dividendMinusMultiplyResult = initBignum();
         subtractBignum(&dividendMinusMultiplyResult, dividend, &multiplyResult);
-
         if (
             (isLessThanBignum(&dividendMinusMultiplyResult, divisor)) && 
             dividendMinusMultiplyResult.sign == positive
@@ -831,5 +871,7 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
 
     }
 
+    // Return the remainder/modulo:
+    // dividend - (divisor * quotient) = remainder/modulo
     subtractBignum(result, dividend, &multiplyResult);
 }
