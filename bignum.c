@@ -860,7 +860,9 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
         multiplyResult = initBignum();
 
         // Get the middle index of the left and right index.
-        getTwoBignumAverage(&counterMiddleIndex, &counterLeftIndex, &counterRightIndex);
+        Bignum num1PlusNum2 = initBignum();
+        addBignum(&num1PlusNum2, &counterLeftIndex, &counterRightIndex);
+        halfBignum(&counterMiddleIndex, &num1PlusNum2);
 
         // Multiply the divisor with the middle index
         multiplyBignum(&multiplyResult, divisor, &counterMiddleIndex);
