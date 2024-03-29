@@ -9,6 +9,7 @@
 // Division - N/A
 // Greatet Than Equal To - N/A
 // Less Than Equal To - N/A
+// Not Equal To - N/A
 // Increment - N/A
 // Decrement - N/A
 // Exponents - N/A
