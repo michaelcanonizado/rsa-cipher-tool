@@ -10,7 +10,7 @@
 // Decrement - Not yet started
 // Multiplication - Done & Tested & Documented
 // Division - Done
-// Modulus - Not yet started
+// Modulus - Done
 // Exponents - Not yet started
 
 #include <stdio.h>
