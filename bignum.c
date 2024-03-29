@@ -750,13 +750,11 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
 
 void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
     
-    // Checks if the divisor is zero. If it is, the function will return 0.
+    // Checks if the divisor or the dividend is zero. If it is, the quotient is 0.
     if (isBignumZero(divisor)) {
         intToBignum(quotient, 0, positive);
         return;
     }
-
-    // Checks if the dividend is zero. If it is, the function will return.
     if (isBignumZero(dividend)) {
         intToBignum(quotient, 0, positive);
         return;
@@ -765,18 +763,15 @@ void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
     // Check the signs of the dividend and divisor
     BIGNUM_SIGN dividendSign = dividend->sign;
     BIGNUM_SIGN divisorSign = divisor->sign;
+
+    // The sign of the quotient is determined by the signs of the dividend and divisor. If they are the same, the quotient is positive. If they are different, the quotient is negative.
     BIGNUM_SIGN quotientSign = dividendSign == divisorSign ? positive : negative;
 
-    //printf("Dividend sign: %d\n", dividendSign);
-    //printf("Divisor sign: %d\n", divisorSign);
-    //printf("Quotient sign: %d\n", quotientSign);
-
-    // Make dividend and divisor positive because the sign does not affect how the division is done
+    // Make dividend and divisor positive because the sign does not affect how the division is done.
     dividend->sign = positive;
     divisor->sign = positive;
 
-    // Check if the dividend is less than the divisor
-    // If it is, the quotient is 0
+    // Check if the dividend is less than the divisor. If it is, the quotient is 0 since the result is less than 1 and it will truncate down.
     if (isLessThanBignum(dividend, divisor)) {
         intToBignum(quotient, 0, positive);
         return;
@@ -784,56 +779,52 @@ void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
 
     // Get the lengths of the dividend and divisor
     int dividendLen = dividend->length;
-    //printf("Dividend length: %d\n", dividendLen);
     int divisorLen = divisor->length;
-    //printf("Divisor length: %d\n", divisorLen);
 
-    // Create copies of the dividend and divisor
+    // Create copies of the dividend and divisor.
+    // Copying is necessary because the dividend and divisor will be modified during the division process. It allows to perform division without changing the original dividend and divisor.
     Bignum dividendCopy;
     copyBignum(&dividendCopy, dividend);
     Bignum divisorCopy;
     copyBignum(&divisorCopy, divisor);
-    
-    /*
-    printf("Dividend copy: ");
-    printBignum(&dividendCopy);
-    printf("\n");
-    printf("Divisor copy: ");
-    printBignum(&divisorCopy);
-    printf("\n");
-*/
 
-    // Perform long division
+    // The length of the quotient is the length of the dividend minus the length of the divisor plus 1.
     int quotientLen = dividendLen - divisorLen + 1;
+
+    // Creates an array to store the quotient, which will be converted to a Bignum later.
     int* quotientArr = (int*)malloc(quotientLen * sizeof(int));
     memset(quotientArr, 0, quotientLen * sizeof(int));
     
     int i, j;
    
+    // Perform long division
+
+    // Iterate through the dividend from the MSD to the LSD
     for (i = 0; i <= dividendLen - divisorLen; i++) {
+        // While the dividend is greater than or equal to the divisor, subtract the divisor from the dividend
         while (isGreaterThanBignum(&dividendCopy, &divisorCopy) >= 0) {
             for (j = 0; j < divisorLen; j++) {
-                    //printf("dividendCopy.digits[%d]  = (%d) \n", i + j, dividendCopy.digits[i + j]);
                 dividendCopy.digits[i + j] -= divisorCopy.digits[j];
-                    //printf("- divisorCopy.digits[%d] = (%d)\n", j, divisorCopy.digits[j]);
-                    //printf("\tdividendCopy.digits[%d] = (%d) \n", i + j, dividendCopy.digits[i + j]);
+                // If the digit of the dividend is negative, borrow from the next digit. This happens when the current digit of the dividend is less than the current digit of the divisor.
                 if (dividendCopy.digits[i + j] < 0) {
+                    // Add 10 to the current digit of the dividend and subtract 1 from the next digit of the dividend.
                     dividendCopy.digits[i + j] += 10;
                     dividendCopy.digits[i + j + 1]--;
                 }
 
             }
+            // Increment the quotient
             quotientArr[i]++;
+            // Check if the dividend is less than the divisor. If it is, break out of the loop.
             if (isLessThanBignum(&dividendCopy, &divisorCopy) != 0) {
                 break;
             }
            
         }        
-    }
-       
+    } 
                 
     // Convert the quotient array to a Bignum
-    for (int i = 0; i < quotientLen; i++) {
+    for ( i = 0; i < quotientLen; i++) {
         quotient->digits[i] = quotientArr[i];
     }
     quotient->length = quotientLen;
@@ -847,14 +838,4 @@ void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
 
     // Free memory
     free(quotientArr);
-    
-    /*
-    printf("Quotient sign: %d\n", quotientSign);
-
-    printf("Quotient: ");
-    for (int i = 0; i < quotient->length; i++) {
-        printf("%d", quotient->digits[i]);
-    }
-    printf("\n");
-    */
 }
