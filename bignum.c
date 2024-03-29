@@ -1,16 +1,16 @@
 // OPERATIONS NEEDED TO BE IMPLEMENTED:
-// Greater Than - Done & Documented
-// Less Than - Done & Documented
-// Equal To - Done & Documented
-// Addition - Done & Tested & Documented
-// Subtraction - Done & Tested & Documented
+// Greater Than - Done | | Documented
+// Less Than - Done | | Documented
+// Equal To - Done | | Documented
+// Addition - Done | Tested | Documented
+// Subtraction - Done | Tested | Documented
 // Greatet Than Equal To - N/A
 // Less Than Equal To - N/A
 // Increment - N/A
 // Decrement - N/A
-// Multiplication - Done & Tested & Documented
-// Division - Done
-// Modulus - Done
+// Multiplication - Done | Tested | Documented
+// Division - Done | |
+// Modulus - Done | |
 // Exponents - N/A
 
 #include <stdio.h>
