@@ -9,7 +9,7 @@
 // Increment - Not yet started
 // Decrement - Not yet started
 // Multiplication - Done & Tested & Documented
-// Division - Not yet started
+// Division - Done
 // Modulus - Not yet started
 // Exponents - Not yet started
 
