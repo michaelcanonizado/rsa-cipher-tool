@@ -14,6 +14,7 @@
 // Decrement - N/A
 // Exponents - N/A
 // Find GCD - N/A
+// Mod Inverse - N/A
 
 #include <stdio.h>
 #include <string.h>
