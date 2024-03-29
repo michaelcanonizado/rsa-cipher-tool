@@ -913,3 +913,8 @@ int halfBignum(Bignum *result, Bignum *num) {
 
     trimBignum(result);
 }
+
+int generateRandomBignum(Bignum *result, unsigned long long int numOfDigits, BIGNUM_SIGN sign) {
+
+    printf("\n\nHello world!\n\n");
+}
