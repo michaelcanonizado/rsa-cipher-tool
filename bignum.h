@@ -51,5 +51,6 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier);
 int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor);
 
 int halfBignum(Bignum *result, Bignum *num);
+int generateRandomBignum(Bignum *result, unsigned long long int numOfDigits, BIGNUM_SIGN sign);
 
 #endif /* BIGNUM_H */
