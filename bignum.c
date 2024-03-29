@@ -8,7 +8,7 @@
 // Less Than Equal To - Not yet started
 // Increment - Not yet started
 // Decrement - Not yet started
-// Multiplication - Not yet started
+// Multiplication - Done & Tested & Documented
 // Division - Not yet started
 // Modulus - Not yet started
 // Exponents - Not yet started
