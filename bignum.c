@@ -12,6 +12,7 @@
 // Increment - N/A
 // Decrement - N/A
 // Exponents - N/A
+// Find GCD - N/A
 
 #include <stdio.h>
 #include <string.h>
