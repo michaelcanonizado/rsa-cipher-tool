@@ -4,14 +4,14 @@
 // Equal To - Done & Documented
 // Addition - Done & Tested & Documented
 // Subtraction - Done & Tested & Documented
-// Greatet Than Equal To - Not yet started
-// Less Than Equal To - Not yet started
-// Increment - Not yet started
-// Decrement - Not yet started
+// Greatet Than Equal To - N/A
+// Less Than Equal To - N/A
+// Increment - N/A
+// Decrement - N/A
 // Multiplication - Done & Tested & Documented
 // Division - Done
 // Modulus - Done
-// Exponents - Not yet started
+// Exponents - N/A
 
 #include <stdio.h>
 #include <string.h>
