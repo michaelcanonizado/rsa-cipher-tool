@@ -67,24 +67,6 @@ int bignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPla
     result->length = resultLength;
 }
 
-int halfBignum(Bignum *result, Bignum *num) {
-    int carry = 0;
-
-    for (int i = num->length - 1; i >= 0; i--) {
-        result->digits[i] = (num->digits[i] / 2) + carry;
-
-        if (num->digits[i] % 2 != 0) {
-            carry = 5;
-        } else {
-            carry = 0;
-        }
-        
-        result->length++;
-    }
-
-    trimBignum(result);
-}
-
 int multiplyBignumGetLeftHalf(Bignum *result, Bignum *num, unsigned long long int splitIndex) {
     // Function that gets a and c in multiplyBignum() that uses the karatsuba algorithm. This works in conjunction with multiplyBignumGetRightHalf() as they use the same splitIndex.
     
@@ -910,4 +892,24 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     // Return the remainder/modulo:
     // dividend - (divisor * quotient) = remainder/modulo
     subtractBignum(result, dividend, &multiplyResult);
+}
+
+
+
+int halfBignum(Bignum *result, Bignum *num) {
+    int carry = 0;
+
+    for (int i = num->length - 1; i >= 0; i--) {
+        result->digits[i] = (num->digits[i] / 2) + carry;
+
+        if (num->digits[i] % 2 != 0) {
+            carry = 5;
+        } else {
+            carry = 0;
+        }
+        
+        result->length++;
+    }
+
+    trimBignum(result);
 }
