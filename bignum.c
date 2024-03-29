@@ -778,6 +778,24 @@ int getTwoBignumAverage(Bignum *result, Bignum *num1, Bignum *num2) {
     trimBignum(result);
 }
 
+int halfBignum(Bignum *result, Bignum *num) {
+    int carry = 0;
+
+    for (int i = num->length - 1; i >= 0; i--) {
+        result->digits[i] = (num->digits[i] / 2) + carry;
+
+        if (num->digits[i] % 2 != 0) {
+            carry = 5;
+        } else {
+            carry = 0;
+        }
+        
+        result->length++;
+    }
+
+    trimBignum(result);
+}
+
 int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     // Function that will find the modulo of two Bignums. Uses repeated multiplication to find the quotient of the dividend and divisor. dividend - (quotient * divisor) will then give the remainder/modulo.
     // E.g: 111 / 20:

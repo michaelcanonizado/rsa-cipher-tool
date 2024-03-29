@@ -50,4 +50,6 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier);
 int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier);
 int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor);
 
+int halfBignum(Bignum *result, Bignum *num);
+
 #endif /* BIGNUM_H */
