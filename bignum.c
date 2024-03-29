@@ -757,27 +757,6 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     return 0;
 }
 
-int getTwoBignumAverage(Bignum *result, Bignum *num1, Bignum *num2) {
-    Bignum num1PlusNum2 = initBignum();
-
-    addBignum(&num1PlusNum2, num1, num2);
-
-    int carry = 0;
-
-    for (int i = num1PlusNum2.length - 1; i >= 0; i--) {
-        result->digits[i] = (num1PlusNum2.digits[i] / 2) + carry;
-
-        if (num1PlusNum2.digits[i] % 2 != 0) {
-            carry = 5;
-        } else {
-            carry = 0;
-        }
-    }
-
-    result->length = num1PlusNum2.length;
-    trimBignum(result);
-}
-
 int halfBignum(Bignum *result, Bignum *num) {
     int carry = 0;
 
