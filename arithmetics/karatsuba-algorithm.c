@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
-#include "bignum.h"
+#include "../bignum.h"
 
 // BIGNUM FUNCTIONS NEEDED:
 // 1. (N/A) - Bignum to Integer
@@ -219,7 +219,12 @@ int karatsuba3(Bignum *result, Bignum *x, Bignum *y) {
     printf("\n");
 
     // Base case
-    if (x->length == 1 || y->length == 1) {
+    if (
+        (x->length <= 9 || y->length <= 9) && 
+        (
+            x->length < 9 && y->length < 9
+        )
+    ) {
         long long int xInt = bignumToInt(x);
         long long int yInt = bignumToInt(y);
         intToBignum(result, xInt * yInt, positive);
@@ -418,17 +423,17 @@ int karatsuba3Compressed(Bignum *result, Bignum *x, Bignum *y) {
 }
 
 int main(){
-    long long int x = 109333;
-    long long int y = -980606;
+    long long int x = 56, resKA2;
+    long long int y = 504999999;
 
     Bignum num1 = initBignum();
     Bignum num2 = initBignum();
     Bignum result = initBignum();
 
     intToBignum(&num1, x, positive);
-    intToBignum(&num2, y * (-1), negative);
+    intToBignum(&num2, y, positive);
 
-    // setBignum(&num1, "70083693508915213745197637360864101925485320672729", positive);
+    // // setBignum(&num1, "70083693508915213745197637360864101925485320672729", positive);
     // setBignum(&num2, "54731509709293787933100356408829236967995835556926", positive);
 
     printf("\nMultiplying ");
@@ -436,36 +441,21 @@ int main(){
     printf(" and ");
     printBignum(&num2);
 
-    // multiplyBignum(&result, &num1, &num2);
+    // resKA2 = karatsuba2(x,y);
+    karatsuba3(&result, &num1, &num2);
 
     // long long resKA2 = karatsuba2Compressed(x, y);
 
     // printf("\n\n%-15s %lld * %lld = %lld","Native Result:", x, y, x * y );
-    // printf("\n%-15s %lld * %lld = %lld","KA2 Result:", x, y, resKA2);
-    // printf("\n%-15s ","KA3 Result:");
-    // printBignum(&num1);
-    // printf(" * ");
-    // printBignum(&num2);
-    // printf(" = ");
-    // printBignum(&result);
+    printf("\n\n\n\n%-15s %lld * %lld = %llu","KA2 Result:", x, y, resKA2);
+    printf("\n%-15s ","KA3 Result:");
+    printBignum(&num1);
+    printf(" * ");
+    printBignum(&num2);
+    printf(" = ");
+    printBignum(&result);
 
-    // printf("\nKA3 Result Sign: %d", result.sign);
-
-    Bignum num = initBignum();
-    Bignum resLeft = initBignum();
-    Bignum resRight = initBignum();
-    setBignum(&num, "1123", positive);
-    // num.length = 0;
-    karatsubaBignumGetLeftHalf(&resLeft, &num, 4);
-    karatsubaBignumGetRightHalf(&resRight, &num, 4);
-
-    printf("\nNum: ");
-    printBignum(&num);
-    printf(" | Num length: %d | Left: ", num.length);
-    printBignum(&resLeft);
-    printf(" | Right: ");
-    printBignum(&resRight);
-    printf("\n\n");
+    printf("\nKA3 Result Sign: %d", result.sign);
 
     printf("\n\n\n");
     return 0;
