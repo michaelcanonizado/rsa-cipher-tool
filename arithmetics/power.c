@@ -45,8 +45,8 @@ int main(void) {
     // Start timer
     clock_t begin = clock();
 
-    int x = 98765;
-    int n = 43;
+    int x = 123;
+    int n = 456;
     // int x = 72;
     // int n = 2;
     
