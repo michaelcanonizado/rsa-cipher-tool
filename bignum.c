@@ -238,6 +238,13 @@ long long int bignumToInt(Bignum *num) {
     return result;
 }
 
+int resetBignum(Bignum *num) {
+    memset(num->digits, 0, sizeof(int) * MAX_INT_LENGTH);
+    num->length = 0;
+    num->sign = positive;
+    return 0;
+}
+
 
 
 void copyBignum(Bignum *result, Bignum *num) {
