@@ -811,6 +811,60 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     return 0;
 }
 
+int divideBignumPrototype(Bignum *result, Bignum *dividend, Bignum *divisor) {
+    // Temporary divide function from moduloBignum()
+    if (isLessThanBignum(dividend, divisor)) {
+        copyBignum(result, dividend);
+        return 0;
+    }
+
+    Bignum tempOne = initBignum();
+    setBignum(&tempOne, "1", positive);
+    Bignum counterLeftIndex = initBignum();
+    Bignum counterRightIndex = initBignum();
+    Bignum counterMiddleIndex = initBignum();
+
+    unsigned long long int leftShiftBy = 0;
+    unsigned long long int rightShiftBy = dividend->length - (divisor->length - 1);
+
+    if ((divisor->length + 1) < dividend->length) {
+        leftShiftBy = dividend->length - (divisor->length + 1);
+    }
+
+    bignumShiftLeft(&counterLeftIndex, &tempOne, leftShiftBy);
+    bignumShiftLeft(&counterRightIndex, &tempOne, rightShiftBy);
+
+    Bignum multiplyResult = initBignum();
+    setBignum(&multiplyResult, "0", positive);
+
+    while(1) {
+        multiplyResult = initBignum();
+
+        Bignum num1PlusNum2 = initBignum();
+        addBignum(&num1PlusNum2, &counterLeftIndex, &counterRightIndex);
+        halfBignum(&counterMiddleIndex, &num1PlusNum2);
+
+        multiplyBignum(&multiplyResult, divisor, &counterMiddleIndex);
+ 
+        if (isGreaterThanBignum(&multiplyResult, dividend)) {
+            copyBignum(&counterRightIndex, &counterMiddleIndex);
+        } else if (isLessThanBignum(&multiplyResult, dividend)) {
+            copyBignum(&counterLeftIndex, &counterMiddleIndex);
+        }
+
+        Bignum dividendMinusMultiplyResult = initBignum();
+        subtractBignum(&dividendMinusMultiplyResult, dividend, &multiplyResult);
+        if (
+            (isLessThanBignum(&dividendMinusMultiplyResult, divisor)) && 
+            dividendMinusMultiplyResult.sign == positive
+            ) {
+            break;
+        }
+    }
+
+    copyBignum(result, &counterMiddleIndex);
+}
+
 int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     // Function that will find the modulo of two Bignums. Uses repeated multiplication to find the quotient of the dividend and divisor. dividend - (quotient * divisor) will then give the remainder/modulo.
     // E.g: 111 / 20:
