@@ -6,6 +6,7 @@
 		"limits.h": "c",
 		"bignum.h": "c",
 		"stdlib.h": "c",
-		"algorithm": "c"
+		"algorithm": "c",
+		"time.h": "c"
 	}
 }

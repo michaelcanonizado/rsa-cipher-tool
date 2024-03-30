@@ -302,6 +302,7 @@ void trimBignum(Bignum *num) {
     // Function to trim leading 0s of Bignum. This function works by counting leading 0s encapsulated by the current Bignum.length, and once a non-zero is found, will update the length of Bignum by subtracting the count of leading 0s.
 
     unsigned long long int numOfZeros = 0;
+    // Flag to check if a non-zero integer was found. Cases where a Bignum was intentionally set to 0: setBignum(&x, "0", positive);. Should not be trimmed.
     int bignumIsZero = 1;
 
     // Start from the most significant digit, looking for 0s, and keep track of the number of 0s found.
@@ -316,6 +317,7 @@ void trimBignum(Bignum *num) {
         }
     }
 
+    // If Bignum is intentionally set to 0, dont trim the length and set it to 1.
     if (bignumIsZero) {
         num->length = 1;
         return;
