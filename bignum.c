@@ -439,10 +439,10 @@ int isEqualToBignum(Bignum *num1, Bignum *num2) {
     return 1;
 }
 
-int incrementBignum(Bignum *num) {
-    Bignum one = initBignum();
-    setBignum(&one, "1", positive);
-    addBignum(num, num, &one);
+int incrementBignum(Bignum *num, unsigned long long int incrementValue) {
+    Bignum offset = initBignum();
+    intToBignum(&offset, incrementValue, positive);
+    addBignum(num, num, &offset);
     return 0;
 }
 
