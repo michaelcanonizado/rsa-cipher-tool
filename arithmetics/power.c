@@ -45,10 +45,10 @@ int main(void) {
     // Start timer
     clock_t begin = clock();
 
-    // int x = 256312;
-    // int n = 43;
-    int x = 72;
-    int n = 2;
+    int x = 98765;
+    int n = 43;
+    // int x = 72;
+    // int n = 2;
     
     int size = 0;
     // Dynamically allocate memory to array
