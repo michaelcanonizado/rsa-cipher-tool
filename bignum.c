@@ -302,6 +302,7 @@ void trimBignum(Bignum *num) {
     // Function to trim leading 0s of Bignum. This function works by counting leading 0s encapsulated by the current Bignum.length, and once a non-zero is found, will update the length of Bignum by subtracting the count of leading 0s.
 
     unsigned long long int numOfZeros = 0;
+    int bignumIsZero = 1;
 
     // Start from the most significant digit, looking for 0s, and keep track of the number of 0s found.
     for (int i = num->length - 1; i >= 0; i--) {
@@ -310,8 +311,14 @@ void trimBignum(Bignum *num) {
         } 
         // If a non-zero integer is found, it has found the MSB(most significant digit), exit the loop and update Bignum.length.
         else {
+            bignumIsZero = 0;
             break;
         }
+    }
+
+    if (bignumIsZero) {
+        num->length = 1;
+        return;
     }
 
     // If 0s were found, trim the Bignum by adjusting the length.
