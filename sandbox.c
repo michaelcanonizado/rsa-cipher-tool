@@ -99,10 +99,20 @@ int main() {
  Bignum num1 = initBignum();
  Bignum num2 = initBignum(); 
  Bignum res = initBignum(); 
- setBignum(&num1, "1234", positive);
+ Bignum i = initBignum(); 
+ setBignum(&num1, "12", negative);
  setBignum(&num2, "56", positive);
+ 
 
- divideBignum(&res, &num1, &num2);
+//  divideBignum(&res, &num1, &num2);
+    
+    for (setBignum(&i, "0", positive); isLessThanBignum(&num1, &num2); incrementBignum(&num1, 2)) {
+        // printBignum(&num1);
+        for (int i = 3 ; i >= 0; i--) {
+            printf("%d", num1.digits[i]);
+        }
+        printf("-");
+    }
 
   printf("\n");
   printBignum(&num1);
