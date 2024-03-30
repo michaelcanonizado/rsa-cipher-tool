@@ -44,6 +44,7 @@ int isGreaterThanBignum(Bignum *num1, Bignum *num2);
 int isLessThanBignum(Bignum *num1, Bignum *num2);
 int isEqualToBignum(Bignum *num1, Bignum *num2);
 int isBignumZero(Bignum *num);
+int incrementBignum(Bignum *num);
 
 void addBignum(Bignum *result, Bignum *num1, Bignum *num2);
 void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2);
