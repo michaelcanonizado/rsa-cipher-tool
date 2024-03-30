@@ -2,15 +2,22 @@
 #include "bignum.h"
 
 int main() {
-  Bignum x = initBignum();
-  Bignum res = initBignum();
 
-  setBignum(&x, "567", positive);
+ Bignum num1 = initBignum();
+ Bignum num2 = initBignum(); 
+ Bignum res = initBignum(); 
+ setBignum(&num1, "123", positive);
+ setBignum(&num2, "987", positive);
 
-  halfBignum(&res, &x);
+ multiplyBignum(&res, &num1, &num2);
 
-  printf("\nRes: ");
+  printf("\n");
+  printBignum(&num1);
+  printf(" * ");
+  printBignum(&num2);
+  printf(" = ");
   printBignum(&res);
+
 
   return 0;
 }
