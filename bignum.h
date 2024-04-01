@@ -34,21 +34,27 @@ Bignum initBignum();
 void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign);
 void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN sign);
 long long int bignumToInt(Bignum *num);
+int resetBignum(Bignum *num);
 
 void copyBignum(Bignum *result, Bignum *num);
 void printBignum(Bignum *num);
 void printBignumCenter(Bignum *num, unsigned int requiredWidth);
 void trimBignum(Bignum *num);
+
 int isGreaterThanBignum(Bignum *num1, Bignum *num2);
 int isLessThanBignum(Bignum *num1, Bignum *num2);
 int isEqualToBignum(Bignum *num1, Bignum *num2);
 int isBignumZero(Bignum *num);
+int incrementBignum(Bignum *num, unsigned long long int incrementValue);
 
 void addBignum(Bignum *result, Bignum *num1, Bignum *num2);
 void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2);
 int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier);
-int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier);
+int divideBignumPrototype(Bignum *result, Bignum *dividend, Bignum *divisor);
 int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor);
 void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor);
+
+int halfBignum(Bignum *result, Bignum *num);
+int generateRandomBignum(Bignum *result, unsigned long long int numOfDigits, BIGNUM_SIGN sign);
 
 #endif /* BIGNUM_H */

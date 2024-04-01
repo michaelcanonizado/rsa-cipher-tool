@@ -1,17 +1,20 @@
 // OPERATIONS NEEDED TO BE IMPLEMENTED:
-// Greater Than - Done & Documented
-// Less Than - Done & Documented
-// Equal To - Done & Documented
-// Addition - Done & Tested & Documented
-// Subtraction - Done & Tested & Documented
-// Greatet Than Equal To - Not yet started
-// Less Than Equal To - Not yet started
-// Increment - Not yet started
-// Decrement - Not yet started
-// Multiplication - Not yet started
-// Division - Not yet started
-// Modulus - Not yet started
-// Exponents - Not yet started
+// Greater Than - Done
+// Less Than - Done
+// Equal To - Done
+// Addition - Done
+// Subtraction - Done
+// Multiplication - Done
+// Modulus - Done
+// Division - N/A
+// Greatet Than Equal To - N/A
+// Less Than Equal To - N/A
+// Not Equal To - N/A
+// Increment - N/A
+// Decrement - N/A
+// Exponents - N/A
+// Find GCD - N/A
+// Mod Inverse - N/A
 
 #include <stdio.h>
 #include <string.h>
@@ -19,6 +22,102 @@
 #include <limits.h>
 #include <math.h>
 #include "bignum.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// -----------------PRIVATE FUNCTIONS-----------------
+
+int bignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
+
+    // Function that shifts a Bigum with the ampunt of 0s specified (x * pow(10, n)).
+    // I.e: x * 10^n
+    // E.g: Integer: 123 -> 12300
+    // E.g: Bignum: [3,2,1] -> [0,0,3,2,1]
+    
+    if (shiftPlaces < 0) {
+        printf("Shifting Bignum by negative value/s.\n");
+        return -1;
+    }
+
+    unsigned long long int resultLength = shiftPlaces;
+
+    // Set the LSD (least significant digit) of result.digit to the amount of 0s specified.
+    // REFACTOR: THIS EXPRESSION CAN BE REMOVED AS initBignum() SETS ALL ELEMENTS OF Bignum.digits[] TO 0. IF THIS REFACTOR FAVTOR IS BEING APPLIED, DONT FORGET TO RETEST multiplyBignum()
+    memset(result->digits, 0, sizeof(int) * shiftPlaces);
+
+    // Copy the rest of num.digits to result.digits
+    for (unsigned long int i = shiftPlaces, j = 0; j < num->length; i++, j++) {
+        result->digits[i] = num->digits[j];
+        
+        resultLength++;
+    }
+
+    result->length = resultLength;
+}
+
+int multiplyBignumGetLeftHalf(Bignum *result, Bignum *num, unsigned long long int splitIndex) {
+    // Function that gets a and c in multiplyBignum() that uses the karatsuba algorithm. This works in conjunction with multiplyBignumGetRightHalf() as they use the same splitIndex.
+    
+    if (splitIndex < 0) {
+        printf("\nShifting Bignum by negative value.\n");
+        return -2;
+    }
+
+    unsigned long long int resultLength = 0;
+
+    for (unsigned long int i = splitIndex, j = 0; i < num->length; i++, j++) {
+        result->digits[j] = num->digits[i];
+        resultLength++;
+    }
+
+    result->length = resultLength;
+}
+
+int multiplyBignumGetRightHalf(Bignum *result, Bignum *num, unsigned long long int splitIndex) {
+    // Function that gets a and c in multiplyBignum() that uses the karatsuba algorithm. This works in conjunction with multiplyBignumGetLeftHalf() as they use the same splitIndex
+    
+    if (splitIndex < 0) {
+        printf("\nShifting Bignum by negative value.\n");
+        return -2;
+    }
+    
+    unsigned long long int resultLength = 0;
+
+    for (unsigned long int i = 0; i < splitIndex; i++) {
+        result->digits[i] = num->digits[i];
+        resultLength++;
+    }
+
+    result->length = resultLength;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// -----------------PUBLIC FUNCTIONS-----------------
 
 int getLengthOfInteger(long long int integer) {
     // Function will count the number of digits of positive or negative integer using log based solution. If integer is negative then convert it to positive as it the logarithm function only works with positive real numbers.
@@ -139,6 +238,15 @@ long long int bignumToInt(Bignum *num) {
     return result;
 }
 
+int resetBignum(Bignum *num) {
+    memset(num->digits, 0, sizeof(int) * MAX_INT_LENGTH);
+    num->length = 0;
+    num->sign = positive;
+    return 0;
+}
+
+
+
 void copyBignum(Bignum *result, Bignum *num) {
     // Function to copy the contents of a Bignum to another Bignum
     memcpy(result->digits, num->digits, sizeof(int) * num->length);
@@ -196,6 +304,56 @@ void printBignumCenter(Bignum *num, unsigned int requiredWidth) {
         printf(" ");
     }
 }
+
+void trimBignum(Bignum *num) {
+    // Function to trim leading 0s of Bignum. This function works by counting leading 0s encapsulated by the current Bignum.length, and once a non-zero is found, will update the length of Bignum by subtracting the count of leading 0s.
+
+    unsigned long long int numOfZeros = 0;
+    // Flag to check if a non-zero integer was found. Cases where a Bignum was intentionally set to 0: setBignum(&x, "0", positive);. Should not be trimmed.
+    int bignumIsZero = 1;
+
+    // Start from the most significant digit, looking for 0s, and keep track of the number of 0s found.
+    for (int i = num->length - 1; i >= 0; i--) {
+        if (num->digits[i] == 0) {
+            numOfZeros++;
+        } 
+        // If a non-zero integer is found, it has found the MSB(most significant digit), exit the loop and update Bignum.length.
+        else {
+            bignumIsZero = 0;
+            break;
+        }
+    }
+
+    // If Bignum is intentionally set to 0, dont trim the length and set it to 1.
+    if (bignumIsZero) {
+        num->length = 1;
+        return;
+    }
+
+    // If 0s were found, trim the Bignum by adjusting the length.
+    if (numOfZeros != 0) {
+        num->length = num->length - numOfZeros;
+    }
+}
+
+int isBignumZero(Bignum *num) {
+    // Function to determine if a Bignum is zero.
+
+    // A zero can be determined if it is 1 digit long, and the first digit is 0.
+
+    // REFACTOR: ADD MORE CONDITIONS TO VERIFY IS BIGUM IS 0. SUCH AS:
+    //    - CHECKING THE OTHER INDEXES FOR NON-ZEROS (Bignum.digits[0] might be 0, but the following indexes might have non-zeros)
+    //    - A ZERO HAS THE SIGN OF POSITIVE IN Bignum STRUCT DEFINITION.
+    //    - A BIGNUM THAT HASN'T BEEN PROPERLY INITIALIZED, (Ie: initBignum() was not used) WILL BE CONSIDERED AS A ZERO. DECIDE WHETHER THIS IS A WANTED BEHAVIOR
+
+    if (num->length <= 1 && num->digits[0] == 0) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+
 
 int isGreaterThanBignum(Bignum *num1, Bignum *num2) {
     // Function that will compare two Bignums, and determine which is greater.
@@ -288,44 +446,13 @@ int isEqualToBignum(Bignum *num1, Bignum *num2) {
     return 1;
 }
 
-void trimBignum(Bignum *num) {
-    // Function to trim leading 0s of Bignum. This function works by counting leading 0s encapsulated by the current Bignum.length, and once a non-zero is found, will update the length of Bignum by subtracting the count of leading 0s.
-
-    unsigned long long int numOfZeros = 0;
-
-    // Start from the most significant digit, looking for 0s, and keep track of the number of 0s found.
-    for (int i = num->length - 1; i >= 0; i--) {
-        if (num->digits[i] == 0) {
-            numOfZeros++;
-        } 
-        // If a non-zero integer is found, it has found the MSB(most significant digit), exit the loop and update Bignum.length.
-        else {
-            break;
-        }
-    }
-
-    // If 0s were found, trim the Bignum by adjusting the length.
-    if (numOfZeros != 0) {
-        num->length = num->length - numOfZeros;
-    }
+int incrementBignum(Bignum *num, unsigned long long int incrementValue) {
+    Bignum offset = initBignum();
+    intToBignum(&offset, incrementValue, positive);
+    addBignum(num, num, &offset);
+    return 0;
 }
 
-int isBignumZero(Bignum *num) {
-    // Function to determine if a Bignum is zero.
-
-    // A zero can be determined if it is 1 digit long, and the first digit is 0.
-
-    // REFACTOR: ADD MORE CONDITIONS TO VERIFY IS BIGUM IS 0. SUCH AS:
-    //    - CHECKING THE OTHER INDEXES FOR NON-ZEROS (Bignum.digits[0] might be 0, but the following indexes might have non-zeros)
-    //    - A ZERO HAS THE SIGN OF POSITIVE IN Bignum STRUCT DEFINITION.
-    //    - A BIGNUM THAT HASN'T BEEN PROPERLY INITIALIZED, (Ie: initBignum() was not used) WILL BE CONSIDERED AS A ZERO. DECIDE WHETHER THIS IS A WANTED BEHAVIOR
-
-    if (num->length <= 1 && num->digits[0] == 0) {
-        return 1;
-    } else {
-        return 0;
-    }
-}
 
 void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     // Function to add two Bignums together.
@@ -592,69 +719,6 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     trimBignum(result);
 }
 
-int bignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
-    // Function that shifts a Bigum with the ampunt of 0s specified (x * pow(10, n)).
-    // I.e: x * 10^n
-    // E.g: Integer: 123 -> 12300
-    // E.g: Bignum: [3,2,1] -> [0,0,3,2,1]
-    
-    if (shiftPlaces < 0) {
-        printf("Shifting Bignum by negative value/s.\n");
-        return -1;
-    }
-
-    unsigned long long int resultLength = shiftPlaces;
-
-    // Set the LSD (least significant digit) of result.digit to the amount of 0s specified.
-    // REFACTOR: THIS EXPRESSION CAN BE REMOVED AS initBignum() SETS ALL ELEMENTS OF Bignum.digits[] TO 0. IF THIS REFACTOR FAVTOR IS BEING APPLIED, DONT FORGET TO RETEST multiplyBignum()
-    memset(result->digits, 0, sizeof(int) * shiftPlaces);
-
-    // Copy the rest of num.digits to result.digits
-    for (unsigned long int i = shiftPlaces, j = 0; j < num->length; i++, j++) {
-        result->digits[i] = num->digits[j];
-        
-        resultLength++;
-    }
-
-    result->length = resultLength;
-}
-
-int multiplyBignumGetLeftHalf(Bignum *result, Bignum *num, unsigned long long int splitIndex) {
-    // Function that gets a and c in multiplyBignum() that uses the karatsuba algorithm. This works in conjunction with multiplyBignumGetRightHalf() as they use the same splitIndex.
-    
-    if (splitIndex < 0) {
-        printf("\nShifting Bignum by negative value.\n");
-        return -2;
-    }
-
-    unsigned long long int resultLength = 0;
-
-    for (unsigned long int i = splitIndex, j = 0; i < num->length; i++, j++) {
-        result->digits[j] = num->digits[i];
-        resultLength++;
-    }
-
-    result->length = resultLength;
-}
-
-int multiplyBignumGetRightHalf(Bignum *result, Bignum *num, unsigned long long int splitIndex) {
-    // Function that gets a and c in multiplyBignum() that uses the karatsuba algorithm. This works in conjunction with multiplyBignumGetLeftHalf() as they use the same splitIndex
-    
-    if (splitIndex < 0) {
-        printf("\nShifting Bignum by negative value.\n");
-        return -2;
-    }
-    
-    unsigned long long int resultLength = 0;
-
-    for (unsigned long int i = 0; i < splitIndex; i++) {
-        result->digits[i] = num->digits[i];
-        resultLength++;
-    }
-
-    result->length = resultLength;
-}
-
 int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     // Function that multiplies 2 Bignums together.
     // Uses the karatsuba multiplication algorithm (https://www.youtube.com/watch?v=yWI2K4jOjFQ&t=6s) that has a time complexity of O(n^1.6). Which is faster than the traditional multiplication algorithm with a time complexity of O(n^2).
@@ -754,25 +818,58 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     return 0;
 }
 
-int getTwoBignumAverage(Bignum *result, Bignum *num1, Bignum *num2) {
-    Bignum num1PlusNum2 = initBignum();
+int divideBignumPrototype(Bignum *result, Bignum *dividend, Bignum *divisor) {
+    // Temporary divide function from moduloBignum()
+    if (isLessThanBignum(dividend, divisor)) {
+        copyBignum(result, dividend);
+        return 0;
+    }
 
-    addBignum(&num1PlusNum2, num1, num2);
+    Bignum tempOne = initBignum();
+    setBignum(&tempOne, "1", positive);
+    Bignum counterLeftIndex = initBignum();
+    Bignum counterRightIndex = initBignum();
+    Bignum counterMiddleIndex = initBignum();
 
-    int carry = 0;
+    unsigned long long int leftShiftBy = 0;
+    unsigned long long int rightShiftBy = dividend->length - (divisor->length - 1);
 
-    for (int i = num1PlusNum2.length - 1; i >= 0; i--) {
-        result->digits[i] = (num1PlusNum2.digits[i] / 2) + carry;
+    if ((divisor->length + 1) < dividend->length) {
+        leftShiftBy = dividend->length - (divisor->length + 1);
+    }
 
-        if (num1PlusNum2.digits[i] % 2 != 0) {
-            carry = 5;
-        } else {
-            carry = 0;
+    bignumShiftLeft(&counterLeftIndex, &tempOne, leftShiftBy);
+    bignumShiftLeft(&counterRightIndex, &tempOne, rightShiftBy);
+
+    Bignum multiplyResult = initBignum();
+    setBignum(&multiplyResult, "0", positive);
+
+    while(1) {
+        multiplyResult = initBignum();
+
+        Bignum num1PlusNum2 = initBignum();
+        addBignum(&num1PlusNum2, &counterLeftIndex, &counterRightIndex);
+        halfBignum(&counterMiddleIndex, &num1PlusNum2);
+
+        multiplyBignum(&multiplyResult, divisor, &counterMiddleIndex);
+ 
+        if (isGreaterThanBignum(&multiplyResult, dividend)) {
+            copyBignum(&counterRightIndex, &counterMiddleIndex);
+        } else if (isLessThanBignum(&multiplyResult, dividend)) {
+            copyBignum(&counterLeftIndex, &counterMiddleIndex);
+        }
+
+        Bignum dividendMinusMultiplyResult = initBignum();
+        subtractBignum(&dividendMinusMultiplyResult, dividend, &multiplyResult);
+        if (
+            (isLessThanBignum(&dividendMinusMultiplyResult, divisor)) && 
+            dividendMinusMultiplyResult.sign == positive
+            ) {
+            break;
         }
     }
 
-    result->length = num1PlusNum2.length;
-    trimBignum(result);
+    copyBignum(result, &counterMiddleIndex);
 }
 
 int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
@@ -839,7 +936,10 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
         multiplyResult = initBignum();
 
         // Get the middle index of the left and right index.
-        getTwoBignumAverage(&counterMiddleIndex, &counterLeftIndex, &counterRightIndex);
+        // (L + R) / 2 = M
+        Bignum num1PlusNum2 = initBignum();
+        addBignum(&num1PlusNum2, &counterLeftIndex, &counterRightIndex);
+        halfBignum(&counterMiddleIndex, &num1PlusNum2);
 
         // Multiply the divisor with the middle index
         multiplyBignum(&multiplyResult, divisor, &counterMiddleIndex);
@@ -870,6 +970,7 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     subtractBignum(result, dividend, &multiplyResult);
 }
 
+<<<<<<< HEAD
 void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
     
     // Checks if the divisor or the dividend is zero. If it is, the quotient is 0.
@@ -960,4 +1061,29 @@ void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
 
     // Free memory
     free(quotientArr);
+=======
+
+
+int halfBignum(Bignum *result, Bignum *num) {
+    int carry = 0;
+
+    for (int i = num->length - 1; i >= 0; i--) {
+        result->digits[i] = (num->digits[i] / 2) + carry;
+
+        if (num->digits[i] % 2 != 0) {
+            carry = 5;
+        } else {
+            carry = 0;
+        }
+        
+        result->length++;
+    }
+
+    trimBignum(result);
+}
+
+int generateRandomBignum(Bignum *result, unsigned long long int numOfDigits, BIGNUM_SIGN sign) {
+
+    printf("\n\nHello world!\n\n");
+>>>>>>> af34a9f26af9db1f55c830ded1d31548e2c351e2
 }
