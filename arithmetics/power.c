@@ -6,12 +6,20 @@ int multiplyArrayItems(int x, int result[], int size, int *insertedItems) {
     int carry = 0;
     int product;
 
+    printf("\n\n ->");
     // Multiply n with each digit of result[]
     for (int i = 0; i < size; i++) {
         product = result[i] * x + carry;
+        printf("\n%d = %d * %d + %d", product, result[i], x, carry);
+
         result[i] = product % 10;
+        printf("\n%d = %d %% %d", result[i], product, 10);
+
         carry = product / 10;
+        printf("\n%d = %d / %d\n----------------------------------\n", carry, product, 10);
     }
+    
+    printf("\n\n");
 
     // Count how many digits in array
     while(carry) {
@@ -46,7 +54,7 @@ int main(void) {
     clock_t begin = clock();
 
     int x = 123;
-    int n = 456;
+    int n = 4;
     // int x = 72;
     // int n = 2;
     
@@ -74,6 +82,8 @@ int main(void) {
 
     printf("\n\nMultiplying digits...");
     for (i = 2; i <= n; i++) {
+        printf("\n\n%d interation\n", i);
+
         size = multiplyArrayItems(x, result, size, &itemsInserted);
     }
     printf("\nGetting power done...");
