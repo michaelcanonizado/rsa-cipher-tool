@@ -5,6 +5,7 @@
 #include <time.h>
 
 void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
+    printf("START\n");
     // Checks if the divisor or the dividend is zero. If it is, the quotient is 0.
     if (isBignumZero(divisor)) {
         intToBignum(quotient, 0, positive);
@@ -28,6 +29,7 @@ void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
 
     // Check if the dividend is less than the divisor. If it is, the quotient is 0 since the result is less than 1 and it will truncate down.
     if (isLessThanBignum(dividend, divisor)) {
+        printf("Dividend is less than divisor\n");
         intToBignum(quotient, 0, positive);
         return;
     }
@@ -41,16 +43,25 @@ void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
     Bignum  quotientCopy = initBignum();
     setBignum(&quotientCopy, "0", positive);
 
+    printf("Created copies\n");
+
     // Perform long division
     // While the dividend is greater than or equal to the divisor, subtract the divisor from the dividend
     while (isGreaterThanBignum(&dividendCopy, &divisorCopy) >= 0) {
         // Subtracts divisor from the dividend and the result becomes the new dividend
+
+        printBignum(&dividendCopy);
+        printf("\n");
         subtractBignum(&dividendCopy, &dividendCopy, &divisorCopy);
+        printBignum(&dividendCopy);
+        printf("\n");
         // Increment the quotient
         incrementBignum(&quotientCopy, 1);
-        // Check if the dividend is less than the divisor. If it is, break out of the loop.
-        if (isLessThanBignum(&dividendCopy, &divisorCopy) != 0) break;
+        printBignum(&quotientCopy);
+        printf("\n");
     }
+
+    printf("Finished long division\n");
 
     copyBignum(quotient, &quotientCopy);
 
@@ -73,24 +84,30 @@ int main() {
     setBignum(&num2, "2", positive);
     
 
-    // divideBignum(&res, &num1, &num2);
+ Bignum num1 = initBignum();
+ Bignum num2 = initBignum(); 
+ Bignum res = initBignum(); 
+ Bignum i = initBignum(); 
+ setBignum(&num1, "12", negative);
+ setBignum(&num2, "5", positive);
+ 
 
-    divideBignumPrototype(&res, &num1, &num2);
+ divideBignum(&res, &num1, &num2);
+    
+    // for (setBignum(&i, "0", positive); isLessThanBignum(&num1, &num2); incrementBignum(&num1, 2)) {
+    //     // printBignum(&num1);
+    //     for (int i = 3 ; i >= 0; i--) {
+    //         printf("%d", num1.digits[i]);
+    //     }
+    //     printf("-");
+    // }
 
-        
-    for (setBignum(&i, "0", positive); isLessThanBignum(&num1, &num2); incrementBignum(&num1, 2)) {
-        for (int i = 3 ; i >= 0; i--) {
-            printf("%d", num1.digits[i]);
-        }
-        printf("-");
-    }
-
-    printf("\n");
-    printBignum(&num1);
-    printf(" * ");
-    printBignum(&num2);
-    printf(" = ");
-    printBignum(&res);
+  printf("\n");
+  printBignum(&num1);
+  printf(" / ");
+  printBignum(&num2);
+  printf(" = ");
+  printBignum(&res);
 
     clock_t end = clock();
     double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
