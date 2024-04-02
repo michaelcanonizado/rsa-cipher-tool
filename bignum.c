@@ -958,7 +958,7 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     Bignum counterRightIndex = initBignum();
     Bignum counterMiddleIndex = initBignum();
 
-    // Identify the left and right indexes. I.e: 1 * 10^n
+    // Identify the left and right indexes.
     unsigned long long int leftShiftBy = 0;
     unsigned long long int rightShiftBy = dividend->length - (divisor->length - 1);
 
@@ -968,6 +968,7 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     }
 
     // Get left and right Bignum indexes
+    // I.e: I.e: 1 * 10^leftShiftBy & 1 * 10^rightShiftBy
     bignumShiftLeft(&counterLeftIndex, &tempOne, leftShiftBy);
     bignumShiftLeft(&counterRightIndex, &tempOne, rightShiftBy);
     
