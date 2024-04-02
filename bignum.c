@@ -454,6 +454,7 @@ int incrementBignum(Bignum *num, unsigned long long int incrementValue) {
 }
 
 
+
 void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     // Function to add two Bignums together.
     // Uses basic addition which starts at the LSD (least significant digit) and adds the digits of the addends together, iterating till it reaches the end.
@@ -969,6 +970,8 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     // dividend - (divisor * quotient) = remainder/modulo
     subtractBignum(result, dividend, &multiplyResult);
 }
+
+
 
 int halfBignum(Bignum *result, Bignum *num) {
     int carry = 0;
