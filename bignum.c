@@ -848,7 +848,7 @@ int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     // If dividend is less than the divisor. Quotient is 0.
     // 123 % 987654321 = 0
     if (isLessThanBignum(dividend, divisor)) {
-        copyBignum(result, dividend);
+        setBignum(result, "0", positive);
         return 0;
     }
 
