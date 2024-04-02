@@ -73,9 +73,9 @@ int main() {
     setBignum(&num2, "2", positive);
     
 
-    divideBignum(&res, &num1, &num2);
+    // divideBignum(&res, &num1, &num2);
 
-    // divideBignumPrototype(&res, &num1, &num2);
+    divideBignumPrototype(&res, &num1, &num2);
 
         
     for (setBignum(&i, "0", positive); isLessThanBignum(&num1, &num2); incrementBignum(&num1, 2)) {
@@ -94,6 +94,6 @@ int main() {
 
     clock_t end = clock();
     double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-    printf("CPU time used: %f seconds\n", cpu_time_used);
+    printf("\nCPU time used: %f seconds\n", cpu_time_used);
   return 0;
 }
