@@ -819,7 +819,7 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     return 0;
 }
 
-int divideBignumPrototype(Bignum *result, Bignum *dividend, Bignum *divisor) {
+int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     // Temporary divide function from moduloBignum()
     if (isLessThanBignum(dividend, divisor)) {
         copyBignum(result, dividend);
