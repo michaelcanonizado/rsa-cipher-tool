@@ -845,10 +845,24 @@ int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     //    : The left and right indexes will be: 10 - 10000 
     // Therefore, the left and right indexes should be given extra place values.
 
+    BIGNUM_SIGN dividendSign, divisorSign, resultSign;
+
+    dividendSign = dividend->sign;
+    divisorSign = divisor->sign;
+
+    if (dividendSign == divisorSign) {
+        resultSign = positive;
+    } else {
+        resultSign = negative;
+    }
+
+    dividend->sign = positive;
+    divisor->sign = positive;
+
     // If dividend is less than the divisor. Quotient is 0.
     // 123 % 987654321 = 0
     if (isLessThanBignum(dividend, divisor)) {
-        setBignum(result, "0", positive);
+        setBignum(result, "0", resultSign);
         return 0;
     }
 
@@ -915,6 +929,10 @@ int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
 
     // Return the latest counterMiddleIndex that triggered the exit condition. I.e: the quotient
     copyBignum(result, &counterMiddleIndex);
+
+    result->sign = resultSign;
+    dividend->sign = dividendSign;
+    divisor->sign = divisorSign;
 }
 
 int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
