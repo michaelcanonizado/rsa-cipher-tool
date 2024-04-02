@@ -20,13 +20,9 @@ void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
     BIGNUM_SIGN dividendSign = dividend->sign;
     BIGNUM_SIGN divisorSign = divisor->sign;
 
-//    printf("Dividend sign: %d\n", dividendSign);
-//    printf("Divisor sign: %d\n", divisorSign);
-
     // The sign of the quotient is determined by the signs of the dividend and divisor. If they are the same, the quotient is positive. If they are different, the quotient is negative.
     BIGNUM_SIGN quotientSign = dividendSign == divisorSign ? positive : negative;
 
-//    printf("Quotient sign: %d\n", quotientSign);
 
     // Make dividend and divisor positive because the sign does not affect how the division is done.
     dividend->sign = positive;
@@ -40,9 +36,7 @@ void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
 
     // Get the lengths of the dividend and divisor
     int dividendLen = dividend->length;
-    printf("Dividend length: %d\n", dividendLen);
     int divisorLen = divisor->length;
-    printf("Divisor length: %d\n", divisorLen);
 
     // Create copies of the dividend and divisor.
     // Copying is necessary because the dividend and divisor will be modified during the division process. It allows to perform division without changing the original dividend and divisor.
@@ -50,13 +44,6 @@ void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
     copyBignum(&dividendCopy, dividend);
     Bignum divisorCopy;
     copyBignum(&divisorCopy, divisor);
-    
-    printf("Dividend copy: ");
-    printBignum(&dividendCopy);
-    printf("\n");
-    printf("Divisor copy: ");
-    printBignum(&divisorCopy);
-    printf("\n");
 
     // The length of the quotient is the length of the dividend minus the length of the divisor plus 1.
     int quotientLen = dividendLen - divisorLen + 1;
@@ -70,15 +57,9 @@ void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
     // While the dividend is greater than or equal to the divisor, subtract the divisor from the dividend
     while (isGreaterThanBignum(&dividendCopy, &divisorCopy) >= 0) {
         // Subtracts divisor from the dividend and the result becomes the new dividend
-        printBignum(&dividendCopy);
-        printf("\n");
         subtractBignum(&dividendCopy, &dividendCopy, &divisorCopy);
-        printBignum(&dividendCopy);
-        printf("\n");
         // Increment the quotient
         incrementBignum(&quotientCopy, 1);
-        printBignum(&quotientCopy);
-        printf("\n");
         // Check if the dividend is less than the divisor. If it is, break out of the loop.
         if (isLessThanBignum(&dividendCopy, &divisorCopy) != 0) break;
     }
