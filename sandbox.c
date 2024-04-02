@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "bignum.h"
+#include <time.h>
 
 void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
     printf("START\n");
@@ -41,12 +42,14 @@ void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
 
     Bignum  quotientCopy = initBignum();
     setBignum(&quotientCopy, "0", positive);
+
     printf("Created copies\n");
 
     // Perform long division
     // While the dividend is greater than or equal to the divisor, subtract the divisor from the dividend
     while (isGreaterThanBignum(&dividendCopy, &divisorCopy) >= 0) {
         // Subtracts divisor from the dividend and the result becomes the new dividend
+
         printBignum(&dividendCopy);
         printf("\n");
         subtractBignum(&dividendCopy, &dividendCopy, &divisorCopy);
@@ -71,6 +74,15 @@ void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
 }
 
 int main() {
+    clock_t start = clock();
+
+    Bignum num1 = initBignum();
+    Bignum num2 = initBignum(); 
+    Bignum res = initBignum(); 
+    Bignum i = initBignum(); 
+    setBignum(&num1, "120000", negative);
+    setBignum(&num2, "2", positive);
+    
 
  Bignum num1 = initBignum();
  Bignum num2 = initBignum(); 
@@ -97,6 +109,8 @@ int main() {
   printf(" = ");
   printBignum(&res);
 
-
+    clock_t end = clock();
+    double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    printf("\nCPU time used: %f seconds\n", cpu_time_used);
   return 0;
 }

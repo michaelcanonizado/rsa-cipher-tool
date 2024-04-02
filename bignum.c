@@ -970,8 +970,6 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     subtractBignum(result, dividend, &multiplyResult);
 }
 
-
-
 int halfBignum(Bignum *result, Bignum *num) {
     int carry = 0;
 
