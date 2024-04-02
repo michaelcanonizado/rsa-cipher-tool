@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "bignum.h"
+#include <time.h>
 
 void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
     // Checks if the divisor or the dividend is zero. If it is, the quotient is 0.
@@ -62,34 +63,37 @@ void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
 }
 
 int main() {
+    clock_t start = clock();
 
-Bignum num1 = initBignum();
-Bignum num2 = initBignum(); 
-Bignum res = initBignum(); 
-Bignum i = initBignum(); 
-setBignum(&num1, "1200", negative);
-setBignum(&num2, "56", positive);
- 
-
-divideBignum(&res, &num1, &num2);
-
-// divideBignumPrototype(&res, &num1, &num2);
-
+    Bignum num1 = initBignum();
+    Bignum num2 = initBignum(); 
+    Bignum res = initBignum(); 
+    Bignum i = initBignum(); 
+    setBignum(&num1, "120000", negative);
+    setBignum(&num2, "2", positive);
     
-for (setBignum(&i, "0", positive); isLessThanBignum(&num1, &num2); incrementBignum(&num1, 2)) {
-    for (int i = 3 ; i >= 0; i--) {
-        printf("%d", num1.digits[i]);
+
+    divideBignum(&res, &num1, &num2);
+
+    // divideBignumPrototype(&res, &num1, &num2);
+
+        
+    for (setBignum(&i, "0", positive); isLessThanBignum(&num1, &num2); incrementBignum(&num1, 2)) {
+        for (int i = 3 ; i >= 0; i--) {
+            printf("%d", num1.digits[i]);
+        }
+        printf("-");
     }
-    printf("-");
-}
 
-printf("\n");
-printBignum(&num1);
-printf(" * ");
-printBignum(&num2);
-printf(" = ");
-printBignum(&res);
+    printf("\n");
+    printBignum(&num1);
+    printf(" * ");
+    printBignum(&num2);
+    printf(" = ");
+    printBignum(&res);
 
-
+    clock_t end = clock();
+    double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    printf("CPU time used: %f seconds\n", cpu_time_used);
   return 0;
 }
