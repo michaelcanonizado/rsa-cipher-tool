@@ -148,6 +148,7 @@ void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
         incrementBignum(&quotientCopy, 1);
         printBignum(&quotientCopy);
         printf("\n");
+        // Check if the dividend is less than the divisor. If it is, break out of the loop.
         if (isLessThanBignum(&dividendCopy, &divisorCopy) != 0) break;
     }
 
