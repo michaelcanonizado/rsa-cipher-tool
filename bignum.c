@@ -845,17 +845,25 @@ int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     //    : The left and right indexes will be: 10 - 10000 
     // Therefore, the left and right indexes should be given extra place values.
 
+    // Declare temporary sign enums
     BIGNUM_SIGN dividendSign, divisorSign, resultSign;
-
+    // Store the original sign of the dividend and divisor
     dividendSign = dividend->sign;
     divisorSign = divisor->sign;
 
+    // Use division rule:
+    //    +dividend / +divisor = +result
+    //    -dividend / -divisor = +result
+    //    -dividend / +divisor = -result
+    //    +dividend / -divisor = -result
+    // to determine the sign of the result
     if (dividendSign == divisorSign) {
         resultSign = positive;
     } else {
         resultSign = negative;
     }
 
+    // Set the sign of the dividend and the divisor to be the same to correctly trigger the condition below
     dividend->sign = positive;
     divisor->sign = positive;
 
@@ -930,6 +938,7 @@ int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     // Return the latest counterMiddleIndex that triggered the exit condition. I.e: the quotient
     copyBignum(result, &counterMiddleIndex);
 
+    // Set the corresponding result sign, and bring back the original sign of the dividend and the divisor.
     result->sign = resultSign;
     dividend->sign = dividendSign;
     divisor->sign = divisorSign;
