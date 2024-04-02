@@ -67,26 +67,22 @@ void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
    
     // Perform long division
 
-    // Iterate through the dividend from the MSD to the LSD
-    for (i = 0; i <= dividendLen - divisorLen; i++) {
-        // While the dividend is greater than or equal to the divisor, subtract the divisor from the dividend
-        while (isGreaterThanBignum(&dividendCopy, &divisorCopy) >= 0) {
-            for (j = 0; isGreaterThanBignum(&dividendCopy, &divisorCopy) != 0; j++) {
-                // Subtracts divisor from the dividend and the result becomes the new dividend
-                subtractBignum(&dividendCopy, &dividendCopy, &divisorCopy);
-                printBignum(&dividendCopy);
-                printf("\n");
-                printBignum(&divisorCopy);
-                printf("\n");
-                // Increment the quotient
-                incrementBignum(&quotientCopy, 1);
-                printBignum(&quotientCopy);
-                printf("\n");
-            }
-            // Check if the dividend is less than the divisor. If it is, break out of the loop.
-            if (isLessThanBignum(&dividendCopy, &divisorCopy) != 0) break;
-        }        
+    // While the dividend is greater than or equal to the divisor, subtract the divisor from the dividend
+    while (isGreaterThanBignum(&dividendCopy, &divisorCopy) >= 0) {
+        // Subtracts divisor from the dividend and the result becomes the new dividend
+        printBignum(&dividendCopy);
+        printf("\n");
+        subtractBignum(&dividendCopy, &dividendCopy, &divisorCopy);
+        printBignum(&dividendCopy);
+        printf("\n");
+        // Increment the quotient
+        incrementBignum(&quotientCopy, 1);
+        printBignum(&quotientCopy);
+        printf("\n");
+        // Check if the dividend is less than the divisor. If it is, break out of the loop.
+        if (isLessThanBignum(&dividendCopy, &divisorCopy) != 0) break;
     }
+
     copyBignum(quotient, &quotientCopy);
 
     // Adjust the sign of the quotient
