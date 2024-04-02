@@ -1,0 +1,44 @@
+HOME)
+1) generete keys
+2) Encrypt Text
+3) Decrypt Text
+4) about
+5) quit
+
+
+1) ----------------------------------------------------------
+
+
+1.0) show confirmation text to user
+1.1) show loading bars and generate keys
+1.2) output private and pubic key
+1.3) loop back to HOME
+
+
+2) ----------------------------------------------------------
+
+
+2.0) show confirmation text to user
+2.1) get txt file
+2.2) get keys
+2.3) show loading bars and encrypt txt file
+2.4) output encrypted file
+2.5) print results. E.g: "encrypted 1234 charactes in 30.2 secs"
+2.6) looop back to HOME
+
+
+3) ----------------------------------------------------------
+
+
+3.0) show confirmation text to user
+3.1) get txt file
+3.2) get keys
+3.3) show loading bars and decrypt txt file
+3.4) output decrypted file
+3.5) print results. E.g: "decrypted 1234 charactes in 30.2 secs"
+3.6) looop back to HOME
+
+
+
+
+
