@@ -95,7 +95,6 @@ void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
     free(quotientArr);
 } */
 
-/*
 void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
     printf("START\n");
     // Checks if the divisor or the dividend is zero. If it is, the quotient is 0.
@@ -149,6 +148,7 @@ void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
         incrementBignum(&quotientCopy, 1);
         printBignum(&quotientCopy);
         printf("\n");
+        if (isLessThanBignum(&dividendCopy, &divisorCopy) != 0) break;
     }
 
     printf("Finished long division\n");
@@ -162,14 +162,14 @@ void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
     dividend->sign = dividendSign;
     divisor->sign = divisorSign;
 }
-*/
+
 int main() {
 
  Bignum num1 = initBignum();
  Bignum num2 = initBignum(); 
  Bignum res = initBignum(); 
  Bignum i = initBignum(); 
- setBignum(&num1, "112", negative);
+ setBignum(&num1, "1200", negative);
  setBignum(&num2, "56", positive);
  
 
