@@ -4,7 +4,6 @@
 #include "bignum.h"
 
 void divideBignum(Bignum *quotient, Bignum *dividend, Bignum *divisor) {
-    printf("START\n");
     // Checks if the divisor or the dividend is zero. If it is, the quotient is 0.
     if (isBignumZero(divisor)) {
         intToBignum(quotient, 0, positive);
