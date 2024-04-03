@@ -38,8 +38,6 @@ int main() {
     printBignum(&res2);
     printf("\n");
 
-   
-
     clock_t end = clock();
     double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
     printf("\nCPU time used: %f seconds\n\n", cpu_time_used);

@@ -7,7 +7,7 @@
 // Multiplication - Done
 // Modulus - Done
 // Division - N/A
-// Greatet Than Equal To - N/A
+// Greater Than Equal To - N/A
 // Less Than Equal To - N/A
 // Not Equal To - N/A
 // Increment - N/A
@@ -41,7 +41,7 @@
 
 int bignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
 
-    // Function that shifts a Bigum with the ampunt of 0s specified (x * pow(10, n)).
+    // Function that shifts a Bignum with the amount of 0s specified (x * pow(10, n)).
     // I.e: x * 10^n
     // E.g: Integer: 123 -> 12300
     // E.g: Bignum: [3,2,1] -> [0,0,3,2,1]
@@ -54,7 +54,7 @@ int bignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPla
     unsigned long long int resultLength = shiftPlaces;
 
     // Set the LSD (least significant digit) of result.digit to the amount of 0s specified.
-    // REFACTOR: THIS EXPRESSION CAN BE REMOVED AS initBignum() SETS ALL ELEMENTS OF Bignum.digits[] TO 0. IF THIS REFACTOR FAVTOR IS BEING APPLIED, DONT FORGET TO RETEST multiplyBignum()
+    // REFACTOR: THIS EXPRESSION CAN BE REMOVED AS initBignum() SETS ALL ELEMENTS OF Bignum.digits[] TO 0. IF THIS REFACTOR FACTOR IS BEING APPLIED, DONT FORGET TO RETEST multiplyBignum()
     memset(result->digits, 0, sizeof(int) * shiftPlaces);
 
     // Copy the rest of num.digits to result.digits
@@ -140,7 +140,7 @@ Bignum initBignum() {
 }
 
 void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
-    // Main Function to set a Bignum. This function takes an integer represented as a string, as strings dont have a limit to how long it can be. The each character of the string will then be converted to an integer by offsetting its ASCII value, and will be pushed to Bignum.digits[].
+    // Main Function to set a Bignum. This function takes an integer represented as a string, as strings don't have a limit to how long it can be. The each character of the string will then be converted to an integer by offsetting its ASCII value, and will be pushed to Bignum.digits[].
 
     // Integer will be stored in Bignum.digits[] in reverse for the following reasons: (1) Most operations usually start from the LSD (least significant digit), making it easier to perform operations. (2) The result will usually be greater than or less than the 2 integers being operated on. Eg: 999 (3 digits) + 999 (3 digits) = 1998 (4 digits) & 999 (3 digits) * 999 (3 digits) = 998,001 (6 digits). Hence, the resulting Bignum is free to shrink and grow infinitely. 
 
@@ -154,7 +154,7 @@ void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
     // Store numStr length
     numStruct->length = strlen(numStr);
 
-    // REFACTOR: Since the integer will be stored in reverse in Bignum.digits[], you can start to iterate through the string starting from the last character using strlen(numStr). Thus only needing 1 for-loop to convert numStr.
+    // REFACTOR: Since the integer will be stored in reverse in Bignum.digits[], you can start to iterate through the string starting from the last character using strlen(numStr). Thus, only needing 1 for-loop to convert numStr.
 
     // Load numbers into Bignum.digits[]
     for (int i = 0; i < numStruct->length; i++) {
@@ -267,7 +267,7 @@ void printBignum(Bignum *num) {
 
 void printBignumCenter(Bignum *num, unsigned int requiredWidth) {
     // Function to print a Bignum but with a specified width and center aligns it.
-    // It prioritizes the required width over centeredness to stay consistent when used in formatted prints. Bignums with odd lenghts wont be perfectly centered, so it either needs to have equal spaces on both sides (prioritizing centeredness) or 1 side having less space but meet the required width.
+    // It prioritizes the required width over centeredness to stay consistent when used in formatted prints. Bignums with odd lengths won't be perfectly centered, so it either needs to have equal spaces on both sides (prioritizing centeredness) or 1 side having less space but meet the required width.
     // Eg: Bignum = -1234 with the required with of 10 spaces, will be __-1234___ not ___-1234___.
 
     // If bignum overflows the required width, just print bignum.
@@ -317,14 +317,14 @@ void trimBignum(Bignum *num) {
         if (num->digits[i] == 0) {
             numOfZeros++;
         } 
-        // If a non-zero integer is found, it has found the MSB(most significant digit), exit the loop and update Bignum.length.
+        // If a non-zero integer is found, it has found the MSD(most significant digit), exit the loop and update Bignum.length.
         else {
             bignumIsZero = 0;
             break;
         }
     }
 
-    // If Bignum is intentionally set to 0, dont trim the length and set it to 1.
+    // If Bignum is intentionally set to 0, don't trim the length and set it to 1.
     if (bignumIsZero) {
         num->length = 1;
         return;
