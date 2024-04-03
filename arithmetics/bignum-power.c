@@ -33,42 +33,39 @@ int multiplyBignumArray(Bignum *result, Bignum *base) {
     setBignum(&carry, "0", positive);
     Bignum product = initBignum();
 
-    // Multiply n with each digit of result[]
-    // for (int i = 0; i < size; i++) {
-    //     product = result[i] * x + carry;
-    //     result[i] = product % 10;
-    //     carry = product / 10;
-    // }
+    printf("\n\n\n\n FOR LOOP ----->\n");
 
-    printf("\n\n ->");
-
-    for (int i = 0; i < base->length; i++) {
+    for (int i = 0; i < result->length; i++) {
+        product = initBignum();
         Bignum currDigit = initBignum();
-        Bignum currBaseDigitTimesBase = initBignum();
+        Bignum currResultDigitTimesBase = initBignum();
 
-        intToBignum(&currDigit, base->digits[i], positive);
-        multiplyBignum(&currBaseDigitTimesBase, &currDigit, base);
-        addBignum(&product, &currBaseDigitTimesBase, &carry);
+        intToBignum(&currDigit, result->digits[i], positive);
+        multiplyBignum(&currResultDigitTimesBase, &currDigit, base);
+        // printf("\nprdct before: ");
+        // printBignum(&product);
+        addBignum(&product, &currResultDigitTimesBase, &carry);     
+
         printf("\n");
         printBignum(&product);
         printf(" = ");
         printBignum(&currDigit);
-        printf(" * ");
+        printf(" * ");  
         printBignum(base);
         printf(" + ");
         printBignum(&carry);
 
         Bignum productModTen = initBignum();
         moduloBignum(&productModTen, &product, &ten);
-        int temp = bignumToInt(&productModTen);
-        result->digits[i] = temp;
-        printf("\n");
-        printBignum(&currDigit);
+        int productModTenInt = bignumToInt(&productModTen);
+        result->digits[i] = productModTenInt;
+        printf("\n%d", result->digits[i]);
         printf(" = ");
         printBignum(&product);
         printf(" %% %d", 10);
 
-        divideBignumPrototype(&carry, &product, &ten);
+        carry = initBignum();
+        divideBignum(&carry, &product, &ten);
         printf("\n");
         printBignum(&carry);
         printf(" = ");
@@ -76,32 +73,33 @@ int multiplyBignumArray(Bignum *result, Bignum *base) {
         printf(" / %d\n----------------------------------\n", 10);
     }
 
-    printf("\n\n");
-
-    // Count how many digits in array
-    // while(carry) {
-    //     result[size] = carry % 10;
-    //     carry = carry / 10;
-    //     size++;
-    //     (*insertedItems)++;
-    // }
-
-    // unsigned long long int size = base->length;
-    // unsigned long long int insertedItems = base->length;
-
+    printf("\n\n WHILE LOOP ----->\n");
     while(!isBignumZero(&carry)) {
         Bignum carryModTen = initBignum();
         Bignum carryDivideTen = initBignum();
-
+    
         moduloBignum(&carryModTen, &carry, &ten);
-        result->digits[base->length] = bignumToInt(&carryModTen);
+        result->digits[result->length] = bignumToInt(&carryModTen);
 
-        divideBignumPrototype(&carryDivideTen, &carry, &ten);
+        printf("\n\n");
+        printBignum(&carryModTen);
+        printf(" = ");
+        printBignum(&carry);
+        printf(" %% %d", 10);
+
+        divideBignum(&carryDivideTen, &carry, &ten);
         copyBignum(&carry, &carryDivideTen);
-        base->length++;
-    }
 
-    // return size;
+        printf("\n");
+        printBignum(&carryDivideTen);
+        printf(" = ");
+        printBignum(&carry);
+        printf(" / %d", 10);
+
+        result->length++;
+        printf("\nsize++ = %d", base->length);
+        printf("\ninsertedItems++ = %d", base->length);
+    }
 }
 
 int main(void) {
@@ -115,14 +113,23 @@ int main(void) {
     Bignum n = initBignum();
     Bignum result = initBignum();
 
-    setBignum(&x, "123", positive);
-    setBignum(&n, "4", positive);
+    setBignum(&x, "12345", positive);
+    setBignum(&n, "12345", positive);
 
+    printf("\n\nMultiplying ");
+    printBignum(&n);
+    printf(" digits...");
+
+    copyBignum(&result, &x);
     Bignum i = initBignum();
-    for(setBignum(&i, "2", positive); isLessThanBignum(&i, &n) || isEqualToBignum(&i, &n); incrementBignum(&i, 1)) {
-        printf("\n\n");
+    for(setBignum(&i, "2", positive); isLessThanOrEqualToBignum(&i, &n); incrementBignum(&i, 1)) {
+        printf("\n\n--------------------------------------------\n--------------------------------------------\n\n");
         printBignum(&i);
         printf(" interation: \n");
+
+        printf("\n\ncurrent result: ");
+        printBignum(&result);
+        printf("\nNum of digits in result: %d", result.length);
 
         multiplyBignumArray(&result, &x);
     }
