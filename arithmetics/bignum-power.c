@@ -36,7 +36,7 @@ int multiplyBignumArray(Bignum *result, Bignum *base) {
     printf("\n\n\n\n FOR LOOP ----->\n");
 
     for (int i = 0; i < result->length; i++) {
-        product = initBignum();
+        resetBignum(&product);
         Bignum currDigit = initBignum();
         Bignum currResultDigitTimesBase = initBignum();
 
@@ -64,7 +64,7 @@ int multiplyBignumArray(Bignum *result, Bignum *base) {
         printBignum(&product);
         printf(" %% %d", 10);
 
-        carry = initBignum();
+        resetBignum(&carry);
         divideBignum(&carry, &product, &ten);
         printf("\n");
         printBignum(&carry);
@@ -118,9 +118,7 @@ int multiplyBignumArrayCompressed(Bignum *result, Bignum *base) {
 
         intToBignum(&currDigit, result->digits[i], positive);
         multiplyBignum(&currResultDigitTimesBase, &currDigit, base);
-        // printf("\nprdct before: ");
-        // printBignum(&product);
-        addBignum(&product, &currResultDigitTimesBase, &carry);     
+        addBignum(&product, &currResultDigitTimesBase, &carry);
 
         Bignum productModTen = initBignum();
         moduloBignum(&productModTen, &product, &ten);
@@ -156,8 +154,8 @@ int main(void) {
     Bignum n = initBignum();
     Bignum result = initBignum();
 
-    setBignum(&x, "12345", positive);
-    setBignum(&n, "12345", positive);
+    setBignum(&x, "72", positive);
+    setBignum(&n, "100193", positive);
 
     printf("\n\nMultiplying ");
     printBignum(&n);
@@ -172,19 +170,19 @@ int main(void) {
         multiplyBignumArrayCompressed(&result, &x);
     }
 
-    copyBignum(&result, &x);
-    Bignum i = initBignum();
-    for(setBignum(&i, "2", positive); isLessThanOrEqualToBignum(&i, &n); incrementBignum(&i, 1)) {
-        printf("\n\n--------------------------------------------\n--------------------------------------------\n\n");
-        printBignum(&i);
-        printf(" interation: \n");
+    // copyBignum(&result, &x);
+    // Bignum i = initBignum();
+    // for(setBignum(&i, "2", positive); isLessThanOrEqualToBignum(&i, &n); incrementBignum(&i, 1)) {
+    //     printf("\n\n--------------------------------------------\n--------------------------------------------\n\n");
+    //     printBignum(&i);
+    //     printf(" interation: \n");
 
-        printf("\n\ncurrent result: ");
-        printBignum(&result);
-        printf("\nNum of digits in result: %d", result.length);
+    //     printf("\n\ncurrent result: ");
+    //     printBignum(&result);
+    //     printf("\nNum of digits in result: %d", result.length);
 
-        multiplyBignumArray(&result, &x);
-    }
+    //     multiplyBignumArray(&result, &x);
+    // }
 
     printf("\n\nBase: ");
     printBignum(&x);
@@ -192,6 +190,7 @@ int main(void) {
     printBignum(&n);
     printf("\nResult: ");
     printBignum(&result);
+    printf("\nResult length: %llu", result.length);
 
     // End CPU timer and print elapsed time
     clock_t end = clock();
