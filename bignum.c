@@ -423,6 +423,9 @@ int isLessThanBignum(Bignum *num1, Bignum *num2) {
 }
 
 int isLessThanOrEqualToBignum(Bignum *num1, Bignum *num2) {
+   // Function that will compare two Bignums, and determine if they are less than or equal to each other.
+
+    // Check sign difference. If num1 is positive and num2 is negative, immediately return false(0), and vice-versa.
     if (num1->sign == positive && num2->sign == negative) {
         return 0;
     }
@@ -430,6 +433,7 @@ int isLessThanOrEqualToBignum(Bignum *num1, Bignum *num2) {
         return 1;
     }
 
+    // Check length difference. If num1 is longer than num2, immediately return false(0), and vice-versa.
     if (num1->length > num2->length) {
         return 0;
     }
@@ -437,6 +441,7 @@ int isLessThanOrEqualToBignum(Bignum *num1, Bignum *num2) {
         return 1;
     }
 
+    // Worst-case, both Bignums have the same sign and length. Go through each digit of the two Bignums, starting from the MSD(most significant digit), comparing them. Do this until a difference is found.
     for (int i = num1->length - 1; i >= 0; i--) {
         if (num1->digits[i] < num2->digits[i]) {
             return 1;
@@ -447,6 +452,7 @@ int isLessThanOrEqualToBignum(Bignum *num1, Bignum *num2) {
         }
     }
 
+    // If no difference is found, it means that the two Bignums are equal. Return true(1)
     return 1;
 }
 
