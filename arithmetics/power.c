@@ -60,7 +60,7 @@ int multiplyArrayItemsCompressed(int x, int result[], int size, int *insertedIte
 }
 
 // Function to calculate modulo of an array of digits (FOR LOOP WILL START FROM THE END OF THE ARRAY AS THE ARRAY IS IN REVERSE)
-int arrayModulo(int arr[], int size, int divisor) {
+unsigned long long int arrayModulo(int arr[], int size, unsigned long long int divisor) {
     int remainder = 0;
 
     // Iterate through the array from left to right
@@ -80,8 +80,9 @@ int main(void) {
     // Start timer
     clock_t begin = clock();
 
-    int x = 12345;
-    int n = 12345;
+    int x = 901976953;
+    int n = 100193;
+    unsigned long long int divisor = 100314508538417;
     // int x = 72;
     // int n = 2;
     
@@ -114,9 +115,9 @@ int main(void) {
     for (i = 2; i <= n; i++) {
         int tempSize = size;
 
-        printf("\n%d interation...", i);
+        // printf("\n%d interation...", i);
 
-        size = multiplyArrayItems(x, result, size, &itemsInserted);
+        size = multiplyArrayItemsCompressed(x, result, size, &itemsInserted);
     }
 
     
@@ -150,8 +151,7 @@ int main(void) {
     
     // GET MODULO
     printf("\n\nGetting modulo...");
-    int divisor = 421999;
-    int moduloResult = arrayModulo(result, size, divisor);
+    unsigned long long int moduloResult = arrayModulo(result, size, divisor);
 
     // Display the result
     printf("\nModulo result: %d\n\n", moduloResult);
