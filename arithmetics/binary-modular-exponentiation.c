@@ -16,9 +16,9 @@ int main(void) {
     // unsigned long long int exponent = 3001;
     // unsigned long long int base = 72;
     // unsigned long long int divisor = 421999;
-    unsigned long long int exponent = 76890119807477;
-    unsigned long long int base = 7151692;
-    unsigned long long int divisor = 7543457; // 7151692
+    unsigned long long int exponent = 123;
+    unsigned long long int base = 123;
+    unsigned long long int divisor = 45; // 7151692
 // Random Prime. P: 2417 | Q: 3121
 // N: 7543457
 // Phi of N: 7537920
@@ -52,15 +52,23 @@ int main(void) {
         printf("%d", binaryExponent[i]);
     }
 
+    printf("\n");
     // Start Calculating Powers
     unsigned long long int remainder = base;
     for (int i = 0; i < binaryExponentLength - 1; i++) {
         if (binaryExponent[i + 1] == 0) {
+            printf("\n 0.0 -> %llu = %llu^2 mod %llu", (remainder * remainder) % divisor, remainder, divisor);
+
             remainder = (remainder * remainder) % divisor;
         } else {
+            printf("\n 1.0 -> %llu = %llu^2 mod %llu", (remainder * remainder) % divisor, remainder, divisor);
+
+            printf("\n 1.1 -> %llu = %llu mod %llu", (((remainder * remainder) % divisor) * base) % divisor,(((remainder * remainder) % divisor) * base), divisor);
+
             unsigned long long int tempSquare = (remainder * remainder) % divisor;
             remainder = (tempSquare * base) % divisor;
         }
+        printf("\n----------------------------");
     }
 
     printf("\n\nRESULT: %llu\n\n", remainder);
