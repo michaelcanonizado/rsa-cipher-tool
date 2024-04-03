@@ -102,6 +102,49 @@ int multiplyBignumArray(Bignum *result, Bignum *base) {
     }
 }
 
+
+int multiplyBignumArrayCompressed(Bignum *result, Bignum *base) {
+    Bignum ten  = initBignum();
+    setBignum(&ten, "10", positive);
+
+    Bignum carry = initBignum();
+    setBignum(&carry, "0", positive);
+    Bignum product = initBignum();
+
+    for (int i = 0; i < result->length; i++) {
+        product = initBignum();
+        Bignum currDigit = initBignum();
+        Bignum currResultDigitTimesBase = initBignum();
+
+        intToBignum(&currDigit, result->digits[i], positive);
+        multiplyBignum(&currResultDigitTimesBase, &currDigit, base);
+        // printf("\nprdct before: ");
+        // printBignum(&product);
+        addBignum(&product, &currResultDigitTimesBase, &carry);     
+
+        Bignum productModTen = initBignum();
+        moduloBignum(&productModTen, &product, &ten);
+        int productModTenInt = bignumToInt(&productModTen);
+        result->digits[i] = productModTenInt;
+
+        carry = initBignum();
+        divideBignum(&carry, &product, &ten);
+    }
+
+    while(!isBignumZero(&carry)) {
+        Bignum carryModTen = initBignum();
+        Bignum carryDivideTen = initBignum();
+    
+        moduloBignum(&carryModTen, &carry, &ten);
+        result->digits[result->length] = bignumToInt(&carryModTen);
+
+        divideBignum(&carryDivideTen, &carry, &ten);
+        copyBignum(&carry, &carryDivideTen);
+
+        result->length++;
+    }
+}
+
 int main(void) {
     // Start CPU timer
     clock_t begin = clock();
@@ -119,6 +162,15 @@ int main(void) {
     printf("\n\nMultiplying ");
     printBignum(&n);
     printf(" digits...");
+
+    copyBignum(&result, &x);
+    Bignum i = initBignum();
+    for(setBignum(&i, "2", positive); isLessThanOrEqualToBignum(&i, &n); incrementBignum(&i, 1)) {
+        printf("\n");
+        printBignum(&i);
+        printf(" iteration...");
+        multiplyBignumArrayCompressed(&result, &x);
+    }
 
     copyBignum(&result, &x);
     Bignum i = initBignum();
