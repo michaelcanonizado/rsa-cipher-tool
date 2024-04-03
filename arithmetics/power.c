@@ -37,6 +37,28 @@ int multiplyArrayItems(int x, int result[], int size, int *insertedItems) {
     return size;
 }
 
+int multiplyArrayItemsCompressed(int x, int result[], int size, int *insertedItems) {
+    int carry = 0;
+    int product;
+    for (int i = 0; i < size; i++) {
+        product = result[i] * x + carry;
+
+        result[i] = product % 10;
+
+        carry = product / 10;
+    }
+
+    // Count how many digits in array
+    while(carry) {
+        result[size] = carry % 10;
+        carry = carry / 10;
+        size++;
+        (*insertedItems)++;
+    }
+
+    return size;
+}
+
 // Function to calculate modulo of an array of digits (FOR LOOP WILL START FROM THE END OF THE ARRAY AS THE ARRAY IS IN REVERSE)
 int arrayModulo(int arr[], int size, int divisor) {
     int remainder = 0;
@@ -92,17 +114,27 @@ int main(void) {
     for (i = 2; i <= n; i++) {
         int tempSize = size;
 
-        printf("\n\n--------------------------------------------\n--------------------------------------------\n\n%d interation\n", i);
-
-        printf("\n\ncurrent result: ");
-        for (int j = tempSize-1; j >= 0; j--) {
-            printf("%d", result[j]);
-        }
-        printf("\nNum of digits in result: %d", itemsInserted);
+        printf("\n%d interation...", i);
 
         size = multiplyArrayItems(x, result, size, &itemsInserted);
     }
-    printf("\nGetting power done...");
+
+    
+    // printf("\n\nMultiplying %d digits...", n);
+    // for (i = 2; i <= n; i++) {
+    //     int tempSize = size;
+
+    //     printf("\n\n--------------------------------------------\n--------------------------------------------\n\n%d interation\n", i);
+
+    //     printf("\n\ncurrent result: ");
+    //     for (int j = tempSize-1; j >= 0; j--) {
+    //         printf("%d", result[j]);
+    //     }
+    //     printf("\nNum of digits in result: %d", itemsInserted);
+
+    //     size = multiplyArrayItems(x, result, size, &itemsInserted);
+    // }
+    // printf("\nGetting power done...");
 
 
 
