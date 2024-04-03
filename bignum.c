@@ -1082,10 +1082,12 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
 
 
 int halfBignum(Bignum *result, Bignum *num) {
+    Bignum tempResult = initBignum();
+
     int carry = 0;
 
     for (int i = num->length - 1; i >= 0; i--) {
-        result->digits[i] = (num->digits[i] / 2) + carry;
+        tempResult.digits[i] = (num->digits[i] / 2) + carry;
 
         if (num->digits[i] % 2 != 0) {
             carry = 5;
@@ -1093,10 +1095,11 @@ int halfBignum(Bignum *result, Bignum *num) {
             carry = 0;
         }
         
-        result->length++;
+        tempResult.length++;
     }
 
-    trimBignum(result);
+    trimBignum(&tempResult);
+    copyBignum(result, &tempResult);
 }
 
 int generateRandomBignum(Bignum *result, unsigned long long int numOfDigits, BIGNUM_SIGN sign) {
