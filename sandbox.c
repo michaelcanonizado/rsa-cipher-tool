@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "bignum.h"
 #include <time.h>
+#include "bignum.h"
 
 int main() {
     clock_t start = clock();
@@ -11,27 +11,25 @@ int main() {
     Bignum num2 = initBignum(); 
     Bignum num3 = initBignum();
     Bignum num4 = initBignum(); 
+
     Bignum res1 = initBignum();
     Bignum res2 = initBignum();
 
-    setBignum(&num1, "123", negative);
-    setBignum(&num2, "123", negative);
-    setBignum(&num3, "123", negative);
-    setBignum(&num4, "987", negative);
-
+    setBignum(&num1, "60260995677123112", positive);
+    setBignum(&num2, "2", positive);
 
     divideBignum(&res1, &num1, &num2);
-    divideBignum(&res2, &num3, &num4);
-
-    printf("\n\nn1: %d | n2:  %d | n3:  %d | n4: %d\n\n", num1.sign, num2.sign, num3.sign, num4.sign);
     
     printf("\n");
     printBignum(&num1);
-    printf(" / ");
+    printf(" %% ");
     printBignum(&num2);
     printf(" = ");
-    printBignum(&res1);
+    for (int i = res1.length; i >= 0; i--) {
+            printf("%d", res1.digits[i]);
+        }
     printf("\n");
+
     printf("\n");
     printBignum(&num3);
     printf(" / ");
