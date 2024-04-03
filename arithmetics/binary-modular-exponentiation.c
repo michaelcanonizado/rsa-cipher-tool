@@ -16,16 +16,16 @@ int main(void) {
     // unsigned long long int exponent = 3001;
     // unsigned long long int base = 72;
     // unsigned long long int divisor = 421999;
-    unsigned long long int exponent = 123;
-    unsigned long long int base = 123;
-    unsigned long long int divisor = 45; // 7151692
-// Random Prime. P: 2417 | Q: 3121
-// N: 7543457
-// Phi of N: 7537920
-// e (Public Key): 673
-// GCD of e and Phi of N: 1
-// d (Private Key): 2284897
-// (d * e) mod Phi of N: 1
+    // unsigned long long int exponent = 123;
+    // unsigned long long int base = 123;
+    // unsigned long long int divisor = 45; // 7151692
+    // Random Prime. P: 2417 | Q: 3121
+    // N: 7543457
+    // Phi of N: 7537920
+    // e (Public Key): 673
+    // GCD of e and Phi of N: 1
+    // d (Private Key): 2284897
+    // (d * e) mod Phi of N: 1
 
     // Other examples. Correct results are given
     //
@@ -40,6 +40,10 @@ int main(void) {
     // unsigned long long int base = 240;
     // unsigned long long int divisor = 14;
     // RESULT: 2
+
+    unsigned long long int exponent = 23123972324121123;
+    unsigned long long int base = 3123972324121;
+    unsigned long long int divisor = 421999;
 
     int binaryExponent[10000];
 
