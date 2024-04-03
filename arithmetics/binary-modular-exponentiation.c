@@ -1,9 +1,13 @@
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
+#include <time.h>
 
 unsigned long long decimalToBinary(unsigned long long num, int result[]);
 
 int main(void) {
+    clock_t start = clock();
+
     // Example of tried keys and n:
     // e (Public Key) : 3001
     // d (Private Key) : 841
@@ -12,7 +16,7 @@ int main(void) {
     // unsigned long long int exponent = 3001;
     // unsigned long long int base = 72;
     // unsigned long long int divisor = 421999;
-    unsigned long long int exponent = 2284897;
+    unsigned long long int exponent = 76890119807477;
     unsigned long long int base = 7151692;
     unsigned long long int divisor = 7543457; // 7151692
 // Random Prime. P: 2417 | Q: 3121
@@ -41,6 +45,7 @@ int main(void) {
 
     unsigned long long binaryExponentLength = decimalToBinary(exponent, binaryExponent);
 
+
     // Print Exponent Decimal to Binary Result.
     printf("\n%llu in binary (%llu digits):\n", exponent, binaryExponentLength);
     for (int i = 0; i < binaryExponentLength; i++) {
@@ -59,6 +64,10 @@ int main(void) {
     }
 
     printf("\n\nRESULT: %llu\n\n", remainder);
+
+    clock_t end = clock();
+    double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    printf("\nCPU time used: %f seconds\n\n", cpu_time_used);
 
     return 0;
 }
