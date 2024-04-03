@@ -35,6 +35,7 @@ int main() {
 
     Bignum base = initBignum(); 
     Bignum exponent = initBignum(); 
+    Bignum binaryExponent = initBignum(); 
     Bignum divisor = initBignum(); 
     Bignum result = initBignum();
 
@@ -42,17 +43,20 @@ int main() {
     setBignum(&exponent, "76890119807477", positive);
     setBignum(&divisor, "7543457", positive);
 
-    bignumToBinary(&result, &exponent);
+    bignumToBinary(&binaryExponent, &exponent);
     
     printf("\n");
     printBignum(&exponent);
-    printf("  ->  ");
-    printBignum(&result);
+    printf(" in binary (%llu digits):\n", exponent.length);
+    printBignum(&binaryExponent);
     printf("\n\n Binary Length: %llu", result.length);
+
+    printf("\n\n RESULT:\n");
+    printBignum(&result);
 
     clock_t end = clock();
     double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-    printf("\nCPU time used: %f seconds\n\n", cpu_time_used);
+    printf("\n\nCPU time used: %f seconds\n\n", cpu_time_used);
 
     return 0;
 }
