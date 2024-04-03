@@ -33,18 +33,22 @@ int bignumToBinary(Bignum *result, Bignum *num) {
 int main() {
     clock_t start = clock();
 
-    Bignum num = initBignum(); 
-    Bignum res = initBignum();
+    Bignum base = initBignum(); 
+    Bignum exponent = initBignum(); 
+    Bignum divisor = initBignum(); 
+    Bignum result = initBignum();
 
-    setBignum(&num, "1792274785367970752769521623194341971299269644227478536797075276936797075276952162319434", positive);
+    setBignum(&base, "7151692", positive);
+    setBignum(&exponent, "76890119807477", positive);
+    setBignum(&divisor, "7543457", positive);
 
-    bignumToBinary(&res, &num);
+    bignumToBinary(&result, &exponent);
     
     printf("\n");
-    printBignum(&num);
+    printBignum(&exponent);
     printf("  ->  ");
-    printBignum(&res);
-    printf("\n\n Binary Length: %llu", res.length);
+    printBignum(&result);
+    printf("\n\n Binary Length: %llu", result.length);
 
     clock_t end = clock();
     double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
