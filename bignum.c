@@ -133,7 +133,7 @@ int getLengthOfInteger(long long int integer) {
 Bignum initBignum() {
     // Function to initialize Bignum values. Get rid of garbage values and initialize bignum. Some arithmetic function may need to know if the Bignum has already been set.
     Bignum num;
-    memset(num.digits, 0, sizeof(int) * MAX_INT_LENGTH);
+    memset(num.digits, 0, sizeof(int) * MAX_BIGNUM_LENGTH);
     num.length = 0;
     num.sign = positive;
     return num;
@@ -239,7 +239,7 @@ long long int bignumToInt(Bignum *num) {
 }
 
 int resetBignum(Bignum *num) {
-    memset(num->digits, 0, sizeof(int) * MAX_INT_LENGTH);
+    memset(num->digits, 0, sizeof(int) * MAX_BIGNUM_LENGTH);
     num->length = 0;
     num->sign = positive;
     return 0;
