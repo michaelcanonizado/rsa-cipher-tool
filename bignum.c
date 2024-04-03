@@ -133,7 +133,7 @@ int getLengthOfInteger(long long int integer) {
 Bignum initBignum() {
     // Function to initialize Bignum values. Get rid of garbage values and initialize bignum. Some arithmetic function may need to know if the Bignum has already been set.
     Bignum num;
-    memset(num.digits, 0, sizeof(int) * MAX_INT_LENGTH);
+    memset(num.digits, 0, sizeof(int) * MAX_BIGNUM_LENGTH);
     num.length = 0;
     num.sign = positive;
     return num;
@@ -239,7 +239,7 @@ long long int bignumToInt(Bignum *num) {
 }
 
 int resetBignum(Bignum *num) {
-    memset(num->digits, 0, sizeof(int) * MAX_INT_LENGTH);
+    memset(num->digits, 0, sizeof(int) * MAX_BIGNUM_LENGTH);
     num->length = 0;
     num->sign = positive;
     return 0;
@@ -422,6 +422,40 @@ int isLessThanBignum(Bignum *num1, Bignum *num2) {
     return 0;
 }
 
+int isLessThanOrEqualToBignum(Bignum *num1, Bignum *num2) {
+   // Function that will compare two Bignums, and determine if they are less than or equal to each other.
+
+    // Check sign difference. If num1 is positive and num2 is negative, immediately return false(0), and vice-versa.
+    if (num1->sign == positive && num2->sign == negative) {
+        return 0;
+    }
+    if (num1->sign == negative && num2->sign == positive) {
+        return 1;
+    }
+
+    // Check length difference. If num1 is longer than num2, immediately return false(0), and vice-versa.
+    if (num1->length > num2->length) {
+        return 0;
+    }
+    if (num1->length < num2->length) {
+        return 1;
+    }
+
+    // Worst-case, both Bignums have the same sign and length. Go through each digit of the two Bignums, starting from the MSD(most significant digit), comparing them. Do this until a difference is found.
+    for (int i = num1->length - 1; i >= 0; i--) {
+        if (num1->digits[i] < num2->digits[i]) {
+            return 1;
+        }
+
+        if (num1->digits[i] > num2->digits[i]) {
+            return 0;
+        }
+    }
+
+    // If no difference is found, it means that the two Bignums are equal. Return true(1)
+    return 1;
+}
+
 int isEqualToBignum(Bignum *num1, Bignum *num2) {
     // Function that will compare two Bignums, determining whether they are equal.
 
@@ -452,6 +486,7 @@ int incrementBignum(Bignum *num, unsigned long long int incrementValue) {
     addBignum(num, num, &offset);
     return 0;
 }
+
 
 
 void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
@@ -818,47 +853,112 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     return 0;
 }
 
-int divideBignumPrototype(Bignum *result, Bignum *dividend, Bignum *divisor) {
-    // Temporary divide function from moduloBignum()
+int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
+    // Function that will find the quotient of two Bignums. Uses repeated multiplication to find the quotient of the dividend and divisor.
+    // E.g: 111 / 20:
+    //      20 * 1 = 20
+    //      20 * 2 = 40
+    //      20 * 3 = 60
+    //      20 * 4 = 80
+    //      20 * 5 = 100 <-- quotient
+    //
+    // It uses binary search to look for the quotient faster.
+    // The left and right indexes will start from the estimated min and max number of digits of the quotient. The estimated number of digits of the quotient can be determined by: num of digits of divident - num of digits of divisor.
+    // E.g:  123456  /   789    =    156
+    //      6 Digits - 3 Digits = 3 Digits
+    //                          => 1 * 10^(6 - (3 - 1)) = 10000 
+    //    : The left and right indexes will be: 10 - 10000
+    //
+    // The left and right indexes are given extra place values as there are some cases where the quotient receeds or exceeds the estimated number of digits of the quotient.
+    // E.g:    987   /    123   =    8
+    //      3 Digits - 3 Digits = 0 Digit (quotient is actually 1 digits long not 0)
+    //    : The left and right indexes will be: 1 - 10
+    //              
+    // E.g:  999999  /   100    =   9999
+    //      6 Digits - 3 Digits = 3 Digit (quotient is actually 4 digits long not 3)
+    //    : The left and right indexes will be: 10 - 10000 
+    // Therefore, the left and right indexes should be given extra place values.
+
+    // Declare temporary sign enums
+    BIGNUM_SIGN dividendSign, divisorSign, resultSign;
+    // Store the original sign of the dividend and divisor
+    dividendSign = dividend->sign;
+    divisorSign = divisor->sign;
+
+    // Use division rule:
+    //    +dividend / +divisor = +result
+    //    -dividend / -divisor = +result
+    //    -dividend / +divisor = -result
+    //    +dividend / -divisor = -result
+    // to determine the sign of the result
+    if (dividendSign == divisorSign) {
+        resultSign = positive;
+    } else {
+        resultSign = negative;
+    }
+
+    // Set the sign of the dividend and the divisor to be the same to correctly trigger the condition below
+    dividend->sign = positive;
+    divisor->sign = positive;
+
+    // If dividend is less than the divisor. Quotient is 0.
+    // 123 % 987654321 = 0
     if (isLessThanBignum(dividend, divisor)) {
-        copyBignum(result, dividend);
+        dividend->sign = dividendSign;
+        divisor->sign = divisorSign;
+        setBignum(result, "0", resultSign);
         return 0;
     }
 
+    // A temporary Bignum set as 1 is used as bignumShiftLeft doesn't modify the actual Bignum that is passed. But modifies a separate resulting Bignum.
     Bignum tempOne = initBignum();
     setBignum(&tempOne, "1", positive);
     Bignum counterLeftIndex = initBignum();
     Bignum counterRightIndex = initBignum();
     Bignum counterMiddleIndex = initBignum();
 
+    // Identify the left and right indexes
     unsigned long long int leftShiftBy = 0;
     unsigned long long int rightShiftBy = dividend->length - (divisor->length - 1);
 
+    // If estimated left index is a valid index, use the formula. Else, use 0 to default the left index to 1.
     if ((divisor->length + 1) < dividend->length) {
         leftShiftBy = dividend->length - (divisor->length + 1);
     }
 
+    // Get left and right Bignum indexes.
+    // I.e: I.e: 1 * 10^leftShiftBy & 1 * 10^rightShiftBy
     bignumShiftLeft(&counterLeftIndex, &tempOne, leftShiftBy);
     bignumShiftLeft(&counterRightIndex, &tempOne, rightShiftBy);
 
+    // Initialize multiplyResult which will be the Bignum that will hold the test quotient.
+    // divisor * count = multiplyResult.
     Bignum multiplyResult = initBignum();
     setBignum(&multiplyResult, "0", positive);
 
+    // Perform binary search to find the quotient.
     while(1) {
+        // Reinitialize multiplyResult to reset its members.
         multiplyResult = initBignum();
 
+        // Get the middle index of the left and right index.
+        // (L + R) / 2 = M
         Bignum num1PlusNum2 = initBignum();
         addBignum(&num1PlusNum2, &counterLeftIndex, &counterRightIndex);
         halfBignum(&counterMiddleIndex, &num1PlusNum2);
 
+        // Multiply the divisor with the middle index
         multiplyBignum(&multiplyResult, divisor, &counterMiddleIndex);
  
+        // Determine which half, left or right, the quotient lies, and adjust the left and right indexes accordingly.
         if (isGreaterThanBignum(&multiplyResult, dividend)) {
             copyBignum(&counterRightIndex, &counterMiddleIndex);
         } else if (isLessThanBignum(&multiplyResult, dividend)) {
             copyBignum(&counterLeftIndex, &counterMiddleIndex);
         }
 
+        // Check if the product is fit to be the quotient:
+        // (Dividend - Product) < Divisor && (Dividend - Product) >= 0
         Bignum dividendMinusMultiplyResult = initBignum();
         subtractBignum(&dividendMinusMultiplyResult, dividend, &multiplyResult);
         if (
@@ -867,9 +967,17 @@ int divideBignumPrototype(Bignum *result, Bignum *dividend, Bignum *divisor) {
             ) {
             break;
         }
+
+        // FEAT: ADD AN IF CASE WHERE THE LEFT INDEX IS GREATER THAN THE RIGHT INDEX, JUST LIKE IN OTHER BINARY SEARCH IMPLEMENTATIONS. HOWEVER, THIS CASE WHERE THIS FUNCTION DOESN'T FIND AN APPROPRIATE QUOTIENT, IS HYPOTHETICALLY IMPOSSIBLE DUE TO: (1) THE CONDITION ABOVE THAT CHECKS IF THE PRODUCT IS FIT TO BE A QUOTIENT, AND (2) ALL NUMBERS ARE PRESENT WITHIN THE RANGE. IF IN ANY CASE WHERE THE FUNCTION FAILS DUE TO THIS PROBLEM, THERE MUST BE A FLAW IN ANOTHER PART OF THIS FUNCTION. PERHAPS THE LEFT AND IRGHT INDEXES OR THE CONDITION THAT CHECKS IF THE PRODUCT IS A FIT QUOTIENT. 
     }
 
+    // Return the latest counterMiddleIndex that triggered the exit condition. I.e: the quotient
     copyBignum(result, &counterMiddleIndex);
+
+    // Set the corresponding result sign, and bring back the original sign of the dividend and the divisor.
+    result->sign = resultSign;
+    dividend->sign = dividendSign;
+    divisor->sign = divisorSign;
 }
 
 int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
@@ -913,7 +1021,7 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     Bignum counterRightIndex = initBignum();
     Bignum counterMiddleIndex = initBignum();
 
-    // Identify the left and right indexes. I.e: 1 * 10^n
+    // Identify the left and right indexes.
     unsigned long long int leftShiftBy = 0;
     unsigned long long int rightShiftBy = dividend->length - (divisor->length - 1);
 
@@ -923,6 +1031,7 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     }
 
     // Get left and right Bignum indexes
+    // I.e: I.e: 1 * 10^leftShiftBy & 1 * 10^rightShiftBy
     bignumShiftLeft(&counterLeftIndex, &tempOne, leftShiftBy);
     bignumShiftLeft(&counterRightIndex, &tempOne, rightShiftBy);
     
@@ -970,11 +1079,15 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     subtractBignum(result, dividend, &multiplyResult);
 }
 
+
+
 int halfBignum(Bignum *result, Bignum *num) {
+    Bignum tempResult = initBignum();
+
     int carry = 0;
 
     for (int i = num->length - 1; i >= 0; i--) {
-        result->digits[i] = (num->digits[i] / 2) + carry;
+        tempResult.digits[i] = (num->digits[i] / 2) + carry;
 
         if (num->digits[i] % 2 != 0) {
             carry = 5;
@@ -982,10 +1095,11 @@ int halfBignum(Bignum *result, Bignum *num) {
             carry = 0;
         }
         
-        result->length++;
+        tempResult.length++;
     }
 
-    trimBignum(result);
+    trimBignum(&tempResult);
+    copyBignum(result, &tempResult);
 }
 
 int generateRandomBignum(Bignum *result, unsigned long long int numOfDigits, BIGNUM_SIGN sign) {
