@@ -422,6 +422,34 @@ int isLessThanBignum(Bignum *num1, Bignum *num2) {
     return 0;
 }
 
+int isLessThanOrEqualToBignum(Bignum *num1, Bignum *num2) {
+    if (num1->sign == positive && num2->sign == negative) {
+        return 0;
+    }
+    if (num1->sign == negative && num2->sign == positive) {
+        return 1;
+    }
+
+    if (num1->length > num2->length) {
+        return 0;
+    }
+    if (num1->length < num2->length) {
+        return 1;
+    }
+
+    for (int i = num1->length - 1; i >= 0; i--) {
+        if (num1->digits[i] < num2->digits[i]) {
+            return 1;
+        }
+
+        if (num1->digits[i] > num2->digits[i]) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
 int isEqualToBignum(Bignum *num1, Bignum *num2) {
     // Function that will compare two Bignums, determining whether they are equal.
 
