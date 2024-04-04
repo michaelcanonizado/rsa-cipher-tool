@@ -17,9 +17,6 @@ int main() {
     int x = cols / 2;
     int y = rows / 2;
 
-    // Print "Hello World" at the center position
-    mvprintw(y++, x - 6, "Hello World");
-
     // Box outline for the window
     box(stdscr, 0, 0);
 
@@ -31,7 +28,7 @@ int main() {
     
     char * optionsArr[5] = {"1) Generate Keys", "2) Encrypt Text", "3) Decrypt Text", "4) About", "5) Exit program"};
 
-    int i;git 
+    int i;
     int lengthArr[5];
         
     do {
@@ -41,9 +38,6 @@ int main() {
             mvprintw(y++, x - 15, optionsArr[i]);
         }
 
-        mvprintw(y, x - 22, "Enter 'exit' to end the program: ");
-        echo(); // Enable echoing of input to allow user to see what they're typing
-        getstr(user_input);
         noecho(); // Disable echoing of input again
     } while (strcmp(user_input, "exit") != 0 && strcmp(user_input, "EXIT") != 0);
     // End ncurses
