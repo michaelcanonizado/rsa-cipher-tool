@@ -70,21 +70,31 @@ int main() {
             mvprintw(y++, x - 20, "Do you agree to save a copy of your private");
             refresh();
             mvprintw(y++, x - 20, "and public keys? [Y/N]");
+            refresh();
 
-            char key;
+            char confirm;
             do {
-                key = getch(); // Get a single character from the user
-            } while (key != 'Y' && key != 'y' && key != 'N' && key != 'n');
+                confirm = getch(); // Get a single character from the user
+            } while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
 
             int enter;
             do {
                 enter = getch(); // Wait for the user to press ENTER
             } while (enter != 10);
 
-            if (key == 'Y' || key == 'y')
-                mvprintw(y, x - 30, "Keys generated!");
-            else
-                mvprintw(y, x - 30, "Keys generation failed!");
+            if (confirm == 'Y' || confirm == 'y') {
+                mvprintw(y, x - 8, "Keys generated!");
+                refresh();
+            }
+            else {
+                mvprintw(y, x - 12, "Keys generation failed!");
+                refresh();
+            }
+
+            do {
+                enter = getch(); // Wait for the user to press ENTER
+            } while (enter != 10);
+
             clear();
             refresh();
             break;
