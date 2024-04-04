@@ -30,6 +30,7 @@ int bignumToBinary(Bignum *result, Bignum *num) {
 }
 
 unsigned long long int binaryExponentiation(unsigned long long int base, Bignum *binaryExponent) {
+    // Reference: https://www.youtube.com/watch?v=9VEqjAZxmeA&t=387s
 
     unsigned long long int remainder = 1;
 
