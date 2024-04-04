@@ -28,8 +28,10 @@ int main() {
     
     char * optionsArr[5] = {"1) Generate Keys", "2) Encrypt Text", "3) Decrypt Text", "4) About", "5) Exit program"};
 
-    int i;
-    int lengthArr[5];
+    char * userChoice[5] = {"GENERATING KEYS", "ENCRYPTING TEXT", "DECRYPTING TEXT", "ABOUT US", "EXIT PROGRAM"};
+
+    int i, userInput;
+    int lengthArr[5], choiceArr[5];
         
     do {
         for ( i = 0; i < 5; i++)
@@ -37,9 +39,40 @@ int main() {
             lengthArr[i] = strlen(optionsArr[i]);
             mvprintw(y++, x - 15, optionsArr[i]);
         }
+        
+        // Enable echoing of input to allow user to see what they're typing
+        echo(); 
+        mvprintw(y++, x - 10, "Enter number: ");
+        
+        getstr(user_input);
+        userInput = atoi(user_input);
 
+        int choiceArr[5];
+        for ( i = 0; i < 5; i++)
+            choiceArr[i] = strlen(userChoice[i]);
+
+        switch (userInput)
+        {
+        case 1:
+            mvprintw(y++, x - choiceArr[0], userChoice[0]);
+            
+            break;
+        case 2:
+            mvprintw(y++, x - choiceArr[1], userChoice[1]);
+            break;
+        case 3:
+            mvprintw(y++, x - choiceArr[2], userChoice[2]);
+            break;
+        case 4:
+            mvprintw(y++, x - choiceArr[3], userChoice[3]);
+            break;      
+        default:
+            break;
+        }
+        
         noecho(); // Disable echoing of input again
-    } while (strcmp(user_input, "exit") != 0 && strcmp(user_input, "EXIT") != 0);
+    } while (userInput != 5);
+
     // End ncurses
     endwin();
 
