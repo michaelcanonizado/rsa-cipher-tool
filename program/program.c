@@ -16,7 +16,7 @@ int main() {
 
     // Calculate the center position
     int x = cols / 2;
-    int y = rows / 2;
+    int y = 10;
 
     // Box outline for the window
     box(stdscr, 0, 0);
@@ -35,6 +35,7 @@ int main() {
     int lengthArr[5], choiceArr[5];
         
     do {
+        y = 10;
         for ( i = 0; i < 5; i++)
         {
             lengthArr[i] = strlen(optionsArr[i]);
@@ -52,12 +53,13 @@ int main() {
         for ( i = 0; i < 5; i++)
             choiceArr[i] = strlen(userChoice[i]);
 
+        y = 10;
         switch (userInput)
         {
         case 1:
             clear();
             refresh();
-            mvprintw(y++, x - choiceArr[0], userChoice[0]);
+            mvprintw(y, x - choiceArr[0], userChoice[0]);
             refresh();
             mvprintw(y++, x - 20, "You are about to generate an RSA private key");
             refresh();
@@ -80,30 +82,30 @@ int main() {
             } while (enter != 10);
 
             if (key == 'Y' || key == 'y')
-                mvprintw(y++, x - 30, "Keys saved successfully!");
+                mvprintw(y, x - 30, "Keys generated!");
             else
-                mvprintw(y++, x - 30, "Keys not saved!");
+                mvprintw(y, x - 30, "Keys generation failed!");
             clear();
             refresh();
             break;
         case 2:
             clear();
             refresh();
-            mvprintw(y++, x - choiceArr[1], userChoice[1]);
+            mvprintw(y, x - choiceArr[1], userChoice[1]);
             clear();
             refresh();
             break;
         case 3:
             clear();
             refresh();
-            mvprintw(y++, x - choiceArr[2], userChoice[2]);
+            mvprintw(y, x - choiceArr[2], userChoice[2]);
             clear();
             refresh();
             break;
         case 4:
             clear();
             refresh();
-            mvprintw(y++, x - choiceArr[3], userChoice[3]);
+            mvprintw(y, x - choiceArr[3], userChoice[3]);
             clear();
             refresh();
             break;      
