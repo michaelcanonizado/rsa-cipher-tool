@@ -72,6 +72,11 @@ int main() {
                 key = getch(); // Get a single character from the user
             } while (key != 'Y' && key != 'y' && key != 'N' && key != 'n');
 
+            int enter;
+            do {
+                enter = getch(); // Wait for the user to press ENTER
+            } while (enter != 10);
+
             if (key == 'Y' || key == 'y')
                 mvprintw(y++, x - 30, "Keys saved successfully!");
             else
