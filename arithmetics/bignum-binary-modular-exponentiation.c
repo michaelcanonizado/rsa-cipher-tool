@@ -86,6 +86,7 @@ int bignumBinaryModularExponentiation(Bignum *result, Bignum *base, Bignum *bina
             ;
 
         }
+        // FEAT: CHAIN ANOTHER CONDITION ABOVE TO CHECK IF THE NEXT NUMBER IS NEITHER A 1 OR 0. IF TRUE, RETURN AN ERROR AS THIS INDICATES THAT THE PASSED binaryExponent IS NOT VALID BINARY
         printf("\n----------------------------");
 
     }
