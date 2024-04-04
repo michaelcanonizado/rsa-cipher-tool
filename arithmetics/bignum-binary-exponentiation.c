@@ -3,6 +3,32 @@
 #include <time.h>
 #include "../bignum.h"
 
+int bignumToBinary(Bignum *result, Bignum *num) {
+
+    int remainderTemp;
+    unsigned long long int binaryLength = 0;
+
+    Bignum numTemp = initBignum(); 
+    copyBignum(&numTemp, num);
+
+    Bignum remainder = initBignum(); 
+    Bignum two = initBignum(); 
+    intToBignum(&two, 2, positive);
+
+    while(!isBignumZero(&numTemp)) {
+        if (numTemp.digits[0] % 2 == 0) {
+            result->digits[binaryLength++] = 0;
+        } else {
+            result->digits[binaryLength++] = 1;
+        }
+
+        halfBignum(&numTemp, &numTemp);
+    }
+
+    result->length = binaryLength;
+    return 0;
+}
+
 int main(void) {
     clock_t start = clock();
 
@@ -13,6 +39,8 @@ int main(void) {
 
     setBignum(&base, "123", positive);
     setBignum(&exponent, "123", positive);
+
+    bignumToBinary(&binaryExponent, &exponent);
     
     printf("\n\n\n");
     printBignum(&exponent);
