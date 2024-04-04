@@ -55,6 +55,8 @@ int main() {
         switch (userInput)
         {
         case 1:
+            clear();
+            refresh();
             mvprintw(y++, x - choiceArr[0], userChoice[0]);
             refresh();
             mvprintw(y++, x - 20, "You are about to generate an RSA private key");
@@ -81,16 +83,29 @@ int main() {
                 mvprintw(y++, x - 30, "Keys saved successfully!");
             else
                 mvprintw(y++, x - 30, "Keys not saved!");
-
+            clear();
+            refresh();
             break;
         case 2:
+            clear();
+            refresh();
             mvprintw(y++, x - choiceArr[1], userChoice[1]);
+            clear();
+            refresh();
             break;
         case 3:
+            clear();
+            refresh();
             mvprintw(y++, x - choiceArr[2], userChoice[2]);
+            clear();
+            refresh();
             break;
         case 4:
+            clear();
+            refresh();
             mvprintw(y++, x - choiceArr[3], userChoice[3]);
+            clear();
+            refresh();
             break;      
         default:
             break;
