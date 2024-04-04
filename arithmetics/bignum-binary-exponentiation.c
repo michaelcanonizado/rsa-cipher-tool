@@ -119,15 +119,16 @@ int main(void) {
     Bignum binaryExponent = initBignum(); 
     Bignum result = initBignum();
 
-    setBignum(&base, "15", positive);
-    setBignum(&exponent, "16", positive);
+    setBignum(&base, "32", positive);
+    setBignum(&exponent, "252", positive);
 
     bignumToBinary(&binaryExponent, &exponent);
 
     unsigned long long baseInt = 15;
     unsigned long long exponentInt = 16;
 
-    unsigned long long int resultInt = binaryExponentiation(baseInt, &binaryExponent);
+    unsigned long long int resultInt;
+    // resultInt = binaryExponentiation(baseInt, &binaryExponent);
 
     printf("\n\n----------------------------\n\n");
 
@@ -150,6 +151,7 @@ int main(void) {
     printf("  =  ");
     printBignum(&result);
 
+    printf("\n\nRESULT LENGTH: %llu", result.length);
     
     clock_t end = clock();
     double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
