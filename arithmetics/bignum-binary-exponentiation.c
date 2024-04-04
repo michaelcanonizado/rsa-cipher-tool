@@ -124,6 +124,12 @@ int main(void) {
 
     bignumToBinary(&binaryExponent, &exponent);
 
+    printf("\n\n\n");
+    printBignum(&exponent);
+    printf(" in binary: ");
+    printBignum(&binaryExponent);
+    printf("\nBinary Length: %llu", binaryExponent.length);
+
     unsigned long long baseInt = 15;
     unsigned long long exponentInt = 16;
 
@@ -134,17 +140,11 @@ int main(void) {
 
     bignumBinaryExponentiation(&result, &base, &binaryExponent);
 
-    printf("\n\n\n");
-    printBignum(&exponent);
-    printf(" in binary: ");
-    printBignum(&binaryExponent);
-    printf("\nBinary Length: %llu", binaryExponent.length);
-
-    printf("\n\n--------------------------------------\n----------------RESULT----------------\n--------------------------------------\n\n");
+    printf("\n\n----------------------------------------------\n--------------------RESULT--------------------\n----------------------------------------------\n\n");
     
     printf("INT:  %llu  ^  %llu  =   %llu", baseInt, exponentInt, resultInt);
 
-    printf("\nBIGNUM:  ");
+    printf("\n\nBIGNUM:  ");
     printBignum(&base);
     printf("  ^  ");
     printBignum(&exponent);
