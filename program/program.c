@@ -1,5 +1,6 @@
 #include <ncurses/ncurses.h>
 #include <string.h>
+#include <stdlib.h>
 
 // compiling format
 // gcc printf.c -o printf.exe -lncurses -DNCURSES_STATIC
@@ -55,7 +56,17 @@ int main() {
         {
         case 1:
             mvprintw(y++, x - choiceArr[0], userChoice[0]);
-            
+            refresh();
+            mvprintw(y++, x - 20, "You are about to generate an RSA private key");
+            refresh();
+            mvprintw(y++, x - 20, "with this option. Additionally, it will display");
+            refresh();
+            mvprintw(y++, x - 20, "the public key of a generated private key.");
+            refresh();
+            mvprintw(y++, x - 20, "Do you agree to save a copy of your private");
+            refresh();
+            mvprintw(y++, x - 20, "and public keys? [Y/N]");
+
             break;
         case 2:
             mvprintw(y++, x - choiceArr[1], userChoice[1]);
