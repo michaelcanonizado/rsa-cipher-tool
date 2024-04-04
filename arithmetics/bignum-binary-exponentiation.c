@@ -29,6 +29,33 @@ int bignumToBinary(Bignum *result, Bignum *num) {
     return 0;
 }
 
+unsigned long long int binaryExponentiation(unsigned long long int base, Bignum *binaryExponent) {
+
+    unsigned long long int remainder = 1;
+
+    for (int i = 0; i < binaryExponent->length; i++) {
+
+        if (binaryExponent->digits[i] == 1) {
+            printf("\n 1.0 -> %llu = %llu * %llu", remainder * base,remainder, base);
+
+            remainder = remainder * base;
+        }
+
+        if (i == binaryExponent->length - 1) {
+            return remainder;
+        }
+        
+        printf("\n 0.0 -> %llu = %llu * %llu", base * base, base, base);
+        
+        base = base * base;
+
+        printf("\n----------------------------");
+    }
+
+    return remainder;
+
+}
+
 int main(void) {
     clock_t start = clock();
 
@@ -37,11 +64,16 @@ int main(void) {
     Bignum binaryExponent = initBignum(); 
     Bignum result = initBignum();
 
-    setBignum(&base, "123", positive);
-    setBignum(&exponent, "123", positive);
+    setBignum(&base, "12", positive);
+    setBignum(&exponent, "12", positive);
 
     bignumToBinary(&binaryExponent, &exponent);
-    
+
+    unsigned long long baseInt = 12;
+    unsigned long long exponentInt = 12;
+
+    unsigned long long int resultInt = binaryExponentiation(baseInt, &binaryExponent);
+
     printf("\n\n\n");
     printBignum(&exponent);
     printf(" in binary: ");
@@ -49,11 +81,14 @@ int main(void) {
     printf("\nBinary Length: %llu", binaryExponent.length);
 
     printf("\n\n--------------------------------------\n----------------RESULT----------------\n--------------------------------------\n\n");
-    printBignum(&base);
-    printf("  ^  ");
-    printBignum(&exponent);
-    printf("  =  ");
-    printBignum(&result);
+    
+    printf("%llu  ^  %llu  =   %llu", baseInt, exponentInt, resultInt);
+
+    // printBignum(&base);
+    // printf("  ^  ");
+    // printBignum(&exponent);
+    // printf("  =  ");
+    // printBignum(&result);
 
     
     clock_t end = clock();

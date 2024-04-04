@@ -8,6 +8,7 @@
 		"stdlib.h": "c",
 		"algorithm": "c",
 		"time.h": "c",
-		"limits": "c"
+		"limits": "c",
+		"cmath": "c"
 	}
 }
