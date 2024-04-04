@@ -21,7 +21,7 @@ typedef enum {
 
 typedef struct {
     // Integer will be in reverse for easier arithmetic
-    int digits[MAX_INT_LENGTH];
+    int digits[MAX_BIGNUM_LENGTH];
     // Number of digits in integer
     // Bignum.length will cap out at around 18,446,744,073,709,551,615 (ref: C docs). Therefore the Bignum can only have a maximum of 18,446,744,073,709,551,615 digits.
     unsigned long long int length;
