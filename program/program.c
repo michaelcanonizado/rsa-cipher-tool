@@ -67,6 +67,16 @@ int main() {
             refresh();
             mvprintw(y++, x - 20, "and public keys? [Y/N]");
 
+            char key;
+            do {
+                key = getch(); // Get a single character from the user
+            } while (key != 'Y' && key != 'y' && key != 'N' && key != 'n');
+
+            if (key == 'Y' || key == 'y')
+                mvprintw(y++, x - 30, "Keys saved successfully!");
+            else
+                mvprintw(y++, x - 30, "Keys not saved!");
+
             break;
         case 2:
             mvprintw(y++, x - choiceArr[1], userChoice[1]);
