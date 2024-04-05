@@ -5,6 +5,13 @@
 // compiling format
 // gcc printf.c -o printf.exe -lncurses -DNCURSES_STATIC
 
+void waitForEnter() {
+    int enter;
+    do {
+        enter = getch(); // Wait for the user to press ENTER
+    } while (enter != 10);
+}
+
 int main() {
     // Initialize ncurses
     initscr();
@@ -77,10 +84,7 @@ int main() {
                 confirm = getch(); // Get a single character from the user
             } while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
 
-            int enter;
-            do {
-                enter = getch(); // Wait for the user to press ENTER
-            } while (enter != 10);
+            waitForEnter();
 
             if (confirm == 'Y' || confirm == 'y') {
                 mvprintw(y, x - 8, "Keys generated!");
@@ -91,9 +95,7 @@ int main() {
                 refresh();
             }
 
-            do {
-                enter = getch(); // Wait for the user to press ENTER
-            } while (enter != 10);
+            waitForEnter();
 
             clear();
             refresh();
