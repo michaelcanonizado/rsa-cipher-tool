@@ -84,8 +84,11 @@ int main() {
             } while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
 
             waitForEnter();
+            clear();
+            refresh();
 
             if (confirm == 'Y' || confirm == 'y') {
+
                 mvprintw(y, x - 8, "Keys generated!");
                 refresh();
             }
