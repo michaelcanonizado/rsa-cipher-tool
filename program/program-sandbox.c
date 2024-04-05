@@ -56,7 +56,6 @@ int main() {
         getstr(user_input);
         userInput = atoi(user_input);
 
-        int choiceArr[5];
         for ( i = 0; i < 5; i++)
             choiceArr[i] = strlen(userChoice[i]);
 
