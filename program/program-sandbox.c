@@ -74,13 +74,9 @@ int main() {
             refresh();
             // The consecutive print statements asks for confirmation from the user to generate the keys. The value of y is incremented by 1 so that the consecutive print statements won't overlap each other.
             mvprintw(y++, x - 20, "You are about to generate an RSA private key");
-            refresh();
             mvprintw(y++, x - 20, "with this option. Additionally, it will display");
-            refresh();
             mvprintw(y++, x - 20, "the public key of a generated private key.");
-            refresh();
             mvprintw(y++, x - 20, "Do you agree to save a copy of your private");
-            refresh();
             mvprintw(y++, x - 20, "and public keys? [Y/N]");
             refresh();
 
