@@ -37,6 +37,7 @@ int main() {
     
     char * optionsArr[5] = {"1) Generate Keys", "2) Encrypt Text", "3) Decrypt Text", "4) About", "5) Exit program"};
 
+    // This array will be used to display the temporary outputs of the user's choice. This will be removed in the final version.
     char * userChoice[5] = {"GENERATING KEYS", "ENCRYPTING TEXT", "DECRYPTING TEXT", "ABOUT US", "EXIT PROGRAM"};
 
     int i, userInput;
@@ -61,13 +62,16 @@ int main() {
         for ( i = 0; i < 5; i++)
             choiceArr[i] = strlen(userChoice[i]);
 
+        // This resets the value of y so that the text is displayed at the same position of the previous outputs, otherwise it will be displayed at the bottom of the screen
         y = 10;
         switch (userInput)
         {
         case 1:
+            // Clear function clears the screen so when the user presses certain inputs, the screen will be cleared and the text can be displayed at the same position of the screen
             clear();
             refresh();
             mvprintw(y, x - choiceArr[0], userChoice[0]);
+            // The consecutive print statements asks for confirmation from the user to generate the keys. The value of y is incremented by 1 so that the consecutive print statements won't overlap each other.
             mvprintw(y++, x - 20, "You are about to generate an RSA private key");
             mvprintw(y++, x - 20, "with this option. Additionally, it will display");
             mvprintw(y++, x - 20, "the public key of a generated private key.");
@@ -76,16 +80,17 @@ int main() {
             refresh();
 
             char confirm;
+            // The user can press Y or N to confirm or deny the generation of keys
             do {
                 confirm = getch(); // Get a single character from the user
             } while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
 
-            int enter;
-            do {
-                enter = getch(); // Wait for the user to press ENTER
-            } while (enter != 10);
+            waitForEnter();
+            clear();
+            refresh();
 
             if (confirm == 'Y' || confirm == 'y') {
+                // At this point, function calls can be made to generate the keys. For now, the program will display a message that the keys are generated.
                 mvprintw(y, x - 8, "Keys generated!");
                 refresh();
             }
@@ -94,10 +99,7 @@ int main() {
                 refresh();
             }
 
-            do {
-                enter = getch(); // Wait for the user to press ENTER
-            } while (enter != 10);
-
+            waitForEnter();
             clear();
             refresh();
             break;
