@@ -85,6 +85,8 @@ int main() {
                 confirm = getch(); // Get a single character from the user
             } while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
 
+            curs_set(0); // Hide the cursor
+            noecho(); // Disable echoing of input
             waitForEnter();
             clear();
             refresh();
