@@ -70,7 +70,7 @@ int main() {
             // Clear function clears the screen so when the user presses certain inputs, the screen will be cleared and the text can be displayed at the same position of the screen
             clear();
             refresh();
-            mvprintw(y, x - choiceArr[0], userChoice[0]);
+            mvprintw(y++, x - choiceArr[0], userChoice[0]);
             // The consecutive print statements asks for confirmation from the user to generate the keys. The value of y is incremented by 1 so that the consecutive print statements won't overlap each other.
             mvprintw(y++, x - 20, "You are about to generate an RSA private key");
             mvprintw(y++, x - 20, "with this option. Additionally, it will display");
