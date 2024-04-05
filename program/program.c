@@ -60,15 +60,10 @@ int main() {
             clear();
             refresh();
             mvprintw(y, x - choiceArr[0], userChoice[0]);
-            refresh();
             mvprintw(y++, x - 20, "You are about to generate an RSA private key");
-            refresh();
             mvprintw(y++, x - 20, "with this option. Additionally, it will display");
-            refresh();
             mvprintw(y++, x - 20, "the public key of a generated private key.");
-            refresh();
             mvprintw(y++, x - 20, "Do you agree to save a copy of your private");
-            refresh();
             mvprintw(y++, x - 20, "and public keys? [Y/N]");
             refresh();
 
