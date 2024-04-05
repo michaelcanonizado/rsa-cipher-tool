@@ -3,7 +3,15 @@
 #include <stdlib.h>
 
 // compiling format
-// gcc printf.c -o printf.exe -lncurses -DNCURSES_STATIC
+// cd "c:\Repositories\rsa-cipher-tool\program\" ; if ($?) { gcc program.c -o program -lncurses -DNCURSES_STATIC } ; if ($?) { .\program }
+
+// This function waits for the user to press ENTER to avoid the program from closing immediately after the user's input
+void waitForEnter() {
+    int enter;
+    do {
+        enter = getch(); // Wait for the user to press ENTER
+    } while (enter != 10);
+}
 
 int main() {
     // Initialize ncurses
