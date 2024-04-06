@@ -505,6 +505,7 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     //  ----------    -->   ----------  
     //   68 | 112             69 | 12
 
+    // If you are adding a Bignum with 0, copy the other Bignum to result.
     if (isBignumZero(num1)) {
         copyBignum(result, num2);
         return;
