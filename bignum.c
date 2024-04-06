@@ -787,11 +787,6 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     // Uses the karatsuba multiplication algorithm (https://www.youtube.com/watch?v=yWI2K4jOjFQ&t=6s) that has a time complexity of O(n^1.6). Which is faster than the traditional multiplication algorithm with a time complexity of O(n^2).
 
     // Base Case
-    // REFACTOR: BASE CASE DOESN'T NEED TO BE OF 1 DIGIT LONG. WE CAN TAKE ADVANTAGE OF C'S NATIVE MULTIPLICATION WITH THE HIGHEST UNSIGNED INTEGER HAVING 20 DIGITS (unsigned long long int). THE MAX LENGTH OF THE TWO BIGNUMS SHOULD BE EQUAL TO 9: THIS GUARANTEES THAT THE RESULTING INTEGER WILL BE NO MORE THAN 18 DIGITS LONG. THE RESULTING INTEGER CAN THEN BE CONVERTED TO A BIGNUM AND BE RETURNED. THIS REFACTOR SHOULD HYPOTHETICALLY REDUCE THE AMOUNT OF RECURSIVE CALLS
-    // E.g:
-    // x = 999,999,999 | y = 999,999,999
-    // result = x * y (x * y = 999,999,998,000,000,001)
-    // intToBignum(result);
     if (
         (multiplicand->length <= 9 || multiplier->length <= 9) &&
         (
