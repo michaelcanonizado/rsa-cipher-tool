@@ -714,6 +714,10 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
     // FEAT: A CONDITION TO CHECK IF A MINUEND OR SUBTRAHEND IS ACTUAL FOUND CAN BE IMPLEMENTED TO CONFIRM THAT THE FUNCTION CAN CONTINUE. IF IN ANY CASE IT REACHES THIS POINT BUT SOMEHOW HAVE NOT FOUND A MINUEND AND SUBTRAHEND: THROW AN ERROR.
 
+    // Use a temporary array to store results.digits[], then copy over the temporary array at the end of the function. This allows the function to accept a result Bignum that was passed as num1 or num2. This then will overwrite the passed result Bignum.
+    // E.g: subtractbignum(&x, &x, &y)
+    // The code above is equivalent to:
+    // x = x - y; or x -= y;
     int tempResultDigits[MAX_BIGNUM_LENGTH];
 
     // Variable to store the difference of the individual digits of the minuend and subtrahend.
@@ -769,6 +773,7 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         }
     }
 
+    // Copy the temporary array to results.digits[]
     memcpy(&result->digits, tempResultDigits, sizeof(int) * resultLength);
 
     // Store the final length of result.
