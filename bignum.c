@@ -541,7 +541,7 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         }
     }
 
-    // Use a temporary Bignum to store the result, then copy over the temporary Bignum at the end of the function. This allows the function to accept a result Bignum that was passed as num1 or num2. This then will overwrite the passed result Bignum.
+    // Use a temporary array to store results.digits[], then copy over the temporary array at the end of the function. This allows the function to accept a result Bignum that was passed as num1 or num2. This then will overwrite the passed result Bignum.
     // E.g: addbignum(&x, &x, &y)
     // The code above is equivalent to:
     // x = x + y; or x += y;
@@ -587,6 +587,7 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         resultLength++;
     }
 
+    // Copy the temporary array to results.digits[]
     memcpy(&result->digits, tempResultDigits, sizeof(int) * resultLength);
 
     // Store result digit length
