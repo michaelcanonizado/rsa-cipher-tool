@@ -541,6 +541,8 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         }
     }
 
+    Bignum tempResult = initBignum();
+
     int sum;
     int carry = 0;
     int resultLength = 0;
@@ -570,23 +572,25 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         // Eg: 19 % 10 = 9 or 9 % 10 = 9
         sum = sum % 10;
         // Store sum in result.digits[]
-        result->digits[i] = sum;
+        tempResult.digits[i] = sum;
         // Increment resultLength to keep track of lenght of result Bignum
         resultLength++;
     }
 
     // If there is a remaining carry, append to result. e.g. 8 + 9 = 17 NOT 8 + 9 = 7 (the carry in the buffer was not added)
     if (carry == 1) {
-        result->digits[resultLength] = carry;
+        tempResult.digits[resultLength] = carry;
         resultLength++;
     }
 
     // Store result digit length
-    result->length = resultLength;
+    tempResult.length = resultLength;
     // Copy sign of one of the Bignums. E.g. (+1) + (+2) = (+3) & (-1) + (-2) = (-3)
-    result->sign = num1->sign;
+    tempResult.sign = num1->sign;
     // Trim result. Removing any possible leading 0s
-    trimBignum(result);
+    trimBignum(&tempResult);
+
+    copyBignum(result, &tempResult);
 }
 
 void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
