@@ -15,14 +15,14 @@ int main() {
     Bignum res1 = initBignum();
     Bignum res2 = initBignum();
 
-    setBignum(&num1, "1212", negative);
+    setBignum(&num1, "1212", positive);
     setBignum(&num2, "121", positive);
 
-    divideBignum(&res1, &num1, &num2);
+    moduloBignum(&res1, &num1, &num2);
     
     printf("\n");
     printBignum(&num1);
-    printf(" / ");
+    printf(" %% ");
     printBignum(&num2);
     printf(" = ");
     printBignum(&res1);
@@ -30,11 +30,13 @@ int main() {
 
     printf("\n");
     printBignum(&num3);
-    printf(" / ");
+    printf(" %% ");
     printBignum(&num4);
     printf(" = ");
     printBignum(&res2);
     printf("\n");
+
+    printf("\n%d %% %d = %d", 1212, 121, 1212 % 121);
 
     clock_t end = clock();
     double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
