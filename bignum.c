@@ -786,6 +786,7 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     // Function that multiplies 2 Bignums together.
     // Uses the karatsuba multiplication algorithm (https://www.youtube.com/watch?v=yWI2K4jOjFQ&t=6s) that has a time complexity of O(n^1.6). Which is faster than the traditional multiplication algorithm with a time complexity of O(n^2).
 
+    // Store multiplicand and multiplier sign in a temporary enum. Then make both Bignums positive to trigger the other function calls correctly.
     BIGNUM_SIGN tempMultiplicandSign = multiplicand->sign;
     BIGNUM_SIGN tempMultiplierSign = multiplier->sign;
     multiplicand->sign = positive;
@@ -817,6 +818,7 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
             result->sign = negative;
         }
 
+        // Bring back the original signs
         multiplicand->sign = tempMultiplicandSign;
         multiplier->sign = tempMultiplierSign;
 
