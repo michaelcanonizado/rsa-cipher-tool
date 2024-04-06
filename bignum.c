@@ -541,6 +541,10 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         }
     }
 
+    // Use a temporary Bignum to store the result, then copy over the temporary Bignum at the end of the function. This allows the function to accept a result Bignum that was passed as num1 or num2. This then will overwrite the passed result Bignum.
+    // E.g: addbignum(&x, &x, &y)
+    // The code above is equivalent to:
+    // x = x + y; or x += y;
     Bignum tempResult = initBignum();
 
     int sum;
@@ -590,6 +594,7 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     // Trim result. Removing any possible leading 0s
     trimBignum(&tempResult);
 
+    // Copy the temporary Bignum to actual result Bignum
     copyBignum(result, &tempResult);
 }
 
