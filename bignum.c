@@ -1166,6 +1166,28 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
 
 
 int halfBignum(Bignum *result, Bignum *num) {
+    // Function that divides a Bignum by 2 without using divideBignum(). This is useful as this function is faster at dividing a Bignum by 2 compared to divideBignum() --especially when the Bignum being halved is a really large number.
+
+    // NOTE: this function might be redundant, but it is needed int the algorithms used in the actual RSA Cipher Tool where it requires big Bignums to be divided by 2 effieciently.
+
+    // divideBignum() uses repeated multiplication and binary search. When a really big Bignum is being divided by 2, the left and right limits/indexes of the binary search grows, and more steps are needed. Moreover, using divideBignum() to half a really large Bignum somehow causes an overflow.
+    // On the other hand, this function iterated through Bignum.digits[] and uses the native division on each digit. This has been tested to be faster than divideBignum().
+    // E.g: 567 -> [  7  ,  6  ,  5  ]
+    //              7/2     |     |
+    //      floor->=2.5    6/2    |
+    //             = 2    =3+5<- decimal from previous iteration
+    //                    = 8     | 
+    //                           5/2
+    //                          =2.5
+    //                          =2+0<- since no decimal in previous iteration, ad 0.
+    //
+    //            [  2  ,  8  ,  2  ]
+    //  567 / 2 = 282
+    //
+    
+    // A temporary Bignum is used so we can use this function to pass in a Bignum, and at the same time, pass that same Bignum to the function as a result, allowing for a proper overwrite.
+    // E.g: halfBignum(&x, &x);
+    // The function call above is equivalent to: x = x / 2; or x /= 2;
     Bignum tempResult = initBignum();
 
     int carry = 0;
