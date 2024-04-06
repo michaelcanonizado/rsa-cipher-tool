@@ -15,14 +15,14 @@ int main() {
     Bignum res1 = initBignum();
     Bignum res2 = initBignum();
 
-    setBignum(&num1, "121231231231231231233", negative);
-    setBignum(&num2, "0", positive);
+    setBignum(&num1, "1212", negative);
+    setBignum(&num2, "121", positive);
 
-    multiplyBignum(&res1, &num1, &num2);
+    divideBignum(&res1, &num1, &num2);
     
     printf("\n");
     printBignum(&num1);
-    printf(" * ");
+    printf(" / ");
     printBignum(&num2);
     printf(" = ");
     printBignum(&res1);
@@ -30,7 +30,7 @@ int main() {
 
     printf("\n");
     printBignum(&num3);
-    printf(" * ");
+    printf(" / ");
     printBignum(&num4);
     printf(" = ");
     printBignum(&res2);
