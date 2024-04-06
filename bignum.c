@@ -786,6 +786,11 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     // Function that multiplies 2 Bignums together.
     // Uses the karatsuba multiplication algorithm (https://www.youtube.com/watch?v=yWI2K4jOjFQ&t=6s) that has a time complexity of O(n^1.6). Which is faster than the traditional multiplication algorithm with a time complexity of O(n^2).
 
+    BIGNUM_SIGN tempMultiplicandSign = multiplicand->sign;
+    BIGNUM_SIGN tempMultiplierSign = multiplier->sign;
+    multiplicand->sign = positive;
+    multiplier->sign = positive;
+
     // Base Case
     if (
         (multiplicand->length <= 9 || multiplier->length <= 9) &&
@@ -797,8 +802,28 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
         long long int multiplicandInt = bignumToInt(multiplicand);
         long long int multiplierInt = bignumToInt(multiplier);
         intToBignum(result, multiplicandInt * multiplierInt, positive);
+
+        // Determine sign of result using multiplication rules:
+        // +x * +y = +r
+        // -x * -y = +r
+        // +x * -y = -r
+        // -x * +y = -r
+        if (
+        (tempMultiplicandSign == positive && tempMultiplierSign == positive) 
+        || 
+        (tempMultiplicandSign == negative && tempMultiplierSign == negative)) {
+            result->sign = positive;
+        } else {
+            result->sign = negative;
+        }
+
+        multiplicand->sign = tempMultiplicandSign;
+        multiplier->sign = tempMultiplierSign;
+
         return 0;
     }
+
+
     
     // Determine the maximum length (n) and half (n/2) of multiplicand and multiplier.
     unsigned long long int n = fmax(multiplicand->length, multiplier->length);
@@ -861,17 +886,6 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift, &ac_left_shift, &ad_plus_bc_left_shift);
     addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &ac_left_shift_plus_ad_plus_bc_left_shift, &bd);
     addBignum(result, &ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &zero);
-
-    // Determine sign of result using multiplication rules:
-    // +x * +y = +r
-    // -x * -y = +r
-    // +x * -y = -r
-    // -x * +y = -r
-    if ((multiplicand->sign == positive && multiplier->sign == positive) || multiplicand->sign == negative && multiplier->sign == negative) {
-        result->sign = positive;
-    } else {
-        result->sign = negative;
-    }
 
     return 0;
 }
