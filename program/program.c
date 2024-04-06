@@ -58,7 +58,6 @@ int main() {
         getstr(user_input);
         userInput = atoi(user_input);
 
-        int choiceArr[5];
         for ( i = 0; i < 5; i++)
             choiceArr[i] = strlen(userChoice[i]);
 
@@ -94,6 +93,8 @@ int main() {
             if (confirm == 'Y' || confirm == 'y') {
                 // At this point, function calls can be made to generate the keys. For now, the program will display a message that the keys are generated.
                 mvprintw(y, x - 8, "Keys generated!");
+                mvprintw(y++, x - 8, "Private Key: ");
+                mvprintw(y++, x - 8, "Public Keys:");
                 refresh();
             }
             else {
