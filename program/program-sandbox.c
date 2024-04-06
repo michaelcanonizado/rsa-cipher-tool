@@ -5,7 +5,6 @@
 // compiling format
 // gcc printf.c -o printf.exe -lncurses -DNCURSES_STATIC
 
-
 // This function waits for the user to press ENTER to avoid the program from closing immediately after the user's input
 void waitForEnter() {
     int enter;
@@ -71,7 +70,6 @@ int main() {
             clear();
             refresh();
             mvprintw(y, x - choiceArr[0], userChoice[0]);
-            refresh();
             // The consecutive print statements asks for confirmation from the user to generate the keys. The value of y is incremented by 1 so that the consecutive print statements won't overlap each other.
             mvprintw(y++, x - 20, "You are about to generate an RSA private key");
             mvprintw(y++, x - 20, "with this option. Additionally, it will display");
@@ -81,19 +79,22 @@ int main() {
             refresh();
 
             char confirm;
-
             // The user can press Y or N to confirm or deny the generation of keys
             do {
                 confirm = getch(); // Get a single character from the user
             } while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
 
+            curs_set(0); // Hide the cursor
+            noecho(); // Disable echoing of input
             waitForEnter();
             clear();
             refresh();
 
             if (confirm == 'Y' || confirm == 'y') {
                 // At this point, function calls can be made to generate the keys. For now, the program will display a message that the keys are generated.
-                mvprintw(y, x - 8, "Keys generated!");
+                mvprintw(y++, x - 8, "Keys generated!");
+                mvprintw(y++, x - 8, "Private Key: ");
+                mvprintw(y++, x - 8, "Public Key:");
                 refresh();
             }
             else {
