@@ -889,6 +889,10 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     addBignum(&ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &ac_left_shift_plus_ad_plus_bc_left_shift, &bd);
     addBignum(result, &ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd, &zero);
 
+    // Bring back the original signs
+    multiplicand->sign = tempMultiplicandSign;
+    multiplier->sign = tempMultiplierSign;
+
     return 0;
 }
 
