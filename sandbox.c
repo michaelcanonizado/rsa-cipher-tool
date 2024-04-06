@@ -15,24 +15,22 @@ int main() {
     Bignum res1 = initBignum();
     Bignum res2 = initBignum();
 
-    setBignum(&num1, "60260995677123112", positive);
-    setBignum(&num2, "2", positive);
+    setBignum(&num1, "923", positive);
+    setBignum(&num2, "0", positive);
 
-    divideBignum(&res1, &num1, &num2);
+    addBignum(&num1, &num1, &num2);
     
     printf("\n");
     printBignum(&num1);
-    printf(" %% ");
+    printf(" + ");
     printBignum(&num2);
     printf(" = ");
-    for (int i = res1.length; i >= 0; i--) {
-            printf("%d", res1.digits[i]);
-        }
+    printBignum(&num1);
     printf("\n");
 
     printf("\n");
     printBignum(&num3);
-    printf(" / ");
+    printf(" + ");
     printBignum(&num4);
     printf(" = ");
     printBignum(&res2);
