@@ -1,80 +1,39 @@
-#include <unistd.h>
-#include <stdio.h>
 #include <signal.h>
-#include <sys/ioctl.h>
-#include <string.h>
+#include <stdio.h>
+#include <unistd.h>  // for sleep function
 
-#define OPTIONS 5
+volatile sig_atomic_t flag = 0;
 
-#define clear_screen() write(1, "\033[H\033[2J\033[3J", 11)
+void handle_signal(int sig) {
+    switch (sig) {
+        case SIGINT:
+            printf("Caught signal SIGINT\n");
+            flag = 1;
+            break;
+        case SIGTERM:
+            printf("Caught signal SIGTERM\n");
+            flag = 1;
+            break;
+    }
+}
 
-#define move_cursor(X, Y) printf("\033[%d;%dH", Y, X)
+int main() {
 
-void get_cols_rows(int *cols, int *rows){
+    struct sigaction sa;
+    sa.sa_handler = handle_signal;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
 
-    struct winsize size;
-    ioctl(1, TIOCGWINSZ, &size);
-    *cols = size.ws_col;
-    *rows = size.ws_row;
+    sigaction(SIGINT, &sa, NULL);
+    sigaction(SIGTERM, &sa, NULL);
 
-}//tec_get_cols_rows*/
-
-char *global_text;
-void win_change(int sig){
-    printf("%s\n", global_text);
-    printf("win_change happening\n");
-
-}//win_change*/
-
-
-void print_options(char *global_text, int row_offset, int col_offset){
-    int cols = 0, rows = 0;
-    get_cols_rows(&cols, &rows);
-    row_offset = row_offset + 1;
-    move_cursor((cols - col_offset) / 2, rows / 20 + row_offset);
-    win_change(0);
-}//print_options*/
-
-int main () {
-    
-    clear_screen();
-    signal(SIGWINCH, win_change);
-
-    print_options("enterrr", 1, 10);
-
-    int i, userInput;
-    int lengthArr[5], choiceArr[5];
-
-    char * optionsArr[OPTIONS] = {"1) Generate Keys", "2) Encrypt Text", "3) Decrypt Text", "4) About", "5) Exit program"};
-
-    for (i = 0; i < OPTIONS; i++){
-        print_options(optionsArr[i], i+2, 10);
+    // Keep running until we receive a signal
+    while (flag == 0) {
+        printf("Running...\n");
+        sleep(1);  // Sleep for 1 second
     }
 
-    // global_text = "Enter number: ";
-    // offset = 0;
-    // win_change(0); 
-
-    // c = getchar();
-    // int choice = c - '0';
-
-    // char choiceStr[2];  // Buffer to hold the string representation of choice
-    // sprintf(choiceStr, "%d", choice);  // Convert choice to a string
-
-    // global_text = "You entered: ";
-    // win_change(0);  
-
-    // global_text = choiceStr;
-    // win_change(0); 
-    
-
-    // // This array will be used to display the temporary outputs of the user's choice. This will be removed in the final version.
-    // char * userChoice[5] = {"GENERATING KEYS", "ENCRYPTING TEXT", "DECRYPTING TEXT", "ABOUT US", "EXIT PROGRAM"};
-    
-    getchar();
-
-    clear_screen();
-
+    printf("Program terminated.\n");
 
     return 0;
 }
