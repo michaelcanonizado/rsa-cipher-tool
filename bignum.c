@@ -505,6 +505,15 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     //  ----------    -->   ----------  
     //   68 | 112             69 | 12
 
+    if (isBignumZero(num1)) {
+        copyBignum(result, num2);
+        return;
+    }
+    if (isBignumZero(num2)) {
+        copyBignum(result, num1);
+        return;
+    }
+
     // Use addition rule: if the two Bignums have different signs. Perform subtraction.
     if (num1->sign != num2->sign) {
         // Keep track of the original signs of the two Bignums. As they need to have the same sign to trigger subtraction in the subtractBignum() function. If they have contrasting signs, subtractBignum() will call addBignum() causing an infinite loop.
