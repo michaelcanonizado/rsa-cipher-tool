@@ -714,6 +714,8 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
     // FEAT: A CONDITION TO CHECK IF A MINUEND OR SUBTRAHEND IS ACTUAL FOUND CAN BE IMPLEMENTED TO CONFIRM THAT THE FUNCTION CAN CONTINUE. IF IN ANY CASE IT REACHES THIS POINT BUT SOMEHOW HAVE NOT FOUND A MINUEND AND SUBTRAHEND: THROW AN ERROR.
 
+    int tempResultDigits[MAX_BIGNUM_LENGTH];
+
     // Variable to store the difference of the individual digits of the minuend and subtrahend.
     int difference;
     unsigned long long int resultLength = 0;
@@ -723,7 +725,7 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         // If current minuend digit is greater than the current subtrahend digit: No need to borrow.
         if (minuend.digits[i] > subtrahend.digits[i]) {
             // Get difference of the current minuend and subtrahend digits and increment the result's digit length counter.
-            result->digits[i] = minuend.digits[i] - subtrahend.digits[i];
+            tempResultDigits[i] = minuend.digits[i] - subtrahend.digits[i];
             resultLength++;
         } else if (minuend.digits[i] < subtrahend.digits[i]) {
             // If borrowing is needed, start from the next digit after the current index, and traverse through till the MSD (most significant digit or the last digit) of the minuend until you find a digit that can give you a borrow (anything greater than 0 can give a borrow).
@@ -750,11 +752,11 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
             }
 
             // Once a borrow is found, get difference of the current minuend and subtrahend digits, store the result, and increment the result's digit length counter.
-            result->digits[i] = minuend.digits[i] - subtrahend.digits[i];
+            tempResultDigits[i] = minuend.digits[i] - subtrahend.digits[i];
             resultLength++;
         } else if (minuend.digits[i] == subtrahend.digits[i]) {
             // When minuend's and subtrahend's current digit is equal. Set result's current iteration digit to 0, as subtracting them will result in a 0.
-            result->digits[i] = 0;
+            tempResultDigits[i] = 0;
             resultLength++;
         }
     }
@@ -762,10 +764,12 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     // If subtrahend is shorter than the minuend, and all neccessary subtractions are finished. Drop down/copy the remaining values of the minuend.
     if (minuend.length > subtrahend.length) {
         for (int i = subtrahend.length; i < minuend.length; i++) {
-            result->digits[i] = minuend.digits[i];
+            tempResultDigits[i] = minuend.digits[i];
             resultLength++;
         }
     }
+
+    memcpy(&result->digits, tempResultDigits, sizeof(int) * resultLength);
 
     // Store the final length of result.
     result->length = resultLength;
