@@ -15,10 +15,10 @@ int main() {
     Bignum res1 = initBignum();
     Bignum res2 = initBignum();
 
-    setBignum(&num1, "1212", positive);
+    setBignum(&num1, "567", positive);
     setBignum(&num2, "121", positive);
 
-    moduloBignum(&res1, &num1, &num2);
+    halfBignum(&res1, &num1);
     
     printf("\n");
     printBignum(&num1);
