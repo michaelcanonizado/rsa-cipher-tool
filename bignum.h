@@ -49,7 +49,7 @@ int isBignumZero(Bignum *num);
 int incrementBignum(Bignum *num, unsigned long long int incrementValue);
 
 void addBignum(Bignum *result, Bignum *addend1, Bignum *addend2);
-void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2);
+void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend);
 int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier);
 int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor);
 int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor);
