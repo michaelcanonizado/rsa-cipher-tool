@@ -239,8 +239,13 @@ long long int bignumToInt(Bignum *num) {
 }
 
 int resetBignum(Bignum *num) {
+    // Function to reset the contents of a Bignum. Although initBignum() can be used to reset a Bignum, this function resets the Bignum, whilst maintaining the intance of the Bignum. initBignum() resets the Bignum by creating a new instance of the Bignum, resets/initializes its members, and returns a new Bignum.
+
+    // Reset Bignum.digits[]
     memset(num->digits, 0, sizeof(int) * MAX_BIGNUM_LENGTH);
+    // Reset length
     num->length = 0;
+    // Reset Sign
     num->sign = positive;
     return 0;
 }
