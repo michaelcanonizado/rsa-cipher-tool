@@ -6,7 +6,7 @@
 // Subtraction - Done
 // Multiplication - Done
 // Modulus - Done
-// Division - N/A
+// Division - Not tested
 // Greater Than Equal To - N/A
 // Less Than Equal To - N/A
 // Not Equal To - N/A
