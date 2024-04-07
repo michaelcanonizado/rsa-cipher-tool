@@ -136,16 +136,23 @@ Bignum initBignum() {
     // Function to initialize Bignum values. Get rid of garbage values and initialize bignum. Some arithmetic function may need to know if the Bignum has already been set.
     Bignum num;
 
+    // Dynamically allocate memory for Bignum.digits[].
+    // use calloc to set all digits of the array to 0.
     int *digitsPtr = (int*)calloc(MAX_BIGNUM_LENGTH, sizeof(int));
+
+    // Check if allocation was successful
     if (digitsPtr == NULL) {
         printf("\n\nError allocating Bignum.digits...\n\n");
         exit(-1);
     }
 
     printf("\nAllocated Bignum.digits | %p", digitsPtr);
+    // If successful, store pointer in Bignum.digits
     num.digits = digitsPtr;
+    // Add pointer to list of initialized Bignums, to be freed all at once usign freeBignums()
     BIGNUMS_DIGITS_ARR[BIGNUMS_COUNT++] = digitsPtr;
 
+    // Defualt values of length and sign
     num.length = 0;
     num.sign = positive;
     return num;
