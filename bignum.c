@@ -40,8 +40,7 @@
 // -----------------PRIVATE FUNCTIONS-----------------
 
 int bignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
-
-    // Function that shifts a Bignum with the amount of 0s specified (x * pow(10, n)).
+    // Function that shifts a Bignum with the amount of 0s specified (x * pow(10, n)), without using multiplyBignum(). This has been tested to be faster especially when shifting by large place values.
     // I.e: x * 10^n
     // E.g: Integer: 123 -> 12300
     // E.g: Bignum: [3,2,1] -> [0,0,3,2,1]
