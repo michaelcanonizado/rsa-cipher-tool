@@ -610,19 +610,19 @@ void addBignum(Bignum *result, Bignum *addend1, Bignum *addend2) {
     trimBignum(result);
 }
 
-void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
+void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend) {
     // Function to subtract two Bignums together.
     // Uses basic subtraction which starts at the LSD (least significant digit) and subtracts the digits of the minuend and subtrahend together, iterating till it reaches the end. If a borrow is needed, it will loop through the next digits of the minuend until it finds a digit that can give a borrow.
 
     // NOTE: This function currently iterates and adds 1 digit at a time.
 
     // If you are subtracting a Bignum with 0, copy the other Bignum to result.
-    if (isBignumZero(num1)) {
-        copyBignum(result, num2);
+    if (isBignumZero(minuend)) {
+        copyBignum(result, subtrahend);
         return;
     }
-    if (isBignumZero(num2)) {
-        copyBignum(result, num1);
+    if (isBignumZero(subtrahend)) {
+        copyBignum(result, minuend);
         return;
     }
 
@@ -633,77 +633,77 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     // Transpose the signs: Make the two Bignums have the same sign, to trigger addition in the addBignum() function. Having different signs in addBignum() will call subtractBignum(), causing an infinite loop. Once addition is complete, bring back the original sign.
 
     // Store Bignum signs in a temporary variable as transposing of signs will happen, and the original sign is needed after addition.
-    BIGNUM_SIGN num1Sign = num1->sign;
-    BIGNUM_SIGN num2Sign = num2->sign;
+    BIGNUM_SIGN minuendSign = minuend->sign;
+    BIGNUM_SIGN num2Sign = subtrahend->sign;
 
-    if (num1->sign == positive && num2->sign == negative) {
-        num2->sign = num1Sign;
-        addBignum(result, num1, num2);
-        num2->sign = num2Sign;
+    if (minuend->sign == positive && subtrahend->sign == negative) {
+        subtrahend->sign = minuendSign;
+        addBignum(result, minuend, subtrahend);
+        subtrahend->sign = num2Sign;
         return;
     }
-    if (num1->sign == negative && num2->sign == positive) { 
-        num2->sign = num1Sign;
-        addBignum(result, num1, num2);
-        result->sign = num1Sign;
-        num2->sign = num2Sign;
+    if (minuend->sign == negative && subtrahend->sign == positive) { 
+        subtrahend->sign = minuendSign;
+        addBignum(result, minuend, subtrahend);
+        result->sign = minuendSign;
+        subtrahend->sign = num2Sign;
         return;
     }
 
     // Find minuend and subtrahend. Store in a temporary Bignum as minuend's Bignum.digits will be manipulated due to borrows. This is also needed as minuend can be either of the two Bignums (num1 or num2); If minuend is found. the other number will be the subtrahend.
-    Bignum minuend = initBignum();
-    Bignum subtrahend = initBignum();
+    Bignum minuendTemp = initBignum();
+    Bignum subtrahendTemp = initBignum();
 
-    // Check length. Longer length will be set to the minuend and shorter will be the subtrahend.
-    if (num1->length > num2->length) {
-        minuend.length = num1->length;
-        subtrahend.length = num2->length;
+    // Check length. Longer length will be set to the Temp and shorter will be the subtrahend.
+    if (minuend->length > subtrahend->length) {
+        minuendTemp.length = minuend->length;
+        subtrahendTemp.length = subtrahend->length;
 
-        memcpy(&minuend.digits, num1->digits, sizeof(int) * num1->length);
-        memcpy(&subtrahend.digits, num2->digits, sizeof(int) * num2->length);
+        memcpy(&minuendTemp.digits, minuend->digits, sizeof(int) * minuend->length);
+        memcpy(&subtrahendTemp.digits, subtrahend->digits, sizeof(int) * subtrahend->length);
 
-        result->sign = num1->sign;
-    } else if (num1->length < num2->length) {
-        minuend.length = num2->length;
-        subtrahend.length = num1->length;
+        result->sign = minuend->sign;
+    } else if (minuend->length < subtrahend->length) {
+        minuendTemp.length = subtrahend->length;
+        subtrahendTemp.length = minuend->length;
 
-        memcpy(&minuend.digits, num2->digits, sizeof(int) * num2->length);
-        memcpy(&subtrahend.digits, num1->digits, sizeof(int) * num1->length);
+        memcpy(&minuendTemp.digits, subtrahend->digits, sizeof(int) * subtrahend->length);
+        memcpy(&subtrahendTemp.digits, minuend->digits, sizeof(int) * minuend->length);
 
         // If num1 - num2, and bot Bignums have the same sign, and num2 is longer than num1, the result's sign will be the inverse of the sign of the 2 Bignums.
         // E.g.: (+7) - (+10) = -3 or (-7) - (-10) = 3 
-        if (num1->sign == positive) {
+        if (minuend->sign == positive) {
             result->sign = negative;
-        } else if (num1->sign == negative) {
+        } else if (minuend->sign == negative) {
             result->sign = positive;
         }
     }
 
     // Compare two Bignums. If minuend and subtrahend was not found in the previous conditions, i.e. they're of the same sign and length. Compare the two Bignums.
     // Still chain to the previous condition with else-if to prevent redundant condition checks when a minuend and subtrahend was found earlier.
-    else if (isGreaterThanBignum(num1, num2) && minuend.length == 0) {
-        minuend.length = num1->length;
-        subtrahend.length = num2->length;
+    else if (isGreaterThanBignum(minuend, subtrahend) && minuendTemp.length == 0) {
+        minuendTemp.length = minuend->length;
+        subtrahendTemp.length = subtrahend->length;
 
-        memcpy(&minuend.digits, num1->digits, sizeof(int) * num1->length);
-        memcpy(&subtrahend.digits, num2->digits, sizeof(int) * num2->length);
+        memcpy(&minuendTemp.digits, minuend->digits, sizeof(int) * minuend->length);
+        memcpy(&subtrahendTemp.digits, subtrahend->digits, sizeof(int) * subtrahend->length);
 
-        result->sign = num1->sign;
-    }else if (isLessThanBignum(num1, num2) && minuend.length == 0) {
-        minuend.length = num2->length;
-        subtrahend.length = num1->length;
+        result->sign = minuend->sign;
+    }else if (isLessThanBignum(minuend, subtrahend) && minuendTemp.length == 0) {
+        minuendTemp.length = subtrahend->length;
+        subtrahendTemp.length = minuend->length;
 
-        memcpy(&minuend.digits, num2->digits, sizeof(int) * num2->length);
-        memcpy(&subtrahend.digits, num1->digits, sizeof(int) * num1->length);
+        memcpy(&minuendTemp.digits, subtrahend->digits, sizeof(int) * subtrahend->length);
+        memcpy(&subtrahendTemp.digits, minuend->digits, sizeof(int) * minuend->length);
 
         // If num1 - num2, and both Bignums have the same sign, but num1 is less than num2, the result's sign will be the inverse of the sign of the 2 Bignums.
         // E.g.: (+30) - (+70) = -40 or (-30) - (-70) = 40 
-        if (num1->sign == positive) {
+        if (minuend->sign == positive) {
             result->sign = negative;
-        } else if (num1->sign == negative) {
+        } else if (minuend->sign == negative) {
             result->sign = positive;
         }
-    } else if (isEqualToBignum(num1, num2)) {
+    } else if (isEqualToBignum(minuend, subtrahend)) {
         // If the two Bignums are equal to each other. Set result to zero.
         result->digits[0] = 0;
         result->length = 1;
@@ -727,23 +727,23 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     unsigned long long int resultLength = 0;
 
     // Start at the LSD (least significant digit). Then iterate through, using the the min length (subtrahend length).
-    for (int i = 0; i < subtrahend.length; i++) {
+    for (int i = 0; i < subtrahendTemp.length; i++) {
         // If current minuend digit is greater than the current subtrahend digit: No need to borrow.
-        if (minuend.digits[i] > subtrahend.digits[i]) {
+        if (minuendTemp.digits[i] > subtrahendTemp.digits[i]) {
             // Get difference of the current minuend and subtrahend digits and increment the result's digit length counter.
-            tempResultDigits[i] = minuend.digits[i] - subtrahend.digits[i];
+            tempResultDigits[i] = minuendTemp.digits[i] - subtrahendTemp.digits[i];
             resultLength++;
-        } else if (minuend.digits[i] < subtrahend.digits[i]) {
+        } else if (minuendTemp.digits[i] < subtrahendTemp.digits[i]) {
             // If borrowing is needed, start from the next digit after the current index, and traverse through till the MSD (most significant digit or the last digit) of the minuend until you find a digit that can give you a borrow (anything greater than 0 can give a borrow).
-            for (int j = i + 1; j < minuend.length; j++) {
-                if (minuend.digits[j] > 0) {
+            for (int j = i + 1; j < minuendTemp.length; j++) {
+                if (minuendTemp.digits[j] > 0) {
                     // If a digit that can give a borrow is found, decrement that digit, then add 10 to the current index that needs a borrow.
-                    minuend.digits[j] = minuend.digits[j] - 1;
-                    minuend.digits[i] = minuend.digits[i] + 10;
+                    minuendTemp.digits[j] = minuendTemp.digits[j] - 1;
+                    minuendTemp.digits[i] = minuendTemp.digits[i] + 10;
 
                     // Since a borrow was found. Exit out of loop.
                     break;
-                } else if (minuend.digits[j] == 0) {
+                } else if (minuendTemp.digits[j] == 0) {
                     // If the digit is a 0, replace that 0 with 9 and move to the next digit looking for a digit that can give a borrow. We can immediately give it a value of 9, since it is bound to be a 9 as it will be a 10 once a borrow is found, then it will be decremented as it needs to give a borrow to the digit to its right.
                     //
                     // E.g.:
@@ -753,14 +753,14 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
                     //       subtrahend: -  , , ,2, 3
                     //                    ------------
                     //           result:    1,2,9,7,8
-                    minuend.digits[j] = 9;
+                    minuendTemp.digits[j] = 9;
                 }
             }
 
             // Once a borrow is found, get difference of the current minuend and subtrahend digits, store the result, and increment the result's digit length counter.
-            tempResultDigits[i] = minuend.digits[i] - subtrahend.digits[i];
+            tempResultDigits[i] = minuendTemp.digits[i] - subtrahendTemp.digits[i];
             resultLength++;
-        } else if (minuend.digits[i] == subtrahend.digits[i]) {
+        } else if (minuendTemp.digits[i] == subtrahendTemp.digits[i]) {
             // When minuend's and subtrahend's current digit is equal. Set result's current iteration digit to 0, as subtracting them will result in a 0.
             tempResultDigits[i] = 0;
             resultLength++;
@@ -768,9 +768,9 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     }
 
     // If subtrahend is shorter than the minuend, and all neccessary subtractions are finished. Drop down/copy the remaining values of the minuend.
-    if (minuend.length > subtrahend.length) {
-        for (int i = subtrahend.length; i < minuend.length; i++) {
-            tempResultDigits[i] = minuend.digits[i];
+    if (minuendTemp.length > subtrahendTemp.length) {
+        for (int i = subtrahendTemp.length; i < minuendTemp.length; i++) {
+            tempResultDigits[i] = minuendTemp.digits[i];
             resultLength++;
         }
     }
