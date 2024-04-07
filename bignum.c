@@ -249,8 +249,6 @@ int resetBignum(Bignum *num) {
     return 0;
 }
 
-
-
 void copyBignum(Bignum *result, Bignum *num) {
     // Function to copy the contents of a Bignum to another Bignum
     memcpy(result->digits, num->digits, sizeof(int) * num->length);
