@@ -159,6 +159,15 @@ void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
     for (int i = 0; i < numStruct->length; i++) {
         // Offset ASCII value of the character by the ASCII value of '0'
         // Eg: '3' - '0' = 3  ->  51 - 48 = 3 
+        int tempDigit =  numStr[i] - '0';
+
+        if (tempDigit < 0 || tempDigit > 9) {
+            printf("\n\nParsed numStr in setBignum() is invalid. Please make sure the parsed numStr contains only number characters (0-9)...");
+            printf("\n\tFunction: setBignum()");
+            printf("\n\tExit code: -1\n\n\n");
+            exit(-1);
+        }
+
         numStruct->digits[i] = numStr[i] - '0';
     }
 
