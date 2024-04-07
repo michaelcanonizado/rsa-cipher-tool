@@ -15,8 +15,8 @@ int main() {
     Bignum res1 = initBignum();
     Bignum res2 = initBignum();
 
-    setBignum(&num1, "123", positive);
-    setBignum(&num2, "12312", negative);
+    setBignum(&num1, "000000000", positive);
+    setBignum(&num2, "99999-9999", negative);
 
     subtractBignum(&res1, &num1, &num2);
     
