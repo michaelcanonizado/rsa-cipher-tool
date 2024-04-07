@@ -161,7 +161,10 @@ void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
         // Eg: '3' - '0' = 3  ->  51 - 48 = 3 
         int tempDigit =  numStr[i] - '0';
 
-        // Check if an invalid number character was passed 
+        // Check if an invalid character was passed in numStr. Only number characters '0'-'9' arr valid.
+        // setBignum(&x, '123-456', positive); <- invalid
+        // setBignum(&x, '-123456', negative); <- invalid
+        // setBignum(&x, '123456', negative);  <- valid
         if (tempDigit < 0 || tempDigit > 9) {
             printf("\n\nPassed numStr in setBignum() is invalid. Please make sure the passed numStr contains only number characters '0'-'9'...");
             printf("\n\tFunction: setBignum()");
