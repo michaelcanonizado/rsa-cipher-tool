@@ -25,7 +25,8 @@
 
 
 
-
+int *BIGNUMS_DIGITS_ARR[100];
+unsigned long long int BIGNUMS_COUNT = 0;
 
 
 
@@ -129,10 +130,22 @@ int getLengthOfInteger(long long int integer) {
     return (int)log10((double)integer) + 1;
 }
 
+
+
 Bignum initBignum() {
     // Function to initialize Bignum values. Get rid of garbage values and initialize bignum. Some arithmetic function may need to know if the Bignum has already been set.
     Bignum num;
-    memset(num.digits, 0, sizeof(int) * MAX_BIGNUM_LENGTH);
+
+    int *digitsPtr = (int*)calloc(MAX_BIGNUM_LENGTH, sizeof(int));
+    if (digitsPtr == NULL) {
+        printf("\n\nError allocating Bignum.digits...\n\n");
+        exit(-1);
+    }
+
+    printf("\nAllocated Bignum.digits | %p", digitsPtr);
+    num.digits = digitsPtr;
+    BIGNUMS_DIGITS_ARR[BIGNUMS_COUNT++] = digitsPtr;
+
     num.length = 0;
     num.sign = positive;
     return num;
@@ -613,7 +626,7 @@ void addBignum(Bignum *result, Bignum *addend1, Bignum *addend2) {
     }
 
     // Copy the temporary array to results.digits[]
-    memcpy(&result->digits, tempResultDigits, sizeof(int) * resultLength);
+    memcpy(result->digits, tempResultDigits, sizeof(int) * resultLength);
 
     // Store result digit length
     result->length = resultLength;
