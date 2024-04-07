@@ -28,7 +28,7 @@
 // -----------------GLOBAL VARIABLES-----------------
 
 // Array to store all dynamically allocated memory in Bignum.digits[]. This array will be used to free all the allocated memory at once.
-int *BIGNUMS_DIGITS_ARR[100];
+int *BIGNUM_DIGITS_ARR[100];
 // Counter to keep track of the number of arrays dynamically allocated.
 unsigned long long int BIGNUMS_COUNT = 0;
 
@@ -154,7 +154,7 @@ Bignum initBignum() {
     // If successful, store pointer in Bignum.digits
     num.digits = digitsPtr;
     // Add pointer to list of initialized Bignums, to be freed all at once usign freeBignums()
-    BIGNUMS_DIGITS_ARR[BIGNUMS_COUNT++] = digitsPtr;
+    BIGNUM_DIGITS_ARR[BIGNUMS_COUNT++] = digitsPtr;
 
     // Defualt values of length and sign
     num.length = 0;
@@ -168,8 +168,8 @@ void freeBignums() {
     int i;
     // Free each allocated memory on the array
     for (i = 0; i < BIGNUMS_COUNT; i++) {
-        printf("\nFreeing %p...", BIGNUMS_DIGITS_ARR[i]);
-        free(BIGNUMS_DIGITS_ARR[i]);
+        printf("\nFreeing %p...", BIGNUM_DIGITS_ARR[i]);
+        free(BIGNUM_DIGITS_ARR[i]);
     }
 
     // Reset count to 0
