@@ -159,11 +159,16 @@ Bignum initBignum() {
 }
 
 void freeBignums() {
+    // Function to go through the array of pointers of the dynamically allocated arrays in Bignum.digits[] (initialized Bignums), and free them all at once.
+
     int i;
+    // Free each allocated memory on the array
     for (i = 0; i < BIGNUMS_COUNT; i++) {
         printf("\nFreeing %p...", BIGNUMS_DIGITS_ARR[i]);
         free(BIGNUMS_DIGITS_ARR[i]);
     }
+
+    // Reset count to 0
     BIGNUMS_COUNT -= i;
     printf("\n\nFreed %d Bignums...", i);
     printf("\n%d Bignums left...", BIGNUMS_COUNT);
