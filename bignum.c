@@ -151,6 +151,17 @@ Bignum initBignum() {
     return num;
 }
 
+void freeBignums() {
+    int i;
+    for (i = 0; i < BIGNUMS_COUNT; i++) {
+        printf("\nFreeing %p...", BIGNUMS_DIGITS_ARR[i]);
+        free(BIGNUMS_DIGITS_ARR[i]);
+    }
+    BIGNUMS_COUNT -= i;
+    printf("\n\nFreed %d Bignums...", i);
+    printf("\n%d Bignums left...", BIGNUMS_COUNT);
+}
+
 void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
     // Main Function to set a Bignum. This function takes an integer represented as a string, as strings don't have a limit to how long it can be. The each character of the string will then be converted to an integer by offsetting its ASCII value, and will be pushed to Bignum.digits[].
 
