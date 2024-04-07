@@ -491,7 +491,7 @@ int incrementBignum(Bignum *num, unsigned long long int incrementValue) {
 
 
 
-void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
+void addBignum(Bignum *result, Bignum *addend1, Bignum *addend2) {
     // Function to add two Bignums together.
     // Uses basic addition which starts at the LSD (least significant digit) and adds the digits of the addends together, iterating till it reaches the end.
 
@@ -508,42 +508,42 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     //   68 | 112             69 | 12
 
     // If you are adding a Bignum with 0, copy the other Bignum to result.
-    if (isBignumZero(num1)) {
-        copyBignum(result, num2);
+    if (isBignumZero(addend1)) {
+        copyBignum(result, addend2);
         return;
     }
-    if (isBignumZero(num2)) {
-        copyBignum(result, num1);
+    if (isBignumZero(addend2)) {
+        copyBignum(result, addend1);
         return;
     }
 
     // Use addition rule: if the two Bignums have different signs. Perform subtraction.
-    if (num1->sign != num2->sign) {
+    if (addend1->sign != addend2->sign) {
         // Keep track of the original signs of the two Bignums. As they need to have the same sign to trigger subtraction in the subtractBignum() function. If they have contrasting signs, subtractBignum() will call addBignum() causing an infinite loop.
-        BIGNUM_SIGN num1Sign = num1->sign;
-        BIGNUM_SIGN num2Sign = num2->sign;
+        BIGNUM_SIGN addend1Sign = addend1->sign;
+        BIGNUM_SIGN addend2Sign = addend2->sign;
 
-        num1->sign = num2->sign;
+        addend1->sign = addend2->sign;
 
-        if (isGreaterThanBignum(num1, num2)) {
-            subtractBignum(result, num1, num2);
+        if (isGreaterThanBignum(addend1, addend2)) {
+            subtractBignum(result, addend1, addend2);
             // The resulting Bignum will have the sign of the bigger number(disregarding signs). E.g. 11 + (-5) = 6.
-            result->sign = num1Sign;
+            result->sign = addend1Sign;
             // Bring back the original signs of the two Bignums.
-            num1->sign = num1Sign;
-            num2->sign = num2Sign;
+            addend1->sign = addend1Sign;
+            addend2->sign = addend2Sign;
 
             return;
-        } else if (isLessThanBignum(num1, num2)) {
-            subtractBignum(result, num1, num2);
+        } else if (isLessThanBignum(addend1, addend2)) {
+            subtractBignum(result, addend1, addend2);
             // The resulting Bignum will have the sign of the bigger number(disregarding signs). E.g. 5 + (-11) = -6.
-            result->sign = num2Sign;
+            result->sign = addend2Sign;
             // Bring back the original signs of the two Bignums.
-            num1->sign = num1Sign;
-            num2->sign = num2Sign;
+            addend1->sign = addend1Sign;
+            addend2->sign = addend2Sign;
 
             return;
-        } else if (isEqualToBignum(num1, num2)) {
+        } else if (isEqualToBignum(addend1, addend2)) {
             // If the 2 Bignums have different signs and are equal to each other. the result will be 0.
             result->digits[0] = 0;
             result->length = 1;
@@ -566,12 +566,12 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     unsigned long long int maxLength;
 
     // Find the longest length. This is needed to determine which Bignum.length to use in the for-loop.
-    if (num1->length > num2->length) {
-        maxLength = num1->length;
-    } else if (num2->length > num1->length) {
-        maxLength = num2->length;
+    if (addend1->length > addend2->length) {
+        maxLength = addend1->length;
+    } else if (addend2->length > addend1->length) {
+        maxLength = addend2->length;
     } else {
-        maxLength = num1->length;
+        maxLength = addend1->length;
     }
 
     // Perform addition (this for-loop adds 1 digit at a time. Refer to the REFACTOR note above for more info).
@@ -581,7 +581,7 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         // Set sum to the previous carry
         sum = carry;
         // Add the digits of the addends together
-        sum += num1->digits[i] + num2->digits[i];
+        sum += addend1->digits[i] + addend2->digits[i];
         // If sum is more than 1 digit long, set carry to 1.
         carry = sum >= 10 ? 1 : 0;
         // Modulo sum by 10 to get only 1 digit to be pushed to Bignum result. This works whether sum is more than 1 digit long or not.
@@ -605,7 +605,7 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     // Store result digit length
     result->length = resultLength;
     // Copy sign of one of the Bignums. E.g. (+1) + (+2) = (+3) & (-1) + (-2) = (-3)
-    result->sign = num1->sign;
+    result->sign = addend1->sign;
     // Trim result. Removing any possible leading 0s
     trimBignum(result);
 }
