@@ -227,6 +227,9 @@ int main (){
 				moveCursor((width - 25)/ 2, adjustedHeight);
 				printf("Message encryption failed!\n");
 			}
+
+				waitForDONE(width, height);
+				clearScreen();
 				break;
 			case 3:
 				break;
