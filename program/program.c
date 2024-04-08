@@ -153,6 +153,13 @@ int main (){
 				clearScreen();
 				break;
 			case 2:
+				char* confirmENCRYPT[] = {"Encryption includes the message to be encrypted and", "the public key of the recipient. The txt file of the", "message must be in the same folder of the C program."};
+				int ENCRYPTcount = sizeof(confirmENCRYPT) / sizeof(confirmENCRYPT[0]);
+
+				for ( i = 0; i < ENCRYPTcount; i++) {
+					moveCursor((width - strlen(confirmENCRYPT[i]))/ 2, adjustedHeight + i);
+					printf("%s\n", confirmENCRYPT[i]);
+				}
 				break;
 			case 3:
 				break;
