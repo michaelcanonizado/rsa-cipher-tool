@@ -14,8 +14,8 @@ int main() {
     setBignum(&num1, "12345", positive);
     setBignum(&num2, "98765", positive);
 
-    addBignum(&res1, &num1, &num2);
-
+    subtractBignum(&res1, &num1, &num2);
+    
     printf("\n\n");
     printBignum(&num1);
     printf(" + ");
