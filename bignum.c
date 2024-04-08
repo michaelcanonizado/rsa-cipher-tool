@@ -574,6 +574,7 @@ int incrementBignum(Bignum *num, unsigned long long int incrementValue) {
     initBignum(&offset);
     intToBignum(&offset, incrementValue, positive);
     addBignum(num, num, &offset);
+    freeBignum(&offset);
     return 0;
 }
 
@@ -1041,6 +1042,24 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     multiplicand->sign = tempMultiplicandSign;
     multiplier->sign = tempMultiplierSign;
 
+    freeBignum(&a);
+    freeBignum(&b);
+    freeBignum(&c);
+    freeBignum(&d);
+    freeBignum(&ac);
+    freeBignum(&bd);
+    freeBignum(&a_plus_b);
+    freeBignum(&c_plus_d);
+    freeBignum(&ac_minus_bd);
+    freeBignum(&a_plus_b_times_c_plus_d);
+    freeBignum(&a_plus_b_times_c_plus_d_minus_ac);
+    freeBignum(&ad_plus_bc);
+    freeBignum(&ac_left_shift);
+    freeBignum(&ad_plus_bc_left_shift);
+    freeBignum(&ac_left_shift_plus_ad_plus_bc_left_shift);
+    freeBignum(&ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd);
+    freeBignum(&zero);
+
     return 0;
 }
 
@@ -1170,7 +1189,11 @@ int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
             break;
         }
 
-        // FEAT: ADD AN IF CASE WHERE THE LEFT INDEX IS GREATER THAN THE RIGHT INDEX, JUST LIKE IN OTHER BINARY SEARCH IMPLEMENTATIONS. HOWEVER, THIS CASE WHERE THIS FUNCTION DOESN'T FIND AN APPROPRIATE QUOTIENT, IS HYPOTHETICALLY IMPOSSIBLE DUE TO: (1) THE CONDITION ABOVE THAT CHECKS IF THE PRODUCT IS FIT TO BE A QUOTIENT, AND (2) ALL NUMBERS ARE PRESENT WITHIN THE RANGE. IF IN ANY CASE WHERE THE FUNCTION FAILS DUE TO THIS PROBLEM, THERE MUST BE A FLAW IN ANOTHER PART OF THIS FUNCTION. PERHAPS THE LEFT AND IRGHT INDEXES OR THE CONDITION THAT CHECKS IF THE PRODUCT IS A FIT QUOTIENT. 
+        // FEAT: ADD AN IF CASE WHERE THE LEFT INDEX IS GREATER THAN THE RIGHT INDEX, JUST LIKE IN OTHER BINARY SEARCH IMPLEMENTATIONS. HOWEVER, THIS CASE WHERE THIS FUNCTION DOESN'T FIND AN APPROPRIATE QUOTIENT, IS HYPOTHETICALLY IMPOSSIBLE DUE TO: (1) THE CONDITION ABOVE THAT CHECKS IF THE PRODUCT IS FIT TO BE A QUOTIENT, AND (2) ALL NUMBERS ARE PRESENT WITHIN THE RANGE. IF IN ANY CASE WHERE THE FUNCTION FAILS DUE TO THIS PROBLEM, THERE MUST BE A FLAW IN ANOTHER PART OF THIS FUNCTION. PERHAPS THE LEFT AND IRGHT INDEXES OR THE CONDITION THAT CHECKS IF THE PRODUCT IS A FIT QUOTIENT.
+
+        
+        freeBignum(&num1PlusNum2);
+        freeBignum(&dividendMinusMultiplyResult);
     }
 
     // Return the latest counterMiddleIndex that triggered the exit condition. I.e: the quotient
@@ -1180,6 +1203,12 @@ int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     result->sign = resultSign;
     dividend->sign = dividendSign;
     divisor->sign = divisorSign;
+
+    freeBignum(&tempOne);
+    freeBignum(&counterLeftIndex);
+    freeBignum(&counterRightIndex);
+    freeBignum(&counterMiddleIndex);
+    freeBignum(&multiplyResult);
 }
 
 int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
@@ -1289,7 +1318,10 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
             break;
         }
 
-        // FEAT: ADD AN IF CASE WHERE THE LEFT INDEX IS GREATER THAN THE RIGHT INDEX, JUST LIKE IN OTHER BINARY SEARCH IMPLEMENTATIONS. HOWEVER, THIS CASE WHERE THIS FUNCTION DOESN'T FIND AN APPROPRIATE QUOTIENT, IS HYPOTHETICALLY IMPOSSIBLE DUE TO: (1) THE CONDITION ABOVE THAT CHECKS IF THE PRODUCT IS FIT TO BE A QUOTIENT, AND (2) ALL NUMBERS ARE PRESENT WITHIN THE RANGE. IF IN ANY CASE WHERE THE FUNCTION FAILS DUE TO THIS PROBLEM, THERE MUST BE A FLAW IN ANOTHER PART OF THIS FUNCTION. PERHAPS THE LEFT AND IRGHT INDEXES OR THE CONDITION THAT CHECKS IF THE PRODUCT IS A FIT QUOTIENT. 
+        // FEAT: ADD AN IF CASE WHERE THE LEFT INDEX IS GREATER THAN THE RIGHT INDEX, JUST LIKE IN OTHER BINARY SEARCH IMPLEMENTATIONS. HOWEVER, THIS CASE WHERE THIS FUNCTION DOESN'T FIND AN APPROPRIATE QUOTIENT, IS HYPOTHETICALLY IMPOSSIBLE DUE TO: (1) THE CONDITION ABOVE THAT CHECKS IF THE PRODUCT IS FIT TO BE A QUOTIENT, AND (2) ALL NUMBERS ARE PRESENT WITHIN THE RANGE. IF IN ANY CASE WHERE THE FUNCTION FAILS DUE TO THIS PROBLEM, THERE MUST BE A FLAW IN ANOTHER PART OF THIS FUNCTION. PERHAPS THE LEFT AND IRGHT INDEXES OR THE CONDITION THAT CHECKS IF THE PRODUCT IS A FIT QUOTIENT.
+
+        freeBignum(&num1PlusNum2);
+        freeBignum(&dividendMinusMultiplyResult);
     }
 
     // Return the remainder/modulo:
@@ -1304,6 +1336,12 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
 
     dividend->sign = tempDividendSign;
     divisor->sign = tempDivisorSign;
+
+    freeBignum(&tempOne);
+    freeBignum(&counterLeftIndex);
+    freeBignum(&counterRightIndex);
+    freeBignum(&counterMiddleIndex);
+    freeBignum(&multiplyResult);
 }
 
 
@@ -1350,6 +1388,8 @@ int halfBignum(Bignum *result, Bignum *num) {
 
     trimBignum(&tempResult);
     copyBignum(result, &tempResult);
+
+    freeBignum(&tempResult);
 }
 
 int generateRandomBignum(Bignum *result, unsigned long long int numOfDigits, BIGNUM_SIGN sign) {
