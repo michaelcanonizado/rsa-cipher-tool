@@ -224,6 +224,7 @@ int main (){
 					// Add time and number of characters	
 			}
 			else {
+				clearScreen();
 				moveCursor((width - 25)/ 2, adjustedHeight);
 				printf("Message encryption failed!\n");
 			}
@@ -232,6 +233,90 @@ int main (){
 				clearScreen();
 				break;
 			case 3:
+				clearScreen();
+				char* confirmDECRYPT[] = {"Decryption includes the message to be decrypted and", "the private key of the recipient. The txt file of the", "message must be in the same folder of the C program."};
+				int DECRYPTcount = sizeof(confirmDECRYPT) / sizeof(confirmDECRYPT[0]);
+
+				for ( i = 0; i < DECRYPTcount; i++) {
+					moveCursor((width - strlen(confirmDECRYPT[i]))/ 2, adjustedHeight + i);
+					printf("%s\n", confirmDECRYPT[i]);
+				}
+
+				do {
+					clearLines(adjustedHeight + i, adjustedHeight + i, width);
+					moveCursor((width - 60)/ 2, adjustedHeight + i);
+					printf("Is the txt file in the same folder of the C program? [Y/N] ");
+					// The user can press Y or N to confirm or deny the generation of keys
+
+					confirm = getConfirm(confirm, width, adjustedHeight, i);
+
+					// Consume any extra characters in the input buffer
+					while (getchar() != '\n');
+
+				} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
+
+				// clearScreen();
+				if (confirm == 'Y' || confirm == 'y') {
+					do {
+						clearLines(adjustedHeight + i + 1, adjustedHeight + i + 2, width);
+						moveCursor((width - 38)/ 2, adjustedHeight + i + 1);
+						printf("Do you have your private key? [Y/N] ");
+						// The user can press Y or N to confirm or deny the generation of keys
+
+						confirm = getConfirm(confirm, width, adjustedHeight + 1, i);
+
+						// Consume any extra characters in the input buffer
+						while (getchar() != '\n');
+
+					} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
+
+					if (confirm == 'Y' || confirm == 'y') {
+
+						clearScreen();  
+						moveCursor((width - 30)/ 2, adjustedHeight);
+						char filename[100];
+						printf("Enter file name: ");
+						scanf("%s", filename);
+						
+						// TO BE CHANGED
+						char* privateKEY = malloc(1000000000 * sizeof(char));
+						if (privateKEY == NULL) {
+							printf("Failed to allocate memory for privateKEY\n");
+							exit(1);
+						}
+						moveCursor((width - 30)/ 2, adjustedHeight + 1);
+						printf("Enter private key: ");
+						scanf("%s", privateKEY);
+
+						free(privateKEY);
+
+						clearScreen();
+
+						clock_t start = clock();
+
+						// At this point, function calls can be made to DECRYPT the MESSAGE. For now, the program will display a message that the MESSAGE IS DECRYPTED.
+						moveCursor((width - 30)/ 2, adjustedHeight);
+						printf("Message decryption success!\n");
+						
+						clock_t end = clock();
+						double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+
+						moveCursor((width - 30)/ 2, adjustedHeight + 1);
+						printf("Function executed in: %f seconds\n", cpu_time_used);
+						moveCursor((width - 30)/ 2, adjustedHeight + 2);
+						printf("Decrypted ____ chracters in __ seconds\n");
+						// Add time and number of characters
+					
+					}
+				}
+				else {
+					clearScreen();
+					moveCursor((width - 25)/ 2, adjustedHeight);
+					printf("Message decryption failed!\n");
+				}
+
+				waitForDONE(width, height);
+				clearScreen();
 				break;
 			case 4:
 				break;
