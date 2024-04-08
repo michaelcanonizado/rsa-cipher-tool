@@ -146,7 +146,8 @@ int main (){
 					moveCursor((width - 25)/ 2, adjustedHeight);
 					printf("Keys generation failed!\n");
 				}
-
+				
+				waitForDONE(width, height);
 				break;
 			case 2:
 				break;
