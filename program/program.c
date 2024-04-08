@@ -33,6 +33,25 @@ void getTerminalSize(int* width, int* height) {
 	*height = size.ws_row;
 }
 
+// This function waits for the user to enter DONE to avoid the program doing the next thing accidentally.
+void waitForDONE(int width, int height) {
+	char done[10];
+	do {
+		clearLines(height - 1, height + 1, width);
+		moveCursor((width - 21)/ 2, height - 1);
+		printf("Enter DONE to back: ");
+		scanf("%s", done); // Wait for the user to enter "done"
+		
+		// Convert the user's input to lowercase
+		for(int i = 0; done[i]; i++){
+			done[i] = tolower(done[i]);
+		}
+
+		moveCursor((width - 21)/ 2, height - 1);
+
+	} while (strcmp(done, "done") != 0);
+}
+
 
 int main (){
     
