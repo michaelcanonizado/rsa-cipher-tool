@@ -738,16 +738,16 @@ void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend) {
         minuendTemp.length = minuend->length;
         subtrahendTemp.length = subtrahend->length;
 
-        memcpy(&minuendTemp.digits, minuend->digits, sizeof(int) * minuend->length);
-        memcpy(&subtrahendTemp.digits, subtrahend->digits, sizeof(int) * subtrahend->length);
+        memcpy(minuendTemp.digits, minuend->digits, sizeof(int) * minuend->length);
+        memcpy(subtrahendTemp.digits, subtrahend->digits, sizeof(int) * subtrahend->length);
 
         result->sign = minuend->sign;
     }else if (isLessThanBignum(minuend, subtrahend) && minuendTemp.length == 0) {
         minuendTemp.length = subtrahend->length;
         subtrahendTemp.length = minuend->length;
 
-        memcpy(&minuendTemp.digits, subtrahend->digits, sizeof(int) * subtrahend->length);
-        memcpy(&subtrahendTemp.digits, minuend->digits, sizeof(int) * minuend->length);
+        memcpy(minuendTemp.digits, subtrahend->digits, sizeof(int) * subtrahend->length);
+        memcpy(subtrahendTemp.digits, minuend->digits, sizeof(int) * minuend->length);
 
         // If num1 - num2, and both Bignums have the same sign, but num1 is less than num2, the result's sign will be the inverse of the sign of the 2 Bignums.
         // E.g.: (+30) - (+70) = -40 or (-30) - (-70) = 40 
@@ -756,6 +756,7 @@ void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend) {
         } else if (minuend->sign == negative) {
             result->sign = positive;
         }
+        
     } else if (isEqualToBignum(minuend, subtrahend)) {
         // If the two Bignums are equal to each other. Set result to zero.
         result->digits[0] = 0;
@@ -829,7 +830,7 @@ void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend) {
     }
 
     // Copy the temporary array to results.digits[]
-    memcpy(&result->digits, tempResultDigits, sizeof(int) * resultLength);
+    memcpy(result->digits, tempResultDigits, sizeof(int) * resultLength);
 
     // Store the final length of result.
     result->length = resultLength;
