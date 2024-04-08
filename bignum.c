@@ -200,6 +200,18 @@ void freeAllBignums() {
     printf("\n\nFreed %d Bignum.digits[]...", i);
 }
 
+void freeBignum(Bignum *num) {
+    printf("\nFreeing digits %p from %p Bignum...", num->digits, num);
+    free(num->digits);
+
+    for (int i = BIGNUMS_COUNT - 1; i >= 0; i--) {
+        if (BIGNUMS_ARR[i] == num) {
+            printf("\nSetting %p to NULL in BIGNUMS_ARR...", BIGNUMS_ARR[i]);
+            BIGNUMS_ARR[i] = NULL;
+        }
+    }
+}
+
 void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
     // Main Function to set a Bignum. This function takes an integer represented as a string, as strings don't have a limit to how long it can be. The each character of the string will then be converted to an integer by offsetting its ASCII value, and will be pushed to Bignum.digits[].
 
@@ -866,6 +878,8 @@ void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend) {
 
     printf("\n\nmin add: %p | sub add: %p | minT add: %p | subT add: %p\n\n", minuend->digits, subtrahend->digits, minuendTemp.digits, subtrahendTemp.digits);
 
+    freeBignum(&minuendTemp);
+    freeBignum(&subtrahendTemp);
 }
 
 int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
