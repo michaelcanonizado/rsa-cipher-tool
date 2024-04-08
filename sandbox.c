@@ -11,11 +11,11 @@ int main() {
     Bignum num2 = initBignum();
     Bignum res1 = initBignum();
 
-    setBignum(&num1, "12345", positive);
-    setBignum(&num2, "98765", positive);
+    setBignum(&num1, "12123123", negative);
+    setBignum(&num2, "9873", negative);
 
     subtractBignum(&res1, &num1, &num2);
-    
+
     printf("\n\n");
     printBignum(&num1);
     printf(" + ");

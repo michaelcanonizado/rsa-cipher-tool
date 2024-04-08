@@ -148,5 +148,7 @@ int main(void) {
     testSign(negative, positive, 5);
     testZero(5);
 
+    freeBignums();
+
     return 0;
 }
