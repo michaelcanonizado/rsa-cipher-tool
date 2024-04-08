@@ -135,9 +135,7 @@ int getLengthOfInteger(long long int integer) {
     return (int)log10((double)integer) + 1;
 }
 
-Bignum* createBignum(Bignum *num) {
-    printf("\nCreating Bignum %p", num);
-
+void initBignum(Bignum *num) {
     int *digitsPtr = (int*)calloc(MAX_BIGNUM_LENGTH, sizeof(int));
 
     if (digitsPtr == NULL) {
@@ -145,7 +143,7 @@ Bignum* createBignum(Bignum *num) {
         exit(-1);
     }
 
-    printf("\nAllocated Bignum.digits | %p", digitsPtr);
+    printf("\nAllocated digits %p for %p", digitsPtr, num);
     num->digits = digitsPtr;
     // BIGNUMS_ARR[BIGNUMS_COUNT++] = &num;
     BIGNUMS_DIGITS_ARR[BIGNUMS_COUNT] = digitsPtr;
@@ -156,39 +154,37 @@ Bignum* createBignum(Bignum *num) {
 
     num->length = 0;
     num->sign = positive;
-
-    return num;
 }
 
-Bignum initBignum() {
-    // Function to initialize Bignum values. Get rid of garbage values and initialize bignum. Some arithmetic function may need to know if the Bignum has already been set.
-    Bignum num;
-    printf("\nCreated Bignum %p", &num);
+// Bignum initBignum() {
+//     // Function to initialize Bignum values. Get rid of garbage values and initialize bignum. Some arithmetic function may need to know if the Bignum has already been set.
+//     Bignum num;
+//     printf("\nCreated Bignum %p", &num);
 
-    // Dynamically allocate memory for Bignum.digits[].
-    // use calloc to set all digits of the array to 0.
-    int *digitsPtr = (int*)calloc(MAX_BIGNUM_LENGTH, sizeof(int));
+//     // Dynamically allocate memory for Bignum.digits[].
+//     // use calloc to set all digits of the array to 0.
+//     int *digitsPtr = (int*)calloc(MAX_BIGNUM_LENGTH, sizeof(int));
 
-    // Check if allocation was successful
-    if (digitsPtr == NULL) {
-        printf("\n\nError allocating Bignum.digits...\n\n");
-        exit(-1);
-    }
+//     // Check if allocation was successful
+//     if (digitsPtr == NULL) {
+//         printf("\n\nError allocating Bignum.digits...\n\n");
+//         exit(-1);
+//     }
 
-    printf("\nAllocated Bignum.digits | %p", digitsPtr);
-    // If successful, store pointer in Bignum.digits
-    num.digits = digitsPtr;
-    // Add pointer to list of initialized Bignums, to be freed all at once usign freeBignums()
-    // BIGNUMS_ARR[BIGNUMS_COUNT++] = &num;
-    BIGNUMS_DIGITS_ARR[BIGNUMS_COUNT++] = digitsPtr;
-    // printf("\nAdded Bignum %p to list...", &num);
-    printf("\n-----------------------------------");
+//     printf("\nAllocated Bignum.digits | %p", digitsPtr);
+//     // If successful, store pointer in Bignum.digits
+//     num.digits = digitsPtr;
+//     // Add pointer to list of initialized Bignums, to be freed all at once usign freeBignums()
+//     // BIGNUMS_ARR[BIGNUMS_COUNT++] = &num;
+//     BIGNUMS_DIGITS_ARR[BIGNUMS_COUNT++] = digitsPtr;
+//     // printf("\nAdded Bignum %p to list...", &num);
+//     printf("\n-----------------------------------");
 
-    // Defualt values of length and sign
-    num.length = 0;
-    num.sign = positive;
-    return num;
-}
+//     // Defualt values of length and sign
+//     num.length = 0;
+//     num.sign = positive;
+//     return num;
+// }
 
 void freeBignums() {
     // Function to go through the array of pointers of the dynamically allocated arrays in Bignum.digits[] (initialized Bignums), and free them all at once.
@@ -198,7 +194,7 @@ void freeBignums() {
     for (int i = 0; i < BIGNUMS_COUNT; i++) {
         printf("\nFreeing digits %p from %p Bignum...", BIGNUMS_ARR[i]->digits, BIGNUMS_ARR[i]);
         free(BIGNUMS_ARR[i]->digits);
-        BIGNUMS_ARR[i]->digits = NULL;
+        // BIGNUMS_ARR[i]->digits = NULL;
     }
 
     printf("\n\nFreed %d Bignum.digits[]...", i);
@@ -562,7 +558,8 @@ int isEqualToBignum(Bignum *num1, Bignum *num2) {
 }
 
 int incrementBignum(Bignum *num, unsigned long long int incrementValue) {
-    Bignum offset = initBignum();
+    Bignum offset;
+    initBignum(&offset);
     intToBignum(&offset, incrementValue, positive);
     addBignum(num, num, &offset);
     return 0;
@@ -730,8 +727,10 @@ void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend) {
     }
 
     // Find minuend and subtrahend. Store in a temporary Bignum as minuend's Bignum.digits will be manipulated due to borrows. This is also needed as minuend can be either of the two Bignums (num1 or num2); If minuend is found. the other number will be the subtrahend.
-    Bignum minuendTemp = initBignum();
-    Bignum subtrahendTemp = initBignum();
+    Bignum minuendTemp;
+    Bignum subtrahendTemp;
+    initBignum(&minuendTemp);
+    initBignum(&subtrahendTemp);
 
     // Check length. Longer length will be set to the Temp and shorter will be the subtrahend.
     if (minuend->length > subtrahend->length) {
@@ -740,6 +739,8 @@ void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend) {
 
         memcpy(minuendTemp.digits, minuend->digits, sizeof(int) * minuend->length);
         memcpy(subtrahendTemp.digits, subtrahend->digits, sizeof(int) * subtrahend->length);
+
+        printf("\n\nmin add: %p | sub add: %p | minT add: %p | subT add: %p\n\n", minuend->digits, subtrahend->digits, minuendTemp.digits, subtrahendTemp.digits);
 
         result->sign = minuend->sign;
     } else if (minuend->length < subtrahend->length) {
@@ -862,6 +863,9 @@ void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend) {
     result->length = resultLength;
     // Trim result. Removing any possible leading 0s
     trimBignum(result);
+
+    printf("\n\nmin add: %p | sub add: %p | minT add: %p | subT add: %p\n\n", minuend->digits, subtrahend->digits, minuendTemp.digits, subtrahendTemp.digits);
+
 }
 
 int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
@@ -926,26 +930,48 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     unsigned long long int half = floor(n / 2.0);
 
     // Initialize nessessary Bignums
-    Bignum a = initBignum();
-    Bignum b = initBignum();
-    Bignum c = initBignum();
-    Bignum d = initBignum();
+    Bignum a;
+    Bignum b;
+    Bignum c;
+    Bignum d;
 
-    Bignum ac = initBignum();
-    Bignum bd = initBignum();
+    Bignum ac;
+    Bignum bd;
 
-    Bignum a_plus_b = initBignum();
-    Bignum c_plus_d = initBignum();
-    Bignum ac_minus_bd = initBignum();
-    Bignum a_plus_b_times_c_plus_d = initBignum();
-    Bignum a_plus_b_times_c_plus_d_minus_ac = initBignum();
-    Bignum ad_plus_bc = initBignum();
+    Bignum a_plus_b;
+    Bignum c_plus_d;
+    Bignum ac_minus_bd;
+    Bignum a_plus_b_times_c_plus_d;
+    Bignum a_plus_b_times_c_plus_d_minus_ac;
+    Bignum ad_plus_bc;
 
-    Bignum ac_left_shift = initBignum();
-    Bignum ad_plus_bc_left_shift = initBignum();
-    Bignum ac_left_shift_plus_ad_plus_bc_left_shift = initBignum();
-    Bignum ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd = initBignum();
-    Bignum zero = initBignum();
+    Bignum ac_left_shift;
+    Bignum ad_plus_bc_left_shift;
+    Bignum ac_left_shift_plus_ad_plus_bc_left_shift;
+    Bignum ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd;
+    Bignum zero;
+
+    initBignum(&a);
+    initBignum(&b);
+    initBignum(&c);
+    initBignum(&d);
+
+    initBignum(&ac);
+    initBignum(&bd);
+
+    initBignum(&a_plus_b);
+    initBignum(&c_plus_d);
+    initBignum(&ac_minus_bd);
+    initBignum(&a_plus_b_times_c_plus_d);
+    initBignum(&a_plus_b_times_c_plus_d_minus_ac);
+    initBignum(&ad_plus_bc);
+
+    initBignum(&ac_left_shift);
+    initBignum(&ad_plus_bc_left_shift);
+    initBignum(&ac_left_shift_plus_ad_plus_bc_left_shift);
+    initBignum(&ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd);
+    initBignum(&zero);
+
     setBignum(&zero, "0", positive);
 
     // Split the multiplicand and multiplier.
@@ -1062,11 +1088,17 @@ int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     }
 
     // A temporary Bignum set as 1 is used as bignumShiftLeft doesn't modify the actual Bignum that is passed. But modifies a separate resulting Bignum.
-    Bignum tempOne = initBignum();
+    Bignum tempOne;
+    Bignum counterLeftIndex;
+    Bignum counterRightIndex;
+    Bignum counterMiddleIndex;
+
+    initBignum(&tempOne);
+    initBignum(&counterLeftIndex);
+    initBignum(&counterRightIndex);
+    initBignum(&counterMiddleIndex);
+
     setBignum(&tempOne, "1", positive);
-    Bignum counterLeftIndex = initBignum();
-    Bignum counterRightIndex = initBignum();
-    Bignum counterMiddleIndex = initBignum();
 
     // Identify the left and right indexes
     unsigned long long int leftShiftBy = 0;
@@ -1084,17 +1116,20 @@ int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
 
     // Initialize multiplyResult which will be the Bignum that will hold the test quotient.
     // divisor * count = multiplyResult.
-    Bignum multiplyResult = initBignum();
+    Bignum multiplyResult;
+    initBignum(&multiplyResult);
     setBignum(&multiplyResult, "0", positive);
 
     // Perform binary search to find the quotient.
     while(1) {
         // Reinitialize multiplyResult to reset its members.
-        multiplyResult = initBignum();
+        initBignum(&multiplyResult);
 
         // Get the middle index of the left and right index.
         // (L + R) / 2 = M
-        Bignum num1PlusNum2 = initBignum();
+        Bignum num1PlusNum2;
+        initBignum(&num1PlusNum2);
+
         addBignum(&num1PlusNum2, &counterLeftIndex, &counterRightIndex);
         halfBignum(&counterMiddleIndex, &num1PlusNum2);
 
@@ -1110,7 +1145,9 @@ int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
 
         // Check if the product is fit to be the quotient:
         // (Dividend - Product) < Divisor && (Dividend - Product) >= 0
-        Bignum dividendMinusMultiplyResult = initBignum();
+        Bignum dividendMinusMultiplyResult;
+        initBignum(&dividendMinusMultiplyResult);
+
         subtractBignum(&dividendMinusMultiplyResult, dividend, &multiplyResult);
         if (
             (isLessThanBignum(&dividendMinusMultiplyResult, divisor)) && 
@@ -1172,11 +1209,16 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     }
 
     // A temporary Bignum set as 1 is used as bignumShiftLeft doesn't modify the actual Bignum that is passed. But modifies a separate resulting Bignum.
-    Bignum tempOne = initBignum();
+    Bignum tempOne;
+    Bignum counterLeftIndex;
+    Bignum counterRightIndex;
+    Bignum counterMiddleIndex;
+    initBignum(&tempOne);
+    initBignum(&counterLeftIndex);
+    initBignum(&counterRightIndex);
+    initBignum(&counterMiddleIndex);
+
     setBignum(&tempOne, "1", positive);
-    Bignum counterLeftIndex = initBignum();
-    Bignum counterRightIndex = initBignum();
-    Bignum counterMiddleIndex = initBignum();
 
     // Identify the left and right indexes.
     unsigned long long int leftShiftBy = 0;
@@ -1193,17 +1235,20 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     bignumShiftLeft(&counterRightIndex, &tempOne, rightShiftBy);
     
     // Initialize multiplyResult which will be the Bignum that will hold the test quotient. I.e: divisor * count = multiplyResult.
-    Bignum multiplyResult = initBignum();
+    Bignum multiplyResult;
+    initBignum(&multiplyResult);
     setBignum(&multiplyResult, "0", positive);
 
     // Perform binary search to find the quotient.
     while(1) {
         // Reinitialize multiplyResult to reset its members.
-        multiplyResult = initBignum();
+        initBignum(&multiplyResult);
 
         // Get the middle index of the left and right index.
         // (L + R) / 2 = M
-        Bignum num1PlusNum2 = initBignum();
+        Bignum num1PlusNum2;
+        initBignum(&num1PlusNum2);
+
         addBignum(&num1PlusNum2, &counterLeftIndex, &counterRightIndex);
         halfBignum(&counterMiddleIndex, &num1PlusNum2);
 
@@ -1219,7 +1264,9 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
 
         // Check if the product is fit to be the quotient.
         // I.e: (Dividend - Product) < Divisor && (Dividend - Product) >= 0
-        Bignum dividendMinusMultiplyResult = initBignum();
+        Bignum dividendMinusMultiplyResult;
+        initBignum(&dividendMinusMultiplyResult);
+
         subtractBignum(&dividendMinusMultiplyResult, dividend, &multiplyResult);
         if (
             (isLessThanBignum(&dividendMinusMultiplyResult, divisor)) && 
@@ -1270,7 +1317,8 @@ int halfBignum(Bignum *result, Bignum *num) {
     // A temporary Bignum is used so we can use this function to pass in a Bignum, and at the same time, pass that same Bignum to the function as a result, allowing for a proper overwrite.
     // E.g: halfBignum(&x, &x);
     // The function call above is equivalent to: x = x / 2; or x /= 2;
-    Bignum tempResult = initBignum();
+    Bignum tempResult;
+    initBignum(&tempResult);
 
     int carry = 0;
 
