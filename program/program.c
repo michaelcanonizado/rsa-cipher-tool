@@ -84,6 +84,7 @@ int main (){
 	int i, userInput;
 	char confirm;
 
+	do {
 		for ( i = 0; i < 5; i++){   
 			moveCursor((width - 14)/ 2, adjustedHeight + i);
 			printf("%s\n", optionsArr[i]);
@@ -92,6 +93,19 @@ int main (){
 		moveCursor((width - 10)/ 2, adjustedHeight + i);
 		printf("Enter number: ");
 		scanf("%d", &userInput);
+
+		switch (userInput) {
+			case 1:
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+			case 4:
+				break;
+			default:
+				break;
+	} while (userInput != 5);
 
     return 0;
 }
