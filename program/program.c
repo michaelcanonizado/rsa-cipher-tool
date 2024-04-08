@@ -17,6 +17,13 @@ void waitForEnter() {
     } while (enter != 10);
 }
 
+void clearScreen() {
+	// Write the escape code to stdout
+	printf("\033[2J");
+	// Optionally, move the cursor to the top-left corner
+	printf("\033[H");
+}
+
 int main (){
     
     clearScreen();
