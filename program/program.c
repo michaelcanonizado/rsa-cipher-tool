@@ -103,6 +103,22 @@ int main (){
 					moveCursor((width - strlen(confirmGENERATE[i]))/ 2, adjustedHeight + i);
 					printf("%s\n", confirmGENERATE[i]);
 				}
+
+				do {
+					clearLines(height/3 + i, adjustedHeight + i + 1, width);
+					moveCursor((width - 37)/ 2, adjustedHeight + i);
+					printf("Do you agree to save a copy of your\n");
+					moveCursor((width - 32)/ 2, adjustedHeight + i + 1);
+					printf("private and public keys? [Y/N] ");
+					// The user can press Y or N to confirm or deny the generation of keys
+
+					confirm = getConfirm(confirm, width, adjustedHeight + 1, i);
+
+						// Consume any extra characters in the input buffer
+					while (getchar() != '\n');
+
+				} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
+				
 				break;
 			case 2:
 				break;
