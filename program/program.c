@@ -175,8 +175,18 @@ int main (){
 				} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
 
 				if (confirm == 'Y' || confirm == 'y') {
-				moveCursor((width - 25)/ 2, adjustedHeight);
-				printf("Message encryption success!\n");	
+					do {
+						clearLines(adjustedHeight + i + 1, adjustedHeight + i + 2, width);
+						moveCursor((width - 47)/ 2, adjustedHeight + i + 1);
+						printf("Do you have the recipient's public key? [Y/N] ");
+						// The user can press Y or N to confirm or deny the generation of keys
+
+						confirm = getConfirm(confirm, width, adjustedHeight + 1, i);
+
+						// Consume any extra characters in the input buffer
+						while (getchar() != '\n');
+
+					} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');	
 			}
 			else {
 				moveCursor((width - 25)/ 2, adjustedHeight);
