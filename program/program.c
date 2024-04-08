@@ -12,6 +12,15 @@ void clearScreen() {
 	printf("\033[H");
 }
 
+void clearLines(int startLine, int endLine, int width) {
+	for (int i = startLine; i <= endLine; i++) {
+		moveCursor(0, i);
+		for (int j = 0; j < width; j++) {
+			printf(" ");
+		}
+	}
+}
+
 void moveCursor(int x, int y) {
 	printf("\033[%d;%dH", y, x);
 }
