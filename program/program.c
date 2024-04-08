@@ -74,7 +74,9 @@ int main (){
 	getTerminalSize(&width, &height);
 	printf("Width: %d\nHeight: %d\n", width, height);
 
-
+	// Since the horizontal positioning of the outputs can be adjusted  by incrementing the y-axis, this integer variable stores value of the height divided by 3 as all the outputs starts to be displayed at this value.
+	int adjustedHeight = height / 3;
+	// This can't be applied to the x-axis as the outputs are displayed at the center of the screen. The x-axis is adjusted by subtracting the length of the string from the width of the screen and dividing the result by 2. It is depedent on the length of the string to be displayed
 	
 
 
