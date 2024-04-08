@@ -3,7 +3,13 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
+void getTerminalSize(int* width, int* height) {
+	struct winsize size;
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
 
+	*width = size.ws_col;
+	*height = size.ws_row;
+}
 
 void clearScreen() {
 	// Write the escape code to stdout
@@ -23,14 +29,6 @@ void clearLines(int startLine, int endLine, int width) {
 
 void moveCursor(int x, int y) {
 	printf("\033[%d;%dH", y, x);
-}
-
-void getTerminalSize(int* width, int* height) {
-	struct winsize size;
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
-
-	*width = size.ws_col;
-	*height = size.ws_row;
 }
 
 // This function waits for the user to enter DONE to avoid the program doing the next thing accidentally.
