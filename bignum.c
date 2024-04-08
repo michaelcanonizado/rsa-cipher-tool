@@ -136,7 +136,7 @@ int getLengthOfInteger(long long int integer) {
 }
 
 void initBignum(Bignum *num) {
-    int *digitsPtr = (int*)calloc(MAX_BIGNUM_LENGTH, sizeof(int));
+    int *digitsPtr = (int*)calloc(DEFAULT_BIGNUM_LENGTH, sizeof(int));
 
     if (digitsPtr == NULL) {
         printf("\n\nError allocating Bignum.digits...\n\n");
@@ -163,7 +163,7 @@ void initBignum(Bignum *num) {
 
 //     // Dynamically allocate memory for Bignum.digits[].
 //     // use calloc to set all digits of the array to 0.
-//     int *digitsPtr = (int*)calloc(MAX_BIGNUM_LENGTH, sizeof(int));
+//     int *digitsPtr = (int*)calloc(DEFAULT_BIGNUM_LENGTH, sizeof(int));
 
 //     // Check if allocation was successful
 //     if (digitsPtr == NULL) {
@@ -331,7 +331,7 @@ int resetBignum(Bignum *num) {
     // Function to reset the contents of a Bignum. Although initBignum() can be used to reset a Bignum, this function resets the Bignum, whilst maintaining the intance of the Bignum. initBignum() resets the Bignum by creating a new instance of the Bignum, resets/initializes its members, and returns a new Bignum.
 
     // Reset Bignum.digits[]
-    memset(num->digits, 0, sizeof(int) * MAX_BIGNUM_LENGTH);
+    memset(num->digits, 0, sizeof(int) * DEFAULT_BIGNUM_LENGTH);
     // Reset length
     num->length = 0;
     // Reset Sign
@@ -649,7 +649,7 @@ void addBignum(Bignum *result, Bignum *addend1, Bignum *addend2) {
     // E.g: addbignum(&x, &x, &y)
     // The code above is equivalent to:
     // x = x + y; or x += y;
-    int tempResultDigits[MAX_BIGNUM_LENGTH];
+    int tempResultDigits[DEFAULT_BIGNUM_LENGTH];
 
     int sum;
     int carry = 0;
@@ -817,7 +817,7 @@ void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend) {
     // E.g: subtractbignum(&x, &x, &y)
     // The code above is equivalent to:
     // x = x - y; or x -= y;
-    int tempResultDigits[MAX_BIGNUM_LENGTH];
+    int tempResultDigits[DEFAULT_BIGNUM_LENGTH];
 
     // Variable to store the difference of the individual digits of the minuend and subtrahend.
     int difference;
