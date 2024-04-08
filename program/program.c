@@ -78,8 +78,20 @@ int main (){
 	int adjustedHeight = height / 3;
 	// This can't be applied to the x-axis as the outputs are displayed at the center of the screen. The x-axis is adjusted by subtracting the length of the string from the width of the screen and dividing the result by 2. It is depedent on the length of the string to be displayed
 	
+	char * optionsArr[5] = {"1) Generate Keys", "2) Encrypt Text", "3) Decrypt Text", "4) About Us", "5) Exit program"};
 
 
+	int i, userInput;
+	char confirm;
+
+		for ( i = 0; i < 5; i++){   
+			moveCursor((width - 14)/ 2, adjustedHeight + i);
+			printf("%s\n", optionsArr[i]);
+		}
+
+		moveCursor((width - 10)/ 2, adjustedHeight + i);
+		printf("Enter number: ");
+		scanf("%d", &userInput);
 
     return 0;
 }
