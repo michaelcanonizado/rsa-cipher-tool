@@ -114,6 +114,7 @@ int main (){
 
 		switch (userInput) {
 			case 1:
+				clearScreen();
 				char* confirmGENERATE[] = {"You are about to generate an RSA key", "this option. This will display a private key", "and public key of the generated private key."};
 				int GENERATEcount = sizeof(confirmGENERATE) / sizeof(confirmGENERATE[0]);
 
@@ -137,6 +138,7 @@ int main (){
 
 				} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
 
+				clearScreen();
 				if (confirm == 'Y' || confirm == 'y') {
 					// At this point, function calls can be made to generate the keys. For now, the program will display a message that the keys are generated.
 					moveCursor((width - 30)/ 2, adjustedHeight);
@@ -146,8 +148,9 @@ int main (){
 					moveCursor((width - 25)/ 2, adjustedHeight);
 					printf("Keys generation failed!\n");
 				}
-				
+
 				waitForDONE(width, height);
+				clearScreen();
 				break;
 			case 2:
 				break;
