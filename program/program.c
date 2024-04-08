@@ -24,6 +24,11 @@ void clearScreen() {
 	printf("\033[H");
 }
 
+void moveCursor(int x, int y) {
+	printf("\033[%d;%dH", y, x);
+}
+
+
 int main (){
     
     clearScreen();
