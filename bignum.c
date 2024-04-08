@@ -143,48 +143,18 @@ void initBignum(Bignum *num) {
         exit(-1);
     }
 
-    printf("\nAllocated digits %p for %p", digitsPtr, num);
+    // printf("\nAllocated digits %p for %p", digitsPtr, num);
     num->digits = digitsPtr;
     // BIGNUMS_ARR[BIGNUMS_COUNT++] = &num;
     BIGNUMS_DIGITS_ARR[BIGNUMS_COUNT] = digitsPtr;
     BIGNUMS_ARR[BIGNUMS_COUNT] = num;
     BIGNUMS_COUNT++;
     // printf("\nAdded Bignum %p to list...", &num);
-    printf("\n-----------------------------------");
+    // printf("\n-----------------------------------");
 
     num->length = 0;
     num->sign = positive;
 }
-
-// Bignum initBignum() {
-//     // Function to initialize Bignum values. Get rid of garbage values and initialize bignum. Some arithmetic function may need to know if the Bignum has already been set.
-//     Bignum num;
-//     printf("\nCreated Bignum %p", &num);
-
-//     // Dynamically allocate memory for Bignum.digits[].
-//     // use calloc to set all digits of the array to 0.
-//     int *digitsPtr = (int*)calloc(DEFAULT_BIGNUM_LENGTH, sizeof(int));
-
-//     // Check if allocation was successful
-//     if (digitsPtr == NULL) {
-//         printf("\n\nError allocating Bignum.digits...\n\n");
-//         exit(-1);
-//     }
-
-//     printf("\nAllocated Bignum.digits | %p", digitsPtr);
-//     // If successful, store pointer in Bignum.digits
-//     num.digits = digitsPtr;
-//     // Add pointer to list of initialized Bignums, to be freed all at once usign freeBignums()
-//     // BIGNUMS_ARR[BIGNUMS_COUNT++] = &num;
-//     BIGNUMS_DIGITS_ARR[BIGNUMS_COUNT++] = digitsPtr;
-//     // printf("\nAdded Bignum %p to list...", &num);
-//     printf("\n-----------------------------------");
-
-//     // Defualt values of length and sign
-//     num.length = 0;
-//     num.sign = positive;
-//     return num;
-// }
 
 void freeAllBignums() {
     // Function to go through the array of pointers of the dynamically allocated arrays in Bignum.digits[] (initialized Bignums), and free them all at once.
@@ -193,7 +163,7 @@ void freeAllBignums() {
     // Free each allocated memory on the array
     for (int i = 0; i < BIGNUMS_COUNT; i++) {
         if (BIGNUMS_ARR[i] != NULL) {
-            printf("\nFreeing digits %p from %p Bignum...", BIGNUMS_ARR[i]->digits, BIGNUMS_ARR[i]);
+            // printf("\nFreeing digits %p from %p Bignum...", BIGNUMS_ARR[i]->digits, BIGNUMS_ARR[i]);
             free(BIGNUMS_ARR[i]->digits);
             BIGNUMS_ARR[i]->digits = NULL;
             freedCount++;
@@ -204,12 +174,12 @@ void freeAllBignums() {
 }
 
 void freeBignum(Bignum *num) {
-    printf("\nFreeing digits %p from %p Bignum...", num->digits, num);
+    // printf("\nFreeing digits %p from %p Bignum...", num->digits, num);
     free(num->digits);
 
     for (int i = BIGNUMS_COUNT - 1; i >= 0; i--) {
         if (BIGNUMS_ARR[i] == num) {
-            printf("\nSetting %p to NULL in BIGNUMS_ARR...", BIGNUMS_ARR[i]);
+            // printf("\nSetting %p to NULL in BIGNUMS_ARR...", BIGNUMS_ARR[i]);
             BIGNUMS_ARR[i] = NULL;
         }
     }
@@ -756,8 +726,6 @@ void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend) {
         memcpy(minuendTemp.digits, minuend->digits, sizeof(int) * minuend->length);
         memcpy(subtrahendTemp.digits, subtrahend->digits, sizeof(int) * subtrahend->length);
 
-        printf("\n\nmin add: %p | sub add: %p | minT add: %p | subT add: %p\n\n", minuend->digits, subtrahend->digits, minuendTemp.digits, subtrahendTemp.digits);
-
         result->sign = minuend->sign;
     } else if (minuend->length < subtrahend->length) {
         minuendTemp.length = subtrahend->length;
@@ -879,8 +847,6 @@ void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend) {
     result->length = resultLength;
     // Trim result. Removing any possible leading 0s
     trimBignum(result);
-
-    printf("\n\nmin add: %p | sub add: %p | minT add: %p | subT add: %p\n\n", minuend->digits, subtrahend->digits, minuendTemp.digits, subtrahendTemp.digits);
 
     freeBignum(&minuendTemp);
     freeBignum(&subtrahendTemp);
