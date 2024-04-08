@@ -28,7 +28,8 @@
 // -----------------GLOBAL VARIABLES-----------------
 
 // Array to store all dynamically allocated memory in Bignum.digits[]. This array will be used to free all the allocated memory at once.
-int *BIGNUM_DIGITS_ARR[100];
+Bignum *BIGNUMS_ARR[100];
+int *BIGNUMS_DIGITS_ARR[100];
 // Counter to keep track of the number of arrays dynamically allocated.
 unsigned long long int BIGNUMS_COUNT = 0;
 
@@ -134,11 +135,35 @@ int getLengthOfInteger(long long int integer) {
     return (int)log10((double)integer) + 1;
 }
 
+Bignum* createBignum(Bignum *num) {
+    printf("\nCreating Bignum %p", num);
 
+    int *digitsPtr = (int*)calloc(MAX_BIGNUM_LENGTH, sizeof(int));
+
+    if (digitsPtr == NULL) {
+        printf("\n\nError allocating Bignum.digits...\n\n");
+        exit(-1);
+    }
+
+    printf("\nAllocated Bignum.digits | %p", digitsPtr);
+    num->digits = digitsPtr;
+    // BIGNUMS_ARR[BIGNUMS_COUNT++] = &num;
+    BIGNUMS_DIGITS_ARR[BIGNUMS_COUNT] = digitsPtr;
+    BIGNUMS_ARR[BIGNUMS_COUNT] = num;
+    BIGNUMS_COUNT++;
+    // printf("\nAdded Bignum %p to list...", &num);
+    printf("\n-----------------------------------");
+
+    num->length = 0;
+    num->sign = positive;
+
+    return num;
+}
 
 Bignum initBignum() {
     // Function to initialize Bignum values. Get rid of garbage values and initialize bignum. Some arithmetic function may need to know if the Bignum has already been set.
     Bignum num;
+    printf("\nCreated Bignum %p", &num);
 
     // Dynamically allocate memory for Bignum.digits[].
     // use calloc to set all digits of the array to 0.
@@ -154,7 +179,10 @@ Bignum initBignum() {
     // If successful, store pointer in Bignum.digits
     num.digits = digitsPtr;
     // Add pointer to list of initialized Bignums, to be freed all at once usign freeBignums()
-    BIGNUM_DIGITS_ARR[BIGNUMS_COUNT++] = digitsPtr;
+    // BIGNUMS_ARR[BIGNUMS_COUNT++] = &num;
+    BIGNUMS_DIGITS_ARR[BIGNUMS_COUNT++] = digitsPtr;
+    // printf("\nAdded Bignum %p to list...", &num);
+    printf("\n-----------------------------------");
 
     // Defualt values of length and sign
     num.length = 0;
@@ -167,15 +195,13 @@ void freeBignums() {
 
     int i;
     // Free each allocated memory on the array
-    for (i = 0; i < BIGNUMS_COUNT; i++) {
-        printf("\nFreeing %p...", BIGNUM_DIGITS_ARR[i]);
-        free(BIGNUM_DIGITS_ARR[i]);
+    for (int i = 0; i < BIGNUMS_COUNT; i++) {
+        printf("\nFreeing digits %p from %p Bignum...", BIGNUMS_ARR[i]->digits, BIGNUMS_ARR[i]);
+        free(BIGNUMS_ARR[i]->digits);
+        BIGNUMS_ARR[i]->digits = NULL;
     }
 
-    // Reset count to 0
-    BIGNUMS_COUNT -= i;
-    printf("\n\nFreed %d Bignums...", i);
-    printf("\n%d Bignums left...", BIGNUMS_COUNT);
+    printf("\n\nFreed %d Bignum.digits[]...", i);
 }
 
 void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
