@@ -3,6 +3,18 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
+
+// For Windows in getting the terminal size
+// #include <windows.h>
+
+// void getTerminalSize(int* width, int* height) {
+// 	CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+// 	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+// 	*width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+// 	*height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+// }
+
 void getTerminalSize(int* width, int* height) {
 	struct winsize size;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
