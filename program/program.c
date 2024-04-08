@@ -96,6 +96,13 @@ int main (){
 
 		switch (userInput) {
 			case 1:
+				char* confirmGENERATE[] = {"You are about to generate an RSA key", "this option. This will display a private key", "and public key of the generated private key."};
+				int GENERATEcount = sizeof(confirmGENERATE) / sizeof(confirmGENERATE[0]);
+
+				for ( i = 0; i < GENERATEcount; i++) {
+					moveCursor((width - strlen(confirmGENERATE[i]))/ 2, adjustedHeight + i);
+					printf("%s\n", confirmGENERATE[i]);
+				}
 				break;
 			case 2:
 				break;
