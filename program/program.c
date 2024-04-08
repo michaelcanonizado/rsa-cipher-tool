@@ -1,15 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-// This function waits for the user to press ENTER to avoid the program from closing immediately after the user's input
-void waitForEnter() {
-    int enter;
-    do {
-        enter = getchar(); // Wait for the user to press ENTER
-    } while (enter != 10);
-}
-
 void clearScreen() {
 	// Write the escape code to stdout
 	printf("\033[2J");
