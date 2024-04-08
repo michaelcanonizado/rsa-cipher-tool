@@ -65,6 +65,24 @@ void waitForDONE(int width, int height) {
 	} while (strcmp(done, "done") != 0);
 }
 
+char getConfirm(char confirm, int width, int adjustedHeight, int i) {
+	confirm = getchar();
+
+	// Check if the input was a newline character
+	if (confirm == '\n') {
+		confirm = getchar(); // If it was, try to read again
+	}
+
+	// Check if the input is valid
+	if (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n') {
+		moveCursor((width - 37)/ 2, adjustedHeight + i + 1);
+		printf("Invalid input. Please enter Y or N.");
+		moveCursor((width - 37)/ 2, adjustedHeight + i + 1);
+	}
+
+	return confirm;
+}
+
 
 int main (){
     
@@ -118,7 +136,7 @@ int main (){
 					while (getchar() != '\n');
 
 				} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
-				
+
 				break;
 			case 2:
 				break;
