@@ -68,10 +68,14 @@ void waitForDONE(int width, int height) {
 
 int main (){
     
-    clearScreen();
+  clearScreen();
 
-    
+  int width, height;
+	getTerminalSize(&width, &height);
+	printf("Width: %d\nHeight: %d\n", width, height);
 
+
+	
 
 
 
