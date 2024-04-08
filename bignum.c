@@ -186,7 +186,7 @@ void initBignum(Bignum *num) {
 //     return num;
 // }
 
-void freeBignums() {
+void freeAllBignums() {
     // Function to go through the array of pointers of the dynamically allocated arrays in Bignum.digits[] (initialized Bignums), and free them all at once.
 
     int i;
