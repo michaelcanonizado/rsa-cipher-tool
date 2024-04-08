@@ -32,7 +32,7 @@ typedef struct {
 int getLengthOfInteger(long long int num);
 
 void initBignum(Bignum *num);
-void freeBignums();
+void freeAllBignums();
 void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign);
 void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN sign);
 long long int bignumToInt(Bignum *num);
