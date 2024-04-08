@@ -137,6 +137,16 @@ int main (){
 
 				} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
 
+				if (confirm == 'Y' || confirm == 'y') {
+					// At this point, function calls can be made to generate the keys. For now, the program will display a message that the keys are generated.
+					moveCursor((width - 30)/ 2, adjustedHeight);
+					printf("Keys generated successfully!\n");
+				}
+				else {
+					moveCursor((width - 25)/ 2, adjustedHeight);
+					printf("Keys generation failed!\n");
+				}
+
 				break;
 			case 2:
 				break;
@@ -146,6 +156,7 @@ int main (){
 				break;
 			default:
 				break;
+		}
 	} while (userInput != 5);
 
     return 0;
