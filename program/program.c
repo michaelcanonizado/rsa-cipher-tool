@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <string.h>
+#include <time.h>
+#include <ctype.h>
 
 
 // For Windows in getting the terminal size
