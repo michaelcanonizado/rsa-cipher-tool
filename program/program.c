@@ -173,6 +173,15 @@ int main (){
 					while (getchar() != '\n');
 
 				} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
+
+				if (confirm == 'Y' || confirm == 'y') {
+				moveCursor((width - 25)/ 2, adjustedHeight);
+				printf("Message encryption success!\n");	
+			}
+			else {
+				moveCursor((width - 25)/ 2, adjustedHeight);
+				printf("Message encryption failed!\n");
+			}
 				break;
 			case 3:
 				break;
