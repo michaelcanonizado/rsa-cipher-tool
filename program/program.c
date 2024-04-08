@@ -160,6 +160,19 @@ int main (){
 					moveCursor((width - strlen(confirmENCRYPT[i]))/ 2, adjustedHeight + i);
 					printf("%s\n", confirmENCRYPT[i]);
 				}
+
+				do {
+					clearLines(adjustedHeight + i, adjustedHeight + i, width);
+					moveCursor((width - 60)/ 2, adjustedHeight + i);
+					printf("Is the txt file in the same folder of the C program? [Y/N] ");
+					// The user can press Y or N to confirm or deny the generation of keys
+
+					confirm = getConfirm(confirm, width, adjustedHeight, i);
+
+					// Consume any extra characters in the input buffer
+					while (getchar() != '\n');
+
+				} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
 				break;
 			case 3:
 				break;
