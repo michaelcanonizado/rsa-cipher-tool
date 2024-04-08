@@ -187,6 +187,24 @@ int main (){
 						while (getchar() != '\n');
 
 					} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');	
+
+					clearScreen();  
+					moveCursor((width - 30)/ 2, adjustedHeight);
+					char filename[100];
+					printf("Enter file name: ");
+					scanf("%s", filename);
+					
+					// TO BE CHANGED
+					char* publicKEY = malloc(1000000000 * sizeof(char));
+					if (publicKEY == NULL) {
+							fprintf(stderr, "Failed to allocate memory for publicKEY\n");
+							exit(1);
+					}
+					moveCursor((width - 30)/ 2, adjustedHeight + 1);
+					printf("Enter public key: ");
+					scanf("%s", publicKEY);
+
+					free(publicKEY);
 			}
 			else {
 				moveCursor((width - 25)/ 2, adjustedHeight);
