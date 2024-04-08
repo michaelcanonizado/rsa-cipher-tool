@@ -712,16 +712,16 @@ void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend) {
         minuendTemp.length = minuend->length;
         subtrahendTemp.length = subtrahend->length;
 
-        memcpy(&minuendTemp.digits, minuend->digits, sizeof(int) * minuend->length);
-        memcpy(&subtrahendTemp.digits, subtrahend->digits, sizeof(int) * subtrahend->length);
+        memcpy(minuendTemp.digits, minuend->digits, sizeof(int) * minuend->length);
+        memcpy(subtrahendTemp.digits, subtrahend->digits, sizeof(int) * subtrahend->length);
 
         result->sign = minuend->sign;
     } else if (minuend->length < subtrahend->length) {
         minuendTemp.length = subtrahend->length;
         subtrahendTemp.length = minuend->length;
 
-        memcpy(&minuendTemp.digits, subtrahend->digits, sizeof(int) * subtrahend->length);
-        memcpy(&subtrahendTemp.digits, minuend->digits, sizeof(int) * minuend->length);
+        memcpy(minuendTemp.digits, subtrahend->digits, sizeof(int) * subtrahend->length);
+        memcpy(subtrahendTemp.digits, minuend->digits, sizeof(int) * minuend->length);
 
         // If num1 - num2, and bot Bignums have the same sign, and num2 is longer than num1, the result's sign will be the inverse of the sign of the 2 Bignums.
         // E.g.: (+7) - (+10) = -3 or (-7) - (-10) = 3 
