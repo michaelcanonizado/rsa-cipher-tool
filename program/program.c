@@ -205,6 +205,23 @@ int main (){
 					scanf("%s", publicKEY);
 
 					free(publicKEY);
+					
+					clearScreen();
+
+					clock_t start = clock();
+
+					// At this point, function calls can be made to ENCRYPT the MESSAGE. For now, the program will display a message that the MESSAGE IS ENCRYPTED.
+					moveCursor((width - 30)/ 2, adjustedHeight);
+					printf("Message encryption success!\n");
+					
+					clock_t end = clock();
+					double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+
+					moveCursor((width - 30)/ 2, adjustedHeight + 1);
+					printf("Function executed in: %f seconds\n", cpu_time_used);
+					moveCursor((width - 30)/ 2, adjustedHeight + 2);
+					printf("Encrypted ____ chracters in __ seconds\n");
+					// Add time and number of characters	
 			}
 			else {
 				moveCursor((width - 25)/ 2, adjustedHeight);
