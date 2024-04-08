@@ -3,7 +3,7 @@
 
 #include <limits.h>
 
-#define MAX_BIGNUM_LENGTH 100
+#define MAX_BIGNUM_LENGTH 50
 // REFACTOR: REMOVE PREPROCESSORS
 #define MAX_VALUE_OF_SHORT SHRT_MAX
 #define MAX_VALUE_OF_INT INT_MAX
@@ -31,7 +31,7 @@ typedef struct {
 
 int getLengthOfInteger(long long int num);
 
-Bignum initBignum();
+void initBignum(Bignum *num);
 void freeBignums();
 void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign);
 void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN sign);
