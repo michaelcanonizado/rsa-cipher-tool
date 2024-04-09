@@ -6,7 +6,6 @@
 #include <time.h>
 #include <ctype.h>
 
-
 // For Windows in getting the terminal size
 // #include <windows.h>
 
@@ -48,13 +47,21 @@ void clearLines(int startLine, int endLine, int width) {
 
 // This function waits for the user to enter DONE to avoid the program doing the next thing accidentally.
 void waitForDONE(int width, int height) {
-	char done[10];
+	char done[100];
 	do {
 		clearLines(height - 1, height + 1, width);
 		moveCursor((width - 21)/ 2, height - 1);
 		printf("Enter DONE to back: ");
-		scanf("%s", done); // Wait for the user to enter "done"
-		
+		fgets(done, sizeof(done), stdin); // Read a line from stdin
+
+		// Remove the newline character at the end of the input
+		done[strcspn(done, "\n")] = 0;
+
+		// If the input was just a newline character, continue with the next iteration
+		if (strlen(done) == 0) {
+			continue;
+		}
+
 		// Convert the user's input to lowercase
 		for(int i = 0; done[i]; i++){
 			done[i] = tolower(done[i]);
@@ -83,10 +90,8 @@ char getConfirm(char confirm, int width, int adjustedHeight, int i) {
 	return confirm;
 }
 
-
 int main (){
-    
-  // clearScreen();
+  clearScreen();
 
   int width, height;
 	getTerminalSize(&width, &height);
@@ -97,7 +102,6 @@ int main (){
 	// This can't be applied to the x-axis as the outputs are displayed at the center of the screen. The x-axis is adjusted by subtracting the length of the string from the width of the screen and dividing the result by 2. It is depedent on the length of the string to be displayed
 	
 	char * optionsArr[5] = {"1) Generate Keys", "2) Encrypt Text", "3) Decrypt Text", "4) About Us", "5) Exit program"};
-
 
 	int i, userInput;
 	char confirm;
