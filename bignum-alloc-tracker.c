@@ -81,7 +81,25 @@ void freeIntNodes(IntNode *head) {
         free(head);
         head = temp;
     }
-} 
+}
+
+void deleteIntNode(IntNode *head, int target) {
+    IntNode *prev = head;
+    IntNode *temp = prev->next;
+
+    while(temp != NULL) {
+        if (temp->value == target) {
+            printf("Node Found. Deleting Node!");
+            prev->next = temp->next;
+            free(temp);
+            return;
+        }
+        prev = temp;
+        temp = temp->next;
+    }
+
+    printf("Node Not Found!");
+}
 
 int main(void) {
     BignumNode *bignumHead = NULL, *bignumNode;
@@ -92,6 +110,10 @@ int main(void) {
         intNode->next = intHead;
         intHead = intNode;
     }
+
+    printIntNodes(intHead);
+
+    deleteIntNode(intHead, 2);
 
     printIntNodes(intHead);
 
