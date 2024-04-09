@@ -39,7 +39,7 @@ BignumNode *bignumListHead = NULL;
 Bignum *BIGNUMS_ARR[10000];
 int *BIGNUMS_DIGITS_ARR[10000];
 // Counter to keep track of the number of arrays dynamically allocated.
-unsigned long long int BIGNUMS_COUNT = 0;
+unsigned long long int ALLOCATED_BIGNUMS_COUNT = 0, FREED_BIGNUMS_COUNT = 0;
 
 
 
@@ -165,10 +165,10 @@ void initBignum(Bignum *num) {
 
     // printf("\nAllocated digits %p for %p", digitsPtr, num);
     num->digits = digitsPtr;
-    // BIGNUMS_ARR[BIGNUMS_COUNT++] = &num;
-    BIGNUMS_DIGITS_ARR[BIGNUMS_COUNT] = digitsPtr;
-    BIGNUMS_ARR[BIGNUMS_COUNT] = num;
-    BIGNUMS_COUNT++;
+    // BIGNUMS_ARR[ALLOCATED_BIGNUMS_COUNT++] = &num;
+    BIGNUMS_DIGITS_ARR[ALLOCATED_BIGNUMS_COUNT] = digitsPtr;
+    BIGNUMS_ARR[ALLOCATED_BIGNUMS_COUNT] = num;
+    ALLOCATED_BIGNUMS_COUNT++;
     // printf("\nAdded Bignum %p to list...", &num);
     // printf("\n-----------------------------------");
 
@@ -194,11 +194,15 @@ void freeAllBignums() {
 
         free(bignumListHead);
         bignumListHead = tempNode;
+
+        FREED_BIGNUMS_COUNT++;
     }
+
+    printf("\n\nAllocated %llu Bignums, Freed %llu Bignums, Remaining unfreed: %llu", ALLOCATED_BIGNUMS_COUNT, FREED_BIGNUMS_COUNT, ALLOCATED_BIGNUMS_COUNT - FREED_BIGNUMS_COUNT);
 
     // int i, freedCount = 0;
     // // Free each allocated memory on the array
-    // for (int i = 0; i < BIGNUMS_COUNT; i++) {
+    // for (int i = 0; i < ALLOCATED_BIGNUMS_COUNT; i++) {
     //     if (BIGNUMS_ARR[i] != NULL) {
     //         printf("\n1.1 -> %p.%p", BIGNUMS_ARR[i], BIGNUMS_ARR[i]->digits);
     //         // printf("\nFreeing digits %p from %p Bignum...", BIGNUMS_ARR[i]->digits, BIGNUMS_ARR[i]);
@@ -215,12 +219,13 @@ void freeBignum(Bignum *num) {
     // printf("\nFreeing digits %p from %p Bignum...", num->digits, num);
 
     if (bignumListHead->next == NULL) {
-        printf("\nLast Bignum found. Freeing Bignum.digits[]!");
-        printf("\n2.0 -> %p.%p",  bignumListHead->value, bignumListHead->value->digits);
         free(bignumListHead->value->digits);
         free(bignumListHead->value);
 
         bignumListHead = NULL;
+
+        FREED_BIGNUMS_COUNT++;
+
         return;
     }
 
@@ -229,11 +234,12 @@ void freeBignum(Bignum *num) {
 
     while(tempNode != NULL) {
         if (tempNode->value == num) {
-            printf("\nBignum found. Freeing Bignum.digits[]!");
-            printf("\n2.0 -> %p.%p",  tempNode->value, tempNode->value->digits);
             prevNode->next = tempNode->next;
             free(tempNode->value->digits);
             free(tempNode);
+
+            FREED_BIGNUMS_COUNT++;
+
             return;
         }
         prevNode = tempNode;
@@ -244,7 +250,7 @@ void freeBignum(Bignum *num) {
     
     // free(num->digits);
 
-    // for (int i = BIGNUMS_COUNT - 1; i >= 0; i--) {
+    // for (int i = ALLOCATED_BIGNUMS_COUNT - 1; i >= 0; i--) {
     //     if (BIGNUMS_ARR[i] == num) {
     //         // printf("\nSetting %p to NULL in BIGNUMS_ARR...", BIGNUMS_ARR[i]);
     //         BIGNUMS_ARR[i] = NULL;
