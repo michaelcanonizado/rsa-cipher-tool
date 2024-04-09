@@ -172,6 +172,10 @@ void initBignum(Bignum *num) {
     // printf("\nAdded Bignum %p to list...", &num);
     // printf("\n-----------------------------------");
 
+    bignumNode = createNewBignumNode(num);
+    bignumNode->next = bignumListHead;
+    bignumListHead = bignumNode;
+
     num->length = 0;
     num->sign = positive;
 }
