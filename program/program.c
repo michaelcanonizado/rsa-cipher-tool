@@ -33,6 +33,10 @@ void clearScreen() {
 	printf("\033[H");
 }
 
+void moveCursor(int x, int y) {
+	printf("\033[%d;%dH", y, x);
+}
+
 void clearLines(int startLine, int endLine, int width) {
 	for (int i = startLine; i <= endLine; i++) {
 		moveCursor(0, i);
@@ -40,10 +44,6 @@ void clearLines(int startLine, int endLine, int width) {
 			printf(" ");
 		}
 	}
-}
-
-void moveCursor(int x, int y) {
-	printf("\033[%d;%dH", y, x);
 }
 
 // This function waits for the user to enter DONE to avoid the program doing the next thing accidentally.
