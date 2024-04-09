@@ -1225,6 +1225,7 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     Bignum counterLeftIndex;
     Bignum counterRightIndex;
     Bignum counterMiddleIndex;
+
     initBignum(&tempOne);
     initBignum(&counterLeftIndex);
     initBignum(&counterRightIndex);
@@ -1248,18 +1249,25 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     
     // Initialize multiplyResult which will be the Bignum that will hold the test quotient. I.e: divisor * count = multiplyResult.
     Bignum multiplyResult;
+    Bignum num1PlusNum2;
+    Bignum dividendMinusMultiplyResult;
+
     initBignum(&multiplyResult);
+    initBignum(&num1PlusNum2);
+    initBignum(&dividendMinusMultiplyResult);
+
     setBignum(&multiplyResult, "0", positive);
+
+
 
     // Perform binary search to find the quotient.
     while(1) {
         // Reinitialize multiplyResult to reset its members.
-        initBignum(&multiplyResult);
+        resetBignum(&multiplyResult);
 
         // Get the middle index of the left and right index.
         // (L + R) / 2 = M
-        Bignum num1PlusNum2;
-        initBignum(&num1PlusNum2);
+        resetBignum(&num1PlusNum2);
 
         addBignum(&num1PlusNum2, &counterLeftIndex, &counterRightIndex);
         halfBignum(&counterMiddleIndex, &num1PlusNum2);
@@ -1276,8 +1284,7 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
 
         // Check if the product is fit to be the quotient.
         // I.e: (Dividend - Product) < Divisor && (Dividend - Product) >= 0
-        Bignum dividendMinusMultiplyResult;
-        initBignum(&dividendMinusMultiplyResult);
+        resetBignum(&dividendMinusMultiplyResult);
 
         subtractBignum(&dividendMinusMultiplyResult, dividend, &multiplyResult);
         if (
@@ -1288,9 +1295,6 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
         }
 
         // FEAT: ADD AN IF CASE WHERE THE LEFT INDEX IS GREATER THAN THE RIGHT INDEX, JUST LIKE IN OTHER BINARY SEARCH IMPLEMENTATIONS. HOWEVER, THIS CASE WHERE THIS FUNCTION DOESN'T FIND AN APPROPRIATE QUOTIENT, IS HYPOTHETICALLY IMPOSSIBLE DUE TO: (1) THE CONDITION ABOVE THAT CHECKS IF THE PRODUCT IS FIT TO BE A QUOTIENT, AND (2) ALL NUMBERS ARE PRESENT WITHIN THE RANGE. IF IN ANY CASE WHERE THE FUNCTION FAILS DUE TO THIS PROBLEM, THERE MUST BE A FLAW IN ANOTHER PART OF THIS FUNCTION. PERHAPS THE LEFT AND IRGHT INDEXES OR THE CONDITION THAT CHECKS IF THE PRODUCT IS A FIT QUOTIENT.
-
-        freeBignum(&num1PlusNum2);
-        freeBignum(&dividendMinusMultiplyResult);
     }
 
     // Return the remainder/modulo:
@@ -1311,6 +1315,8 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     freeBignum(&counterRightIndex);
     freeBignum(&counterMiddleIndex);
     freeBignum(&multiplyResult);
+    freeBignum(&num1PlusNum2);
+    freeBignum(&dividendMinusMultiplyResult);
 }
 
 
