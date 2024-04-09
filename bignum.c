@@ -28,8 +28,8 @@
 // -----------------GLOBAL VARIABLES-----------------
 
 // Array to store all dynamically allocated memory in Bignum.digits[]. This array will be used to free all the allocated memory at once.
-Bignum *BIGNUMS_ARR[100];
-int *BIGNUMS_DIGITS_ARR[100];
+Bignum *BIGNUMS_ARR[10000];
+int *BIGNUMS_DIGITS_ARR[10000];
 // Counter to keep track of the number of arrays dynamically allocated.
 unsigned long long int BIGNUMS_COUNT = 0;
 
