@@ -2,12 +2,11 @@
 #include <stdlib.h>
 #include "bignum.h"
 
-struct nodeBignum {
+typedef struct nodeBignum {
     Bignum *value;
     struct nodeBignum *previous;
     struct nodeBignum *next;
-};
-typedef struct nodeBignum BignumNode;
+} BignumNode;
 
 struct nodeInt {
     int value;
@@ -101,6 +100,19 @@ void deleteIntNode(IntNode *head, int target) {
     printf("Node Not Found!");
 }
 
+void insertIntAtHead(IntNode *intHead, int value) {
+    IntNode *newNode = createNewIntNode(value);
+
+    if (intHead == NULL) {
+        intHead = newNode;
+        return;
+    }
+
+    intHead->previous = newNode;
+    newNode->next = intHead;
+    intHead = newNode;
+}
+
 int main(void) {
     BignumNode *bignumHead = NULL, *bignumNode;
     IntNode *intHead = NULL, *intNode;
@@ -108,6 +120,7 @@ int main(void) {
     for (int i = 0; i < 5; i++) {
         intNode = createNewIntNode(i);
         intNode->next = intHead;
+        // intHead->previous = intNode;
         intHead = intNode;
     }
 
