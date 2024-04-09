@@ -194,6 +194,14 @@ void freeAllBignums() {
         }
     }
 
+    BignumNode *tempNode = bignumListHead;
+
+    while(tempNode != NULL) {
+        tempNode = tempNode->next;
+        free(bignumListHead);
+        bignumListHead = tempNode;
+    }
+
     printf("\n\nFreed %d Bignum.digits[]...", freedCount);
 }
 
