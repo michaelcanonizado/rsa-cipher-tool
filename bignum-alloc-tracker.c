@@ -1,20 +1,38 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "bignum.h"
 
-struct node {
-    Bignum *bignumPtr;
-    struct node *previous;
-    struct node *next;
+struct nodeBignum {
+    Bignum *value;
+    struct nodeBignum *previous;
+    struct nodeBignum *next;
 };
-typedef struct node BignumNode;
+typedef struct nodeBignum BignumNode;
 
-void printNodes(BignumNode *head) {
+struct nodeInt {
+    int value;
+    struct nodeInt *previous;
+    struct nodeInt *next;
+};
+typedef struct nodeInt IntNode;
+
+void printBignumNodes(BignumNode *head) {
     BignumNode *tempNode = head;
 
     printf("\n");
     while(tempNode != NULL) {
-        printBignum(tempNode->bignumPtr);
+        printBignum(tempNode->value);
         printf(" -> ");
+        tempNode = tempNode->next;
+    }
+    printf("\n");
+}
+void printIntNodes(IntNode *head) {
+    IntNode *tempNode = head;
+
+    printf("\n");
+    while(tempNode != NULL) {
+        printf("%d -> ", tempNode->value);
         tempNode = tempNode->next;
     }
     printf("\n");
@@ -24,7 +42,7 @@ void findBignumInNode(BignumNode *head, Bignum *targetNum) {
     BignumNode *tempNode = head;
 
     while (tempNode != NULL) {
-        if (isEqualToBignum(targetNum, tempNode->bignumPtr)) {
+        if (isEqualToBignum(targetNum, tempNode->value)) {
             printf("\nNode ");
             printBignum(targetNum);
             printf(" Found!\n");
@@ -39,46 +57,33 @@ void findBignumInNode(BignumNode *head, Bignum *targetNum) {
     return;
 }
 
+BignumNode* createNewBignumNode(Bignum *num) {
+    BignumNode *node = (BignumNode*)malloc(sizeof(BignumNode));
+    node->value = num;
+    node->previous = NULL;
+    node->next = NULL;
+    return node;
+}
+
+IntNode* createNewIntNode(int num) {
+    IntNode *node = (IntNode*)malloc(sizeof(IntNode));
+    node->value = num;
+    node->previous = NULL;
+    node->next = NULL;
+    return node;
+}
+
 int main(void) {
-    Bignum num0, num1, num2, num3, target;
-    initBignum(&num0);
-    initBignum(&num1);
-    initBignum(&num2);
-    initBignum(&num3);
-    initBignum(&target);
-    setBignum(&num0, "100", positive);
-    setBignum(&num1, "123", positive);
-    setBignum(&num2, "456", positive);
-    setBignum(&num3, "789", positive);
-    setBignum(&target, "4567", positive);
+    BignumNode *bignumHead = NULL, *bignumNode;
+    IntNode *intHead = NULL, *intNode;
 
-    BignumNode *head, n0, n1, n2, n3;
+    for (int i = 0; i < 5; i++) {
+        intNode = createNewIntNode(i);
+        intNode->next = intHead;
+        intHead = intNode;
+    }
 
-    // Initialize List
-    n1.bignumPtr = &num1;
-    n2.bignumPtr = &num2;
-    n3.bignumPtr = &num3;
-
-    head = &n3;
-    n3.next = &n2;
-    n2.next = &n1;
-    n1.next = NULL;
-
-    printNodes(head);
-
-    // Insert Node between n3 and n2
-    n0.bignumPtr = &num0;
-    n0.next = &n2;
-    n3.next = &n0;
-    printNodes(head);
-
-    // Delete inserted Node
-    n3.next = n0.next;
-    n0.next = NULL;
-    printNodes(head);
-
-    // Find a Bignum in Linked List
-    findBignumInNode(head, &target);
+    printIntNodes(intHead);
 
     return 0;
 }
