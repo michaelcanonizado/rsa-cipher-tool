@@ -166,8 +166,8 @@ void initBignum(Bignum *num) {
     // printf("\nAllocated digits %p for %p", digitsPtr, num);
     num->digits = digitsPtr;
     // BIGNUMS_ARR[ALLOCATED_BIGNUMS_COUNT++] = &num;
-    BIGNUMS_DIGITS_ARR[ALLOCATED_BIGNUMS_COUNT] = digitsPtr;
-    BIGNUMS_ARR[ALLOCATED_BIGNUMS_COUNT] = num;
+    // BIGNUMS_DIGITS_ARR[ALLOCATED_BIGNUMS_COUNT] = digitsPtr;
+    // BIGNUMS_ARR[ALLOCATED_BIGNUMS_COUNT] = num;
     ALLOCATED_BIGNUMS_COUNT++;
     // printf("\nAdded Bignum %p to list...", &num);
     // printf("\n-----------------------------------");
