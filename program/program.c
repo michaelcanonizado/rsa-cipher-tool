@@ -42,6 +42,14 @@ void clearScreen() {
 	#endif
 }
 
+void sleepProgram(int milliseconds) {
+	#ifdef _WIN32
+		Sleep(milliseconds);
+	#else
+		usleep(milliseconds * 1000);
+	#endif
+}
+
 void moveCursor(int x, int y) {
 	#ifdef _WIN32
 		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -349,7 +357,7 @@ int main (){
 				clearScreen();
 				moveCursor((width - 20)/ 2, adjustedHeight + i);
 				printf("Exiting program...\n");
-				sleep(1);
+				sleepProgram(1000);
 				break;
 		}
 	} while (userInput != 5);
