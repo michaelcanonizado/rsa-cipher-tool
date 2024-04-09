@@ -73,6 +73,16 @@ IntNode* createNewIntNode(int num) {
     return node;
 }
 
+void freeIntNodes(IntNode *head) {
+    IntNode *temp = head;
+
+    while(temp != NULL) {
+        temp = temp->next;
+        free(head);
+        head = temp;
+    }
+} 
+
 int main(void) {
     BignumNode *bignumHead = NULL, *bignumNode;
     IntNode *intHead = NULL, *intNode;
@@ -84,6 +94,8 @@ int main(void) {
     }
 
     printIntNodes(intHead);
+
+    freeIntNodes(intHead);
 
     return 0;
 }
