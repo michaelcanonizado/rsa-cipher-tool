@@ -86,7 +86,7 @@ char getConfirm(char confirm, int width, int adjustedHeight, int i) {
 
 int main (){
     
-  clearScreen();
+  // clearScreen();
 
   int width, height;
 	getTerminalSize(&width, &height);
@@ -319,8 +319,15 @@ int main (){
 				clearScreen();
 				break;
 			case 4:
+				moveCursor((width - strlen(confirmDECRYPT[i]))/ 2, adjustedHeight + i);
+				printf("about us\n");
+				waitForDONE(width, height);
+				clearScreen();
 				break;
 			default:
+				moveCursor((width - strlen(confirmDECRYPT[i]))/ 2, adjustedHeight + i);
+				printf("Exiting program...\n");
+				sleep(1);
 				break;
 		}
 	} while (userInput != 5);
