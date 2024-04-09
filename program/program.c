@@ -1,39 +1,55 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
 #include <string.h>
 #include <time.h>
 #include <ctype.h>
 
-// For Windows in getting the terminal size
-// #include <windows.h>
 
-// void getTerminalSize(int* width, int* height) {
-// 	CONSOLE_SCREEN_BUFFER_INFO csbi;
+// ioctl function uses the ioctl header file which is a part of the Unix/Linux standard library and is not available on Windows, which means this program can't run on Windows operating system.
+#ifdef _WIN32
+	#include <windows.h>
+#else
+	#include <sys/ioctl.h>
+	#include <unistd.h>
+#endif
 
-// 	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-// 	*width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-// 	*height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
-// }
 
 void getTerminalSize(int* width, int* height) {
-	struct winsize size;
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
+	#ifdef _WIN32
+		CONSOLE_SCREEN_BUFFER_INFO csbi;
 
-	*width = size.ws_col;
-	*height = size.ws_row;
+		GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+		*width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+		*height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+	#else
+		struct winsize size;
+		ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
+
+		*width = size.ws_col;
+		*height = size.ws_row;
+
+	#endif
 }
 
 void clearScreen() {
-	// Write the escape code to stdout
-	printf("\033[2J");
-	// Optionally, move the cursor to the top-left corner
-	printf("\033[H");
+	// Preprocessor directive checks if the code is being compiled on a Windows system
+	#ifdef _WIN32
+		system("cls");
+	#else
+		// If the code is being compiled on Unix-like systems, the function uses ANSI escape codes to clear the screen
+		printf("\033[2J");
+		printf("\033[H");
+	#endif
 }
 
 void moveCursor(int x, int y) {
-	printf("\033[%d;%dH", y, x);
+	#ifdef _WIN32
+		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+		COORD pos = {x, y};
+		SetConsoleCursorPosition(hConsole, pos);
+	#else
+		printf("\033[%d;%dH", y, x);
+	#endif
 }
 
 void clearLines(int startLine, int endLine, int width) {
@@ -323,13 +339,15 @@ int main (){
 				clearScreen();
 				break;
 			case 4:
-				moveCursor((width - strlen(confirmDECRYPT[i]))/ 2, adjustedHeight + i);
+				clearScreen();
+				moveCursor((width - 10)/ 2, adjustedHeight + i);
 				printf("about us\n");
 				waitForDONE(width, height);
 				clearScreen();
 				break;
 			default:
-				moveCursor((width - strlen(confirmDECRYPT[i]))/ 2, adjustedHeight + i);
+				clearScreen();
+				moveCursor((width - 20)/ 2, adjustedHeight + i);
 				printf("Exiting program...\n");
 				sleep(1);
 				break;
