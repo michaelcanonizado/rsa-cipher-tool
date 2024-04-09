@@ -27,6 +27,14 @@
 
 // -----------------GLOBAL VARIABLES-----------------
 
+typedef struct nodeBignum {
+    Bignum *value;
+    struct nodeBignum *previous;
+    struct nodeBignum *next;
+} BignumNode;
+
+BignumNode *bignumListHead = NULL;
+
 // Array to store all dynamically allocated memory in Bignum.digits[]. This array will be used to free all the allocated memory at once.
 Bignum *BIGNUMS_ARR[10000];
 int *BIGNUMS_DIGITS_ARR[10000];
@@ -135,7 +143,19 @@ int getLengthOfInteger(long long int integer) {
     return (int)log10((double)integer) + 1;
 }
 
+
+
+BignumNode* createNewBignumNode(Bignum *num) {
+    BignumNode *node = (BignumNode*)malloc(sizeof(BignumNode));
+    node->value = num;
+    node->previous = NULL;
+    node->next = NULL;
+    return node;
+}
+
 void initBignum(Bignum *num) {
+    BignumNode *bignumNode;
+
     int *digitsPtr = (int*)calloc(DEFAULT_BIGNUM_LENGTH, sizeof(int));
 
     if (digitsPtr == NULL) {
