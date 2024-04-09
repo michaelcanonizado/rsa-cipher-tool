@@ -28,12 +28,6 @@ void moveCursor(int x, int y) {
 	printf("\033[%d;%dH", y, x);
 }
 
-// Irrelevant function
-void getCursorPosition(int* x, int* y) {
-	printf("\033[6n");
-	scanf("\033[%d;%dR", y, x);
-}
-
 void getTerminalSize(int* width, int* height) {
 	struct winsize size;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
@@ -71,13 +65,21 @@ char getConfirm(char confirm, int width, int adjustedHeight, int i) {
 
 // This function waits for the user to enter DONE to avoid the program doing the next thing accidentally.
 void waitForDONE(int width, int height) {
-	char done[10];
+	char done[100];
 	do {
 		clearLines(height - 1, height + 1, width);
 		moveCursor((width - 21)/ 2, height - 1);
 		printf("Enter DONE to back: ");
-		scanf("%s", done); // Wait for the user to enter "done"
-		
+		fgets(done, sizeof(done), stdin); // Read a line from stdin
+
+		// Remove the newline character at the end of the input
+		done[strcspn(done, "\n")] = 0;
+
+		// If the input was just a newline character, continue with the next iteration
+		if (strlen(done) == 0) {
+			continue;
+		}
+
 		// Convert the user's input to lowercase
 		for(int i = 0; done[i]; i++){
 			done[i] = tolower(done[i]);
@@ -89,14 +91,13 @@ void waitForDONE(int width, int height) {
 }
 
 int main() {
-	clearScreen();
+	// clearScreen();
 
 	int width, height;
 	getTerminalSize(&width, &height);
 	printf("Width: %d\nHeight: %d\n", width, height);
 
 	char * optionsArr[5] = {"1) Generate Keys", "2) Encrypt Text", "3) Decrypt Text", "4) About Us", "5) Exit program"};
-
 
 	int i, userInput;
 	char confirm;
@@ -285,7 +286,7 @@ int main() {
 						// TO BE CHANGED
 						char* privateKEY = malloc(1000000000 * sizeof(char));
 						if (privateKEY == NULL) {
-							fprintf(stderr, "Failed to allocate memory for privateKEY\n");
+							printf("Failed to allocate memory for privateKEY\n");
 							exit(1);
 						}
 						moveCursor((width - 30)/ 2, adjustedHeight + 1);
@@ -323,14 +324,16 @@ int main() {
 				clearScreen();
 				break;
 			case 4:
+				moveCursor((width - strlen(confirmDECRYPT[i]))/ 2, adjustedHeight + i);
 				printf("about us\n");
 				waitForDONE(width, height);
 				clearScreen();
 				break;
 			default:
+				moveCursor((width - strlen(confirmDECRYPT[i]))/ 2, adjustedHeight + i);
 				printf("Exiting program...\n");
 				sleep(1);
-				break;        
+				break;       
 		}
 	} while (userInput != 5);
 
