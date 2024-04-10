@@ -9,12 +9,14 @@ int bignumToBinary(Bignum *result, Bignum *num) {
     int remainderTemp;
     unsigned long long int binaryLength = 0;
 
-    Bignum numTemp = initBignum(); 
-    copyBignum(&numTemp, num);
+    Bignum numTemp; 
+    Bignum remainder; 
+    Bignum two; 
 
-    Bignum remainder = initBignum(); 
-    Bignum two = initBignum(); 
-    intToBignum(&two, 2, positive);
+    initBignum(&numTemp); 
+    initBignum(&remainder); 
+
+    copyBignum(&numTemp, num);
 
     while(!isBignumZero(&numTemp)) {
         if (numTemp.digits[0] % 2 == 0) {
@@ -27,22 +29,40 @@ int bignumToBinary(Bignum *result, Bignum *num) {
     }
 
     result->length = binaryLength;
+
+    freeBignum(&numTemp); 
+    freeBignum(&remainder);
+
     return 0;
 }
 
 int bignumBinaryModularExponentiation(Bignum *result, Bignum *base, Bignum *binaryExponent, Bignum *divisor) {
 
-    Bignum remainder = initBignum();
+    Bignum remainder;
+    initBignum(&remainder);
     copyBignum(&remainder, base);
 
     printf("\n");
 
+    Bignum remainderSquared;
+    Bignum remainderSquaredModDivisor;
+    initBignum(&remainderSquared);
+    initBignum(&remainderSquaredModDivisor);
+
+    Bignum tempRemainder;
+    initBignum(&tempRemainder);
+
+    Bignum remainderSquaredModDivisorTimesBase;
+    Bignum remainderSquaredModDivisorTimesBaseModDivisor;
+    initBignum(&remainderSquaredModDivisorTimesBase);
+    initBignum(&remainderSquaredModDivisorTimesBaseModDivisor);
+
     for (int i = binaryExponent->length - 1; i >= 0; i--) {
-        Bignum remainderSquared = initBignum();
-        Bignum remainderSquaredModDivisor = initBignum();
+        resetBignum(&remainderSquared);
+        resetBignum(&remainderSquaredModDivisor);
 
         if (binaryExponent->digits[i - 1] == 0) {
-            Bignum tempRemainder = initBignum();
+            resetBignum(&tempRemainder);
             copyBignum(&tempRemainder, &remainder);
 
             multiplyBignum(&remainderSquared, &remainder, &remainder);
@@ -58,8 +78,8 @@ int bignumBinaryModularExponentiation(Bignum *result, Bignum *base, Bignum *bina
             printBignum(divisor);
 
         } else if (binaryExponent->digits[i - 1] == 1) {
-            Bignum remainderSquaredModDivisorTimesBase = initBignum();
-            Bignum remainderSquaredModDivisorTimesBaseModDivisor = initBignum();
+            resetBignum(&remainderSquaredModDivisorTimesBase);
+            resetBignum(&remainderSquaredModDivisorTimesBaseModDivisor);
 
             multiplyBignum(&remainderSquared, &remainder, &remainder);
             moduloBignum(&remainderSquaredModDivisor, &remainderSquared, divisor);
@@ -82,31 +102,42 @@ int bignumBinaryModularExponentiation(Bignum *result, Bignum *base, Bignum *bina
             printBignum(divisor);
 
             copyBignum(&remainder, &remainderSquaredModDivisorTimesBaseModDivisor);
-
-            ;
-
         }
         // FEAT: CHAIN ANOTHER CONDITION ABOVE TO CHECK IF THE NEXT NUMBER IS NEITHER A 1 OR 0. IF TRUE, RETURN AN ERROR AS THIS INDICATES THAT THE PASSED binaryExponent IS NOT VALID BINARY
         printf("\n----------------------------");
-
     }
 
     copyBignum(result, &remainder);
 
+    freeBignum(&remainder);
+
+    freeBignum(&remainderSquared);
+    freeBignum(&remainderSquaredModDivisor);
+
+    freeBignum(&tempRemainder);
+
+    freeBignum(&remainderSquaredModDivisorTimesBase);
+    freeBignum(&remainderSquaredModDivisorTimesBaseModDivisor);
 }
 
 int main() {
     clock_t start = clock();
 
-    Bignum base = initBignum(); 
-    Bignum exponent = initBignum(); 
-    Bignum binaryExponent = initBignum(); 
-    Bignum divisor = initBignum(); 
-    Bignum result = initBignum();
+    Bignum base; 
+    Bignum exponent; 
+    Bignum binaryExponent; 
+    Bignum divisor; 
+    Bignum result;
 
-    setBignum(&base, "312397232412141211232397232412", positive);
-    setBignum(&exponent, "231239723241211232397232412112323123972324121123239723241211232312397232412112323972324121123", positive);
-    setBignum(&divisor, "4121123239723241211", positive);
+    initBignum(&base); 
+    initBignum(&exponent); 
+    initBignum(&binaryExponent); 
+    initBignum(&divisor); 
+    initBignum(&result);
+
+    setBignum(&base, "3123972", positive);
+    setBignum(&exponent, "23", positive);
+    setBignum(&divisor, "4121", positive);
 
     bignumToBinary(&binaryExponent, &exponent);
     bignumBinaryModularExponentiation(&result, &base, &binaryExponent, &divisor);
@@ -119,6 +150,8 @@ int main() {
 
     printf("\n\n\nRESULT: ");
     printBignum(&result);
+
+    freeAllBignums();
 
     clock_t end = clock();
     double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
