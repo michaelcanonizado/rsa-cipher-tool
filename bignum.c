@@ -217,10 +217,28 @@ void freeAllBignums() {
 void freeBignum(Bignum *num) {
 
     if (bignumListHead->next == NULL) {
-        printf("\nFreeing %p.%p with freeBignum()", bignumListHead->value, bignumListHead->value->digits);
-        if (bignumListHead->value->digits != NULL) {
-            free(bignumListHead->value->digits);
+
+        if (bignumListHead->value->digits == NULL) {
+            printf("\n\nBignum.digits[] in node list is NULL!");
+            printf("\n\tFunction: freeBignum()");
+            printf("\n\tExit code: -1\n\n\n");
+
+            freeAllBignums();
+
+            exit(-1);
+        } else if (bignumListHead->value->digits != num->digits) {
+            printf("\n\nBignum was found in node list, but Bignum.digits[] addresses don't match!");
+            printf("\n\tFunction: freeBignum()");
+            printf("\n\tExit code: -2\n\n\n");
+
+            freeAllBignums();
+
+            exit(-2);
         }
+
+        printf("\nFreeing %p.%p with freeBignum(). (1)", bignumListHead->value, bignumListHead->value->digits);
+
+        free(bignumListHead->value->digits);
         free(bignumListHead);
 
         bignumListHead = NULL;
@@ -231,7 +249,26 @@ void freeBignum(Bignum *num) {
     }
 
     if (bignumListHead->value == num) {
-        printf("\n-> Freeing %p.%p with freeBignum()", bignumListHead->value, bignumListHead->value->digits);
+
+        if (bignumListHead->value->digits == NULL) {
+            printf("\n\nBignum.digits[] in node list is NULL!");
+            printf("\n\tFunction: freeBignum()");
+            printf("\n\tExit code: -3\n\n\n");
+
+            freeAllBignums();
+
+            exit(-3);
+        } else if (bignumListHead->value->digits != num->digits) {
+            printf("\n\nBignum was found in node list, but Bignum.digits[] addresses don't match!");
+            printf("\n\tFunction: freeBignum()");
+            printf("\n\tExit code: -4\n\n\n");
+
+            freeAllBignums();
+
+            exit(-4);
+        }
+
+        printf("\nFreeing %p.%p with freeBignum(). (2)", bignumListHead->value, bignumListHead->value->digits);
 
         BignumNode *toRemoveNode = bignumListHead;
 
@@ -250,11 +287,30 @@ void freeBignum(Bignum *num) {
 
     while(tempNode != NULL) {
         if (tempNode->value == num) {
-            printf("\nFreeing %p.%p with freeBignum()", tempNode->value, tempNode->value->digits);
-            prevNode->next = tempNode->next;
-            if (tempNode->value->digits != NULL) {
-                free(tempNode->value->digits);
+            
+            if (tempNode->value->digits == NULL) {
+                printf("\n\nBignum.digits[] in node list is NULL!");
+                printf("\n\tFunction: freeBignum()");
+                printf("\n\tExit code: -5\n\n\n");
+
+                freeAllBignums();
+
+                exit(-5);
+            } else if (tempNode->value->digits != num->digits) {
+                printf("\n\nBignum was found in node list, but Bignum.digits[] addresses don't match!");
+                printf("\n\tFunction: freeBignum()");
+                printf("\n\tExit code: -6\n\n\n");
+
+                freeAllBignums();
+
+                exit(-6);
             }
+
+            printf("\nFreeing %p.%p with freeBignum(). (3)", tempNode->value, tempNode->value->digits);
+            
+            prevNode->next = tempNode->next;
+
+            free(tempNode->value->digits);
             free(tempNode);
 
             FREED_BIGNUMS_COUNT++;
