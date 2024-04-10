@@ -1392,13 +1392,13 @@ int halfBignum(Bignum *result, Bignum *num) {
     // A temporary Bignum is used so we can use this function to pass in a Bignum, and at the same time, pass that same Bignum to the function as a result, allowing for a proper overwrite.
     // E.g: halfBignum(&x, &x);
     // The function call above is equivalent to: x = x / 2; or x /= 2;
-    Bignum tempResult;
-    initBignum(&tempResult);
+    int tempResultDigits[DEFAULT_BIGNUM_LENGTH];
+    unsigned long long int resultLength = 0;
 
     int carry = 0;
 
     for (int i = num->length - 1; i >= 0; i--) {
-        tempResult.digits[i] = (num->digits[i] / 2) + carry;
+        tempResultDigits[i] = (num->digits[i] / 2) + carry;
 
         if (num->digits[i] % 2 != 0) {
             carry = 5;
@@ -1406,13 +1406,13 @@ int halfBignum(Bignum *result, Bignum *num) {
             carry = 0;
         }
         
-        tempResult.length++;
+        resultLength++;
     }
 
-    trimBignum(&tempResult);
-    copyBignum(result, &tempResult);
+    result->length = resultLength;
+    memcpy(result->digits, tempResultDigits, sizeof(int) * resultLength);
 
-    freeBignum(&tempResult);
+    trimBignum(result);
 }
 
 int generateRandomBignum(Bignum *result, unsigned long long int numOfDigits, BIGNUM_SIGN sign) {
