@@ -8,13 +8,17 @@ int bignumToBinary(Bignum *result, Bignum *num) {
     int remainderTemp;
     unsigned long long int binaryLength = 0;
 
-    Bignum numTemp = initBignum(); 
+    Bignum numTemp; 
+    Bignum remainder; 
+    Bignum two; 
+
+    initBignum(&numTemp); 
+    initBignum(&remainder); 
+    initBignum(&two); 
+
     copyBignum(&numTemp, num);
 
-    Bignum remainder = initBignum(); 
-    Bignum two = initBignum(); 
     intToBignum(&two, 2, positive);
-
     while(!isBignumZero(&numTemp)) {
         if (numTemp.digits[0] % 2 == 0) {
             result->digits[binaryLength++] = 0;
@@ -26,6 +30,11 @@ int bignumToBinary(Bignum *result, Bignum *num) {
     }
 
     result->length = binaryLength;
+
+    freeBignum(&numTemp); 
+    freeBignum(&remainder); 
+    freeBignum(&two); 
+
     return 0;
 }
 
@@ -60,21 +69,27 @@ unsigned long long int binaryExponentiation(unsigned long long int base, Bignum 
 int bignumBinaryExponentiation(Bignum *result, Bignum *base, Bignum *binaryExponent) {
     // Reference: https://www.youtube.com/watch?v=9VEqjAZxmeA&t=387s
 
-    Bignum remainder = initBignum();
-    Bignum baseCopy = initBignum();
+    Bignum remainder;
+    Bignum baseCopy;
+
+    initBignum(&remainder);
+    initBignum(&baseCopy);
 
     setBignum(&remainder, "1", positive);
     copyBignum(&baseCopy, base);
 
+    Bignum tempRemainder;
+    Bignum tempBase;
+    initBignum(&tempRemainder);
+    initBignum(&tempBase);
+
     for (int i = 0; i < binaryExponent->length; i++) {
-        Bignum tempRemainder = initBignum();
+        resetBignum(&tempRemainder);
+        resetBignum(&tempBase);
+
         setBignum(&tempRemainder, "1", positive);
-        Bignum tempBase = initBignum();
 
         if (binaryExponent->digits[i] == 1) {
-            // printf("\n 1.0 -> %llu = %llu * %llu", remainder * base,remainder, base);
-
-            // remainder = remainder * base;
             multiplyBignum(&tempRemainder, &remainder, &baseCopy);
 
             printf("\n 1.0 -> ");
@@ -86,13 +101,6 @@ int bignumBinaryExponentiation(Bignum *result, Bignum *base, Bignum *binaryExpon
 
         }
 
-        // if (i == binaryExponent->length - 1) {
-        //     return remainder;
-        // }
-        
-        // printf("\n 0.0 -> %llu = %llu * %llu", base * base, base, base);
-        
-        // base = base * base;
         multiplyBignum(&tempBase, &baseCopy, &baseCopy);
 
         printf("\n 0.0 -> ");
@@ -109,18 +117,28 @@ int bignumBinaryExponentiation(Bignum *result, Bignum *base, Bignum *binaryExpon
     }
 
     copyBignum(result, &remainder);
+
+    freeBignum(&tempRemainder);
+    freeBignum(&tempBase);
+    freeBignum(&remainder);
+    freeBignum(&baseCopy);
 }
 
 int main(void) {
     clock_t start = clock();
 
-    Bignum base = initBignum(); 
-    Bignum exponent = initBignum(); 
-    Bignum binaryExponent = initBignum(); 
-    Bignum result = initBignum();
+    Bignum base; 
+    Bignum exponent; 
+    Bignum binaryExponent; 
+    Bignum result;
 
-    setBignum(&base, "32", positive);
-    setBignum(&exponent, "252", positive);
+    initBignum(&base); 
+    initBignum(&exponent); 
+    initBignum(&binaryExponent); 
+    initBignum(&result);
+
+    setBignum(&base, "15", positive);
+    setBignum(&exponent, "16", positive);
 
     bignumToBinary(&binaryExponent, &exponent);
 
@@ -151,7 +169,9 @@ int main(void) {
     printf("  =  ");
     printBignum(&result);
 
-    printf("\n\nRESULT LENGTH: %llu", result.length);
+    printf("\n\nRESULT LENGTH: %llu\n\n", result.length);
+
+    freeAllBignums();
     
     clock_t end = clock();
     double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
