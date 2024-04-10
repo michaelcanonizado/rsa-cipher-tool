@@ -510,6 +510,18 @@ void printBignum(Bignum *num) {
     }
 }
 
+void printBignumExtended(Bignum *num, unsigned long long int specifiedLength) {
+    if (num->sign == negative) {
+        printf("-");
+    }
+    for (int i = specifiedLength - 1; i >= 0; i--) {
+        if (i == num->length - 1) {
+            printf("|");
+        }
+        printf("%d", num->digits[i]);
+    }
+}
+
 void printBignumCenter(Bignum *num, unsigned int requiredWidth) {
     // Function to print a Bignum but with a specified width and center aligns it.
     // It prioritizes the required width over centeredness to stay consistent when used in formatted prints. Bignums with odd lengths won't be perfectly centered, so it either needs to have equal spaces on both sides (prioritizing centeredness) or 1 side having less space but meet the required width.
