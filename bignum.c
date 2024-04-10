@@ -671,7 +671,7 @@ void addBignum(Bignum *result, Bignum *addend1, Bignum *addend2) {
 
     int sum;
     int carry = 0;
-    int resultLength = 0;
+    unsigned long long int resultLength = 0;
     // Use usigned long long int to match the data type of the length property of Bignum struct.
     unsigned long long int maxLength;
 
@@ -834,10 +834,10 @@ void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend) {
     // The code above is equivalent to:
     // x = x - y; or x -= y;
     int tempResultDigits[DEFAULT_BIGNUM_LENGTH];
+    unsigned long long int resultLength = 0;
 
     // Variable to store the difference of the individual digits of the minuend and subtrahend.
     int difference;
-    unsigned long long int resultLength = 0;
 
     // Start at the LSD (least significant digit). Then iterate through, using the the min length (subtrahend length).
     for (int i = 0; i < subtrahendTemp.length; i++) {
