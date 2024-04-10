@@ -248,6 +248,7 @@ void freeBignum(Bignum *num) {
         printf("\nFreeing %p.%p with freeBignum(). (1)", bignumListHead->value, bignumListHead->value->digits);
 
         free(bignumListHead->value->digits);
+        bignumListHead->value->digits = NULL;
         free(bignumListHead);
 
         bignumListHead = NULL;
@@ -290,6 +291,7 @@ void freeBignum(Bignum *num) {
         BignumNode *toRemoveNode = bignumListHead;
 
         free(bignumListHead->value->digits);
+        bignumListHead->value->digits = NULL;
         free(bignumListHead);
 
         bignumListHead = bignumListHead->next;
@@ -336,6 +338,7 @@ void freeBignum(Bignum *num) {
             prevNode->next = tempNode->next;
 
             free(tempNode->value->digits);
+            tempNode->value->digits = NULL;
             free(tempNode);
 
             FREED_BIGNUMS_COUNT++;
