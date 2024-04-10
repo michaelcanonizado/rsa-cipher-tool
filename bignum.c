@@ -221,9 +221,24 @@ void freeBignum(Bignum *num) {
         if (bignumListHead->value->digits != NULL) {
             free(bignumListHead->value->digits);
         }
-        free(bignumListHead->value);
+        free(bignumListHead);
 
         bignumListHead = NULL;
+
+        FREED_BIGNUMS_COUNT++;
+
+        return;
+    }
+
+    if (bignumListHead->value == num) {
+        printf("\n-> Freeing %p.%p with freeBignum()", bignumListHead->value, bignumListHead->value->digits);
+
+        BignumNode *toRemoveNode = bignumListHead;
+
+        free(bignumListHead->value->digits);
+        free(bignumListHead);
+
+        bignumListHead = bignumListHead->next;
 
         FREED_BIGNUMS_COUNT++;
 
