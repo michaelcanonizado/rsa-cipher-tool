@@ -153,6 +153,22 @@ BignumNode* createNewBignumNode(Bignum *num) {
     return node;
 }
 
+void printBignumNodeList() {
+    BignumNode *tempNode = bignumListHead;
+
+    if (bignumListHead == NULL) {
+        printf("\n\nNode list empty!\n");
+        return;
+    }
+
+    printf("\n");
+    while(tempNode != NULL) {
+        printf("%p.%p -> ", tempNode->value, tempNode->value->digits);
+        tempNode = tempNode->next;
+    }
+    printf("\n");
+}
+
 void initBignum(Bignum *num) {
     BignumNode *bignumNode;
 
