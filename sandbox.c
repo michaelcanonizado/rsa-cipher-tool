@@ -9,6 +9,7 @@ int main() {
 
     Bignum num1;
     Bignum num2;
+    Bignum num3;
     Bignum res1;
     Bignum res2;
 
@@ -16,6 +17,7 @@ int main() {
 
     initBignum(&num1);
     initBignum(&num2);
+    initBignum(&num3);
     initBignum(&res1);
     initBignum(&res2);
 
@@ -23,34 +25,50 @@ int main() {
 
     printf("\nnum1 %p.%p", &num1, num1.digits);
     printf("\nnum2 %p.%p", &num2, num2.digits);
+    printf("\nnum2 %p.%p", &num3, num3.digits);
     printf("\nres1 %p.%p", &res1, res1.digits);
     printf("\nres1 %p.%p", &res2, res2.digits);
     
 
     printf("\n\n\n......................SETTING OF BIGNUMS.....................\n");
 
-    setBignum(&num1, "98761231231231233123123124123123123123", positive);
+    setBignum(&num1, "9876123123123123312", positive);
     setBignum(&num2, "2", positive);
+    setBignum(&num3, "99999999999999912341", positive);
 
     printf("\n\n\n....................PERFORMING OPERATIONS....................\n");
 
+    multiplyBignum(&res1, &num1, &num3);
+
+    printf("\nMultiply = ");
+    printBignumExtended(&res1, 50);
+
     divideBignum(&res1, &num1, &num2);
+
+    printf("\nDivide = ");
+    printBignumExtended(&res1, 50);
+
     halfBignum(&res2, &num1);
 
-    printf("\n\n");
-    printBignum(&num1);
-    printf(" ~ ");
-    printBignum(&num2);
-    printf(" = ");
-    printBignum(&res1);
+    printf("\nHalf = ");
+    printBignumExtended(&res2, 50);
 
-    printf("\n\n");
-    printBignum(&num1);
-    printf(" ~ ");
-    printBignum(&num2);
-    printf(" = ");
-    printBignum(&res2);
-    printf("\n");
+    resetBignum(&num1);
+    resetBignum(&num2);
+    resetBignum(&num3);
+    resetBignum(&res1);
+    resetBignum(&res2);
+
+    printf("\nnum1 = ");
+    printBignumExtended(&num1, 50);
+    printf("\nnum2 = ");
+    printBignumExtended(&num2, 50);
+    printf("\nnum3 = ");
+    printBignumExtended(&num3, 50);
+    printf("\nres1 = ");
+    printBignumExtended(&res1, 50);
+    printf("\nres2 = ");
+    printBignumExtended(&res2, 50);
 
     printf("\n\n\n......................FREEING BIGNUMS.........................\n");
 
