@@ -130,6 +130,15 @@ int bignumBinaryExponentiation(Bignum *result, Bignum *base, Bignum *binaryExpon
 
         printf("\n----------------------------");
     }
+
+    copyBignum(result, &remainder);
+
+    freeBignum(&remainder);
+    freeBignum(&baseCopy);
+    freeBignum(&tempRemainder);
+    freeBignum(&tempBase);
+
+    return 0;
 }
 
 int main(void) {
@@ -145,8 +154,8 @@ int main(void) {
     initBignum(&binaryExponent); 
     initBignum(&result);
 
-    setBignum(&base, "90000", positive);
-    setBignum(&exponent, "123", positive);
+    setBignum(&base, "987654321987654321", positive);
+    setBignum(&exponent, "12", positive);
 
     bignumToBinary(&binaryExponent, &exponent);
 
@@ -178,6 +187,8 @@ int main(void) {
     printBignum(&result);
 
     printf("\n\nRESULT LENGTH: %llu\n", result.length);
+
+    printBignumNodeList();
 
     freeAllBignums();
     
