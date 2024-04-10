@@ -197,15 +197,26 @@ void freeAllBignums() {
     BignumNode *tempNode = bignumListHead;
 
     while(tempNode != NULL) {
+
+        if (bignumListHead->value == NULL) {
+            printf("\nBignum in list is NULL");
+            printf("\n\tFunction: freeAllBignums()");
+        } else if (bignumListHead->value->digits == NULL) {
+            printf("\nBignum.digits[] in list is NULL");
+            printf("\n\tFunction: freeAllBignums()");
+        }
+
         printf("\nFreeing %p.%p with freeAllBignums()", tempNode->value, tempNode->value->digits);
 
         tempNode = tempNode->next;
 
-        if (bignumListHead->value->digits != NULL) {
+        if (bignumListHead->value != NULL) {
             free(bignumListHead->value->digits);
+        } else {
+            printf("\nBignum %p.%p is NULL",bignumListHead->value,bignumListHead->value->digits);
         }
-
         free(bignumListHead);
+
         bignumListHead = tempNode;
 
         FREED_BIGNUMS_COUNT++;
