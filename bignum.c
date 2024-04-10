@@ -356,7 +356,7 @@ void freeBignum(Bignum *num) {
         tempNode = tempNode->next;
     }
 
-    printf("\nBignum not found in list!\n");
+    printf("\n\nBIGNUM %p.%p WAS NOT FOUND IN LIST!\n\n", num, num->digits);
 }
 
 void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
