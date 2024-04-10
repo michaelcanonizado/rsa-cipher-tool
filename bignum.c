@@ -169,6 +169,9 @@ void initBignum(Bignum *num) {
         exit(-1);
     }
 
+    // printf("\nCreated %p.%p Bignum in initBignum(). (1)", num, digitsPtr);
+    
+
     num->digits = digitsPtr;
 
     bignumNode = createNewBignumNode(num);
