@@ -26,6 +26,9 @@ int multiplyArrayItems(int x, int result[], int size, int *insertedItems) {
 }
 
 int multiplyBignumArray(Bignum *result, Bignum *base) {
+
+    // WARNING: DONT RUN CODE. CODE DOESN'T WORK AS INTENDED AFTER MIGRATING TO DYANMIC MEMOERY ALLOCATION OF Bignum.digits[]
+
     Bignum ten;
     Bignum carry;
     Bignum product;
