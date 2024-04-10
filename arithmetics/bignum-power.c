@@ -26,19 +26,26 @@ int multiplyArrayItems(int x, int result[], int size, int *insertedItems) {
 }
 
 int multiplyBignumArray(Bignum *result, Bignum *base) {
-    Bignum ten  = initBignum();
-    setBignum(&ten, "10", positive);
-
-    Bignum carry = initBignum();
-    setBignum(&carry, "0", positive);
-    Bignum product = initBignum();
+    Bignum ten;
+    Bignum carry;
+    Bignum product;
+    initBignum(&ten);
+    initBignum(&carry);
+    initBignum(&product);
 
     printf("\n\n\n\n FOR LOOP ----->\n");
 
+    Bignum currDigit;
+    Bignum currResultDigitTimesBase;
+    Bignum productModTen;
+    initBignum(&currDigit);
+    initBignum(&currResultDigitTimesBase);
+    initBignum(&productModTen);
+
     for (int i = 0; i < result->length; i++) {
         resetBignum(&product);
-        Bignum currDigit = initBignum();
-        Bignum currResultDigitTimesBase = initBignum();
+        resetBignum(&currDigit);
+        resetBignum(&currResultDigitTimesBase);
 
         intToBignum(&currDigit, result->digits[i], positive);
         multiplyBignum(&currResultDigitTimesBase, &currDigit, base);
@@ -55,7 +62,7 @@ int multiplyBignumArray(Bignum *result, Bignum *base) {
         printf(" + ");
         printBignum(&carry);
 
-        Bignum productModTen = initBignum();
+        resetBignum(&productModTen);
         moduloBignum(&productModTen, &product, &ten);
         int productModTenInt = bignumToInt(&productModTen);
         result->digits[i] = productModTenInt;
@@ -73,10 +80,19 @@ int multiplyBignumArray(Bignum *result, Bignum *base) {
         printf(" / %d\n----------------------------------\n", 10);
     }
 
+    freeBignum(&currDigit);
+    freeBignum(&currResultDigitTimesBase);
+    freeBignum(&productModTen);
+
+    Bignum carryModTen;
+    Bignum carryDivideTen;
+    initBignum(&carryModTen);
+    initBignum(&carryDivideTen);
+
     printf("\n\n WHILE LOOP ----->\n");
     while(!isBignumZero(&carry)) {
-        Bignum carryModTen = initBignum();
-        Bignum carryDivideTen = initBignum();
+        resetBignum(&carryModTen);
+        resetBignum(&carryDivideTen);
     
         moduloBignum(&carryModTen, &carry, &ten);
         result->digits[result->length] = bignumToInt(&carryModTen);
@@ -100,38 +116,64 @@ int multiplyBignumArray(Bignum *result, Bignum *base) {
         printf("\nsize++ = %d", base->length);
         printf("\ninsertedItems++ = %d", base->length);
     }
+
+    freeBignum(&carryModTen);
+    freeBignum(&carryDivideTen);
+
+    freeBignum(&ten);
+    freeBignum(&carry);
+    freeBignum(&product);
 }
 
 
 int multiplyBignumArrayCompressed(Bignum *result, Bignum *base) {
-    Bignum ten  = initBignum();
-    setBignum(&ten, "10", positive);
+    Bignum ten;
+    Bignum carry;
+    Bignum product;
+    initBignum(&ten);
+    initBignum(&carry);
+    initBignum(&product);
 
-    Bignum carry = initBignum();
+    setBignum(&ten, "10", positive);
     setBignum(&carry, "0", positive);
-    Bignum product = initBignum();
+
+    Bignum currDigit;
+    Bignum currResultDigitTimesBase;
+    Bignum productModTen;
+    initBignum(&currDigit);
+    initBignum(&currResultDigitTimesBase);
+    initBignum(&productModTen);
 
     for (int i = 0; i < result->length; i++) {
-        product = initBignum();
-        Bignum currDigit = initBignum();
-        Bignum currResultDigitTimesBase = initBignum();
+        resetBignum(&product);
+        resetBignum(&currDigit);
+        resetBignum(&currResultDigitTimesBase);
 
         intToBignum(&currDigit, result->digits[i], positive);
         multiplyBignum(&currResultDigitTimesBase, &currDigit, base);
         addBignum(&product, &currResultDigitTimesBase, &carry);
 
-        Bignum productModTen = initBignum();
+        resetBignum(&productModTen);
         moduloBignum(&productModTen, &product, &ten);
         int productModTenInt = bignumToInt(&productModTen);
         result->digits[i] = productModTenInt;
 
-        carry = initBignum();
+        resetBignum(&carry);
         divideBignum(&carry, &product, &ten);
     }
+    
+    freeBignum(&currDigit);
+    freeBignum(&currResultDigitTimesBase);
+    freeBignum(&productModTen);
+
+    Bignum carryModTen;
+    Bignum carryDivideTen;
+    initBignum(&carryModTen);
+    initBignum(&carryDivideTen);
 
     while(!isBignumZero(&carry)) {
-        Bignum carryModTen = initBignum();
-        Bignum carryDivideTen = initBignum();
+        initBignum(&carryModTen);
+        initBignum(&carryDivideTen);
     
         moduloBignum(&carryModTen, &carry, &ten);
         result->digits[result->length] = bignumToInt(&carryModTen);
@@ -141,19 +183,30 @@ int multiplyBignumArrayCompressed(Bignum *result, Bignum *base) {
 
         result->length++;
     }
+
+    freeBignum(&carryModTen);
+    freeBignum(&carryDivideTen);
+
+    freeBignum(&ten);
+    freeBignum(&carry);
+    freeBignum(&product);
 }
 
 int main(void) {
     // Start CPU timer
     clock_t begin = clock();
 
-    Bignum two = initBignum();
+    Bignum two;
+    Bignum x;
+    Bignum n;
+    Bignum result;
+
+    initBignum(&two);
+    initBignum(&x);
+    initBignum(&n);
+    initBignum(&result);
+
     setBignum(&two, "2", positive);
-
-    Bignum x = initBignum();
-    Bignum n = initBignum();
-    Bignum result = initBignum();
-
     setBignum(&x, "72", positive);
     setBignum(&n, "100193", positive);
 
@@ -162,27 +215,15 @@ int main(void) {
     printf(" digits...");
 
     copyBignum(&result, &x);
-    Bignum i = initBignum();
+    Bignum i;
+    initBignum(&i);
+
     for(setBignum(&i, "2", positive); isLessThanOrEqualToBignum(&i, &n); incrementBignum(&i, 1)) {
         printf("\n");
         printBignum(&i);
         printf(" iteration...");
         multiplyBignumArrayCompressed(&result, &x);
     }
-
-    // copyBignum(&result, &x);
-    // Bignum i = initBignum();
-    // for(setBignum(&i, "2", positive); isLessThanOrEqualToBignum(&i, &n); incrementBignum(&i, 1)) {
-    //     printf("\n\n--------------------------------------------\n--------------------------------------------\n\n");
-    //     printBignum(&i);
-    //     printf(" interation: \n");
-
-    //     printf("\n\ncurrent result: ");
-    //     printBignum(&result);
-    //     printf("\nNum of digits in result: %d", result.length);
-
-    //     multiplyBignumArray(&result, &x);
-    // }
 
     printf("\n\nBase: ");
     printBignum(&x);
@@ -191,6 +232,12 @@ int main(void) {
     printf("\nResult: ");
     printBignum(&result);
     printf("\nResult length: %llu", result.length);
+
+    freeBignum(&i);
+    freeBignum(&two);
+    freeBignum(&x);
+    freeBignum(&n);
+    freeBignum(&result);
 
     // End CPU timer and print elapsed time
     clock_t end = clock();
