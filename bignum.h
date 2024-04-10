@@ -32,6 +32,7 @@ typedef struct {
 int getLengthOfInteger(long long int num);
 
 void initBignum(Bignum *num);
+void printBignumNodeList();
 void freeAllBignums();
 void freeBignum(Bignum *num);
 void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign);
