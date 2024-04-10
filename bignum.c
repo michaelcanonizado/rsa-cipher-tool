@@ -29,15 +29,11 @@
 
 typedef struct nodeBignum {
     Bignum *value;
-    struct nodeBignum *previous;
     struct nodeBignum *next;
 } BignumNode;
 
 BignumNode *bignumListHead = NULL;
 
-// Array to store all dynamically allocated memory in Bignum.digits[]. This array will be used to free all the allocated memory at once.
-Bignum *BIGNUMS_ARR[10000];
-int *BIGNUMS_DIGITS_ARR[10000];
 // Counter to keep track of the number of arrays dynamically allocated.
 unsigned long long int ALLOCATED_BIGNUMS_COUNT = 0, FREED_BIGNUMS_COUNT = 0;
 
@@ -159,7 +155,6 @@ BignumNode* createNewBignumNode(Bignum *num) {
     }
 
     node->value = num;
-    node->previous = NULL;
     node->next = NULL;
     return node;
 }
