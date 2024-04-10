@@ -197,6 +197,8 @@ void freeAllBignums() {
     BignumNode *tempNode = bignumListHead;
 
     while(tempNode != NULL) {
+        printf("\nFreeing %p.%p with freeAllBignums()", tempNode->value, tempNode->value->digits);
+
         tempNode = tempNode->next;
 
         if (bignumListHead->value->digits != NULL) {
@@ -215,6 +217,7 @@ void freeAllBignums() {
 void freeBignum(Bignum *num) {
 
     if (bignumListHead->next == NULL) {
+        printf("\nFreeing %p.%p with freeBignum()", bignumListHead->value, bignumListHead->value->digits);
         if (bignumListHead->value->digits != NULL) {
             free(bignumListHead->value->digits);
         }
@@ -232,6 +235,7 @@ void freeBignum(Bignum *num) {
 
     while(tempNode != NULL) {
         if (tempNode->value == num) {
+            printf("\nFreeing %p.%p with freeBignum()", tempNode->value, tempNode->value->digits);
             prevNode->next = tempNode->next;
             if (tempNode->value->digits != NULL) {
                 free(tempNode->value->digits);
