@@ -147,6 +147,17 @@ int getLengthOfInteger(long long int integer) {
 
 BignumNode* createNewBignumNode(Bignum *num) {
     BignumNode *node = (BignumNode*)malloc(sizeof(BignumNode));
+
+    if (node == NULL) {
+        printf("\n\nAllocated Bignum.digits[] is NULL!");
+        printf("\n\tFunction: createNewBignumNode()");
+        printf("\n\tExit code: -1\n\n\n");
+
+        freeAllBignums();
+
+        exit(-1);
+    }
+
     node->value = num;
     node->previous = NULL;
     node->next = NULL;
