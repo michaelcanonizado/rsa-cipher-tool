@@ -161,7 +161,7 @@ void printBignumNodeList() {
         return;
     }
 
-    printf("\n");
+    printf("\nHEAD -> ");
     while(tempNode != NULL) {
         printf("%p.%p -> ", tempNode->value, tempNode->value->digits);
         tempNode = tempNode->next;
