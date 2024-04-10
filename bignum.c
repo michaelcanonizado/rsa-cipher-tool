@@ -27,14 +27,14 @@
 
 // -----------------GLOBAL VARIABLES-----------------
 
+// Linked list to track the dynamically allocated Bignum.digits[]
 typedef struct nodeBignum {
     Bignum *value;
     struct nodeBignum *next;
 } BignumNode;
-
 BignumNode *bignumListHead = NULL;
 
-// Counter to keep track of the number of arrays dynamically allocated.
+// Counter to keep track of the number of dynamically allocated Bignum.digits[].
 unsigned long long int ALLOCATED_BIGNUMS_COUNT = 0, FREED_BIGNUMS_COUNT = 0;
 
 
