@@ -159,22 +159,6 @@ BignumNode* createNewBignumNode(Bignum *num) {
     return node;
 }
 
-void printBignumNodeList() {
-    BignumNode *tempNode = bignumListHead;
-
-    if (bignumListHead == NULL) {
-        printf("\n\nNode list empty!\n");
-        return;
-    }
-
-    printf("\nHEAD -> ");
-    while(tempNode != NULL) {
-        printf("%p.%p -> ", tempNode->value, tempNode->value->digits);
-        tempNode = tempNode->next;
-    }
-    printf("\n");
-}
-
 void initBignum(Bignum *num) {
     BignumNode *bignumNode;
 
@@ -363,6 +347,22 @@ void freeBignum(Bignum *num) {
     }
 
     printf("\n\nBIGNUM %p.%p WAS NOT FOUND IN LIST!\n\n", num, num->digits);
+}
+
+void printBignumNodeList() {
+    BignumNode *tempNode = bignumListHead;
+
+    if (bignumListHead == NULL) {
+        printf("\n\nNode list empty!\n");
+        return;
+    }
+
+    printf("\nHEAD -> ");
+    while(tempNode != NULL) {
+        printf("%p.%p -> ", tempNode->value, tempNode->value->digits);
+        tempNode = tempNode->next;
+    }
+    printf("\n");
 }
 
 void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
