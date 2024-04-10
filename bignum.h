@@ -42,6 +42,7 @@ int resetBignum(Bignum *num);
 
 void copyBignum(Bignum *result, Bignum *num);
 void printBignum(Bignum *num);
+void printBignumExtended(Bignum *num, unsigned long long int specifiedLength);
 void printBignumCenter(Bignum *num, unsigned int requiredWidth);
 void trimBignum(Bignum *num);
 
