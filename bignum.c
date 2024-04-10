@@ -1374,6 +1374,8 @@ int halfBignum(Bignum *result, Bignum *num) {
 
     // NOTE: this function might be redundant, but it is needed int the algorithms used in the actual RSA Cipher Tool where it requires big Bignums to be divided by 2 effieciently.
 
+    // NOTE: this function doesnt take into consideration the division sign rules. It will simply half the Bignum and the result will get the same sign as the Bignum being halved.
+
     // divideBignum() uses repeated multiplication and binary search. When a really big Bignum is being divided by 2, the left and right limits/indexes of the binary search grows, and more steps are needed. Moreover, using divideBignum() to half a really large Bignum somehow causes an overflow.
     // On the other hand, this function iterated through Bignum.digits[] and uses the native division on each digit. This has been tested to be faster than divideBignum().
     // E.g: 567 -> [  7  ,  6  ,  5  ]
@@ -1411,6 +1413,7 @@ int halfBignum(Bignum *result, Bignum *num) {
 
     result->length = resultLength;
     memcpy(result->digits, tempResultDigits, sizeof(int) * resultLength);
+    result->sign = num->sign;
 
     trimBignum(result);
 }
