@@ -406,11 +406,21 @@ int main (){
 				waitForDONE(width, height);
 				clearScreen();
 				break;
-			default:
+			case 5:
 				clearScreen();
 				moveCursor((width - 20)/ 2, adjustedHeight + i);
 				printf("Exiting program...\n");
 				sleepProgram(500);
+				break;
+
+			default:
+				clearScreen();
+				moveCursor((width - 15)/ 2, adjustedHeight + 1);
+				printf("Invalid input.");
+				moveCursor((width - 39)/ 2, adjustedHeight + 2);
+				printf("Please enter a number between 1 and 5.");
+				sleepProgram(1000);
+				clearScreen();
 				break;
 		}
 	} while (userInput != 5);
