@@ -26,12 +26,12 @@ int main() {
 
     printf("\n\n\n......................SETTING OF BIGNUMS.....................\n");
 
-    setBignum(&num1, "8161092548240484925", positive);
-    setBignum(&num2, "9403599057068861", positive);
+    setBignum(&num1, "987", positive);
+    setBignum(&num2, "123", positive);
 
     printf("\n\n\n....................PERFORMING OPERATIONS....................\n");
 
-    divideBignum(&res1, &num1, &num2);
+    powerBignum(&res1, &num1, &num2);
 
     printf("\nnum1 = ");
     printBignum(&num1);
@@ -42,7 +42,7 @@ int main() {
 
     printf("\n\n\n......................FREEING BIGNUMS.........................\n");
 
-    // printBignumNodeList();
+    printBignumNodeList();
 
     freeAllBignums();
 
