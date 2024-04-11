@@ -474,7 +474,7 @@ long long int bignumToInt(Bignum *num) {
     // Function will convert a Bignum to an long long integer (maximum data type as negative Bignums can also be converted).
 
     // Get maximum number of digits of long long int. 
-    int maxNumOfDigits = getLengthOfInteger(MAX_VALUE_OF_LONG_LONG_INT) + 1;
+    int maxNumOfDigits = getLengthOfInteger(MAX_VALUE_OF_LONG_LONG_INT);
 
     // REFACTOR: THIS MUST THROW A PROPER ERROR. A BIGNUM WITH Bignum.digits[] = [0] and Bignum.length = 1 IS A VALID BIGNUM THAT CAN BE CONVERTED TO AN INTEGER. INSTEAD OF RETURNING THE RESULT, USE A POINTER PARAMETER TO POINT TO THE RESULT VARIABLE, AND THE RETURN SHOULD ONLY BE ERROR CODES.
 
@@ -504,9 +504,10 @@ long long int bignumToInt(Bignum *num) {
 }
 
 int resetBignum(Bignum *num) {
-    // Function to reset the contents of a Bignum. Although initBignum() can be used to reset a Bignum, this function resets the Bignum, whilst maintaining the intance of the Bignum. initBignum() resets the Bignum by creating a new instance of the Bignum, resets/initializes its members, and returns a new Bignum.
+    // Function to reset the contents of a Bignum. Although initBignum() can be used to reset a Bignum, this function resets the Bignum, whilst maintaining the intance of the Bignum and the allocated Bignum.digits[]. initBignum() resets the Bignum by creating a new instance of the Bignum (Therefore another allocation will be made just to reset the Bignum).
+    // This function should be used when Bignums are initialized or need to be reset inside of loops to minimize the amount of memory allocated.
 
-    // Reset Bignum.digits[]
+    // Reset indexes of Bignum.digits[] to 0 
     memset(num->digits, 0, sizeof(int) * DEFAULT_BIGNUM_LENGTH);
     // Reset length
     num->length = 0;
