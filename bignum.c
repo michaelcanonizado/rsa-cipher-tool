@@ -189,36 +189,41 @@ void initBignum(Bignum *num) {
 }
 
 void freeAllBignums() {
-    // Function to go through the array of pointers of the dynamically allocated arrays in Bignum.digits[] (initialized Bignums), and free them all at once.
+    // Function to go through linked list of Bignum pointers and free the allocated Bignum.digits[] and the nodes all at once.
+    // Function will free nodes starting from the end. I.e: the most recent Bignums initialized.
 
-    BignumNode *tempNode = bignumListHead;
-
-    while(tempNode != NULL) {
+    // Store head node in a temporary ndoe.
+    BignumNode *tempHeadNode = bignumListHead;
+    // Go through all nodes in linked list
+    while(tempHeadNode != NULL) {
 
         if (bignumListHead->value == NULL) {
             printf("\nBignum in list is NULL");
             printf("\n\tFunction: freeAllBignums()");
         } else if (bignumListHead->value->digits == NULL) {
-            printf("\nBignum.digits[] in list is NULL");
+            printf("\nBignum.digits[] in list is NULL!\nAddress: %p->%p.%p", bignumListHead, bignumListHead->value, bignumListHead->value->digits);
             printf("\n\tFunction: freeAllBignums()");
         }
 
-        // printf("\nFreeing %p.%p with freeAllBignums()", tempNode->value, tempNode->value->digits);
+        // printf("\nFreeing %p.%p with freeAllBignums()", tempHeadNode->value, tempHeadNode->value->digits);
 
-        tempNode = tempNode->next;
+        // Point temporary head node to next node
+        tempHeadNode = tempHeadNode->next;
 
-        if (bignumListHead->value != NULL) {
-            free(bignumListHead->value->digits);
-        } else {
+        // Free current head node
+        if (bignumListHead->value == NULL) {
             printf("\nBignum %p.%p is NULL",bignumListHead->value,bignumListHead->value->digits);
         }
+        free(bignumListHead->value->digits);
         free(bignumListHead);
 
-        bignumListHead = tempNode;
+        // Store new head to original head node
+        bignumListHead = tempHeadNode;
 
         FREED_BIGNUMS_COUNT++;
     }
 
+    // Print allocation results
     printf("\n\nAllocated %llu Bignums, Freed %llu Bignums, Remaining unfreed: %llu", ALLOCATED_BIGNUMS_COUNT, FREED_BIGNUMS_COUNT, ALLOCATED_BIGNUMS_COUNT - FREED_BIGNUMS_COUNT);
 }
 
