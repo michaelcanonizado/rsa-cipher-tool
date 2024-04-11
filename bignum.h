@@ -39,7 +39,6 @@ void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign);
 void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN sign);
 long long int bignumToInt(Bignum *num);
 int resetBignum(Bignum *num);
-
 void copyBignum(Bignum *result, Bignum *num);
 void printBignum(Bignum *num);
 void printBignumExtended(Bignum *num, unsigned long long int specifiedLength);
