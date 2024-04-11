@@ -535,6 +535,7 @@ void printBignum(Bignum *num) {
 }
 
 void printBignumExtended(Bignum *num, unsigned long long int specifiedLength) {
+    // Function to print Bignum.digits[] up to a specified length. This can be used to check if any integers greater than 0 exist past Bignum.length
     if (num->sign == negative) {
         printf("-");
     }
