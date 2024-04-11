@@ -217,48 +217,55 @@ int main (){
 						// Consume any extra characters in the input buffer
 						while (getchar() != '\n');
 
-					} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');	
+					} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
 
-					clearScreen();  
-					moveCursor((width - 20)/ 2, adjustedHeight);
-					char filename[100];
-					printf("Enter file name: ");
-					scanf("%s", filename);
-					
-					// TO BE CHANGED
-					char* publicKEY = malloc(1000000000 * sizeof(char));
-					if (publicKEY == NULL) {
-							fprintf(stderr, "Failed to allocate memory for publicKEY\n");
-							exit(1);
+					if (confirm == 'Y' || confirm == 'y') {
+						clearScreen();  
+						moveCursor((width - 20)/ 2, adjustedHeight);
+						char filename[100];
+						printf("Enter file name: ");
+						scanf("%s", filename);
+						
+						// TO BE CHANGED
+						char* publicKEY = malloc(1000000000 * sizeof(char));
+						if (publicKEY == NULL) {
+								fprintf(stderr, "Failed to allocate memory for publicKEY\n");
+								exit(1);
+						}
+						moveCursor((width - 20)/ 2, adjustedHeight + 1);
+						printf("Enter public key: ");
+						scanf("%s", publicKEY);
+
+						free(publicKEY);
+						
+						clearScreen();
+
+						clock_t start = clock();
+
+						// At this point, function calls can be made to ENCRYPT the MESSAGE. For now, the program will display a message that the MESSAGE IS ENCRYPTED.
+						moveCursor((width - 30)/ 2, adjustedHeight);
+						printf("Message encryption success!\n");
+						
+						clock_t end = clock();
+						double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+
+						moveCursor((width - 30)/ 2, adjustedHeight + 1);
+						printf("Function executed in: %f seconds\n", cpu_time_used);
+						moveCursor((width - 30)/ 2, adjustedHeight + 2);
+						printf("Encrypted ____ chracters in __ seconds\n");
+						// Add time and number of characters	
+				}
+					else {
+						clearScreen();
+						moveCursor((width - 25)/ 2, adjustedHeight);
+						printf("Message encryption failed!\n");
 					}
-					moveCursor((width - 20)/ 2, adjustedHeight + 1);
-					printf("Enter public key: ");
-					scanf("%s", publicKEY);
-
-					free(publicKEY);
-					
+				}
+				else {
 					clearScreen();
-
-					clock_t start = clock();
-
-					// At this point, function calls can be made to ENCRYPT the MESSAGE. For now, the program will display a message that the MESSAGE IS ENCRYPTED.
-					moveCursor((width - 30)/ 2, adjustedHeight);
-					printf("Message encryption success!\n");
-					
-					clock_t end = clock();
-					double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-
-					moveCursor((width - 30)/ 2, adjustedHeight + 1);
-					printf("Function executed in: %f seconds\n", cpu_time_used);
-					moveCursor((width - 30)/ 2, adjustedHeight + 2);
-					printf("Encrypted ____ chracters in __ seconds\n");
-					// Add time and number of characters	
-			}
-			else {
-				clearScreen();
-				moveCursor((width - 25)/ 2, adjustedHeight);
-				printf("Message encryption failed!\n");
-			}
+					moveCursor((width - 25)/ 2, adjustedHeight);
+					printf("Message encryption failed!\n");
+				}
 
 				waitForDONE(width, height);
 				clearScreen();
@@ -286,7 +293,6 @@ int main (){
 
 				} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
 
-				// clearScreen();
 				if (confirm == 'Y' || confirm == 'y') {
 					do {
 						clearLines(adjustedHeight + i + 1, adjustedHeight + i + 2, width);
@@ -302,7 +308,6 @@ int main (){
 					} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
 
 					if (confirm == 'Y' || confirm == 'y') {
-
 						clearScreen();  
 						moveCursor((width - 20)/ 2, adjustedHeight);
 						char filename[100];
@@ -337,7 +342,11 @@ int main (){
 						moveCursor((width - 30)/ 2, adjustedHeight + 2);
 						printf("Decrypted ____ characters in __ seconds\n");
 						// Add time and number of characters
-					
+					}
+					else {
+						clearScreen();
+						moveCursor((width - 25)/ 2, adjustedHeight);
+						printf("Message decryption failed!\n");
 					}
 				}
 				else {
@@ -345,7 +354,7 @@ int main (){
 					moveCursor((width - 25)/ 2, adjustedHeight);
 					printf("Message decryption failed!\n");
 				}
-
+			
 				waitForDONE(width, height);
 				clearScreen();
 				break;
@@ -377,8 +386,7 @@ int main (){
 					printf("%s\n", about2[i]);
 				}
 
-				char* about3[] = { "", "This is a programming project for Computer Programming 2 during the Academic Year", "2023-2024 at the Bicol University College of Science. The program is developed by the", "following students of Bicol University College of Science:", 
-					""};
+				char* about3[] = {"This is a programming project for Computer Programming 2 during the Academic Year", "2023-2024 at the Bicol University College of Science. The program is developed by the", "following students of Bicol University College of Science:"};
 				int about3Count = sizeof(about3) / sizeof(about3[0]);
 
 				for ( i = 0; i < about3Count; i++) {
@@ -407,5 +415,5 @@ int main (){
 		}
 	} while (userInput != 5);
 
-    return 0;
+return 0;
 }
