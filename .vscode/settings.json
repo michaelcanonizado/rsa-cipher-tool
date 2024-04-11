@@ -9,6 +9,7 @@
 		"algorithm": "c",
 		"time.h": "c",
 		"limits": "c",
-		"cmath": "c"
+		"cmath": "c",
+		"type_traits": "c"
 	}
 }
