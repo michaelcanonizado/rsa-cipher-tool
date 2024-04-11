@@ -1582,6 +1582,87 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     freeBignum(&dividendMinusMultiplyResult);
 }
 
+int powerBignum(Bignum *result, Bignum *base, Bignum *exponent) {
+    Bignum binaryExponent; 
+    initBignum(&binaryExponent);
+
+    bignumToBinary(&binaryExponent, exponent);
+
+    Bignum remainder;
+    Bignum baseCopy;
+
+    initBignum(&remainder);
+    initBignum(&baseCopy);
+
+    setBignum(&remainder, "1", positive);
+    copyBignum(&baseCopy, base);
+
+    Bignum tempRemainder;
+    Bignum tempBase;
+    initBignum(&tempRemainder);
+    initBignum(&tempBase);
+
+    for (unsigned long long int i = 0; i < binaryExponent.length; i++) {
+        resetBignum(&tempRemainder);
+        resetBignum(&tempBase);
+
+        setBignum(&tempRemainder, "1", positive);
+
+        if (binaryExponent.digits[i] == 1) {
+            printf("\n 1.0 -> r:");
+            printBignum(&remainder);
+            printf(" * a:");
+            printBignum(&baseCopy);
+
+            multiplyBignum(&tempRemainder, &remainder, &baseCopy);
+
+            printf(" = r:");
+            printBignum(&tempRemainder);
+
+            copyBignum(&remainder, &tempRemainder);
+        }
+
+        if (i == binaryExponent.length - 1) {
+            copyBignum(result, &remainder);
+
+            freeBignum(&binaryExponent); 
+            freeBignum(&remainder);
+            freeBignum(&baseCopy);
+            freeBignum(&tempRemainder);
+            freeBignum(&tempBase);
+            
+            return 0;
+        }
+        
+        printf("\n 0.0 -> a:");
+        printBignum(&baseCopy);
+        printf(" * a:");
+        printBignum(&baseCopy);
+
+        // base = base * base;
+        multiplyBignum(&tempBase, &baseCopy, &baseCopy);
+
+        printf(" = a:");
+        printBignum(&tempBase);
+
+        printf("\n");
+        copyBignum(&baseCopy, &tempBase);
+        printf("\n new remainder (r): ");
+        printBignum(&remainder);
+        printf("\n new base (a): ");
+        printBignum(&baseCopy);
+        printf("\n----------------------------");
+    }
+
+    freeBignum(&binaryExponent); 
+    freeBignum(&remainder);
+    freeBignum(&baseCopy);
+    freeBignum(&tempRemainder);
+    freeBignum(&tempBase);
+
+    return 0;
+}
+
 
 
 int halfBignum(Bignum *result, Bignum *num) {
