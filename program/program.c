@@ -73,7 +73,7 @@ void clearLines(int startLine, int endLine, int width) {
 void waitForDONE(int width, int height) {
 	char done[100];
 	do {
-		clearLines(height - 1, height + 1, width);
+		clearLines(height - 2, height, width);
 		moveCursor((width - 21)/ 2, height - 1);
 		printf("Enter DONE to back: ");
 		fgets(done, sizeof(done), stdin); // Read a line from stdin
@@ -181,6 +181,7 @@ int main (){
 				clearScreen();
 				break;
 			case 2:
+				clearScreen();
 				char* confirmENCRYPT[] = {"Encryption includes the message to be encrypted and", "the public key of the recipient. The txt file of the", "message must be in the same folder of the C program."};
 				int ENCRYPTcount = sizeof(confirmENCRYPT) / sizeof(confirmENCRYPT[0]);
 

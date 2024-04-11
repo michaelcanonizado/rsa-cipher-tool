@@ -67,7 +67,7 @@ char getConfirm(char confirm, int width, int adjustedHeight, int i) {
 void waitForDONE(int width, int height) {
 	char done[100];
 	do {
-		clearLines(height - 1, height + 1, width);
+		clearLines(height - 2, height, width);
 		moveCursor((width - 21)/ 2, height - 1);
 		printf("Enter DONE to back: ");
 		fgets(done, sizeof(done), stdin); // Read a line from stdin
@@ -230,6 +230,7 @@ int main() {
 					// Add time and number of characters		
 			}
 			else {
+				clearScreen();
 				moveCursor((width - 25)/ 2, adjustedHeight);
 				printf("Message encryption failed!\n");
 			}
@@ -330,6 +331,7 @@ int main() {
 				clearScreen();
 				break;
 			default:
+				clearScreen();
 				moveCursor((width - strlen(confirmDECRYPT[i]))/ 2, adjustedHeight + i);
 				printf("Exiting program...\n");
 				sleep(1);
