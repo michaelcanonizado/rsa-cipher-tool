@@ -112,7 +112,40 @@ int multiplyBignumGetRightHalf(Bignum *result, Bignum *num, unsigned long long i
     result->length = resultLength;
 }
 
+int bignumToBinary(Bignum *result, Bignum *num) {
 
+    int remainderTemp;
+    unsigned long long int binaryLength = 0;
+
+    Bignum numTemp; 
+    Bignum remainder; 
+    Bignum two; 
+
+    initBignum(&numTemp); 
+    initBignum(&remainder); 
+    initBignum(&two); 
+
+    copyBignum(&numTemp, num);
+
+    intToBignum(&two, 2, positive);
+    while(!isBignumZero(&numTemp)) {
+        if (numTemp.digits[0] % 2 == 0) {
+            result->digits[binaryLength++] = 0;
+        } else {
+            result->digits[binaryLength++] = 1;
+        }
+
+        halfBignum(&numTemp, &numTemp);
+    }
+
+    result->length = binaryLength;
+
+    freeBignum(&numTemp); 
+    freeBignum(&remainder); 
+    freeBignum(&two); 
+
+    return 0;
+}
 
 
 
