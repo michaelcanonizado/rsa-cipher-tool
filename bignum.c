@@ -1583,17 +1583,26 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
 }
 
 int powerBignum(Bignum *result, Bignum *base, Bignum *exponent) {
+    // Function to calculate the power of a Bignum (x^n).
+    // Uses binary exponentiation to calculate the power in O(log(n)) time complexity. Reference: https://www.youtube.com/watch?v=9VEqjAZxmeA&t=387s
+
+    // The reference above worked on the exponent itself by modulo'ing the exponent by 2 to get the last binary bit of the number, then dividing the exponent by 2 to reduce the exponent. This function will instead, Convert the exponent to binary as the functions used in bignumToBinary() are faster than using moduloBignum() and divideBignum() to reduce the exponent; and iterate over the binary represented exponent, then perform the operations in the video.
+
     Bignum binaryExponent; 
     initBignum(&binaryExponent);
 
+    // Convert the exponent to binary
     bignumToBinary(&binaryExponent, exponent);
 
+    // Use temporary Bignums as multiplyBignum() can't overwrite the result Bignum.
+    // E.g: multiplyBignum(base, base, base );  <- Bignum base won't be overwritten
     Bignum remainder;
     Bignum baseCopy;
 
     initBignum(&remainder);
     initBignum(&baseCopy);
 
+    // Start remainder at 1
     setBignum(&remainder, "1", positive);
     copyBignum(&baseCopy, base);
 
@@ -1602,17 +1611,20 @@ int powerBignum(Bignum *result, Bignum *base, Bignum *exponent) {
     initBignum(&tempRemainder);
     initBignum(&tempBase);
 
+    // Iterate through binaryExpont starting from the LSB (least significant bit)
     for (unsigned long long int i = 0; i < binaryExponent.length; i++) {
         resetBignum(&tempRemainder);
         resetBignum(&tempBase);
 
-        setBignum(&tempRemainder, "1", positive);
-
+        // If current bit is 1:
+        // remainder = remainder * base
         if (binaryExponent.digits[i] == 1) {
             multiplyBignum(&tempRemainder, &remainder, &baseCopy);
             copyBignum(&remainder, &tempRemainder);
         }
 
+        // If the iteration is at the last bit of the binary, copy remainder to result. Next step is not needed:
+        // function will perform the Bignum operations below, exit the for-loop, then a copyBignum(result,&remainder) would be needed to be performed before exiting the function --Exiting early at the last bit will save 2 operations.
         if (i == binaryExponent.length - 1) {
             copyBignum(result, &remainder);
 
@@ -1625,6 +1637,7 @@ int powerBignum(Bignum *result, Bignum *base, Bignum *exponent) {
             return 0;
         }
         
+        // base = base * base
         multiplyBignum(&tempBase, &baseCopy, &baseCopy);
         copyBignum(&baseCopy, &tempBase);
     }
