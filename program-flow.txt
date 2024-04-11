@@ -78,7 +78,7 @@ HOME)
     Screen output
         RSA Cipher Tool with Custom Bignum Library
 
-        This is a program that uses the RSA (Rivest, Shamir, Adleman) Algorithm to generate public and private keys needed to encrypt and decrypt messages.
+        The RSA Cipher Tool program generates, encrypts, and decrypts messages using the RSA algorithm. The program uses the RSA (Rivest, Shamir, Adleman) Algorithm to generate public and private keys needed to encrypt and decrypt messages and a custom bignum library to handle large numbers.
 
         The user will use the program to encrypt a message in a file, where it will then return the encrypted/secret message. Then, they can now send it to the recipient of the message safely, where they can also use the same program to decrypt the message and reveal the actual message.
 
