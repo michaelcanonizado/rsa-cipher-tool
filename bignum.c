@@ -368,6 +368,8 @@ void freeBignum(Bignum *num) {
 }
 
 void printBignumNodeList() {
+    // Function to print the linked list of Bignums
+
     BignumNode *tempNode = bignumListHead;
 
     if (bignumListHead == NULL) {
@@ -379,6 +381,10 @@ void printBignumNodeList() {
     while(tempNode != NULL) {
         printf("%p.%p -> ", tempNode->value, tempNode->value->digits);
         tempNode = tempNode->next;
+
+        if (tempNode == NULL) {
+            printf("NULL");
+        }
     }
 }
 
