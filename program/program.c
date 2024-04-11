@@ -73,13 +73,15 @@ void clearLines(int startLine, int endLine, int width) {
 void waitForDONE(int width, int height) {
 	char done[100];
 	do {
-		clearLines(height - 2, height, width);
-		moveCursor((width - 21)/ 2, height - 1);
+		clearLines(height - 2, height - 2, width);
+		moveCursor((width - 21)/ 2, height - 2);
 		printf("Enter DONE to back: ");
 		fgets(done, sizeof(done), stdin); // Read a line from stdin
 
 		// Remove the newline character at the end of the input
-		done[strcspn(done, "\n")] = 0;
+		if (done[strlen(done) - 1] == '\n') {
+			done[strlen(done) - 1] = '\0';
+		}
 
 		// If the input was just a newline character, continue with the next iteration
 		if (strlen(done) == 0) {
@@ -91,7 +93,7 @@ void waitForDONE(int width, int height) {
 			done[i] = tolower(done[i]);
 		}
 
-		moveCursor((width - 21)/ 2, height - 1);
+		moveCursor((width - 21)/ 2, height - 2);
 
 	} while (strcmp(done, "done") != 0);
 }
@@ -363,7 +365,6 @@ int main (){
 					moveCursor((width - strlen(about[i]))/ 2, height / 4 + i + 2);
 					printf("%s\n", about[i]);
 				}
-
 				
 				char* about2[] = {
 					"The user will use the program to encrypt a message in a file, where it will then return the", 
