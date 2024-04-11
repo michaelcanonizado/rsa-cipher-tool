@@ -228,7 +228,9 @@ void freeAllBignums() {
 }
 
 void freeBignum(Bignum *num) {
+    // Function to free a specified Bignum. This function should be used to free Bignums that are nested. Bignum must be freed immediately after use to minimize heap usage, and allow future Bignums to use the heap.
 
+    // If only one node is in the linked list
     if (bignumListHead->next == NULL) {
 
         if (bignumListHead->value == NULL) {
@@ -267,12 +269,13 @@ void freeBignum(Bignum *num) {
 
         // printf("\nFreeing %p->%p.%p with freeBignum(). (1)", bignumListHead, bignumListHead->value, bignumListHead->value->digits);
 
+        // Store head in a temporary node
         BignumNode *toRemoveNode = bignumListHead;
-
+        // Free temporary node
         free(toRemoveNode->value->digits);
         toRemoveNode->value->digits = NULL;
         free(toRemoveNode);
-
+        // Point head to the next pointer (NULL)
         bignumListHead = bignumListHead->next;
 
         FREED_BIGNUMS_COUNT++;
@@ -280,6 +283,7 @@ void freeBignum(Bignum *num) {
         return;
     }
 
+    // If linked list is more than 1 node, but the target Bignum is at the head
     if (bignumListHead->value == num) {
 
         if (bignumListHead->value->digits == NULL) {
@@ -302,9 +306,12 @@ void freeBignum(Bignum *num) {
 
         // printf("\nFreeing %p->%p.%p with freeBignum(). (2)",bignumListHead, bignumListHead->value, bignumListHead->value->digits);
 
+        // Store the head in a temporary node
         BignumNode *toRemoveNode = bignumListHead;
+        // Point head to the next node
         bignumListHead = bignumListHead->next;
 
+        // Free target node
         free(toRemoveNode->value->digits);
         toRemoveNode->value->digits = NULL;
         free(toRemoveNode);
@@ -314,6 +321,8 @@ void freeBignum(Bignum *num) {
         return;
     }
 
+
+    // If target node is not at the head, search the rest of the linked list. Use a previous node to track the node before the target Bignum, and a temporary node to check if the current node is the target Bignum.
     BignumNode *prevNode = bignumListHead;
     BignumNode *tempNode = prevNode->next;
 
@@ -340,8 +349,9 @@ void freeBignum(Bignum *num) {
 
             // printf("\nFreeing %p->%p.%p with freeBignum(). (3)", tempNode, tempNode->value, tempNode->value->digits);
             
+            // Point previous node to the node that the target Bignum is pointing to
             prevNode->next = tempNode->next;
-
+            // Free the target node
             free(tempNode->value->digits);
             tempNode->value->digits = NULL;
             free(tempNode);
