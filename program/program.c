@@ -218,7 +218,7 @@ int main (){
 					} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');	
 
 					clearScreen();  
-					moveCursor((width - 30)/ 2, adjustedHeight);
+					moveCursor((width - 20)/ 2, adjustedHeight);
 					char filename[100];
 					printf("Enter file name: ");
 					scanf("%s", filename);
@@ -229,7 +229,7 @@ int main (){
 							fprintf(stderr, "Failed to allocate memory for publicKEY\n");
 							exit(1);
 					}
-					moveCursor((width - 30)/ 2, adjustedHeight + 1);
+					moveCursor((width - 20)/ 2, adjustedHeight + 1);
 					printf("Enter public key: ");
 					scanf("%s", publicKEY);
 
@@ -302,7 +302,7 @@ int main (){
 					if (confirm == 'Y' || confirm == 'y') {
 
 						clearScreen();  
-						moveCursor((width - 30)/ 2, adjustedHeight);
+						moveCursor((width - 20)/ 2, adjustedHeight);
 						char filename[100];
 						printf("Enter file name: ");
 						scanf("%s", filename);
@@ -313,7 +313,7 @@ int main (){
 							printf("Failed to allocate memory for privateKEY\n");
 							exit(1);
 						}
-						moveCursor((width - 30)/ 2, adjustedHeight + 1);
+						moveCursor((width - 20)/ 2, adjustedHeight + 1);
 						printf("Enter private key: ");
 						scanf("%s", privateKEY);
 
