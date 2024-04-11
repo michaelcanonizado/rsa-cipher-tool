@@ -199,7 +199,7 @@ void freeAllBignums() {
             printf("\n\tFunction: freeAllBignums()");
         }
 
-        printf("\nFreeing %p.%p with freeAllBignums()", tempNode->value, tempNode->value->digits);
+        // printf("\nFreeing %p.%p with freeAllBignums()", tempNode->value, tempNode->value->digits);
 
         tempNode = tempNode->next;
 
@@ -248,13 +248,14 @@ void freeBignum(Bignum *num) {
             exit(-3);
         }
 
-        // printf("\nFreeing %p.%p with freeBignum(). (1)", bignumListHead->value, bignumListHead->value->digits);
+        printf("\nFreeing %p->%p.%p with freeBignum(). (1)", bignumListHead, bignumListHead->value, bignumListHead->value->digits);
 
         free(bignumListHead->value->digits);
         bignumListHead->value->digits = NULL;
-        free(bignumListHead);
 
-        bignumListHead = NULL;
+        BignumNode *toRemoveNode = bignumListHead;
+        bignumListHead = bignumListHead->next;
+        free(toRemoveNode);
 
         FREED_BIGNUMS_COUNT++;
 
@@ -289,15 +290,14 @@ void freeBignum(Bignum *num) {
             exit(-6);
         }
 
-        // printf("\nFreeing %p.%p with freeBignum(). (2)", bignumListHead->value, bignumListHead->value->digits);
+        printf("\nFreeing %p->%p.%p with freeBignum(). (2)",bignumListHead, bignumListHead->value, bignumListHead->value->digits);
 
         BignumNode *toRemoveNode = bignumListHead;
-
-        free(bignumListHead->value->digits);
-        bignumListHead->value->digits = NULL;
-        free(bignumListHead);
-
         bignumListHead = bignumListHead->next;
+
+        free(toRemoveNode->value->digits);
+        toRemoveNode->value->digits = NULL;
+        free(toRemoveNode);
 
         FREED_BIGNUMS_COUNT++;
 
@@ -336,7 +336,7 @@ void freeBignum(Bignum *num) {
                 exit(-9);
             }
 
-            // printf("\nFreeing %p.%p with freeBignum(). (3)", tempNode->value, tempNode->value->digits);
+            printf("\nFreeing %p->%p.%p with freeBignum(). (3)", tempNode, tempNode->value, tempNode->value->digits);
             
             prevNode->next = tempNode->next;
 
@@ -368,7 +368,6 @@ void printBignumNodeList() {
         printf("%p.%p -> ", tempNode->value, tempNode->value->digits);
         tempNode = tempNode->next;
     }
-    printf("\n");
 }
 
 void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
