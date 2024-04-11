@@ -421,7 +421,7 @@ void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
             printf("\n\tExit code: -1\n\n\n");
 
             freeAllBignums();
-            
+
             exit(-1);
         }
 
@@ -471,10 +471,10 @@ void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN 
 }
 
 long long int bignumToInt(Bignum *num) {
-    // Function will convert a Bignum to an integer.
+    // Function will convert a Bignum to an long long integer (maximum data type as negative Bignums can also be converted).
 
     // Get maximum number of digits of long long int. 
-    int maxNumOfDigits = (int)log10((double)MAX_VALUE_OF_LONG_LONG_INT) + 1;
+    int maxNumOfDigits = getLengthOfInteger(MAX_VALUE_OF_LONG_LONG_INT) + 1;
 
     // REFACTOR: THIS MUST THROW A PROPER ERROR. A BIGNUM WITH Bignum.digits[] = [0] and Bignum.length = 1 IS A VALID BIGNUM THAT CAN BE CONVERTED TO AN INTEGER. INSTEAD OF RETURNING THE RESULT, USE A POINTER PARAMETER TO POINT TO THE RESULT VARIABLE, AND THE RETURN SHOULD ONLY BE ERROR CODES.
 
