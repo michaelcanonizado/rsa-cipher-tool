@@ -57,6 +57,7 @@ void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend);
 int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier);
 int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor);
 int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor);
+int powerBignum(Bignum *result, Bignum *base, Bignum *exponent);
 
 int halfBignum(Bignum *result, Bignum *num);
 int generateRandomBignum(Bignum *result, unsigned long long int numOfDigits, BIGNUM_SIGN sign);
