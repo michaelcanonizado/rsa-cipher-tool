@@ -1609,16 +1609,7 @@ int powerBignum(Bignum *result, Bignum *base, Bignum *exponent) {
         setBignum(&tempRemainder, "1", positive);
 
         if (binaryExponent.digits[i] == 1) {
-            printf("\n 1.0 -> r:");
-            printBignum(&remainder);
-            printf(" * a:");
-            printBignum(&baseCopy);
-
             multiplyBignum(&tempRemainder, &remainder, &baseCopy);
-
-            printf(" = r:");
-            printBignum(&tempRemainder);
-
             copyBignum(&remainder, &tempRemainder);
         }
 
@@ -1634,24 +1625,8 @@ int powerBignum(Bignum *result, Bignum *base, Bignum *exponent) {
             return 0;
         }
         
-        printf("\n 0.0 -> a:");
-        printBignum(&baseCopy);
-        printf(" * a:");
-        printBignum(&baseCopy);
-
-        // base = base * base;
         multiplyBignum(&tempBase, &baseCopy, &baseCopy);
-
-        printf(" = a:");
-        printBignum(&tempBase);
-
-        printf("\n");
         copyBignum(&baseCopy, &tempBase);
-        printf("\n new remainder (r): ");
-        printBignum(&remainder);
-        printf("\n new base (a): ");
-        printBignum(&baseCopy);
-        printf("\n----------------------------");
     }
 
     freeBignum(&binaryExponent); 
