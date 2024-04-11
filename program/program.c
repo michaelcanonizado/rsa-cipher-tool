@@ -410,7 +410,7 @@ int main (){
 				clearScreen();
 				moveCursor((width - 20)/ 2, adjustedHeight + i);
 				printf("Exiting program...\n");
-				sleepProgram(1000);
+				sleepProgram(500);
 				break;
 		}
 	} while (userInput != 5);
