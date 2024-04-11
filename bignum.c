@@ -517,7 +517,7 @@ int resetBignum(Bignum *num) {
 }
 
 void copyBignum(Bignum *result, Bignum *num) {
-    // Function to copy the contents of a Bignum to another Bignum
+    // Function to copy the contents of a Bignum to another Bignum. It will copy the whole Bignum.digits[] instead of copying uptil the length to overwrite and previous integers stored in Bignum.digits[]
     memcpy(result->digits, num->digits, sizeof(int) * DEFAULT_BIGNUM_LENGTH);
     result->length = num->length;
     result->sign = num->sign;
