@@ -125,7 +125,7 @@ int main (){
 	int adjustedHeight = height / 3;
 	// This can't be applied to the x-axis as the outputs are displayed at the center of the screen. The x-axis is adjusted by subtracting the length of the string from the width of the screen and dividing the result by 2. It is depedent on the length of the string to be displayed
 	
-	char * optionsArr[5] = {"1) Generate Keys", "2) Encrypt Text", "3) Decrypt Text", "4) About Us", "5) Exit program"};
+	char * optionsArr[5] = {"1) Generate Keys", "2) Encrypt Text", "3) Decrypt Text", "4) About", "5) Exit program"};
 
 	int i, userInput;
 	char confirm;
@@ -333,7 +333,7 @@ int main (){
 						moveCursor((width - 30)/ 2, adjustedHeight + 1);
 						printf("Function executed in: %f seconds\n", cpu_time_used);
 						moveCursor((width - 30)/ 2, adjustedHeight + 2);
-						printf("Decrypted ____ chracters in __ seconds\n");
+						printf("Decrypted ____ characters in __ seconds\n");
 						// Add time and number of characters
 					
 					}
@@ -349,8 +349,51 @@ int main (){
 				break;
 			case 4:
 				clearScreen();
-				moveCursor((width - 10)/ 2, adjustedHeight + i);
-				printf("about us\n");
+				moveCursor((width - 45)/ 2, height / 4);
+				printf("RSA Cipher Tool with Custom Bignum Library");
+
+				char* about[] = {
+					"The RSA Cipher Tool program generates, encrypts, and decrypts messages using the RSA", 
+					"algorithm. The program uses the RSA (Rivest, Shamir, Adleman) Algorithm to generate public", 
+					"and private keys needed to encrypt and decrypt messages and a custom bignum library to", 
+					"handle large numbers numbers for the RSA encryption and decryption processes."};
+				int aboutCount = sizeof(about) / sizeof(about[0]);
+
+				for ( i = 0; i < aboutCount; i++) {
+					moveCursor((width - strlen(about[i]))/ 2, height / 4 + i + 2);
+					printf("%s\n", about[i]);
+				}
+
+				
+				char* about2[] = {
+					"The user will use the program to encrypt a message in a file, where it will then return the", 
+					"encrypted/secret message. Then, they can now send it to the recipient of the message safely,",
+					"where they can also use the same program to decrypt the message and reveal the actual message."};
+				int about2Count = sizeof(about2) / sizeof(about2[0]);
+				
+				for ( i = 0; i < about2Count; i++) {
+					moveCursor((width - strlen(about2[i]))/ 2, height / 4 + i + 7);
+					printf("%s\n", about2[i]);
+				}
+
+				char* about3[] = { "", "This is a programming project for Computer Programming 2 during the Academic Year", "2023-2024 at the Bicol University College of Science. The program is developed by the", "following students of Bicol University College of Science:", 
+					""};
+				int about3Count = sizeof(about3) / sizeof(about3[0]);
+
+				for ( i = 0; i < about3Count; i++) {
+					moveCursor((width - strlen(about3[i]))/ 2, height / 4 + i + 10);
+					printf("%s\n", about3[i]);
+				}
+
+				char* members[] = { "Michael Xavier Canonizado", "Deanne Clarice Bea", "Simon Narvaez", "Marc Jordan Campopos"};
+
+				int membersCount = sizeof(members) / sizeof(members[0]);
+
+				for ( i = 0; i < membersCount; i++) {
+					moveCursor((width - strlen(members[i]))/ 2, height / 4 + i + 14);
+					printf("%s\n", members[i]);
+				}
+
 				waitForDONE(width, height);
 				clearScreen();
 				break;
