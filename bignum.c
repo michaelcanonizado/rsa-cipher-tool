@@ -214,6 +214,9 @@ void freeAllBignums() {
         if (bignumListHead->value == NULL) {
             printf("\nBignum %p.%p is NULL",bignumListHead->value,bignumListHead->value->digits);
         }
+        // Clear Bignum.digits[]
+        memset(bignumListHead->value->digits, 0, sizeof(int) * DEFAULT_BIGNUM_LENGTH);
+        // Free allcoated memory
         free(bignumListHead->value->digits);
         free(bignumListHead);
 
