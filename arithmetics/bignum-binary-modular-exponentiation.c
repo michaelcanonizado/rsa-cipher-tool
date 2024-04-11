@@ -197,18 +197,19 @@ int main() {
     initBignum(&divisor); 
     initBignum(&result);
 
-    setBignum(&base, "72", positive);
-    setBignum(&exponent, "231291283937123014839371230149089123912390891239123", positive);
-    setBignum(&divisor, "4121136789122390891239135124123", positive);
+    setBignum(&base, "8393718393712309371230148391483937123", positive);
+    setBignum(&exponent, "2313937183937123093712139371371230114839237123093712139371371230168", positive);
+    setBignum(&divisor, "2313937183937123093712139371371230114839237123093712139371371230179", positive);
 
     bignumToBinary(&binaryExponent, &exponent);
-    bignumBinaryModularExponentiationCompressed(&result, &base, &binaryExponent, &divisor);
     
     printf("\n\n\n");
     printBignum(&exponent);
     printf(" in binary (%llu digits):\n", exponent.length);
     printBignum(&binaryExponent);
     printf("\n\nBinary Length: %llu", binaryExponent.length);
+
+    bignumBinaryModularExponentiationCompressed(&result, &base, &binaryExponent, &divisor);
 
     printf("\n\n\nRESULT: ");
     printBignum(&result);
