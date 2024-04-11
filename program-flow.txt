@@ -72,6 +72,21 @@ HOME)
 3.6) loop back to HOME
 
 
+--------------------------------------------
 
+4) About
+    Screen output
+        RSA Cipher Tool with Custom Bignum Library
 
+        This is a program that uses the RSA (Rivest, Shamir, Adleman) Algorithm to generate public and private keys needed to encrypt and decrypt messages.
 
+        The user will use the program to encrypt a message in a file, where it will then return the encrypted/secret message. Then, they can now send it to the recipient of the message safely, where they can also use the same program to decrypt the message and reveal the actual message.
+
+        This is a programming project for Computer Programming 2 during the Academic Year 2023-2024 at the Bicol University College of Science.
+
+        Members: 
+                Michael Xavier Canonizado 
+                Deanne Clarice Bea	
+                Simon Narvaez	
+                Marc Jordan Campopos
+    
