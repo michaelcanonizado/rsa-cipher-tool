@@ -83,6 +83,8 @@ int bignumBinaryExponentiation(Bignum *result, Bignum *base, Bignum *binaryExpon
     initBignum(&tempRemainder);
     initBignum(&tempBase);
 
+    printf("\n-> For loop - S ");
+
     for (unsigned long long int i = 0; i < binaryExponent->length; i++) {
         resetBignum(&tempRemainder);
         resetBignum(&tempBase);
@@ -90,20 +92,19 @@ int bignumBinaryExponentiation(Bignum *result, Bignum *base, Bignum *binaryExpon
         setBignum(&tempRemainder, "1", positive);
 
         if (binaryExponent->digits[i] == 1) {
-            multiplyBignum(&tempRemainder, &remainder, &baseCopy);
-
-            printf("\n 1.0 -> ");
-            printBignum(&tempRemainder);
-            printf(" = ");
+            printf("\n 1.0 -> r:");
             printBignum(&remainder);
-            printf(" * ");
+            printf(" * a:");
             printBignum(&baseCopy);
 
+            multiplyBignum(&tempRemainder, &remainder, &baseCopy);
+
+            printf(" = r:");
+            printBignum(&tempRemainder);
+
+            copyBignum(&remainder, &tempRemainder);
         }
 
-        // if (i == binaryExponent->length - 1) {
-        //     return remainder;
-        // }
         if (i == binaryExponent->length - 1) {
             copyBignum(result, &tempRemainder);
 
@@ -111,25 +112,31 @@ int bignumBinaryExponentiation(Bignum *result, Bignum *base, Bignum *binaryExpon
             freeBignum(&baseCopy);
             freeBignum(&tempRemainder);
             freeBignum(&tempBase);
-
+            printf("\n-> For loop - E1 ");
             return 0;
         }
         
+        printf("\n 0.0 -> a:");
+        printBignum(&baseCopy);
+        printf(" * a:");
+        printBignum(&baseCopy);
+
         // base = base * base;
         multiplyBignum(&tempBase, &baseCopy, &baseCopy);
 
-        printf("\n 0.0 -> ");
+        printf(" = a:");
         printBignum(&tempBase);
-        printf(" = ");
-        printBignum(&baseCopy);
-        printf(" * ");
-        printBignum(&baseCopy);
 
-        copyBignum(&remainder, &tempRemainder);
+        printf("\n");
         copyBignum(&baseCopy, &tempBase);
-
+        printf("\n new remainder (r): ");
+        printBignum(&remainder);
+        printf("\n new base (a): ");
+        printBignum(&baseCopy);
         printf("\n----------------------------");
     }
+
+    printf("\n-> For loop - E2 ");
 
     copyBignum(result, &remainder);
 
@@ -154,8 +161,8 @@ int main(void) {
     initBignum(&binaryExponent); 
     initBignum(&result);
 
-    setBignum(&base, "987654321987654321", positive);
-    setBignum(&exponent, "12", positive);
+    setBignum(&base, "987", positive);
+    setBignum(&exponent, "123", positive);
 
     bignumToBinary(&binaryExponent, &exponent);
 
@@ -165,19 +172,11 @@ int main(void) {
     printBignum(&binaryExponent);
     printf("\nBinary Length: %llu", binaryExponent.length);
 
-    unsigned long long baseInt = 15;
-    unsigned long long exponentInt = 16;
-
-    unsigned long long int resultInt;
-    // resultInt = binaryExponentiation(baseInt, &binaryExponent);
-
     printf("\n\n----------------------------\n\n");
 
     bignumBinaryExponentiation(&result, &base, &binaryExponent);
 
     printf("\n\n----------------------------------------------\n--------------------RESULT--------------------\n----------------------------------------------\n\n");
-    
-    printf("INT:  %llu  ^  %llu  =   %llu", baseInt, exponentInt, resultInt);
 
     printf("\n\nBIGNUM:  ");
     printBignum(&base);
