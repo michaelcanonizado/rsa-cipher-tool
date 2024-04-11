@@ -274,6 +274,8 @@ void freeBignum(Bignum *num) {
 
         // Store head in a temporary node
         BignumNode *toRemoveNode = bignumListHead;
+        // Clear Bignum.digits[]
+        memset(toRemoveNode->value->digits, 0, sizeof(int) * DEFAULT_BIGNUM_LENGTH);
         // Free temporary node
         free(toRemoveNode->value->digits);
         toRemoveNode->value->digits = NULL;
@@ -314,6 +316,8 @@ void freeBignum(Bignum *num) {
         // Point head to the next node
         bignumListHead = bignumListHead->next;
 
+        // Clear Bignum.digits[]
+        memset(toRemoveNode->value->digits, 0, sizeof(int) * DEFAULT_BIGNUM_LENGTH);
         // Free target node
         free(toRemoveNode->value->digits);
         toRemoveNode->value->digits = NULL;
@@ -354,6 +358,9 @@ void freeBignum(Bignum *num) {
             
             // Point previous node to the node that the target Bignum is pointing to
             prevNode->next = tempNode->next;
+
+             // Clear Bignum.digits[]
+            memset(tempNode->value->digits, 0, sizeof(int) * DEFAULT_BIGNUM_LENGTH);
             // Free the target node
             free(tempNode->value->digits);
             tempNode->value->digits = NULL;
