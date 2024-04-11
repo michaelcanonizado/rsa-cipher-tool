@@ -160,8 +160,11 @@ BignumNode* createNewBignumNode(Bignum *num) {
 }
 
 void initBignum(Bignum *num) {
-    BignumNode *bignumNode;
+    // Function to initialize a Bignum to its default values and allocate an array for Bignum.digits[].
+    // The allocated Bignum.digits[] will be tracked in a linked list, to be freed after using the Bignum.
 
+    // Allocate memory for Bignum.digits[]. Use calloc() to set all indexes of the array to 0.
+    BignumNode *bignumNode;
     int *digitsPtr = (int*)calloc(DEFAULT_BIGNUM_LENGTH, sizeof(int));
 
     if (digitsPtr == NULL) {
@@ -171,17 +174,18 @@ void initBignum(Bignum *num) {
 
     // printf("\nCreated %p.%p Bignum in initBignum(). (1)", num, digitsPtr);
     
-
+    // Set the Bignum members to its default values
     num->digits = digitsPtr;
+    num->length = 0;
+    num->sign = positive;
 
+    // Add Bignum's address to the linked list to track it
     bignumNode = createNewBignumNode(num);
     bignumNode->next = bignumListHead;
     bignumListHead = bignumNode;
 
     ALLOCATED_BIGNUMS_COUNT++;
 
-    num->length = 0;
-    num->sign = positive;
 }
 
 void freeAllBignums() {
