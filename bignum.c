@@ -419,6 +419,9 @@ void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
             printf("\n\nPassed numStr in setBignum() is invalid. Please make sure the passed numStr contains only number characters '0'-'9'...");
             printf("\n\tFunction: setBignum()");
             printf("\n\tExit code: -1\n\n\n");
+
+            freeAllBignums();
+            
             exit(-1);
         }
 
