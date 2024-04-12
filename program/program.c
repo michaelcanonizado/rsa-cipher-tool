@@ -4,6 +4,7 @@
 #include <time.h>
 #include <ctype.h>
 
+// Includes the appropriate header file to use operating system-specific functions. This is useful for functions like clearing the screen, moving the cursor, and getting the terminal size.
 #ifdef _WIN32
 	#include <windows.h>
 #else
@@ -12,20 +13,34 @@
 #endif
 
 // Function prototypes
-void getTerminalSize(int *width, int *height);
-void clearScreen();
-void sleepProgram(int milliseconds);
-void moveCursor(int x, int y);
-void clearLines(int startLine, int endLine, int width);
-void waitForInput(char *message);
-char getConfirm();
-int displayMessage(char *message[], int count, int width, int height);
-void displayAbout(char *message[], int count, int width, int height, int offsestY);
-void generateKeys(int width, int height, int i);
-void encryptText(int width, int height);
-void decryptText(int width, int height);
-void aboutProgram(int width, int height);
+	// Function to get the terminal size. This function will set the width and height variables to the width and height of the terminal, respectively. The function will use operating system-specific functions to get the terminal size.
+	void getTerminalSize(int *width, int *height);
+	// Function to clear the screen. This function will clear the screen using operating system-specific functions.
+	void clearScreen();
+	// Function to sleep the program. This function will pause the program for a specified number of milliseconds using operating system-specific functions.
+	void sleepProgram(int milliseconds);
+	// Function to move the cursor. This function will move the cursor to the specified x and y coordinates using operating system-specific functions.
+	void moveCursor(int x, int y);
+	// Function to clear lines. This function will clear the specified lines starting from the startLine to the endLine using the specified width.
+	void clearLines(int startLine, int endLine, int width);
+	// Function to wait for the user to input "DONE" to continue.
+	void waitForInput(char *message);
+	// Function to get the user's confirmation. This function will get the user's confirmation by asking the user to input 'Y' or 'N' and return the input.
+	char getConfirm();
+	// Function to display a message with the specified width and height and return the number of lines displayed.
+	int displayMessage(char *message[], int count, int width, int height);
+	// Function to display the About message. Separate function was made because it starts at a different y position.
+	void displayAbout(char *message[], int count, int width, int height, int offsestY);
+	// Function to generate the public and private keys for the RSA algorithm.
+	void generateKeys(int width, int height, int i);
+	// Function to encrypt the text using the RSA algorithm.
+	void encryptText(int width, int height);
+	// Function to decrypt the text using the RSA algorithm.
+	void decryptText(int width, int height);
+	// Function to display information about the program.
+	void aboutProgram(int width, int height);
 
+// Global variables
 char confirm;
 int offsetY;
 char fileName[100];
@@ -38,6 +53,7 @@ int main() {
 	getTerminalSize(&width, &height);
 	printf("Width: %d\nHeight: %d\n", width, height);
 
+	// Since the horizontal positioning of the outputs can be adjusted by incrementing the y-axis, this integer variable stores value of the height divided by 3 as all the outputs starts to be displayed at this value. This can't be applied to the x-axis as the outputs are displayed at the center of the screen. The x-axis is adjusted by subtracting the length of the string from the width of the screen and dividing the result by 2. It is depedent on the length of the string to be displayed.
 	int adjustedHeight = height / 3;
 	int i, userInput;
 
@@ -51,7 +67,8 @@ int main() {
 		moveCursor((width - 10)/ 2, adjustedHeight + i);
 		printf("Enter number: ");
 		scanf("%d", &userInput);
-		while (getchar() != '\n'); // Clear input buffer
+		// Consume any extra characters in the input buffer to prevent an infinite loop
+		while (getchar() != '\n');
 
 		switch (userInput) {
 			case 1:
@@ -143,7 +160,8 @@ do {
 	clearLines(height - 2, height - 2, width);
 	moveCursor((width - 21)/ 2, height - 2);
 	printf("Enter DONE to back: ");
-	fgets(done, sizeof(done), stdin); // Read a line from stdin
+	// Get the user's input from the standard input stream	
+	fgets(done, sizeof(done), stdin); 
 
 	// Remove the newline character at the end of the input
 	if (done[strlen(done) - 1] == '\n') {
@@ -155,7 +173,7 @@ do {
 		continue;
 	}
 
-	// Convert the user's input to lowercase
+	// Convert the user's input to lowercase. This allows the user to enter "done" or "DONE" to exit the loop in any case.
 	for(int i = 0; done[i]; i++){
 		done[i] = tolower(done[i]);
 	}
@@ -212,14 +230,15 @@ void generateKeys(int width, int adjustedHeight, int i) {
 		printf("Do you agree to save a copy of your\n");
 		moveCursor((width - 32)/ 2, adjustedHeight + offsetY + 1);
 		printf("private and public keys? [Y/N] ");
-		// The user can press Y or N to confirm or deny the generation of keys
 		confirm = getConfirm(width, adjustedHeight, offsetY + 1);
 
 	} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
 
 	clearScreen();	
 	if (confirm == 'Y' || confirm == 'y') {
+		
 		// At this point, function calls can be made to generate the keys. For now, the program will display a message that the keys are generated.
+
 		moveCursor((width - 30)/ 2, adjustedHeight);
 		printf("Keys generated successfully!\n");
 	} else {
@@ -243,7 +262,6 @@ void encryptText(int width, int adjustedHeight) {
 		clearLines(adjustedHeight + offsetY, adjustedHeight + offsetY, width);
 		moveCursor((width - 60)/ 2, adjustedHeight + offsetY);
 		printf("Is the txt file in the same folder of the C program? [Y/N] ");
-		// The user can press Y or N to confirm or deny the encryption of the message
 		confirm = getConfirm(width, adjustedHeight, offsetY + 1);
 
 	} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
@@ -253,7 +271,6 @@ void encryptText(int width, int adjustedHeight) {
 			clearLines(adjustedHeight + offsetY + 1, adjustedHeight + offsetY + 2, width);
 			moveCursor((width - 47)/ 2, adjustedHeight + offsetY + 1);
 			printf("Do you have the recipient's public key? [Y/N] ");
-			// The user can press Y or N to confirm or deny the encryption of the message
 			confirm = getConfirm(width, adjustedHeight, offsetY + 2);
 
 		} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
@@ -272,8 +289,8 @@ void encryptText(int width, int adjustedHeight) {
 					fileName[strlen(fileName) - 1] = '\0';
 				}
 		
-				// Try to open the file for reading and writing
-				file = fopen(fileName, "r+");
+				// Try to open the file for reading and appending. If the file does not exist, it will be created.
+				file = fopen(fileName, "a+");
 		
 				if (file == NULL) {
 					// If the file could not be opened, print an error message
@@ -284,7 +301,6 @@ void encryptText(int width, int adjustedHeight) {
 		
 			// At this point, 'file' is a pointer to the opened file
 			// You can use 'file' with functions like fprintf(), fscanf(), etc. to read from and write to the file
-
 
 			// TO BE CHANGED
 			if (publicKEY == NULL) {
@@ -346,7 +362,6 @@ void decryptText(int width, int adjustedHeight) {
 		clearLines(adjustedHeight + offsetY, adjustedHeight + offsetY, width);
 		moveCursor((width - 60)/ 2, adjustedHeight + offsetY);
 		printf("Is the txt file in the same folder of the C program? [Y/N] ");
-		// The user can press Y or N to confirm or deny the encryption of the message
 		confirm = getConfirm(width, adjustedHeight, offsetY);
 
 	} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
@@ -356,7 +371,6 @@ void decryptText(int width, int adjustedHeight) {
 			clearLines(adjustedHeight + offsetY + 1, adjustedHeight + offsetY + 2, width);
 			moveCursor((width - 38)/ 2, adjustedHeight + offsetY + 1);
 			printf("Do you have your private key? [Y/N] ");
-			// The user can press Y or N to confirm or deny the encryption of the message
 			confirm = getConfirm(width, adjustedHeight, offsetY + 1);
 
 		} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
@@ -375,8 +389,8 @@ void decryptText(int width, int adjustedHeight) {
 					fileName[strlen(fileName) - 1] = '\0';
 				}
 		
-				// Try to open the file for reading and writing
-				file = fopen(fileName, "r+");
+				// Try to open the file for reading and appending. If the file does not exist, it will be created.
+				file = fopen(fileName, "a+");
 		
 				if (file == NULL) {
 					// If the file could not be opened, print an error message
@@ -401,7 +415,7 @@ void decryptText(int width, int adjustedHeight) {
 
 			clock_t start = clock();
 
-			// At this point, function calls can be made to ENCRYPT the MESSAGE. For now, the program will display a message that the MESSAGE IS ENCRYPTED.
+			// At this point, function calls can be made to DECRYPT the MESSAGE. For now, the program will display a message that the MESSAGE IS DECRYPTED.
 
 			fprintf(file, "Decrypted message here\n");
 			fprintf(file, "%s", privateKEY);
