@@ -1765,6 +1765,12 @@ int halfBignum(Bignum *result, Bignum *num) {
     trimBignum(result);
 }
 
+int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
+    printf("\n\nHello world!\n\n");
+
+    return 0;
+}
+
 int generateRandomBignum(Bignum *result, unsigned long long int numOfDigits, BIGNUM_SIGN sign) {
 
     printf("\n\nHello world!\n\n");
