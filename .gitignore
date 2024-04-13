@@ -1,2 +1,9 @@
 *.exe
 *.out
+
+program/errors
+program/errors_COPY
+program/errors_copy
+program/program
+program/sandbox
+program/programCOPY
