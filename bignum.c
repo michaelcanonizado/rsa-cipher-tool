@@ -1038,6 +1038,9 @@ void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend) {
         result->length = 1;
         result->sign = positive;
 
+        freeBignum(&minuendTemp);
+        freeBignum(&subtrahendTemp);
+
         return;
     }
 
