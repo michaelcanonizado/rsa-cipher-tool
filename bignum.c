@@ -1651,6 +1651,67 @@ int powerBignum(Bignum *result, Bignum *base, Bignum *exponent) {
     return 0;
 }
 
+int modularExponentiationBignum(Bignum *result, Bignum *base, Bignum *exponent, Bignum *divisor) {
+    Bignum binaryExponent; 
+    initBignum(&binaryExponent);
+
+    bignumToBinary(&binaryExponent, exponent);
+
+    Bignum remainder;
+    initBignum(&remainder);
+    copyBignum(&remainder, base);
+
+    Bignum remainderSquared;
+    Bignum remainderSquaredModDivisor;
+    initBignum(&remainderSquared);
+    initBignum(&remainderSquaredModDivisor);
+
+    Bignum tempRemainder;
+    initBignum(&tempRemainder);
+
+    Bignum remainderSquaredModDivisorTimesBase;
+    Bignum remainderSquaredModDivisorTimesBaseModDivisor;
+    initBignum(&remainderSquaredModDivisorTimesBase);
+    initBignum(&remainderSquaredModDivisorTimesBaseModDivisor);
+
+    for (unsigned long long int i = binaryExponent.length - 1; i > 0; i--) {
+        resetBignum(&remainderSquared);
+        resetBignum(&remainderSquaredModDivisor);
+        resetBignum(&tempRemainder);
+        resetBignum(&remainderSquaredModDivisorTimesBase);
+        resetBignum(&remainderSquaredModDivisorTimesBaseModDivisor);
+
+        if (binaryExponent.digits[i - 1] == 0) {
+            copyBignum(&tempRemainder, &remainder);
+
+            multiplyBignum(&remainderSquared, &remainder, &remainder);
+            moduloBignum(&remainderSquaredModDivisor, &remainderSquared, divisor);
+
+            copyBignum(&remainder, &remainderSquaredModDivisor);
+        } else if (binaryExponent.digits[i - 1] == 1) {
+            multiplyBignum(&remainderSquared, &remainder, &remainder);
+            moduloBignum(&remainderSquaredModDivisor, &remainderSquared, divisor);
+            
+            multiplyBignum(&remainderSquaredModDivisorTimesBase, &remainderSquaredModDivisor, base);
+            moduloBignum(&remainderSquaredModDivisorTimesBaseModDivisor, &remainderSquaredModDivisorTimesBase,divisor);
+
+            copyBignum(&remainder, &remainderSquaredModDivisorTimesBaseModDivisor);
+        }
+    }
+
+    copyBignum(result, &remainder);
+
+    freeBignum(&binaryExponent);
+    freeBignum(&remainder);
+    freeBignum(&remainderSquared);
+    freeBignum(&remainderSquaredModDivisor);
+    freeBignum(&tempRemainder);
+    freeBignum(&remainderSquaredModDivisorTimesBase);
+    freeBignum(&remainderSquaredModDivisorTimesBaseModDivisor);
+
+    return 0;
+}
+
 
 
 int halfBignum(Bignum *result, Bignum *num) {
