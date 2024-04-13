@@ -3,7 +3,7 @@
 
 #include <limits.h>
 
-#define MAX_BIGNUM_LENGTH 1000
+#define DEFAULT_BIGNUM_LENGTH 1000
 // REFACTOR: REMOVE PREPROCESSORS
 #define MAX_VALUE_OF_SHORT SHRT_MAX
 #define MAX_VALUE_OF_INT INT_MAX
@@ -21,7 +21,7 @@ typedef enum {
 
 typedef struct {
     // Integer will be in reverse for easier arithmetic
-    int digits[MAX_BIGNUM_LENGTH];
+    int *digits;
     // Number of digits in integer
     // Bignum.length will cap out at around 18,446,744,073,709,551,615 (ref: C docs). Therefore the Bignum can only have a maximum of 18,446,744,073,709,551,615 digits.
     unsigned long long int length;
@@ -30,14 +30,18 @@ typedef struct {
 } Bignum;
 
 int getLengthOfInteger(long long int num);
-Bignum initBignum();
+
+void initBignum(Bignum *num);
+void freeAllBignums();
+void freeBignum(Bignum *num);
+void printBignumNodeList();
 void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign);
 void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN sign);
 long long int bignumToInt(Bignum *num);
 int resetBignum(Bignum *num);
-
 void copyBignum(Bignum *result, Bignum *num);
 void printBignum(Bignum *num);
+void printBignumExtended(Bignum *num, unsigned long long int specifiedLength);
 void printBignumCenter(Bignum *num, unsigned int requiredWidth);
 void trimBignum(Bignum *num);
 
@@ -48,11 +52,12 @@ int isEqualToBignum(Bignum *num1, Bignum *num2);
 int isBignumZero(Bignum *num);
 int incrementBignum(Bignum *num, unsigned long long int incrementValue);
 
-void addBignum(Bignum *result, Bignum *num1, Bignum *num2);
-void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2);
+void addBignum(Bignum *result, Bignum *addend1, Bignum *addend2);
+void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend);
 int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier);
 int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor);
 int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor);
+int powerBignum(Bignum *result, Bignum *base, Bignum *exponent);
 
 int halfBignum(Bignum *result, Bignum *num);
 int generateRandomBignum(Bignum *result, unsigned long long int numOfDigits, BIGNUM_SIGN sign);

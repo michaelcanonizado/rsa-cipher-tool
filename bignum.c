@@ -6,7 +6,7 @@
 // Subtraction - Done
 // Multiplication - Done
 // Modulus - Done
-// Division - N/A
+// Division - Not tested
 // Greater Than Equal To - N/A
 // Less Than Equal To - N/A
 // Not Equal To - N/A
@@ -25,7 +25,17 @@
 
 
 
+// -----------------GLOBAL VARIABLES-----------------
 
+// Linked list to track the dynamically allocated Bignum.digits[]
+typedef struct nodeBignum {
+    Bignum *value;
+    struct nodeBignum *next;
+} BignumNode;
+BignumNode *bignumListHead = NULL;
+
+// Counter to keep track of the number of dynamically allocated Bignum.digits[].
+unsigned long long int ALLOCATED_BIGNUMS_COUNT = 0, FREED_BIGNUMS_COUNT = 0;
 
 
 
@@ -40,8 +50,7 @@
 // -----------------PRIVATE FUNCTIONS-----------------
 
 int bignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
-
-    // Function that shifts a Bignum with the amount of 0s specified (x * pow(10, n)).
+    // Function that shifts a Bignum with the amount of 0s specified (x * pow(10, n)), without using multiplyBignum(). This has been tested to be faster especially when shifting by large place values.
     // I.e: x * 10^n
     // E.g: Integer: 123 -> 12300
     // E.g: Bignum: [3,2,1] -> [0,0,3,2,1]
@@ -103,7 +112,40 @@ int multiplyBignumGetRightHalf(Bignum *result, Bignum *num, unsigned long long i
     result->length = resultLength;
 }
 
+int bignumToBinary(Bignum *result, Bignum *num) {
 
+    int remainderTemp;
+    unsigned long long int binaryLength = 0;
+
+    Bignum numTemp; 
+    Bignum remainder; 
+    Bignum two; 
+
+    initBignum(&numTemp); 
+    initBignum(&remainder); 
+    initBignum(&two); 
+
+    copyBignum(&numTemp, num);
+
+    intToBignum(&two, 2, positive);
+    while(!isBignumZero(&numTemp)) {
+        if (numTemp.digits[0] % 2 == 0) {
+            result->digits[binaryLength++] = 0;
+        } else {
+            result->digits[binaryLength++] = 1;
+        }
+
+        halfBignum(&numTemp, &numTemp);
+    }
+
+    result->length = binaryLength;
+
+    freeBignum(&numTemp); 
+    freeBignum(&remainder); 
+    freeBignum(&two); 
+
+    return 0;
+}
 
 
 
@@ -130,13 +172,263 @@ int getLengthOfInteger(long long int integer) {
     return (int)log10((double)integer) + 1;
 }
 
-Bignum initBignum() {
-    // Function to initialize Bignum values. Get rid of garbage values and initialize bignum. Some arithmetic function may need to know if the Bignum has already been set.
-    Bignum num;
-    memset(num.digits, 0, sizeof(int) * MAX_BIGNUM_LENGTH);
-    num.length = 0;
-    num.sign = positive;
-    return num;
+
+
+BignumNode* createNewBignumNode(Bignum *num) {
+    BignumNode *node = (BignumNode*)malloc(sizeof(BignumNode));
+
+    if (node == NULL) {
+        printf("\n\nAllocated Bignum.digits[] is NULL!");
+        printf("\n\tFunction: createNewBignumNode()");
+        printf("\n\tExit code: -1\n\n\n");
+
+        freeAllBignums();
+
+        exit(-1);
+    }
+
+    node->value = num;
+    node->next = NULL;
+    return node;
+}
+
+void initBignum(Bignum *num) {
+    // Function to initialize a Bignum to its default values and allocate an array for Bignum.digits[].
+    // The allocated Bignum.digits[] will be tracked in a linked list, to be freed after using the Bignum.
+
+    // Allocate memory for Bignum.digits[]. Use calloc() to set all indexes of the array to 0.
+    BignumNode *bignumNode;
+    int *digitsPtr = (int*)calloc(DEFAULT_BIGNUM_LENGTH, sizeof(int));
+
+    if (digitsPtr == NULL) {
+        printf("\n\nError allocating Bignum.digits...\n\n");
+        exit(-1);
+    }
+
+    // printf("\nCreated %p.%p Bignum in initBignum(). (1)", num, digitsPtr);
+    
+    // Set the Bignum members to its default values
+    num->digits = digitsPtr;
+    num->length = 0;
+    num->sign = positive;
+
+    // Add Bignum's address to the linked list to track it
+    bignumNode = createNewBignumNode(num);
+    bignumNode->next = bignumListHead;
+    bignumListHead = bignumNode;
+
+    ALLOCATED_BIGNUMS_COUNT++;
+
+}
+
+void freeAllBignums() {
+    // Function to go through linked list of Bignum pointers and free the allocated Bignum.digits[] and the nodes all at once.
+    // Function will free nodes starting from the end. I.e: the most recent Bignums initialized.
+
+    // Store head node in a temporary ndoe.
+    BignumNode *tempHeadNode = bignumListHead;
+    // Go through all nodes in linked list
+    while(tempHeadNode != NULL) {
+
+        if (bignumListHead->value == NULL) {
+            printf("\nBignum in list is NULL");
+            printf("\n\tFunction: freeAllBignums()");
+        } else if (bignumListHead->value->digits == NULL) {
+            printf("\nBignum.digits[] in list is NULL!\nAddress: %p->%p.%p", bignumListHead, bignumListHead->value, bignumListHead->value->digits);
+            printf("\n\tFunction: freeAllBignums()");
+        }
+
+        // printf("\nFreeing %p.%p with freeAllBignums()", tempHeadNode->value, tempHeadNode->value->digits);
+
+        // Point temporary head node to next node
+        tempHeadNode = tempHeadNode->next;
+
+        // Free current head node
+        if (bignumListHead->value == NULL) {
+            printf("\nBignum %p.%p is NULL",bignumListHead->value,bignumListHead->value->digits);
+        }
+        // Clear Bignum.digits[]
+        memset(bignumListHead->value->digits, 0, sizeof(int) * DEFAULT_BIGNUM_LENGTH);
+        // Free allcoated memory
+        free(bignumListHead->value->digits);
+        free(bignumListHead);
+
+        // Store new head to original head node
+        bignumListHead = tempHeadNode;
+
+        FREED_BIGNUMS_COUNT++;
+    }
+
+    // Print allocation results
+    printf("\n\nAllocated %llu Bignums, Freed %llu Bignums, Remaining unfreed: %llu", ALLOCATED_BIGNUMS_COUNT, FREED_BIGNUMS_COUNT, ALLOCATED_BIGNUMS_COUNT - FREED_BIGNUMS_COUNT);
+}
+
+void freeBignum(Bignum *num) {
+    // Function to free a specified Bignum. This function should be used to free Bignums that are nested. Bignum must be freed immediately after use to minimize heap usage, and allow future Bignums to use the heap.
+
+    // If only one node is in the linked list
+    if (bignumListHead->next == NULL) {
+
+        if (bignumListHead->value == NULL) {
+            printf("\n\nBignum in node list is NULL!");
+            printf("\n\tFunction: freeBignum()");
+            printf("\n\tExit code: -1\n\n\n");
+
+            freeAllBignums();
+
+            exit(-1);
+        } else if (bignumListHead->value != num) {
+            printf("\n\nBignum.digits[] in node list doesn't match the target Bignum!");
+            printf("\n\tFunction: freeBignum()");
+            printf("\n\tExit code: -2\n\n\n");
+
+            freeAllBignums();
+
+            exit(-2);
+        } else if (bignumListHead->value->digits == NULL) {
+            printf("\n\nBignum.digits[] in node list is NULL!");
+            printf("\n\tFunction: freeBignum()");
+            printf("\n\tExit code: -3\n\n\n");
+
+            freeAllBignums();
+
+            exit(-3);
+        } else if (bignumListHead->value->digits != num->digits) {
+            printf("\n\nBignum was found in node list, but Bignum.digits[] addresses don't match!");
+            printf("\n\tFunction: freeBignum()");
+            printf("\n\tExit code: -4\n\n\n");
+
+            freeAllBignums();
+
+            exit(-4);
+        }
+
+        // printf("\nFreeing %p->%p.%p with freeBignum(). (1)", bignumListHead, bignumListHead->value, bignumListHead->value->digits);
+
+        // Store head in a temporary node
+        BignumNode *toRemoveNode = bignumListHead;
+        // Clear Bignum.digits[]
+        memset(toRemoveNode->value->digits, 0, sizeof(int) * DEFAULT_BIGNUM_LENGTH);
+        // Free temporary node
+        free(toRemoveNode->value->digits);
+        toRemoveNode->value->digits = NULL;
+        free(toRemoveNode);
+        // Point head to the next pointer (NULL)
+        bignumListHead = bignumListHead->next;
+
+        FREED_BIGNUMS_COUNT++;
+
+        return;
+    }
+
+    // If linked list is more than 1 node, but the target Bignum is at the head
+    if (bignumListHead->value == num) {
+
+        if (bignumListHead->value->digits == NULL) {
+            printf("\n\nBignum.digits[] in node list is NULL!");
+            printf("\n\tFunction: freeBignum()");
+            printf("\n\tExit code: -5\n\n\n");
+
+            freeAllBignums();
+
+            exit(-5);
+        } else if (bignumListHead->value->digits != num->digits) {
+            printf("\n\nBignum was found in node list, but Bignum.digits[] addresses don't match!");
+            printf("\n\tFunction: freeBignum()");
+            printf("\n\tExit code: -6\n\n\n");
+
+            freeAllBignums();
+
+            exit(-6);
+        }
+
+        // printf("\nFreeing %p->%p.%p with freeBignum(). (2)",bignumListHead, bignumListHead->value, bignumListHead->value->digits);
+
+        // Store the head in a temporary node
+        BignumNode *toRemoveNode = bignumListHead;
+        // Point head to the next node
+        bignumListHead = bignumListHead->next;
+
+        // Clear Bignum.digits[]
+        memset(toRemoveNode->value->digits, 0, sizeof(int) * DEFAULT_BIGNUM_LENGTH);
+        // Free target node
+        free(toRemoveNode->value->digits);
+        toRemoveNode->value->digits = NULL;
+        free(toRemoveNode);
+
+        FREED_BIGNUMS_COUNT++;
+
+        return;
+    }
+
+
+    // If target node is not at the head, search the rest of the linked list. Use a previous node to track the node before the target Bignum, and a temporary node to check if the current node is the target Bignum.
+    BignumNode *prevNode = bignumListHead;
+    BignumNode *tempNode = prevNode->next;
+
+    while(tempNode != NULL) {
+        if (tempNode->value == num) {
+            
+            if (tempNode->value->digits == NULL) {
+                printf("\n\nBignum.digits[] in node list is NULL!");
+                printf("\n\tFunction: freeBignum()");
+                printf("\n\tExit code: -7\n\n\n");
+
+                freeAllBignums();
+
+                exit(-7);
+            } else if (tempNode->value->digits != num->digits) {
+                printf("\n\nBignum was found in node list, but Bignum.digits[] addresses don't match!");
+                printf("\n\tFunction: freeBignum()");
+                printf("\n\tExit code: -8\n\n\n");
+
+                freeAllBignums();
+
+                exit(-8);
+            }
+
+            // printf("\nFreeing %p->%p.%p with freeBignum(). (3)", tempNode, tempNode->value, tempNode->value->digits);
+            
+            // Point previous node to the node that the target Bignum is pointing to
+            prevNode->next = tempNode->next;
+
+             // Clear Bignum.digits[]
+            memset(tempNode->value->digits, 0, sizeof(int) * DEFAULT_BIGNUM_LENGTH);
+            // Free the target node
+            free(tempNode->value->digits);
+            tempNode->value->digits = NULL;
+            free(tempNode);
+
+            FREED_BIGNUMS_COUNT++;
+
+            return;
+        }
+        prevNode = tempNode;
+        tempNode = tempNode->next;
+    }
+
+    printf("\n\nBIGNUM %p.%p WAS NOT FOUND IN LIST!\n\n", num, num->digits);
+}
+
+void printBignumNodeList() {
+    // Function to print the linked list of Bignums
+
+    BignumNode *tempNode = bignumListHead;
+
+    if (bignumListHead == NULL) {
+        printf("\n\nNode list empty!\n");
+        return;
+    }
+
+    printf("\nHEAD -> ");
+    while(tempNode != NULL) {
+        printf("%p.%p -> ", tempNode->value, tempNode->value->digits);
+        tempNode = tempNode->next;
+
+        if (tempNode == NULL) {
+            printf("NULL");
+        }
+    }
 }
 
 void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
@@ -160,6 +452,22 @@ void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
     for (int i = 0; i < numStruct->length; i++) {
         // Offset ASCII value of the character by the ASCII value of '0'
         // Eg: '3' - '0' = 3  ->  51 - 48 = 3 
+        int tempDigit =  numStr[i] - '0';
+
+        // Check if an invalid character was passed in numStr. Only number characters '0'-'9' arr valid.
+        // setBignum(&x, '123-456', positive); <- invalid
+        // setBignum(&x, '-123456', negative); <- invalid
+        // setBignum(&x, '123456', negative);  <- valid
+        if (tempDigit < 0 || tempDigit > 9) {
+            printf("\n\nPassed numStr in setBignum() is invalid. Please make sure the passed numStr contains only number characters '0'-'9'...");
+            printf("\n\tFunction: setBignum()");
+            printf("\n\tExit code: -1\n\n\n");
+
+            freeAllBignums();
+
+            exit(-1);
+        }
+
         numStruct->digits[i] = numStr[i] - '0';
     }
 
@@ -206,10 +514,10 @@ void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN 
 }
 
 long long int bignumToInt(Bignum *num) {
-    // Function will convert a Bignum to an integer.
+    // Function will convert a Bignum to an long long integer (maximum data type as negative Bignums can also be converted).
 
     // Get maximum number of digits of long long int. 
-    int maxNumOfDigits = (int)log10((double)MAX_VALUE_OF_LONG_LONG_INT) + 1;
+    int maxNumOfDigits = getLengthOfInteger(MAX_VALUE_OF_LONG_LONG_INT);
 
     // REFACTOR: THIS MUST THROW A PROPER ERROR. A BIGNUM WITH Bignum.digits[] = [0] and Bignum.length = 1 IS A VALID BIGNUM THAT CAN BE CONVERTED TO AN INTEGER. INSTEAD OF RETURNING THE RESULT, USE A POINTER PARAMETER TO POINT TO THE RESULT VARIABLE, AND THE RETURN SHOULD ONLY BE ERROR CODES.
 
@@ -239,17 +547,21 @@ long long int bignumToInt(Bignum *num) {
 }
 
 int resetBignum(Bignum *num) {
-    memset(num->digits, 0, sizeof(int) * MAX_BIGNUM_LENGTH);
+    // Function to reset the contents of a Bignum. Although initBignum() can be used to reset a Bignum, this function resets the Bignum, whilst maintaining the intance of the Bignum and the allocated Bignum.digits[]. initBignum() resets the Bignum by creating a new instance of the Bignum (Therefore another allocation will be made just to reset the Bignum).
+    // This function should be used when Bignums are initialized or need to be reset inside of loops to minimize the amount of memory allocated.
+
+    // Reset indexes of Bignum.digits[] to 0 
+    memset(num->digits, 0, sizeof(int) * DEFAULT_BIGNUM_LENGTH);
+    // Reset length
     num->length = 0;
+    // Reset Sign
     num->sign = positive;
     return 0;
 }
 
-
-
 void copyBignum(Bignum *result, Bignum *num) {
-    // Function to copy the contents of a Bignum to another Bignum
-    memcpy(result->digits, num->digits, sizeof(int) * num->length);
+    // Function to copy the contents of a Bignum to another Bignum. It will copy the whole Bignum.digits[] instead of copying uptil the length to overwrite and previous integers stored in Bignum.digits[]
+    memcpy(result->digits, num->digits, sizeof(int) * DEFAULT_BIGNUM_LENGTH);
     result->length = num->length;
     result->sign = num->sign;
 }
@@ -261,6 +573,19 @@ void printBignum(Bignum *num) {
         printf("-");
     }
     for (int i = num->length - 1; i >= 0; i--) {
+        printf("%d", num->digits[i]);
+    }
+}
+
+void printBignumExtended(Bignum *num, unsigned long long int specifiedLength) {
+    // Function to print Bignum.digits[] up to a specified length. This can be used to check if any integers greater than 0 exist past Bignum.length
+    if (num->sign == negative) {
+        printf("-");
+    }
+    for (int i = specifiedLength - 1; i >= 0; i--) {
+        if (i == num->length - 1) {
+            printf("|");
+        }
         printf("%d", num->digits[i]);
     }
 }
@@ -306,7 +631,7 @@ void printBignumCenter(Bignum *num, unsigned int requiredWidth) {
 }
 
 void trimBignum(Bignum *num) {
-    // Function to trim leading 0s of Bignum. This function works by counting leading 0s encapsulated by the current Bignum.length, and once a non-zero is found, will update the length of Bignum by subtracting the count of leading 0s.
+    // Function to trim leading 0s of Bignum. This function works by counting leading 0s encapsulated by the current Bignum.length, and once a non-zero is found, will update the length of Bignum by adjusting Bignum.length.
 
     unsigned long long int numOfZeros = 0;
     // Flag to check if a non-zero integer was found. Cases where a Bignum was intentionally set to 0: setBignum(&x, "0", positive);. Should not be trimmed.
@@ -481,15 +806,17 @@ int isEqualToBignum(Bignum *num1, Bignum *num2) {
 }
 
 int incrementBignum(Bignum *num, unsigned long long int incrementValue) {
-    Bignum offset = initBignum();
+    Bignum offset;
+    initBignum(&offset);
     intToBignum(&offset, incrementValue, positive);
     addBignum(num, num, &offset);
+    freeBignum(&offset);
     return 0;
 }
 
 
 
-void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
+void addBignum(Bignum *result, Bignum *addend1, Bignum *addend2) {
     // Function to add two Bignums together.
     // Uses basic addition which starts at the LSD (least significant digit) and adds the digits of the addends together, iterating till it reaches the end.
 
@@ -505,33 +832,43 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     //  ----------    -->   ----------  
     //   68 | 112             69 | 12
 
+    // If you are adding a Bignum with 0, copy the other Bignum to result.
+    if (isBignumZero(addend1)) {
+        copyBignum(result, addend2);
+        return;
+    }
+    if (isBignumZero(addend2)) {
+        copyBignum(result, addend1);
+        return;
+    }
+
     // Use addition rule: if the two Bignums have different signs. Perform subtraction.
-    if (num1->sign != num2->sign) {
+    if (addend1->sign != addend2->sign) {
         // Keep track of the original signs of the two Bignums. As they need to have the same sign to trigger subtraction in the subtractBignum() function. If they have contrasting signs, subtractBignum() will call addBignum() causing an infinite loop.
-        BIGNUM_SIGN num1Sign = num1->sign;
-        BIGNUM_SIGN num2Sign = num2->sign;
+        BIGNUM_SIGN addend1Sign = addend1->sign;
+        BIGNUM_SIGN addend2Sign = addend2->sign;
 
-        num1->sign = num2->sign;
+        addend1->sign = addend2->sign;
 
-        if (isGreaterThanBignum(num1, num2)) {
-            subtractBignum(result, num1, num2);
+        if (isGreaterThanBignum(addend1, addend2)) {
+            subtractBignum(result, addend1, addend2);
             // The resulting Bignum will have the sign of the bigger number(disregarding signs). E.g. 11 + (-5) = 6.
-            result->sign = num1Sign;
+            result->sign = addend1Sign;
             // Bring back the original signs of the two Bignums.
-            num1->sign = num1Sign;
-            num2->sign = num2Sign;
+            addend1->sign = addend1Sign;
+            addend2->sign = addend2Sign;
 
             return;
-        } else if (isLessThanBignum(num1, num2)) {
-            subtractBignum(result, num1, num2);
+        } else if (isLessThanBignum(addend1, addend2)) {
+            subtractBignum(result, addend1, addend2);
             // The resulting Bignum will have the sign of the bigger number(disregarding signs). E.g. 5 + (-11) = -6.
-            result->sign = num2Sign;
+            result->sign = addend2Sign;
             // Bring back the original signs of the two Bignums.
-            num1->sign = num1Sign;
-            num2->sign = num2Sign;
+            addend1->sign = addend1Sign;
+            addend2->sign = addend2Sign;
 
             return;
-        } else if (isEqualToBignum(num1, num2)) {
+        } else if (isEqualToBignum(addend1, addend2)) {
             // If the 2 Bignums have different signs and are equal to each other. the result will be 0.
             result->digits[0] = 0;
             result->length = 1;
@@ -541,19 +878,25 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         }
     }
 
+    // Use a temporary array to store results.digits[], then copy over the temporary array at the end of the function. This allows the function to accept a result Bignum that was passed as num1 or num2. This then will overwrite the passed result Bignum.
+    // E.g: addbignum(&x, &x, &y)
+    // The code above is equivalent to:
+    // x = x + y; or x += y;
+    int tempResultDigits[DEFAULT_BIGNUM_LENGTH];
+
     int sum;
     int carry = 0;
-    int resultLength = 0;
+    unsigned long long int resultLength = 0;
     // Use usigned long long int to match the data type of the length property of Bignum struct.
     unsigned long long int maxLength;
 
     // Find the longest length. This is needed to determine which Bignum.length to use in the for-loop.
-    if (num1->length > num2->length) {
-        maxLength = num1->length;
-    } else if (num2->length > num1->length) {
-        maxLength = num2->length;
+    if (addend1->length > addend2->length) {
+        maxLength = addend1->length;
+    } else if (addend2->length > addend1->length) {
+        maxLength = addend2->length;
     } else {
-        maxLength = num1->length;
+        maxLength = addend1->length;
     }
 
     // Perform addition (this for-loop adds 1 digit at a time. Refer to the REFACTOR note above for more info).
@@ -563,45 +906,48 @@ void addBignum(Bignum *result, Bignum *num1, Bignum *num2) {
         // Set sum to the previous carry
         sum = carry;
         // Add the digits of the addends together
-        sum += num1->digits[i] + num2->digits[i];
+        sum += addend1->digits[i] + addend2->digits[i];
         // If sum is more than 1 digit long, set carry to 1.
         carry = sum >= 10 ? 1 : 0;
         // Modulo sum by 10 to get only 1 digit to be pushed to Bignum result. This works whether sum is more than 1 digit long or not.
         // Eg: 19 % 10 = 9 or 9 % 10 = 9
         sum = sum % 10;
         // Store sum in result.digits[]
-        result->digits[i] = sum;
+        tempResultDigits[i] = sum;
         // Increment resultLength to keep track of lenght of result Bignum
         resultLength++;
     }
 
     // If there is a remaining carry, append to result. e.g. 8 + 9 = 17 NOT 8 + 9 = 7 (the carry in the buffer was not added)
     if (carry == 1) {
-        result->digits[resultLength] = carry;
+        tempResultDigits[resultLength] = carry;
         resultLength++;
     }
+
+    // Copy the temporary array to results.digits[]
+    memcpy(result->digits, tempResultDigits, sizeof(int) * resultLength);
 
     // Store result digit length
     result->length = resultLength;
     // Copy sign of one of the Bignums. E.g. (+1) + (+2) = (+3) & (-1) + (-2) = (-3)
-    result->sign = num1->sign;
+    result->sign = addend1->sign;
     // Trim result. Removing any possible leading 0s
     trimBignum(result);
 }
 
-void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
+void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend) {
     // Function to subtract two Bignums together.
     // Uses basic subtraction which starts at the LSD (least significant digit) and subtracts the digits of the minuend and subtrahend together, iterating till it reaches the end. If a borrow is needed, it will loop through the next digits of the minuend until it finds a digit that can give a borrow.
 
     // NOTE: This function currently iterates and adds 1 digit at a time.
 
     // If you are subtracting a Bignum with 0, copy the other Bignum to result.
-    if (isBignumZero(num1)) {
-        copyBignum(result, num2);
+    if (isBignumZero(minuend)) {
+        copyBignum(result, subtrahend);
         return;
     }
-    if (isBignumZero(num2)) {
-        copyBignum(result, num1);
+    if (isBignumZero(subtrahend)) {
+        copyBignum(result, minuend);
         return;
     }
 
@@ -612,77 +958,80 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
     // Transpose the signs: Make the two Bignums have the same sign, to trigger addition in the addBignum() function. Having different signs in addBignum() will call subtractBignum(), causing an infinite loop. Once addition is complete, bring back the original sign.
 
     // Store Bignum signs in a temporary variable as transposing of signs will happen, and the original sign is needed after addition.
-    BIGNUM_SIGN num1Sign = num1->sign;
-    BIGNUM_SIGN num2Sign = num2->sign;
+    BIGNUM_SIGN minuendSign = minuend->sign;
+    BIGNUM_SIGN num2Sign = subtrahend->sign;
 
-    if (num1->sign == positive && num2->sign == negative) {
-        num2->sign = num1Sign;
-        addBignum(result, num1, num2);
-        num2->sign = num2Sign;
+    if (minuend->sign == positive && subtrahend->sign == negative) {
+        subtrahend->sign = minuendSign;
+        addBignum(result, minuend, subtrahend);
+        subtrahend->sign = num2Sign;
         return;
     }
-    if (num1->sign == negative && num2->sign == positive) { 
-        num2->sign = num1Sign;
-        addBignum(result, num1, num2);
-        result->sign = num1Sign;
-        num2->sign = num2Sign;
+    if (minuend->sign == negative && subtrahend->sign == positive) { 
+        subtrahend->sign = minuendSign;
+        addBignum(result, minuend, subtrahend);
+        result->sign = minuendSign;
+        subtrahend->sign = num2Sign;
         return;
     }
 
     // Find minuend and subtrahend. Store in a temporary Bignum as minuend's Bignum.digits will be manipulated due to borrows. This is also needed as minuend can be either of the two Bignums (num1 or num2); If minuend is found. the other number will be the subtrahend.
-    Bignum minuend = initBignum();
-    Bignum subtrahend = initBignum();
+    Bignum minuendTemp;
+    Bignum subtrahendTemp;
+    initBignum(&minuendTemp);
+    initBignum(&subtrahendTemp);
 
-    // Check length. Longer length will be set to the minuend and shorter will be the subtrahend.
-    if (num1->length > num2->length) {
-        minuend.length = num1->length;
-        subtrahend.length = num2->length;
+    // Check length. Longer length will be set to the Temp and shorter will be the subtrahend.
+    if (minuend->length > subtrahend->length) {
+        minuendTemp.length = minuend->length;
+        subtrahendTemp.length = subtrahend->length;
 
-        memcpy(&minuend.digits, num1->digits, sizeof(int) * num1->length);
-        memcpy(&subtrahend.digits, num2->digits, sizeof(int) * num2->length);
+        memcpy(minuendTemp.digits, minuend->digits, sizeof(int) * minuend->length);
+        memcpy(subtrahendTemp.digits, subtrahend->digits, sizeof(int) * subtrahend->length);
 
-        result->sign = num1->sign;
-    } else if (num1->length < num2->length) {
-        minuend.length = num2->length;
-        subtrahend.length = num1->length;
+        result->sign = minuend->sign;
+    } else if (minuend->length < subtrahend->length) {
+        minuendTemp.length = subtrahend->length;
+        subtrahendTemp.length = minuend->length;
 
-        memcpy(&minuend.digits, num2->digits, sizeof(int) * num2->length);
-        memcpy(&subtrahend.digits, num1->digits, sizeof(int) * num1->length);
+        memcpy(minuendTemp.digits, subtrahend->digits, sizeof(int) * subtrahend->length);
+        memcpy(subtrahendTemp.digits, minuend->digits, sizeof(int) * minuend->length);
 
         // If num1 - num2, and bot Bignums have the same sign, and num2 is longer than num1, the result's sign will be the inverse of the sign of the 2 Bignums.
         // E.g.: (+7) - (+10) = -3 or (-7) - (-10) = 3 
-        if (num1->sign == positive) {
+        if (minuend->sign == positive) {
             result->sign = negative;
-        } else if (num1->sign == negative) {
+        } else if (minuend->sign == negative) {
             result->sign = positive;
         }
     }
 
     // Compare two Bignums. If minuend and subtrahend was not found in the previous conditions, i.e. they're of the same sign and length. Compare the two Bignums.
     // Still chain to the previous condition with else-if to prevent redundant condition checks when a minuend and subtrahend was found earlier.
-    else if (isGreaterThanBignum(num1, num2) && minuend.length == 0) {
-        minuend.length = num1->length;
-        subtrahend.length = num2->length;
+    else if (isGreaterThanBignum(minuend, subtrahend) && minuendTemp.length == 0) {
+        minuendTemp.length = minuend->length;
+        subtrahendTemp.length = subtrahend->length;
 
-        memcpy(&minuend.digits, num1->digits, sizeof(int) * num1->length);
-        memcpy(&subtrahend.digits, num2->digits, sizeof(int) * num2->length);
+        memcpy(minuendTemp.digits, minuend->digits, sizeof(int) * minuend->length);
+        memcpy(subtrahendTemp.digits, subtrahend->digits, sizeof(int) * subtrahend->length);
 
-        result->sign = num1->sign;
-    }else if (isLessThanBignum(num1, num2) && minuend.length == 0) {
-        minuend.length = num2->length;
-        subtrahend.length = num1->length;
+        result->sign = minuend->sign;
+    }else if (isLessThanBignum(minuend, subtrahend) && minuendTemp.length == 0) {
+        minuendTemp.length = subtrahend->length;
+        subtrahendTemp.length = minuend->length;
 
-        memcpy(&minuend.digits, num2->digits, sizeof(int) * num2->length);
-        memcpy(&subtrahend.digits, num1->digits, sizeof(int) * num1->length);
+        memcpy(minuendTemp.digits, subtrahend->digits, sizeof(int) * subtrahend->length);
+        memcpy(subtrahendTemp.digits, minuend->digits, sizeof(int) * minuend->length);
 
         // If num1 - num2, and both Bignums have the same sign, but num1 is less than num2, the result's sign will be the inverse of the sign of the 2 Bignums.
         // E.g.: (+30) - (+70) = -40 or (-30) - (-70) = 40 
-        if (num1->sign == positive) {
+        if (minuend->sign == positive) {
             result->sign = negative;
-        } else if (num1->sign == negative) {
+        } else if (minuend->sign == negative) {
             result->sign = positive;
         }
-    } else if (isEqualToBignum(num1, num2)) {
+        
+    } else if (isEqualToBignum(minuend, subtrahend)) {
         // If the two Bignums are equal to each other. Set result to zero.
         result->digits[0] = 0;
         result->length = 1;
@@ -695,28 +1044,34 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
 
     // FEAT: A CONDITION TO CHECK IF A MINUEND OR SUBTRAHEND IS ACTUAL FOUND CAN BE IMPLEMENTED TO CONFIRM THAT THE FUNCTION CAN CONTINUE. IF IN ANY CASE IT REACHES THIS POINT BUT SOMEHOW HAVE NOT FOUND A MINUEND AND SUBTRAHEND: THROW AN ERROR.
 
-    // Variable to store the difference of the individual digits of the minuend and subtrahend.
-    int difference;
+    // Use a temporary array to store results.digits[], then copy over the temporary array at the end of the function. This allows the function to accept a result Bignum that was passed as num1 or num2. This then will overwrite the passed result Bignum.
+    // E.g: subtractbignum(&x, &x, &y)
+    // The code above is equivalent to:
+    // x = x - y; or x -= y;
+    int tempResultDigits[DEFAULT_BIGNUM_LENGTH];
     unsigned long long int resultLength = 0;
 
+    // Variable to store the difference of the individual digits of the minuend and subtrahend.
+    int difference;
+
     // Start at the LSD (least significant digit). Then iterate through, using the the min length (subtrahend length).
-    for (int i = 0; i < subtrahend.length; i++) {
+    for (int i = 0; i < subtrahendTemp.length; i++) {
         // If current minuend digit is greater than the current subtrahend digit: No need to borrow.
-        if (minuend.digits[i] > subtrahend.digits[i]) {
+        if (minuendTemp.digits[i] > subtrahendTemp.digits[i]) {
             // Get difference of the current minuend and subtrahend digits and increment the result's digit length counter.
-            result->digits[i] = minuend.digits[i] - subtrahend.digits[i];
+            tempResultDigits[i] = minuendTemp.digits[i] - subtrahendTemp.digits[i];
             resultLength++;
-        } else if (minuend.digits[i] < subtrahend.digits[i]) {
+        } else if (minuendTemp.digits[i] < subtrahendTemp.digits[i]) {
             // If borrowing is needed, start from the next digit after the current index, and traverse through till the MSD (most significant digit or the last digit) of the minuend until you find a digit that can give you a borrow (anything greater than 0 can give a borrow).
-            for (int j = i + 1; j < minuend.length; j++) {
-                if (minuend.digits[j] > 0) {
+            for (int j = i + 1; j < minuendTemp.length; j++) {
+                if (minuendTemp.digits[j] > 0) {
                     // If a digit that can give a borrow is found, decrement that digit, then add 10 to the current index that needs a borrow.
-                    minuend.digits[j] = minuend.digits[j] - 1;
-                    minuend.digits[i] = minuend.digits[i] + 10;
+                    minuendTemp.digits[j] = minuendTemp.digits[j] - 1;
+                    minuendTemp.digits[i] = minuendTemp.digits[i] + 10;
 
                     // Since a borrow was found. Exit out of loop.
                     break;
-                } else if (minuend.digits[j] == 0) {
+                } else if (minuendTemp.digits[j] == 0) {
                     // If the digit is a 0, replace that 0 with 9 and move to the next digit looking for a digit that can give a borrow. We can immediately give it a value of 9, since it is bound to be a 9 as it will be a 10 once a borrow is found, then it will be decremented as it needs to give a borrow to the digit to its right.
                     //
                     // E.g.:
@@ -726,44 +1081,63 @@ void subtractBignum(Bignum *result, Bignum *num1, Bignum *num2) {
                     //       subtrahend: -  , , ,2, 3
                     //                    ------------
                     //           result:    1,2,9,7,8
-                    minuend.digits[j] = 9;
+                    minuendTemp.digits[j] = 9;
                 }
             }
 
             // Once a borrow is found, get difference of the current minuend and subtrahend digits, store the result, and increment the result's digit length counter.
-            result->digits[i] = minuend.digits[i] - subtrahend.digits[i];
+            tempResultDigits[i] = minuendTemp.digits[i] - subtrahendTemp.digits[i];
             resultLength++;
-        } else if (minuend.digits[i] == subtrahend.digits[i]) {
+        } else if (minuendTemp.digits[i] == subtrahendTemp.digits[i]) {
             // When minuend's and subtrahend's current digit is equal. Set result's current iteration digit to 0, as subtracting them will result in a 0.
-            result->digits[i] = 0;
+            tempResultDigits[i] = 0;
             resultLength++;
         }
     }
 
     // If subtrahend is shorter than the minuend, and all neccessary subtractions are finished. Drop down/copy the remaining values of the minuend.
-    if (minuend.length > subtrahend.length) {
-        for (int i = subtrahend.length; i < minuend.length; i++) {
-            result->digits[i] = minuend.digits[i];
+    if (minuendTemp.length > subtrahendTemp.length) {
+        for (int i = subtrahendTemp.length; i < minuendTemp.length; i++) {
+            tempResultDigits[i] = minuendTemp.digits[i];
             resultLength++;
         }
     }
+
+    // Copy the temporary array to results.digits[]
+    memcpy(result->digits, tempResultDigits, sizeof(int) * resultLength);
 
     // Store the final length of result.
     result->length = resultLength;
     // Trim result. Removing any possible leading 0s
     trimBignum(result);
+
+    freeBignum(&minuendTemp);
+    freeBignum(&subtrahendTemp);
 }
 
 int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     // Function that multiplies 2 Bignums together.
     // Uses the karatsuba multiplication algorithm (https://www.youtube.com/watch?v=yWI2K4jOjFQ&t=6s) that has a time complexity of O(n^1.6). Which is faster than the traditional multiplication algorithm with a time complexity of O(n^2).
 
+    // If you are subtracting a Bignum with 0, copy the other Bignum to result.
+    if (isBignumZero(multiplicand)) {
+        resetBignum(result);
+        setBignum(result, "0", positive);
+        return 0;
+    }
+    if (isBignumZero(multiplier)) {
+        resetBignum(result);
+        setBignum(result, "0", positive);
+        return 0;
+    }
+
+    // Store multiplicand and multiplier sign in a temporary enum. Then make both Bignums positive to trigger the other function calls correctly.
+    BIGNUM_SIGN tempMultiplicandSign = multiplicand->sign;
+    BIGNUM_SIGN tempMultiplierSign = multiplier->sign;
+    multiplicand->sign = positive;
+    multiplier->sign = positive;
+
     // Base Case
-    // REFACTOR: BASE CASE DOESN'T NEED TO BE OF 1 DIGIT LONG. WE CAN TAKE ADVANTAGE OF C'S NATIVE MULTIPLICATION WITH THE HIGHEST UNSIGNED INTEGER HAVING 20 DIGITS (unsigned long long int). THE MAX LENGTH OF THE TWO BIGNUMS SHOULD BE EQUAL TO 9: THIS GUARANTEES THAT THE RESULTING INTEGER WILL BE NO MORE THAN 18 DIGITS LONG. THE RESULTING INTEGER CAN THEN BE CONVERTED TO A BIGNUM AND BE RETURNED. THIS REFACTOR SHOULD HYPOTHETICALLY REDUCE THE AMOUNT OF RECURSIVE CALLS
-    // E.g:
-    // x = 999,999,999 | y = 999,999,999
-    // result = x * y (x * y = 999,999,998,000,000,001)
-    // intToBignum(result);
     if (
         (multiplicand->length <= 9 || multiplier->length <= 9) &&
         (
@@ -774,34 +1148,77 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
         long long int multiplicandInt = bignumToInt(multiplicand);
         long long int multiplierInt = bignumToInt(multiplier);
         intToBignum(result, multiplicandInt * multiplierInt, positive);
+
+        // Determine sign of result using multiplication rules:
+        // +x * +y = +r
+        // -x * -y = +r
+        // +x * -y = -r
+        // -x * +y = -r
+        if (
+        (tempMultiplicandSign == positive && tempMultiplierSign == positive) 
+        || 
+        (tempMultiplicandSign == negative && tempMultiplierSign == negative)) {
+            result->sign = positive;
+        } else {
+            result->sign = negative;
+        }
+
+        // Bring back the original signs
+        multiplicand->sign = tempMultiplicandSign;
+        multiplier->sign = tempMultiplierSign;
+
         return 0;
     }
+
+
     
     // Determine the maximum length (n) and half (n/2) of multiplicand and multiplier.
     unsigned long long int n = fmax(multiplicand->length, multiplier->length);
     unsigned long long int half = floor(n / 2.0);
 
     // Initialize nessessary Bignums
-    Bignum a = initBignum();
-    Bignum b = initBignum();
-    Bignum c = initBignum();
-    Bignum d = initBignum();
+    Bignum a;
+    Bignum b;
+    Bignum c;
+    Bignum d;
 
-    Bignum ac = initBignum();
-    Bignum bd = initBignum();
+    Bignum ac;
+    Bignum bd;
 
-    Bignum a_plus_b = initBignum();
-    Bignum c_plus_d = initBignum();
-    Bignum ac_minus_bd = initBignum();
-    Bignum a_plus_b_times_c_plus_d = initBignum();
-    Bignum a_plus_b_times_c_plus_d_minus_ac = initBignum();
-    Bignum ad_plus_bc = initBignum();
+    Bignum a_plus_b;
+    Bignum c_plus_d;
+    Bignum ac_minus_bd;
+    Bignum a_plus_b_times_c_plus_d;
+    Bignum a_plus_b_times_c_plus_d_minus_ac;
+    Bignum ad_plus_bc;
 
-    Bignum ac_left_shift = initBignum();
-    Bignum ad_plus_bc_left_shift = initBignum();
-    Bignum ac_left_shift_plus_ad_plus_bc_left_shift = initBignum();
-    Bignum ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd = initBignum();
-    Bignum zero = initBignum();
+    Bignum ac_left_shift;
+    Bignum ad_plus_bc_left_shift;
+    Bignum ac_left_shift_plus_ad_plus_bc_left_shift;
+    Bignum ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd;
+    Bignum zero;
+
+    initBignum(&a);
+    initBignum(&b);
+    initBignum(&c);
+    initBignum(&d);
+
+    initBignum(&ac);
+    initBignum(&bd);
+
+    initBignum(&a_plus_b);
+    initBignum(&c_plus_d);
+    initBignum(&ac_minus_bd);
+    initBignum(&a_plus_b_times_c_plus_d);
+    initBignum(&a_plus_b_times_c_plus_d_minus_ac);
+    initBignum(&ad_plus_bc);
+
+    initBignum(&ac_left_shift);
+    initBignum(&ad_plus_bc_left_shift);
+    initBignum(&ac_left_shift_plus_ad_plus_bc_left_shift);
+    initBignum(&ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd);
+    initBignum(&zero);
+
     setBignum(&zero, "0", positive);
 
     // Split the multiplicand and multiplier.
@@ -844,11 +1261,36 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     // -x * -y = +r
     // +x * -y = -r
     // -x * +y = -r
-    if ((multiplicand->sign == positive && multiplier->sign == positive) || multiplicand->sign == negative && multiplier->sign == negative) {
+    if (
+    (tempMultiplicandSign == positive && tempMultiplierSign == positive) 
+    || 
+    (tempMultiplicandSign == negative && tempMultiplierSign == negative)) {
         result->sign = positive;
     } else {
         result->sign = negative;
     }
+
+    // Bring back the original signs
+    multiplicand->sign = tempMultiplicandSign;
+    multiplier->sign = tempMultiplierSign;
+
+    freeBignum(&a);
+    freeBignum(&b);
+    freeBignum(&c);
+    freeBignum(&d);
+    freeBignum(&ac);
+    freeBignum(&bd);
+    freeBignum(&a_plus_b);
+    freeBignum(&c_plus_d);
+    freeBignum(&ac_minus_bd);
+    freeBignum(&a_plus_b_times_c_plus_d);
+    freeBignum(&a_plus_b_times_c_plus_d_minus_ac);
+    freeBignum(&ad_plus_bc);
+    freeBignum(&ac_left_shift);
+    freeBignum(&ad_plus_bc_left_shift);
+    freeBignum(&ac_left_shift_plus_ad_plus_bc_left_shift);
+    freeBignum(&ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd);
+    freeBignum(&zero);
 
     return 0;
 }
@@ -911,11 +1353,17 @@ int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     }
 
     // A temporary Bignum set as 1 is used as bignumShiftLeft doesn't modify the actual Bignum that is passed. But modifies a separate resulting Bignum.
-    Bignum tempOne = initBignum();
+    Bignum tempOne;
+    Bignum counterLeftIndex;
+    Bignum counterRightIndex;
+    Bignum counterMiddleIndex;
+
+    initBignum(&tempOne);
+    initBignum(&counterLeftIndex);
+    initBignum(&counterRightIndex);
+    initBignum(&counterMiddleIndex);
+
     setBignum(&tempOne, "1", positive);
-    Bignum counterLeftIndex = initBignum();
-    Bignum counterRightIndex = initBignum();
-    Bignum counterMiddleIndex = initBignum();
 
     // Identify the left and right indexes
     unsigned long long int leftShiftBy = 0;
@@ -933,17 +1381,25 @@ int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
 
     // Initialize multiplyResult which will be the Bignum that will hold the test quotient.
     // divisor * count = multiplyResult.
-    Bignum multiplyResult = initBignum();
+    Bignum multiplyResult;
+    Bignum num1PlusNum2;
+    Bignum dividendMinusMultiplyResult;
+    initBignum(&multiplyResult);
+    initBignum(&num1PlusNum2);
+    initBignum(&dividendMinusMultiplyResult);
+
     setBignum(&multiplyResult, "0", positive);
 
     // Perform binary search to find the quotient.
     while(1) {
         // Reinitialize multiplyResult to reset its members.
-        multiplyResult = initBignum();
+        resetBignum(&multiplyResult);
+        resetBignum(&num1PlusNum2);
+        resetBignum(&dividendMinusMultiplyResult);
+
 
         // Get the middle index of the left and right index.
         // (L + R) / 2 = M
-        Bignum num1PlusNum2 = initBignum();
         addBignum(&num1PlusNum2, &counterLeftIndex, &counterRightIndex);
         halfBignum(&counterMiddleIndex, &num1PlusNum2);
 
@@ -959,7 +1415,6 @@ int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
 
         // Check if the product is fit to be the quotient:
         // (Dividend - Product) < Divisor && (Dividend - Product) >= 0
-        Bignum dividendMinusMultiplyResult = initBignum();
         subtractBignum(&dividendMinusMultiplyResult, dividend, &multiplyResult);
         if (
             (isLessThanBignum(&dividendMinusMultiplyResult, divisor)) && 
@@ -968,7 +1423,7 @@ int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
             break;
         }
 
-        // FEAT: ADD AN IF CASE WHERE THE LEFT INDEX IS GREATER THAN THE RIGHT INDEX, JUST LIKE IN OTHER BINARY SEARCH IMPLEMENTATIONS. HOWEVER, THIS CASE WHERE THIS FUNCTION DOESN'T FIND AN APPROPRIATE QUOTIENT, IS HYPOTHETICALLY IMPOSSIBLE DUE TO: (1) THE CONDITION ABOVE THAT CHECKS IF THE PRODUCT IS FIT TO BE A QUOTIENT, AND (2) ALL NUMBERS ARE PRESENT WITHIN THE RANGE. IF IN ANY CASE WHERE THE FUNCTION FAILS DUE TO THIS PROBLEM, THERE MUST BE A FLAW IN ANOTHER PART OF THIS FUNCTION. PERHAPS THE LEFT AND IRGHT INDEXES OR THE CONDITION THAT CHECKS IF THE PRODUCT IS A FIT QUOTIENT. 
+        // FEAT: ADD AN IF CASE WHERE THE LEFT INDEX IS GREATER THAN THE RIGHT INDEX, JUST LIKE IN OTHER BINARY SEARCH IMPLEMENTATIONS. HOWEVER, THIS CASE WHERE THIS FUNCTION DOESN'T FIND AN APPROPRIATE QUOTIENT, IS HYPOTHETICALLY IMPOSSIBLE DUE TO: (1) THE CONDITION ABOVE THAT CHECKS IF THE PRODUCT IS FIT TO BE A QUOTIENT, AND (2) ALL NUMBERS ARE PRESENT WITHIN THE RANGE. IF IN ANY CASE WHERE THE FUNCTION FAILS DUE TO THIS PROBLEM, THERE MUST BE A FLAW IN ANOTHER PART OF THIS FUNCTION. PERHAPS THE LEFT AND IRGHT INDEXES OR THE CONDITION THAT CHECKS IF THE PRODUCT IS A FIT QUOTIENT.
     }
 
     // Return the latest counterMiddleIndex that triggered the exit condition. I.e: the quotient
@@ -978,6 +1433,14 @@ int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     result->sign = resultSign;
     dividend->sign = dividendSign;
     divisor->sign = divisorSign;
+
+    freeBignum(&tempOne);
+    freeBignum(&counterLeftIndex);
+    freeBignum(&counterRightIndex);
+    freeBignum(&counterMiddleIndex);
+    freeBignum(&multiplyResult);
+    freeBignum(&num1PlusNum2);
+    freeBignum(&dividendMinusMultiplyResult);
 }
 
 int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
@@ -1007,6 +1470,12 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     //    : The left and right indexes will be: 10 - 10000 
     // Therefore, the left and right indexes should be given extra place values.
 
+    BIGNUM_SIGN tempDividendSign = dividend->sign;
+    BIGNUM_SIGN tempDivisorSign = divisor->sign;
+
+    dividend->sign = positive;
+    divisor->sign = positive;
+
     // If dividend is less than the divisor. It is the remainder/modulo
     // 123 % 987654321 = 123
     if (isLessThanBignum(dividend, divisor)) {
@@ -1015,11 +1484,17 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     }
 
     // A temporary Bignum set as 1 is used as bignumShiftLeft doesn't modify the actual Bignum that is passed. But modifies a separate resulting Bignum.
-    Bignum tempOne = initBignum();
+    Bignum tempOne;
+    Bignum counterLeftIndex;
+    Bignum counterRightIndex;
+    Bignum counterMiddleIndex;
+
+    initBignum(&tempOne);
+    initBignum(&counterLeftIndex);
+    initBignum(&counterRightIndex);
+    initBignum(&counterMiddleIndex);
+
     setBignum(&tempOne, "1", positive);
-    Bignum counterLeftIndex = initBignum();
-    Bignum counterRightIndex = initBignum();
-    Bignum counterMiddleIndex = initBignum();
 
     // Identify the left and right indexes.
     unsigned long long int leftShiftBy = 0;
@@ -1036,17 +1511,27 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     bignumShiftLeft(&counterRightIndex, &tempOne, rightShiftBy);
     
     // Initialize multiplyResult which will be the Bignum that will hold the test quotient. I.e: divisor * count = multiplyResult.
-    Bignum multiplyResult = initBignum();
+    Bignum multiplyResult;
+    Bignum num1PlusNum2;
+    Bignum dividendMinusMultiplyResult;
+
+    initBignum(&multiplyResult);
+    initBignum(&num1PlusNum2);
+    initBignum(&dividendMinusMultiplyResult);
+
     setBignum(&multiplyResult, "0", positive);
+
+
 
     // Perform binary search to find the quotient.
     while(1) {
         // Reinitialize multiplyResult to reset its members.
-        multiplyResult = initBignum();
+        resetBignum(&multiplyResult);
 
         // Get the middle index of the left and right index.
         // (L + R) / 2 = M
-        Bignum num1PlusNum2 = initBignum();
+        resetBignum(&num1PlusNum2);
+
         addBignum(&num1PlusNum2, &counterLeftIndex, &counterRightIndex);
         halfBignum(&counterMiddleIndex, &num1PlusNum2);
 
@@ -1062,7 +1547,8 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
 
         // Check if the product is fit to be the quotient.
         // I.e: (Dividend - Product) < Divisor && (Dividend - Product) >= 0
-        Bignum dividendMinusMultiplyResult = initBignum();
+        resetBignum(&dividendMinusMultiplyResult);
+
         subtractBignum(&dividendMinusMultiplyResult, dividend, &multiplyResult);
         if (
             (isLessThanBignum(&dividendMinusMultiplyResult, divisor)) && 
@@ -1071,23 +1557,134 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
             break;
         }
 
-        // FEAT: ADD AN IF CASE WHERE THE LEFT INDEX IS GREATER THAN THE RIGHT INDEX, JUST LIKE IN OTHER BINARY SEARCH IMPLEMENTATIONS. HOWEVER, THIS CASE WHERE THIS FUNCTION DOESN'T FIND AN APPROPRIATE QUOTIENT, IS HYPOTHETICALLY IMPOSSIBLE DUE TO: (1) THE CONDITION ABOVE THAT CHECKS IF THE PRODUCT IS FIT TO BE A QUOTIENT, AND (2) ALL NUMBERS ARE PRESENT WITHIN THE RANGE. IF IN ANY CASE WHERE THE FUNCTION FAILS DUE TO THIS PROBLEM, THERE MUST BE A FLAW IN ANOTHER PART OF THIS FUNCTION. PERHAPS THE LEFT AND IRGHT INDEXES OR THE CONDITION THAT CHECKS IF THE PRODUCT IS A FIT QUOTIENT. 
+        // FEAT: ADD AN IF CASE WHERE THE LEFT INDEX IS GREATER THAN THE RIGHT INDEX, JUST LIKE IN OTHER BINARY SEARCH IMPLEMENTATIONS. HOWEVER, THIS CASE WHERE THIS FUNCTION DOESN'T FIND AN APPROPRIATE QUOTIENT, IS HYPOTHETICALLY IMPOSSIBLE DUE TO: (1) THE CONDITION ABOVE THAT CHECKS IF THE PRODUCT IS FIT TO BE A QUOTIENT, AND (2) ALL NUMBERS ARE PRESENT WITHIN THE RANGE. IF IN ANY CASE WHERE THE FUNCTION FAILS DUE TO THIS PROBLEM, THERE MUST BE A FLAW IN ANOTHER PART OF THIS FUNCTION. PERHAPS THE LEFT AND IRGHT INDEXES OR THE CONDITION THAT CHECKS IF THE PRODUCT IS A FIT QUOTIENT.
     }
 
     // Return the remainder/modulo:
     // dividend - (divisor * quotient) = remainder/modulo
     subtractBignum(result, dividend, &multiplyResult);
+
+    if (tempDividendSign == negative) {
+        result->sign = negative;
+    } else {
+        result->sign = positive;
+    }
+
+    dividend->sign = tempDividendSign;
+    divisor->sign = tempDivisorSign;
+
+    freeBignum(&tempOne);
+    freeBignum(&counterLeftIndex);
+    freeBignum(&counterRightIndex);
+    freeBignum(&counterMiddleIndex);
+    freeBignum(&multiplyResult);
+    freeBignum(&num1PlusNum2);
+    freeBignum(&dividendMinusMultiplyResult);
+}
+
+int powerBignum(Bignum *result, Bignum *base, Bignum *exponent) {
+    // Function to calculate the power of a Bignum (x^n).
+    // Uses binary exponentiation to calculate the power in O(log(n)) time complexity. Reference: https://www.youtube.com/watch?v=9VEqjAZxmeA&t=387s
+
+    // The reference above worked on the exponent itself by modulo'ing the exponent by 2 to get the last binary bit of the number, then dividing the exponent by 2 to reduce the exponent. This function will instead, Convert the exponent to binary as the functions used in bignumToBinary() are faster than using moduloBignum() and divideBignum() to reduce the exponent; and iterate over the binary represented exponent, then perform the operations in the video.
+
+    Bignum binaryExponent; 
+    initBignum(&binaryExponent);
+
+    // Convert the exponent to binary
+    bignumToBinary(&binaryExponent, exponent);
+
+    // Use temporary Bignums as multiplyBignum() can't overwrite the result Bignum.
+    // E.g: multiplyBignum(base, base, base );  <- Bignum base won't be overwritten
+    Bignum remainder;
+    Bignum baseCopy;
+
+    initBignum(&remainder);
+    initBignum(&baseCopy);
+
+    // Start remainder at 1
+    setBignum(&remainder, "1", positive);
+    copyBignum(&baseCopy, base);
+
+    Bignum tempRemainder;
+    Bignum tempBase;
+    initBignum(&tempRemainder);
+    initBignum(&tempBase);
+
+    // Iterate through binaryExpont starting from the LSB (least significant bit)
+    for (unsigned long long int i = 0; i < binaryExponent.length; i++) {
+        resetBignum(&tempRemainder);
+        resetBignum(&tempBase);
+
+        // If current bit is 1:
+        // remainder = remainder * base
+        if (binaryExponent.digits[i] == 1) {
+            multiplyBignum(&tempRemainder, &remainder, &baseCopy);
+            copyBignum(&remainder, &tempRemainder);
+        }
+
+        // If the iteration is at the last bit of the binary, copy remainder to result. Next step is not needed:
+        // function will perform the Bignum operations below, exit the for-loop, then a copyBignum(result,&remainder) would be needed to be performed before exiting the function --Exiting early at the last bit will save 2 operations.
+        if (i == binaryExponent.length - 1) {
+            copyBignum(result, &remainder);
+
+            freeBignum(&binaryExponent); 
+            freeBignum(&remainder);
+            freeBignum(&baseCopy);
+            freeBignum(&tempRemainder);
+            freeBignum(&tempBase);
+            
+            return 0;
+        }
+        
+        // base = base * base
+        multiplyBignum(&tempBase, &baseCopy, &baseCopy);
+        copyBignum(&baseCopy, &tempBase);
+    }
+
+    freeBignum(&binaryExponent); 
+    freeBignum(&remainder);
+    freeBignum(&baseCopy);
+    freeBignum(&tempRemainder);
+    freeBignum(&tempBase);
+
+    return 0;
 }
 
 
 
 int halfBignum(Bignum *result, Bignum *num) {
-    Bignum tempResult = initBignum();
+    // Function that divides a Bignum by 2 without using divideBignum(). This is useful as this function is faster at dividing a Bignum by 2 compared to divideBignum() --especially when the Bignum being halved is a really large number.
+
+    // NOTE: this function might be redundant, but it is needed int the algorithms used in the actual RSA Cipher Tool where it requires big Bignums to be divided by 2 effieciently.
+
+    // NOTE: this function doesnt take into consideration the division sign rules. It will simply half the Bignum and the result will get the same sign as the Bignum being halved.
+
+    // divideBignum() uses repeated multiplication and binary search. When a really big Bignum is being divided by 2, the left and right limits/indexes of the binary search grows, and more steps are needed. Moreover, using divideBignum() to half a really large Bignum somehow causes an overflow.
+    // On the other hand, this function iterated through Bignum.digits[] and uses the native division on each digit. This has been tested to be faster than divideBignum().
+    // E.g: 567 -> [  7  ,  6  ,  5  ]
+    //              7/2     |     |
+    //      floor->=2.5    6/2    |
+    //             = 2    =3+5<- decimal from previous iteration
+    //                    = 8     | 
+    //                           5/2
+    //                          =2.5
+    //                          =2+0<- since no decimal in previous iteration, ad 0.
+    //
+    //            [  2  ,  8  ,  2  ]
+    //  567 / 2 = 282
+    //
+    
+    // A temporary Bignum is used so we can use this function to pass in a Bignum, and at the same time, pass that same Bignum to the function as a result, allowing for a proper overwrite.
+    // E.g: halfBignum(&x, &x);
+    // The function call above is equivalent to: x = x / 2; or x /= 2;
+    int tempResultDigits[DEFAULT_BIGNUM_LENGTH];
+    unsigned long long int resultLength = 0;
 
     int carry = 0;
 
     for (int i = num->length - 1; i >= 0; i--) {
-        tempResult.digits[i] = (num->digits[i] / 2) + carry;
+        tempResultDigits[i] = (num->digits[i] / 2) + carry;
 
         if (num->digits[i] % 2 != 0) {
             carry = 5;
@@ -1095,11 +1692,14 @@ int halfBignum(Bignum *result, Bignum *num) {
             carry = 0;
         }
         
-        tempResult.length++;
+        resultLength++;
     }
 
-    trimBignum(&tempResult);
-    copyBignum(result, &tempResult);
+    result->length = resultLength;
+    memcpy(result->digits, tempResultDigits, sizeof(int) * resultLength);
+    result->sign = num->sign;
+
+    trimBignum(result);
 }
 
 int generateRandomBignum(Bignum *result, unsigned long long int numOfDigits, BIGNUM_SIGN sign) {

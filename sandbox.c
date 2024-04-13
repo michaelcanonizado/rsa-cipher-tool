@@ -7,40 +7,49 @@
 int main() {
     clock_t start = clock();
 
-    Bignum num1 = initBignum();
-    Bignum num2 = initBignum(); 
-    Bignum num3 = initBignum();
-    Bignum num4 = initBignum(); 
+    Bignum num1;
+    Bignum num2;
+    Bignum res1;
 
-    Bignum res1 = initBignum();
-    Bignum res2 = initBignum();
+    printf("\n......................INITIALIZEING BIGNUMS.................\n");
 
-    setBignum(&num1, "60260995677123112", positive);
-    setBignum(&num2, "2", positive);
+    initBignum(&num1);
+    initBignum(&num2);
+    initBignum(&res1);
 
-    divideBignum(&res1, &num1, &num2);
+    printf("\n\n\n......................ADDRESS OF BIGNUMS....................\n");
+
+    printf("\nnum1 %p.%p", &num1, num1.digits);
+    printf("\nnum2 %p.%p", &num2, num2.digits);
+    printf("\nres1 %p.%p", &res1, res1.digits);
     
-    printf("\n");
-    printBignum(&num1);
-    printf(" %% ");
-    printBignum(&num2);
-    printf(" = ");
-    for (int i = res1.length; i >= 0; i--) {
-            printf("%d", res1.digits[i]);
-        }
-    printf("\n");
 
-    printf("\n");
-    printBignum(&num3);
-    printf(" / ");
-    printBignum(&num4);
-    printf(" = ");
-    printBignum(&res2);
-    printf("\n");
+    printf("\n\n\n......................SETTING OF BIGNUMS.....................\n");
+
+    setBignum(&num1, "987", positive);
+    setBignum(&num2, "123", positive);
+
+    printf("\n\n\n....................PERFORMING OPERATIONS....................\n");
+
+    powerBignum(&res1, &num1, &num2);
+
+    printf("\nnum1 = ");
+    printBignum(&num1);
+    printf("\nnum2 = ");
+    printBignum(&num2);
+    printf("\nres1 = ");
+    printBignum(&res1);
+
+    printf("\n\n\n......................FREEING BIGNUMS.........................\n");
+
+    printBignumNodeList();
+
+    freeAllBignums();
+
 
     clock_t end = clock();
     double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-    printf("\nCPU time used: %f seconds\n\n", cpu_time_used);
+    printf("\n\nCPU time used: %f seconds\n\n", cpu_time_used);
 
     return 0;
 }
