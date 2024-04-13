@@ -20,6 +20,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <time.h>
 #include <math.h>
 #include "bignum.h"
 
@@ -1766,7 +1767,18 @@ int halfBignum(Bignum *result, Bignum *num) {
 }
 
 int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
-    printf("\n\nHello world!\n\n");
+    srand(time(NULL));
+
+    int primeLastDigits[] = {1,3,7,9};
+    int randPrimeLastDigitIndex = rand() % 4;
+
+    for (unsigned long long int i = primeLength - 1; i > 0; i--) {
+        result->digits[i] = rand() % 10;
+    }
+
+    result->digits[0] = primeLastDigits[randPrimeLastDigitIndex];
+
+    result->length = primeLength;
 
     return 0;
 }
