@@ -7,45 +7,54 @@
 int main() {
     clock_t start = clock();
 
-    Bignum num1;
-    Bignum num2;
-    Bignum res1;
+    Bignum base;
+    Bignum exponent;
+    Bignum divisor;
+    Bignum result;
 
     printf("\n......................INITIALIZEING BIGNUMS.................\n");
 
-    initBignum(&num1);
-    initBignum(&num2);
-    initBignum(&res1);
+    initBignum(&base);
+    initBignum(&exponent);
+    initBignum(&divisor);
+    initBignum(&result);
 
     printf("\n\n\n......................ADDRESS OF BIGNUMS....................\n");
 
-    printf("\nnum1 %p.%p", &num1, num1.digits);
-    printf("\nnum2 %p.%p", &num2, num2.digits);
-    printf("\nres1 %p.%p", &res1, res1.digits);
+    printf("\nnum1 %p.%p", &base, base.digits);
+    printf("\nnum2 %p.%p", &exponent, exponent.digits);
+    printf("\nres1 %p.%p", &divisor, divisor.digits);
+    printf("\nres1 %p.%p", &result, result.digits);
     
 
     printf("\n\n\n......................SETTING OF BIGNUMS.....................\n");
 
-    setBignum(&num1, "987", positive);
-    setBignum(&num2, "123", positive);
+    // setBignum(&base, "83", positive);
+    // setBignum(&exponent, "2312", positive);
+    // setBignum(&divisor, "2313", positive);
+    setBignum(&base, "839371", positive);
+    setBignum(&exponent, "231393718393712309371213937137122", positive);
+    setBignum(&divisor, "231393718393712309371213937137123", positive);
 
     printf("\n\n\n....................PERFORMING OPERATIONS....................\n");
 
-    powerBignum(&res1, &num1, &num2);
+    modularExponentiationBignum(&result, &base, &exponent, &divisor);
+    // powerBignum(&result, &base, &exponent);
 
-    printf("\nnum1 = ");
-    printBignum(&num1);
-    printf("\nnum2 = ");
-    printBignum(&num2);
-    printf("\nres1 = ");
-    printBignum(&res1);
+    printf("\n");
+    printBignum(&base);
+    printf("\n^\n");
+    printBignum(&exponent);
+    printf("\nmod\n");
+    printBignum(&divisor);
+    printf("\n=\n");
+    printBignum(&result);
 
     printf("\n\n\n......................FREEING BIGNUMS.........................\n");
 
     printBignumNodeList();
 
     freeAllBignums();
-
 
     clock_t end = clock();
     double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
