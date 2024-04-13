@@ -1,21 +1,3 @@
-// OPERATIONS NEEDED TO BE IMPLEMENTED:
-// Greater Than - Done
-// Less Than - Done
-// Equal To - Done
-// Addition - Done
-// Subtraction - Done
-// Multiplication - Done
-// Modulus - Done
-// Division - Not tested
-// Greater Than Equal To - N/A
-// Less Than Equal To - N/A
-// Not Equal To - N/A
-// Increment - N/A
-// Decrement - N/A
-// Exponents - N/A
-// Find GCD - N/A
-// Mod Inverse - N/A
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
