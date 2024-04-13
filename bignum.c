@@ -1766,26 +1766,91 @@ int halfBignum(Bignum *result, Bignum *num) {
     trimBignum(result);
 }
 
-int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
-    srand(time(NULL));
+int millerRabinPrimalityTest(Bignum *num) {
+    Bignum one;
+    initBignum(&one);
+    setBignum(&one, "1", positive);
+    Bignum two;
+    initBignum(&two);
+    setBignum(&two, "2", positive);
 
-    Bignum n;
+    Bignum numMinusOne;
+    initBignum(&numMinusOne);
+    subtractBignum(&numMinusOne, num, &one);
 
-    initBignum(&n);
+    printf("\nn-1\n\n: ");
+    printBignum(&numMinusOne);
 
-    int primeLastDigits[] = {1,3,7,9};
-    int randPrimeLastDigitIndex = rand() % 4;
+    Bignum k;
+    initBignum(&k);
+    setBignum(&k, "1", positive);
+    Bignum m;
+    Bignum twoPowKTimesM;
+    initBignum(&m);
+    initBignum(&twoPowKTimesM);
 
-    for (unsigned long long int i = primeLength - 1; i > 0; i--) {
-        n.digits[i] = rand() % 10;
+    Bignum twoPowk, numMinusOneDivTwoPowK;
+    initBignum(&twoPowk);
+    initBignum(&numMinusOneDivTwoPowK);
+
+    for (int i = 0; i < 4; i++) {
+        resetBignum(&twoPowk);
+        resetBignum(&numMinusOneDivTwoPowK);
+
+        printf("\nk: ");
+        printBignum(&k);
+
+        powerBignum(&twoPowk, &two, &k);
+        divideBignum(&numMinusOneDivTwoPowK, &numMinusOne, &twoPowk);
+
+        incrementBignum(&k, 1);
+
+
+        printf("\n2^k: ");
+        printBignum(&twoPowk);
+        printf("\n(n-1)/2^k: ");
+        printBignum(&numMinusOneDivTwoPowK);
+        printf("\n------------------------------");
     }
-    n.digits[0] = primeLastDigits[randPrimeLastDigitIndex];
-
+ 
     unsigned long long int min = 1000;
     unsigned long long int max = 9000;
     unsigned long long int a = min + rand() % (max - min + 1);
 
     printf("\n\nA: %llu\n\n", a);
+
+    freeBignum(&one);
+    freeBignum(&two);
+
+    freeBignum(&numMinusOne);
+
+    freeBignum(&k);
+    freeBignum(&m);
+    freeBignum(&twoPowKTimesM);
+
+    freeBignum(&twoPowk);
+    freeBignum(&numMinusOneDivTwoPowK);
+}
+
+int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
+    srand(time(NULL));
+
+    Bignum n;
+    initBignum(&n);
+
+    // int primeLastDigits[] = {1,3,7,9};
+    // int randPrimeLastDigitIndex = rand() % 4;
+
+    // for (unsigned long long int i = primeLength - 1; i > 0; i--) {
+    //     n.digits[i] = rand() % 10;
+    // }
+    // n.digits[0] = primeLastDigits[randPrimeLastDigitIndex];
+
+    setBignum(&n, "561", positive);
+
+    int isPrime = millerRabinPrimalityTest(&n);
+
+    printf("\n\nisPrime: %d\n\n", isPrime);
 
     copyBignum(result, &n);
     result->length = primeLength;
