@@ -1769,16 +1769,28 @@ int halfBignum(Bignum *result, Bignum *num) {
 int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
     srand(time(NULL));
 
+    Bignum n;
+
+    initBignum(&n);
+
     int primeLastDigits[] = {1,3,7,9};
     int randPrimeLastDigitIndex = rand() % 4;
 
     for (unsigned long long int i = primeLength - 1; i > 0; i--) {
-        result->digits[i] = rand() % 10;
+        n.digits[i] = rand() % 10;
     }
+    n.digits[0] = primeLastDigits[randPrimeLastDigitIndex];
 
-    result->digits[0] = primeLastDigits[randPrimeLastDigitIndex];
+    unsigned long long int min = 1000;
+    unsigned long long int max = 9000;
+    unsigned long long int a = min + rand() % (max - min + 1);
 
+    printf("\n\nA: %llu\n\n", a);
+
+    copyBignum(result, &n);
     result->length = primeLength;
+
+    freeBignum(&n);
 
     return 0;
 }
