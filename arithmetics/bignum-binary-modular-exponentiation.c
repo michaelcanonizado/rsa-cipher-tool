@@ -4,7 +4,7 @@
 #include <time.h>
 #include "../bignum.h"
 
-int bignumToBinary(Bignum *result, Bignum *num) {
+int bignumToBinaryPrototype(Bignum *result, Bignum *num) {
 
     int remainderTemp;
     unsigned long long int binaryLength = 0;
@@ -141,7 +141,7 @@ int bignumBinaryModularExponentiationCompressed(Bignum *result, Bignum *base, Bi
     initBignum(&remainderSquaredModDivisorTimesBase);
     initBignum(&remainderSquaredModDivisorTimesBaseModDivisor);
 
-    for (int i = binaryExponent->length - 1; i >= 0; i--) {
+    for (unsigned long long int i = binaryExponent->length - 1; i > 0; i--) {
         resetBignum(&remainderSquared);
         resetBignum(&remainderSquaredModDivisor);
 
@@ -163,7 +163,7 @@ int bignumBinaryModularExponentiationCompressed(Bignum *result, Bignum *base, Bi
             multiplyBignum(&remainderSquaredModDivisorTimesBase, &remainderSquaredModDivisor, base);
             moduloBignum(&remainderSquaredModDivisorTimesBaseModDivisor, &remainderSquaredModDivisorTimesBase,divisor);
 
-            copyBignum(&remainder, &remainderSquaredModDivisorTimesBaseModDivisor);
+            copyBignum(&remainder, &remainderSquaredModDivisorTimesBaseModDivisor);            
         }
     }
 
@@ -197,11 +197,14 @@ int main() {
     initBignum(&divisor); 
     initBignum(&result);
 
-    setBignum(&base, "8393718393712309371230148391483937123", positive);
-    setBignum(&exponent, "2313937183937123093712139371371230114839237123093712139371371230168", positive);
-    setBignum(&divisor, "2313937183937123093712139371371230114839237123093712139371371230179", positive);
+    // setBignum(&base, "8393718393712309371230148391483937123", positive);
+    // setBignum(&exponent, "2313937183937123093712139371371230114839237123093712139371371230168", positive);
+    // setBignum(&divisor, "2313937183937123093712139371371230114839237123093712139371371230179", positive);
+    setBignum(&base, "83", positive);
+    setBignum(&exponent, "2312", positive);
+    setBignum(&divisor, "2313", positive);
 
-    bignumToBinary(&binaryExponent, &exponent);
+    bignumToBinaryPrototype(&binaryExponent, &exponent);
     
     printf("\n\n\n");
     printBignum(&exponent);
