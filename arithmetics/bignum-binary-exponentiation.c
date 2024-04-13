@@ -3,7 +3,7 @@
 #include <time.h>
 #include "../bignum.h"
 
-int bignumToBinary(Bignum *result, Bignum *num) {
+int bignumToBinaryPrototype(Bignum *result, Bignum *num) {
 
     int remainderTemp;
     unsigned long long int binaryLength = 0;
@@ -164,7 +164,7 @@ int main(void) {
     setBignum(&base, "987", positive);
     setBignum(&exponent, "123", positive);
 
-    bignumToBinary(&binaryExponent, &exponent);
+    bignumToBinaryPrototype(&binaryExponent, &exponent);
 
     printf("\n\n\n");
     printBignum(&exponent);
