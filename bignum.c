@@ -1677,11 +1677,10 @@ int modularExponentiationBignum(Bignum *result, Bignum *base, Bignum *exponent, 
     for (unsigned long long int i = binaryExponent.length - 1; i > 0; i--) {
         resetBignum(&remainderSquared);
         resetBignum(&remainderSquaredModDivisor);
-        resetBignum(&tempRemainder);
-        resetBignum(&remainderSquaredModDivisorTimesBase);
-        resetBignum(&remainderSquaredModDivisorTimesBaseModDivisor);
 
         if (binaryExponent.digits[i - 1] == 0) {
+            resetBignum(&tempRemainder);
+
             copyBignum(&tempRemainder, &remainder);
 
             multiplyBignum(&remainderSquared, &remainder, &remainder);
@@ -1689,6 +1688,9 @@ int modularExponentiationBignum(Bignum *result, Bignum *base, Bignum *exponent, 
 
             copyBignum(&remainder, &remainderSquaredModDivisor);
         } else if (binaryExponent.digits[i - 1] == 1) {
+            resetBignum(&remainderSquaredModDivisorTimesBase);
+            resetBignum(&remainderSquaredModDivisorTimesBaseModDivisor);
+
             multiplyBignum(&remainderSquared, &remainder, &remainder);
             moduloBignum(&remainderSquaredModDivisor, &remainderSquared, divisor);
             
