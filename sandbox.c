@@ -21,25 +21,23 @@ int main() {
 
     printf("\n\n\n......................ADDRESS OF BIGNUMS....................\n");
 
-    printf("\nnum1 %p.%p", &base, base.digits);
-    printf("\nnum2 %p.%p", &exponent, exponent.digits);
-    printf("\nres1 %p.%p", &divisor, divisor.digits);
-    printf("\nres1 %p.%p", &result, result.digits);
+    printf("\nbase %p.%p", &base, base.digits);
+    printf("\nexponent %p.%p", &exponent, exponent.digits);
+    printf("\ndivisor %p.%p", &divisor, divisor.digits);
+    printf("\nresult %p.%p", &result, result.digits);
     
-
     printf("\n\n\n......................SETTING OF BIGNUMS.....................\n");
 
     // setBignum(&base, "83", positive);
     // setBignum(&exponent, "2312", positive);
     // setBignum(&divisor, "2313", positive);
-    setBignum(&base, "839371", positive);
-    setBignum(&exponent, "231393718393712309371213937137122", positive);
-    setBignum(&divisor, "231393718393712309371213937137123", positive);
+    setBignum(&base, "8393718", positive);
+    setBignum(&exponent, "231393718393712309371213937138", positive);
+    setBignum(&divisor, "231393718393712309371213937139", positive);
 
     printf("\n\n\n....................PERFORMING OPERATIONS....................\n");
 
     modularExponentiationBignum(&result, &base, &exponent, &divisor);
-    // powerBignum(&result, &base, &exponent);
 
     printf("\n");
     printBignum(&base);
