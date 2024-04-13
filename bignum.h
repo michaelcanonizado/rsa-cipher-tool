@@ -61,6 +61,7 @@ int powerBignum(Bignum *result, Bignum *base, Bignum *exponent);
 int modularExponentiationBignum(Bignum *result, Bignum *base, Bignum *exponent, Bignum *divisor);
 
 int halfBignum(Bignum *result, Bignum *num);
+int generatePrimeBignum(Bignum *result, unsigned long long int primeLength);
 int generateRandomBignum(Bignum *result, unsigned long long int numOfDigits, BIGNUM_SIGN sign);
 
 #endif /* BIGNUM_H */
