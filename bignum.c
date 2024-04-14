@@ -1870,6 +1870,17 @@ int millerRabinPrimalityTest(Bignum *num, int iterations) {
             temp.digits[0] % 2 == 0
         ) {
             printf(" -> composite:( ");
+
+            freeBignum(&pOne);
+            freeBignum(&two);
+            freeBignum(&numMinusOne);
+            freeBignum(&a);
+            freeBignum(&numMinusOneCopy);
+            freeBignum(&tempCopy);
+            freeBignum(&temp);
+            freeBignum(&mod);
+            freeBignum(&modSquared);
+
             return 0;
         } else {
             printf(" -> prime!");
@@ -1902,7 +1913,11 @@ int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
     int randPrimeLastDigitIndex = rand() % 4;
 
     for (unsigned long long int i = primeLength - 1; i > 0; i--) {
-        n.digits[i] = rand() % 10;
+        if (i == primeLength - 1) {
+            n.digits[i] = (rand() % 9) + 1;
+        } else {
+            n.digits[i] = rand() % 10;
+        }
     }
     n.digits[0] = primeLastDigits[randPrimeLastDigitIndex];
     n.length = primeLength;
