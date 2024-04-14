@@ -651,16 +651,10 @@ int isBignumZero(Bignum *num) {
     // A zero can be determined if it is 1 digit long, and the first digit is 0.
 
     // REFACTOR: ADD MORE CONDITIONS TO VERIFY IS BIGUM IS 0. SUCH AS:
-    //    - CHECKING THE OTHER INDEXES FOR NON-ZEROS (Bignum.digits[0] might be 0, but the following indexes might have non-zeros)
     //    - A ZERO HAS THE SIGN OF POSITIVE IN Bignum STRUCT DEFINITION.
     //    - A BIGNUM THAT HASN'T BEEN PROPERLY INITIALIZED, (Ie: initBignum() was not used) WILL BE CONSIDERED AS A ZERO. DECIDE WHETHER THIS IS A WANTED BEHAVIOR
 
-    // if (num->length <= 1 && num->digits[0] == 0) {
-    //     return 1;
-    // } else {
-    //     return 0;
-    // }
-
+    // Go through each digit in Bignum.digits[] looking for a non-zero
     for (unsigned long long i = 0; i < DEFAULT_BIGNUM_LENGTH; i++) {
         if (num->digits[i] != 0) {
             return 0;
