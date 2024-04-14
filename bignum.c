@@ -1869,7 +1869,7 @@ int millerRabinPrimalityTest(Bignum *num, int iterations) {
             !isEqualToBignum(&mod, &numMinusOne) &&
             temp.digits[0] % 2 == 0
         ) {
-            printf(" -> composite:(");
+            printf(" -> composite:( ");
             return 0;
         } else {
             printf(" -> prime!");
@@ -1898,23 +1898,28 @@ int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
     Bignum n;
     initBignum(&n);
 
-    // int primeLastDigits[] = {1,3,7,9};
-    // int randPrimeLastDigitIndex = rand() % 4;
+    int primeLastDigits[] = {1,3,7,9};
+    int randPrimeLastDigitIndex = rand() % 4;
 
-    // for (unsigned long long int i = primeLength - 1; i > 0; i--) {
-    //     n.digits[i] = rand() % 10;
-    // }
-    // n.digits[0] = primeLastDigits[randPrimeLastDigitIndex];
+    for (unsigned long long int i = primeLength - 1; i > 0; i--) {
+        n.digits[i] = rand() % 10;
+    }
+    n.digits[0] = primeLastDigits[randPrimeLastDigitIndex];
+    n.length = primeLength;
 
     // setBignum(&n, "4253", positive);
-    setBignum(&n, "48817142628982800811", positive);
+    // setBignum(&n, "48817142628982800811", positive);
+    printf("\n\nChecking if ");
+    printBignum(&n);
+    printf(" isPrime... \n\n");
 
     int isPrime = millerRabinPrimalityTest(&n, 5);
 
-    // printf("\n\nisPrime: %d\n\n", isPrime);
+    printf("\n\n");
+    printBignum(&n);
+    printf(" isPrime: %d\n\n", isPrime);
 
     copyBignum(result, &n);
-    result->length = primeLength;
 
     freeBignum(&n);
 
