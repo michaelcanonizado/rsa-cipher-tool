@@ -4,6 +4,7 @@
 #include <time.h>
 #include "bignum.h"
 
+
 int main() {
     clock_t start = clock();
 
@@ -28,8 +29,8 @@ int main() {
     
     printf("\n\n\n......................SETTING OF BIGNUMS.....................\n");
 
-    setBignum(&y, "123", negative);
-    setBignum(&x, "53", positive);
+    setBignum(&y, "0", negative);
+    setBignum(&x, "5", positive);
     // setBignum(&x, "560", positive);
     // setBignum(&y, "2", positive);
 
@@ -37,18 +38,16 @@ int main() {
 
     unsigned long long int primeLength = 20;
 
-    // generatePrimeBignum(&num, primeLength);
-    // generateRandomBignumInRange(&z, &y,&x);
-    moduloBignum(&z, &y, &x);
+    generatePrimeBignum(&num, primeLength);
 
-    printf("\nnum: ");
+    printf("\n\nnum: ");
     printBignumExtended(&num, primeLength + 5);
     printf("\nx %d: ", x.sign);
     printBignum(&x);
     printf("\ny %d: ", y.sign);
     printBignum(&y);
     printf("\nz %d: ", z.sign);
-    printBignum(&z);
+    printf("\n\n\nMiller res: %d: ", Miller(7602311767, 10));
 
     printf("\n\n\n......................FREEING BIGNUMS.........................\n");
 
