@@ -655,11 +655,19 @@ int isBignumZero(Bignum *num) {
     //    - A ZERO HAS THE SIGN OF POSITIVE IN Bignum STRUCT DEFINITION.
     //    - A BIGNUM THAT HASN'T BEEN PROPERLY INITIALIZED, (Ie: initBignum() was not used) WILL BE CONSIDERED AS A ZERO. DECIDE WHETHER THIS IS A WANTED BEHAVIOR
 
-    if (num->length <= 1 && num->digits[0] == 0) {
-        return 1;
-    } else {
-        return 0;
+    // if (num->length <= 1 && num->digits[0] == 0) {
+    //     return 1;
+    // } else {
+    //     return 0;
+    // }
+
+    for (unsigned long long i = 0; i < DEFAULT_BIGNUM_LENGTH; i++) {
+        if (num->digits[i] != 0) {
+            return 0;
+        }
     }
+
+    return 1;
 }
 
 
