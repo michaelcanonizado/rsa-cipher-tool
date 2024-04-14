@@ -1812,6 +1812,7 @@ int millerRabinPrimalityTest(Bignum *num) {
     printBignum(&numMinusOneDivTwoPowK);
     printf("\n------------------------------");
  
+    // STEP 2: Generate a. 1 < a < n-1
     unsigned long long int min = 1000;
     unsigned long long int max = 9000;
     unsigned long long int a = min + rand() % (max - min + 1);
@@ -1857,6 +1858,11 @@ int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
     freeBignum(&n);
 
     return 0;
+}
+
+int generateRandomBignumInRange(Bignum *result, Bignum *min, Bignum *max) {
+
+    printf("\n\nHello world!\n\n");
 }
 
 int generateRandomBignum(Bignum *result, unsigned long long int numOfDigits, BIGNUM_SIGN sign) {
