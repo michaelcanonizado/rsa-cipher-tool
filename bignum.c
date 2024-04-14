@@ -1772,9 +1772,6 @@ int millerRabinPrimalityTest(Bignum *num) {
     initBignum(&numMinusOne);
     subtractBignum(&numMinusOne, num, &one);
 
-    printf("\nn-1\n\n: ");
-    printBignum(&numMinusOne);
-
     Bignum k, m, twoPowKTimesM;
     initBignum(&k);
     setBignum(&k, "1", positive);
@@ -1785,25 +1782,35 @@ int millerRabinPrimalityTest(Bignum *num) {
     initBignum(&twoPowk);
     initBignum(&numMinusOneDivTwoPowK);
 
-    for (int i = 0; i < 4; i++) {
+    // STEP 1: Find k and m
+    for (int i = 0; i < 10; i++) {
         resetBignum(&twoPowk);
-        resetBignum(&numMinusOneDivTwoPowK);
-
-        printf("\nk: ");
-        printBignum(&k);
+        resetBignum(&m);
 
         powerBignum(&twoPowk, &two, &k);
-        divideBignum(&numMinusOneDivTwoPowK, &numMinusOne, &twoPowk);
+        moduloBignum(&m, &numMinusOne, &twoPowk);
+
+        if (!isBignumZero(&m)) {;
+            decrementBignum(&k, 1);
+            powerBignum(&twoPowk, &two, &k);
+            divideBignum(&m, &numMinusOne, &twoPowk);
+            break;
+        }
 
         incrementBignum(&k, 1);
-
-
-        printf("\n2^k: ");
-        printBignum(&twoPowk);
-        printf("\n(n-1)/2^k: ");
-        printBignum(&numMinusOneDivTwoPowK);
-        printf("\n------------------------------");
     }
+
+    printf("\nn-1: ");
+    printBignum(&numMinusOne);
+    printf("\nk: ");
+    printBignum(&k);
+    printf("\n2^k: ");
+    printBignum(&twoPowk);
+    printf("\nm: ");
+    printBignum(&m);
+    printf("\n(n-1)/2^k: ");
+    printBignum(&numMinusOneDivTwoPowK);
+    printf("\n------------------------------");
  
     unsigned long long int min = 1000;
     unsigned long long int max = 9000;
