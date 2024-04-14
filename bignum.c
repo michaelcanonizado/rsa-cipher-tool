@@ -1465,22 +1465,40 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     //    : The left and right indexes will be: 10 - 10000 
     // Therefore, the left and right indexes should be given extra place values.
 
+    if (dividend->sign == negative) {
+        BIGNUM_SIGN tempDividendSign = dividend->sign;
+        BIGNUM_SIGN tempDivisorSign = divisor->sign;
+
+        dividend->sign = positive;
+        divisor->sign = positive;
+
+        Bignum tempMod;
+        initBignum(&tempMod);
+
+        moduloBignum(&tempMod, dividend, divisor);
+
+        subtractBignum(result, divisor, &tempMod);
+
+        dividend->sign = tempDividendSign;
+        divisor->sign = tempDivisorSign;
+        result->sign = positive;
+
+        freeBignum(&tempMod);
+        return 0;
+    }
+
+    // If dividend is less than the divisor. It is the remainder/modulo
+    // 123 % 987654321 = 123
+    if (isLessThanBignum(dividend, divisor)) {
+        copyBignum(result, dividend);
+        return 0;
+    }
+
     BIGNUM_SIGN tempDividendSign = dividend->sign;
     BIGNUM_SIGN tempDivisorSign = divisor->sign;
 
     dividend->sign = positive;
     divisor->sign = positive;
-
-    // If dividend is less than the divisor. It is the remainder/modulo
-    // 123 % 987654321 = 123
-    if (isLessThanBignum(dividend, divisor)) {
-        dividend->sign = tempDividendSign;
-        divisor->sign = tempDivisorSign;
-        result->sign = tempDividendSign;
-
-        copyBignum(result, dividend);
-        return 0;
-    }
 
     // A temporary Bignum set as 1 is used as bignumShiftLeft doesn't modify the actual Bignum that is passed. But modifies a separate resulting Bignum.
     Bignum tempOne;
@@ -1565,7 +1583,7 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
 
     dividend->sign = tempDividendSign;
     divisor->sign = tempDivisorSign;
-    result->sign = tempDividendSign;
+    result->sign = positive;
 
     freeBignum(&tempOne);
     freeBignum(&counterLeftIndex);
