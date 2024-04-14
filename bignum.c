@@ -1911,28 +1911,31 @@ int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
 
     int primeLastDigits[] = {1,3,7,9};
     int randPrimeLastDigitIndex = rand() % 4;
+    int isPrime = 0;
 
-    for (unsigned long long int i = primeLength - 1; i > 0; i--) {
+    while(!isPrime) {
+        resetBignum(&n);
+
+        for (unsigned long long int i = primeLength - 1; i > 0; i--) {
         if (i == primeLength - 1) {
             n.digits[i] = (rand() % 9) + 1;
         } else {
             n.digits[i] = rand() % 10;
         }
+        }
+        n.digits[0] = primeLastDigits[randPrimeLastDigitIndex];
+        n.length = primeLength;
+
+        printf("\nChecking if ");
+        printBignum(&n);
+        printf(" isPrime...");
+
+        isPrime = millerRabinPrimalityTest(&n, 10);
+
+        printf("\n");
+        printBignum(&n);
+        printf(" isPrime: %d", isPrime);
     }
-    n.digits[0] = primeLastDigits[randPrimeLastDigitIndex];
-    n.length = primeLength;
-
-    // setBignum(&n, "4253", positive);
-    // setBignum(&n, "48817142628982800811", positive);
-    printf("\n\nChecking if ");
-    printBignum(&n);
-    printf(" isPrime... \n\n");
-
-    int isPrime = millerRabinPrimalityTest(&n, 5);
-
-    printf("\n\n");
-    printBignum(&n);
-    printf(" isPrime: %d\n\n", isPrime);
 
     copyBignum(result, &n);
 
