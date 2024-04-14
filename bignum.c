@@ -1761,16 +1761,19 @@ int halfBignum(Bignum *result, Bignum *num) {
 }
 
 int millerRabinPrimalityTest(Bignum *num) {
-    Bignum one;
-    initBignum(&one);
-    setBignum(&one, "1", positive);
+    Bignum pOne;
+    initBignum(&pOne);
+    setBignum(&pOne, "1", positive);
+    Bignum nOne;
+    initBignum(&nOne);
+    setBignum(&nOne, "1", negative);
     Bignum two;
     initBignum(&two);
     setBignum(&two, "2", positive);
 
     Bignum numMinusOne;
     initBignum(&numMinusOne);
-    subtractBignum(&numMinusOne, num, &one);
+    subtractBignum(&numMinusOne, num, &pOne);
 
     Bignum k, m, twoPowKTimesM;
     initBignum(&k);
@@ -1813,13 +1816,46 @@ int millerRabinPrimalityTest(Bignum *num) {
     printf("\n------------------------------");
  
     // STEP 2: Generate a. 1 < a < n-1
-    unsigned long long int min = 1000;
-    unsigned long long int max = 9000;
-    unsigned long long int a = min + rand() % (max - min + 1);
+    unsigned long long int min = 2;
+    unsigned long long int max = pow(10,ceil(numMinusOne.length / 2.0)) - 1;
+    unsigned long long int aTemp = min + rand() % (max - min + 1);
 
-    printf("\n\nA: %llu\n\n", a);
+    Bignum a;
+    initBignum(&a);
+    // intToBignum(&a, aTemp, positive);
+    intToBignum(&a, 2, positive);
 
-    freeBignum(&one);
+    printf("\n\nmin: %llu", min);
+    printf("\nmax: %llu", max);
+    printf("\nA int: %llu", aTemp);
+    printf("\nA bg: ");
+    printBignum(&a);
+
+    // STEP 3: Perform mod inverses
+    Bignum b;
+    initBignum(&b);
+
+    int count = 0;
+    while(count < 5) {
+        modularExponentiationBignum(&b, &a, &m, num);
+        printf("\n\nb: ");
+        printBignum(&b);
+
+        copyBignum(&a, &b);
+        copyBignum(&m, &two);
+
+        if (isEqualToBignum(&pOne, &b) || isEqualToBignum(&nOne, &b)) {
+            printf("\n\nExiting Loop!");
+            printf("\nResult: ");
+            printBignum(&b);
+            break;
+        }
+
+        count++;
+    }
+
+    freeBignum(&pOne);
+    freeBignum(&nOne);
     freeBignum(&two);
 
     freeBignum(&numMinusOne);
@@ -1830,6 +1866,10 @@ int millerRabinPrimalityTest(Bignum *num) {
 
     freeBignum(&twoPowk);
     freeBignum(&numMinusOneDivTwoPowK);
+
+    freeBignum(&a);
+
+    freeBignum(&b);
 }
 
 int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
@@ -1846,7 +1886,8 @@ int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
     // }
     // n.digits[0] = primeLastDigits[randPrimeLastDigitIndex];
 
-    setBignum(&n, "561", positive);
+    // setBignum(&n, "4253", positive);
+    setBignum(&n, "53", positive);
 
     int isPrime = millerRabinPrimalityTest(&n);
 
