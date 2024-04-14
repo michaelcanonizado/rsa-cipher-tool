@@ -424,9 +424,6 @@ void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
 
     int temp;
 
-    // Store sign enum (0 = positive || 1 = negative)
-    numStruct->sign = sign;
-
     // Store numStr length
     numStruct->length = strlen(numStr);
 
@@ -464,6 +461,12 @@ void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
 
     // Trim result. Removing any possible leading 0s. E.g. "[3,2,1,0,0,0]" will be [3,2,1]
     trimBignum(numStruct);
+
+    // Store sign enum (0 = positive || 1 = negative).
+    // If Bignum is 0, and passed sign is negative, set sign to positive.
+    // setBignum(&num, "0", negative); -> will be set to positive
+    numStruct->sign = positive;
+    numStruct->sign = isBignumZero(numStruct) ? positive : sign;
 }
 
 void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN sign) {
