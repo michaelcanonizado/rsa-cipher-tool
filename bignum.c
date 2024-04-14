@@ -1474,6 +1474,10 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     // If dividend is less than the divisor. It is the remainder/modulo
     // 123 % 987654321 = 123
     if (isLessThanBignum(dividend, divisor)) {
+        dividend->sign = tempDividendSign;
+        divisor->sign = tempDivisorSign;
+        result->sign = tempDividendSign;
+
         copyBignum(result, dividend);
         return 0;
     }
@@ -1559,14 +1563,9 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     // dividend - (divisor * quotient) = remainder/modulo
     subtractBignum(result, dividend, &multiplyResult);
 
-    if (tempDividendSign == negative) {
-        result->sign = negative;
-    } else {
-        result->sign = positive;
-    }
-
     dividend->sign = tempDividendSign;
     divisor->sign = tempDivisorSign;
+    result->sign = tempDividendSign;
 
     freeBignum(&tempOne);
     freeBignum(&counterLeftIndex);
