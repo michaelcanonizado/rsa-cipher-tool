@@ -37,9 +37,7 @@ int main() {
 
     unsigned long long int primeLength = 20;
 
-    // generatePrimeBignum(&num, primeLength);
-    // divideBignum(&z, &x, &y);
-    subtractBignum(&z, &x, &y);
+    generatePrimeBignum(&num, primeLength);
 
     printf("\nnum: ");
     printBignumExtended(&num, primeLength + 5);
