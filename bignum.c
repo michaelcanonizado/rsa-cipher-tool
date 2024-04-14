@@ -1861,6 +1861,7 @@ int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
 }
 
 int generateRandomBignumInRange(Bignum *result, Bignum *min, Bignum *max) {
+    // WARNING: FUNCTION UNSTABLE! DO NOT USE!
 
     if (isGreaterThanBignum(min, max)) {
         printf("\nMin is greater than max!");
@@ -1903,7 +1904,7 @@ int generateRandomBignumInRange(Bignum *result, Bignum *min, Bignum *max) {
 
     int flag = resultLength == resultMaxLength ? 1 : 0;
     printf("\nChosen flag: %d", flag);
-    
+
     int randDigit;
 
     unsigned long long int i = resultLength - 1;
