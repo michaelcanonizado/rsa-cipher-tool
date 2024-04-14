@@ -419,8 +419,6 @@ void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign) {
 
     // Integer will be stored in Bignum.digits[] in reverse for the following reasons: (1) Most operations usually start from the LSD (least significant digit), making it easier to perform operations. (2) The result will usually be greater than or less than the 2 integers being operated on. Eg: 999 (3 digits) + 999 (3 digits) = 1998 (4 digits) & 999 (3 digits) * 999 (3 digits) = 998,001 (6 digits). Hence, the resulting Bignum is free to shrink and grow infinitely. 
 
-    // FEAT: Cases where the strings contain non-numerical characters haven't been set. It will be implemented soon. Eg: "123a678".
-
     int temp;
 
     // Store sign enum (0 = positive || 1 = negative)
