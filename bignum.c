@@ -1465,6 +1465,11 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     //    : The left and right indexes will be: 10 - 10000 
     // Therefore, the left and right indexes should be given extra place values.
 
+    // NOTE: This function only returns positive values and follows the Remainder Theorem
+
+    // If dividend is a negative, perform the recursive call:
+    //    -a mod b = b - (a mod b)
+    // Reference: https://www.youtube.com/watch?v=AbGVbgQre7I
     if (dividend->sign == negative) {
         BIGNUM_SIGN tempDividendSign = dividend->sign;
         BIGNUM_SIGN tempDivisorSign = divisor->sign;
@@ -1474,9 +1479,9 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
 
         Bignum tempMod;
         initBignum(&tempMod);
-
+        // a mod b
         moduloBignum(&tempMod, dividend, divisor);
-
+        // b - (a mod b)
         subtractBignum(result, divisor, &tempMod);
 
         dividend->sign = tempDividendSign;
