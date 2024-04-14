@@ -47,7 +47,6 @@ int main() {
     printf("\ny %d: ", y.sign);
     printBignum(&y);
     printf("\nz %d: ", z.sign);
-    printf("\n\n\nMiller res: %d: ", Miller(7602311767, 10));
 
     printf("\n\n\n......................FREEING BIGNUMS.........................\n");
 
