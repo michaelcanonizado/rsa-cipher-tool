@@ -797,6 +797,15 @@ int incrementBignum(Bignum *num, unsigned long long int incrementValue) {
     return 0;
 }
 
+int decrementBignum(Bignum *num, unsigned long long int decrementValue) {
+    Bignum offset;
+    initBignum(&offset);
+    intToBignum(&offset, decrementValue, positive);
+    addBignum(num, num, &offset);
+    freeBignum(&offset);
+    return 0;
+}
+
 
 
 void addBignum(Bignum *result, Bignum *addend1, Bignum *addend2) {
@@ -1766,11 +1775,9 @@ int millerRabinPrimalityTest(Bignum *num) {
     printf("\nn-1\n\n: ");
     printBignum(&numMinusOne);
 
-    Bignum k;
+    Bignum k, m, twoPowKTimesM;
     initBignum(&k);
     setBignum(&k, "1", positive);
-    Bignum m;
-    Bignum twoPowKTimesM;
     initBignum(&m);
     initBignum(&twoPowKTimesM);
 
