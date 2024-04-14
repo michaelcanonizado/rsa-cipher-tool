@@ -1832,7 +1832,7 @@ int millerRabinPrimalityTest(Bignum *num, int iterations) {
         unsigned long long int aTemp = min + rand() % (max - min + 1);
         intToBignum(&a, aTemp, positive);
 
-        printf("\na: ");
+        printf("\n\t- a: ");
         printBignum(&a);
 
         // STEP 3:
@@ -1930,7 +1930,7 @@ int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
         printBignum(&n);
         printf(" isPrime...");
 
-        isPrime = millerRabinPrimalityTest(&n, 10);
+        isPrime = millerRabinPrimalityTest(&n, 15);
 
         printf("\n");
         printBignum(&n);
