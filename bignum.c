@@ -801,7 +801,7 @@ int decrementBignum(Bignum *num, unsigned long long int decrementValue) {
     Bignum offset;
     initBignum(&offset);
     intToBignum(&offset, decrementValue, positive);
-    addBignum(num, num, &offset);
+    subtractBignum(num, num, &offset);
     freeBignum(&offset);
     return 0;
 }
