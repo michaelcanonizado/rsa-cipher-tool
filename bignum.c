@@ -1788,13 +1788,10 @@ int halfBignum(Bignum *result, Bignum *num) {
     trimBignum(result);
 }
 
-int millerRabinPrimalityTest(Bignum *num) {
+int millerRabinPrimalityTest(Bignum *num, int iterations) {
     Bignum pOne;
     initBignum(&pOne);
     setBignum(&pOne, "1", positive);
-    Bignum nOne;
-    initBignum(&nOne);
-    setBignum(&nOne, "1", negative);
     Bignum two;
     initBignum(&two);
     setBignum(&two, "2", positive);
@@ -1882,13 +1879,12 @@ int millerRabinPrimalityTest(Bignum *num) {
     printBignum(&a);
 
     freeBignum(&pOne);
-    freeBignum(&nOne);
     freeBignum(&two);
     freeBignum(&numMinusOne);
+
     freeBignum(&a);
 
     freeBignum(&numMinusOneCopy);
-
     freeBignum(&tempCopy);
     freeBignum(&temp);
 
@@ -1913,7 +1909,7 @@ int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
     // setBignum(&n, "4253", positive);
     setBignum(&n, "28274077535050034777", positive);
 
-    int isPrime = millerRabinPrimalityTest(&n);
+    int isPrime = millerRabinPrimalityTest(&n, 4);
 
     // printf("\n\nisPrime: %d\n\n", isPrime);
 
