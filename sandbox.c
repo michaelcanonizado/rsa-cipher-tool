@@ -28,8 +28,8 @@ int main() {
     
     printf("\n\n\n......................SETTING OF BIGNUMS.....................\n");
 
-    setBignum(&x, "560", positive);
-    setBignum(&y, "1", positive);
+    setBignum(&x, "53", positive);
+    setBignum(&y, "1", negative);
     // setBignum(&x, "560", positive);
     // setBignum(&y, "2", positive);
 
@@ -38,15 +38,16 @@ int main() {
     unsigned long long int primeLength = 20;
 
     // generatePrimeBignum(&num, primeLength);
-    generateRandomBignumInRange(&z, &y,&x);
+    // generateRandomBignumInRange(&z, &y,&x);
+    moduloBignum(&z, &y, &x);
 
     printf("\nnum: ");
     printBignumExtended(&num, primeLength + 5);
-    printf("\nx: ");
+    printf("\nx %d: ", x.sign);
     printBignum(&x);
-    printf("\ny: ");
+    printf("\ny %d: ", y.sign);
     printBignum(&y);
-    printf("\nz: ");
+    printf("\nz %d: ", z.sign);
     printBignum(&z);
 
     printf("\n\n\n......................FREEING BIGNUMS.........................\n");
