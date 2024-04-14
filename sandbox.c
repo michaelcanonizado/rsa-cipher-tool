@@ -28,8 +28,8 @@ int main() {
     
     printf("\n\n\n......................SETTING OF BIGNUMS.....................\n");
 
+    setBignum(&y, "123", negative);
     setBignum(&x, "53", positive);
-    setBignum(&y, "1", negative);
     // setBignum(&x, "560", positive);
     // setBignum(&y, "2", positive);
 
