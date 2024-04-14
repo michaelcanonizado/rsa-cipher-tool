@@ -29,7 +29,7 @@ int main() {
     printf("\n\n\n......................SETTING OF BIGNUMS.....................\n");
 
     setBignum(&x, "560", positive);
-    setBignum(&y, "560", positive);
+    setBignum(&y, "1", positive);
     // setBignum(&x, "560", positive);
     // setBignum(&y, "2", positive);
 
@@ -37,22 +37,21 @@ int main() {
 
     unsigned long long int primeLength = 20;
 
-    generatePrimeBignum(&num, primeLength);
+    // generatePrimeBignum(&num, primeLength);
+    generateRandomBignumInRange(&z, &y,&x);
 
     printf("\nnum: ");
     printBignumExtended(&num, primeLength + 5);
-    printf("\n\n\nx: ");
+    printf("\nx: ");
     printBignum(&x);
-    printf("\n\n\ny: ");
+    printf("\ny: ");
     printBignum(&y);
-    printf("\n\n\nz: ");
+    printf("\nz: ");
     printBignum(&z);
 
     printf("\n\n\n......................FREEING BIGNUMS.........................\n");
 
-    printBignumNodeList();
     freeAllBignums();
-    printBignumNodeList();
 
     clock_t end = clock();
     double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
