@@ -411,8 +411,8 @@ void freeBignum(Bignum *num) {
         free(toRemoveNode->value->digits);
         toRemoveNode->value->digits = NULL;
         free(toRemoveNode);
-        // Point head to the next pointer (NULL)
-        bignumListHead = bignumListHead->next;
+        // Set head to NULL
+        bignumListHead = NULL;
 
         FREED_BIGNUMS_COUNT++;
 
