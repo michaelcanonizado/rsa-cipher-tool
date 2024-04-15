@@ -1058,6 +1058,9 @@ void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend) {
     if (isBignumZero(minuend)) {
         copyBignum(result, subtrahend);
 
+        // Flip sign:
+        // 0 - 1 = -1
+        // 0 - (-1) = 1
         if (subtrahend->sign == positive) {
             result->sign = negative;
         } else if (subtrahend->sign == negative) {
