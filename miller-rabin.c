@@ -59,34 +59,20 @@ int Miller(long long p,int iteration)
     }
     printf("\nfinal s/2: %lld", s);
 
-    // for (i = 0; i < iteration; i++)
-    // {
-    //     long long a = rand() % (p - 1) + 1, temp = s;
-    //     long long mod = modulo(a, temp, p);
-    //     while (temp != p - 1 && mod != 1 && mod != p - 1)
-    //     {
-    //         mod = mulmod(mod, mod, p);
-    //         temp *= 2;
-    //     }
-    //     if (mod != p - 1 && temp % 2 == 0)
-    //     {
-    //         return 0;
-    //     }
-    // }
-        long long a = 2, temp = s;
+    for (i = 0; i < iteration; i++)
+    {
+        long long a = rand() % (p - 1) + 1, temp = s;
         long long mod = modulo(a, temp, p);
         while (temp != p - 1 && mod != 1 && mod != p - 1)
         {
-            printf("\n( %lld * %lld ) mod %lld = %lld", mod, mod, p, mulmod(mod, mod, p));
             mod = mulmod(mod, mod, p);
-
-            printf("\n%lld * 2 = %lld", temp, temp*2);
             temp *= 2;
         }
         if (mod != p - 1 && temp % 2 == 0)
         {
             return 0;
         }
+    }
 
     return 1;
 }
@@ -94,7 +80,7 @@ int Miller(long long p,int iteration)
 int main()
 {
     int iteration = 5;
-    long long num = 561;
+    long long num = 7832457879;
     if (Miller( num, iteration))
         printf("\n%d - %lld is prime\n", Miller( num, iteration), num);
     else
