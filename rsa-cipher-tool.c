@@ -1,5 +1,8 @@
 #include <stdio.h>
+#include <string.h>
 #include "src/bignum.h"
+
+void encryptMessage(char *plaintext, Bignum *ePublic, Bignum *nPublic);
 
 int main(void) {
 
@@ -48,7 +51,42 @@ int main(void) {
     printf("\nd: ");
     printBignum(&dPrivate);
 
+    char plaintext[] = "Hello World!";
+
+    printf("\n\nPlaintext: ");
+    for (unsigned long long int i = 0; i < strlen(plaintext); i++) {
+        printf("%c,", plaintext[i]);
+    }
+    printf("\nPlaintext: ");
+    for (unsigned long long int i = 0; i < strlen(plaintext); i++) {
+        printf("%d,", plaintext[i]);
+    }
+    printf("\nEncrypted text: ");
+    encryptMessage(plaintext, &ePublic, &nPublic);
+
     freeAllBignums();
 
     return 0;
+}
+
+
+void encryptMessage(char *plaintext, Bignum *ePublic, Bignum *nPublic) {
+    Bignum encryptedChar, plaintextChar;
+    initBignum(&encryptedChar);
+    initBignum(&plaintextChar);
+
+    for (unsigned long long int i = 0; i < strlen(plaintext); i++) {
+        intToBignum(&plaintextChar, plaintext[i], positive);
+
+        modularExponentiationBignum(&encryptedChar, &plaintextChar, ePublic, nPublic);
+
+        printBignum(&encryptedChar);
+        printf(",");
+
+        resetBignum(&encryptedChar);
+        resetBignum(&plaintextChar);
+    }
+
+    freeBignum(&encryptedChar);
+    freeBignum(&plaintextChar);
 }
