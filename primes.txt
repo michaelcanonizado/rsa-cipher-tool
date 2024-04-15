@@ -1,0 +1,4 @@
+List of generated primes that can be used to seed P and Q
+
+92726898528067157119
+59596883466967193887
