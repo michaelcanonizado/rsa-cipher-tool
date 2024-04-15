@@ -1853,6 +1853,76 @@ int modularExponentiationBignum(Bignum *result, Bignum *base, Bignum *exponent, 
 }
 
 int modularInverse(Bignum *result, Bignum *num, Bignum *divisor) {
+    Bignum quotient, remainder;
+    initBignum(&quotient);
+    initBignum(&remainder);
+
+    Bignum t, t1, t2;
+    initBignum(&t);
+    initBignum(&t1);
+    initBignum(&t2);
+    setBignum(&t1, "0", positive);
+    setBignum(&t2, "1", positive);
+
+    Bignum a, b;
+    initBignum(&a);
+    initBignum(&b);
+
+    copyBignum(&a, isGreaterThanBignum(num, divisor) ? num : divisor);
+    copyBignum(&b, isLessThanBignum(num, divisor) ? num : divisor);
+
+    printf("\nA: ");
+    printBignum(&a);
+    printf("\nB: ");
+    printBignum(&b);
+
+    Bignum t2TimesQuotient;
+    initBignum(&t2TimesQuotient);
+
+    while (!isBignumZero(&b)) {
+        resetBignum(&remainder);
+        resetBignum(&quotient);
+
+        moduloBignum(&remainder, &a, &b);
+        divideBignum(&quotient, &a, &b);
+
+        printf("\nr: ");
+        printBignum(&remainder);
+        printf("\nq: ");
+        printBignum(&quotient);
+
+        multiplyBignum(&t2TimesQuotient, &t2, &quotient);
+        subtractBignum(&t, &t1, &t2TimesQuotient);
+
+        printf("\nt: ");
+        printBignum(&t);
+        printf("\nt1: ");
+        printBignum(&t1);
+        printf("\nt2: ");
+        printBignum(&t2);
+        printf("\n-------------------------");
+
+        copyBignum(&a, &b);
+        copyBignum(&b, &remainder);
+        copyBignum(&t1, &t2);
+        copyBignum(&t2, &t);
+    }
+
+    if (t1.sign == negative) {
+        addBignum(result, &t1, divisor);
+    } else {
+        copyBignum(result, &t1);
+    }
+
+    freeBignum(&quotient);
+    freeBignum(&remainder);
+    freeBignum(&t);
+    freeBignum(&t1);
+    freeBignum(&t2);
+    freeBignum(&a);
+    freeBignum(&b);
+
+    freeBignum(&t2TimesQuotient);
 
     return 0;
 }
