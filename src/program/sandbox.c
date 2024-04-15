@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include <ctype.h>
+#include "../bignum.h"
 
 // Includes the appropriate header file to use operating system-specific functions. This is useful for functions like clearing the screen, moving the cursor, and getting the terminal size.
 #ifdef _WIN32
@@ -23,6 +24,8 @@
 	void moveCursor(int x, int y);
 	// Function to clear lines. This function will clear the specified lines starting from the startLine to the endLine using the specified width.
 	void clearLines(int startLine, int endLine, int width);
+	// Function to display a loading bar.
+	void loadingBar(int width, int progress);
 	// Function to wait for the user to input "DONE" to continue.
 	void waitForInput(char *message);
 	// Function to get the user's confirmation. This function will get the user's confirmation by asking the user to input 'Y' or 'N' and return the input.
@@ -155,32 +158,32 @@ void clearLines(int startLine, int endLine, int width) {
 }
 
 void waitForDone(int width, int height) {
-char done[100];
-do {
-	clearLines(height - 2, height - 2, width);
-	moveCursor((width - 21)/ 2, height - 2);
-	printf("Enter DONE to back: ");
-	// Get the user's input from the standard input stream	
-	fgets(done, sizeof(done), stdin); 
+	char done[100];
+	do {
+		clearLines(height - 2, height - 2, width);
+		moveCursor((width - 21)/ 2, height - 2);
+		printf("Enter DONE to back: ");
+		// Get the user's input from the standard input stream	
+		fgets(done, sizeof(done), stdin); 
 
-	// Remove the newline character at the end of the input
-	if (done[strlen(done) - 1] == '\n') {
-		done[strlen(done) - 1] = '\0';
-	}
+		// Remove the newline character at the end of the input
+		if (done[strlen(done) - 1] == '\n') {
+			done[strlen(done) - 1] = '\0';
+		}
 
-	// If the input was just a newline character, continue with the next iteration
-	if (strlen(done) == 0) {
-		continue;
-	}
+		// If the input was just a newline character, continue with the next iteration
+		if (strlen(done) == 0) {
+			continue;
+		}
 
-	// Convert the user's input to lowercase. This allows the user to enter "done" or "DONE" to exit the loop in any case.
-	for(int i = 0; done[i]; i++){
-		done[i] = tolower(done[i]);
-	}
+		// Convert the user's input to lowercase. This allows the user to enter "done" or "DONE" to exit the loop in any case.
+		for(int i = 0; done[i]; i++){
+			done[i] = tolower(done[i]);
+		}
 
-	moveCursor((width - 21)/ 2, height - 2);
+		moveCursor((width - 21)/ 2, height - 2);
 
-} while (strcmp(done, "done") != 0);
+	} while (strcmp(done, "done") != 0);
 }
 
 char getConfirm(int width, int adjustedHeight, int offsetY) {
@@ -236,17 +239,47 @@ void generateKeys(int width, int adjustedHeight, int i) {
 
 	clearScreen();	
 	if (confirm == 'Y' || confirm == 'y') {
-		
-		// At this point, function calls can be made to generate the keys. For now, the program will display a message that the keys are generated.
+
+		Bignum keys;
+		initBignum(&keys);
+		unsigned long long int primeLength;
 
 		moveCursor((width - 30)/ 2, adjustedHeight);
+		printf("Enter the length of the prime");
+		moveCursor((width - 30)/ 2, adjustedHeight + 1);
+		printf("number to be generated :");
+		scanf("%llu", &primeLength);
+
+		// At this point, function calls can be made to generate the keys. For now, the program will display a message that the keys are generated.
+		clock_t start = clock();
+		generatePrimeBignum(&keys, 20);
+		clock_t end = clock();
+		double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+
+
+		printf("\n");
+
+		clearScreen();
+		
+		moveCursor((width - 22)/ 2, adjustedHeight);
+		printf("Your prime number is:");
+		moveCursor((width - primeLength)/ 2, adjustedHeight + 1);
+		printBignum(&keys);
+
+		moveCursor((width - 36)/ 2, adjustedHeight + 2);
+		printf("Function executed in: %.2f seconds\n", cpu_time_used);
+
+		moveCursor((width - 30)/ 2, adjustedHeight * 3 - 2);
 		printf("Keys generated successfully!\n");
+
 	} else {
 		moveCursor((width - 25)/ 2, adjustedHeight);
 		printf("Keys generation failed!\n");
+
 	}
 
 	waitForDone(width, adjustedHeight * 3);
+	freeAllBignums();
 	clearScreen();
 }
 
@@ -331,6 +364,7 @@ void encryptText(int width, int adjustedHeight) {
 			moveCursor((width - 30)/ 2, adjustedHeight + 2);
 			printf("Encrypted ____ characters in __ seconds\n");
 
+			fclose(file);
 		} else {
 			clearScreen();
 			moveCursor((width - 25)/ 2, adjustedHeight);
@@ -347,7 +381,6 @@ void encryptText(int width, int adjustedHeight) {
 	clearScreen();
 
 	free(publicKEY);
-	fclose(file);
 }
 
 void decryptText(int width, int adjustedHeight) {
@@ -431,6 +464,7 @@ void decryptText(int width, int adjustedHeight) {
 			moveCursor((width - 30)/ 2, adjustedHeight + 2);
 			printf("Decrypted ____ characters in __ seconds\n");
 
+			fclose(file);
 		} else {
 			clearScreen();
 			moveCursor((width - 25)/ 2, adjustedHeight);
@@ -447,7 +481,6 @@ void decryptText(int width, int adjustedHeight) {
 	clearScreen();
 
 	free(privateKEY);
-	fclose(file);
 }
 
 void aboutProgram(int width, int height) {
