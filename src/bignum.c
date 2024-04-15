@@ -1057,6 +1057,13 @@ void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend) {
     // If you are subtracting a Bignum with 0, copy the other Bignum to result.
     if (isBignumZero(minuend)) {
         copyBignum(result, subtrahend);
+
+        if (subtrahend->sign == positive) {
+            result->sign = negative;
+        } else if (subtrahend->sign == negative) {
+            result->sign = positive;
+        }
+
         return;
     }
     if (isBignumZero(subtrahend)) {
