@@ -3,6 +3,7 @@
 #include "src/bignum.h"
 
 void encryptMessage(char *plaintext, Bignum *ePublic, Bignum *nPublic);
+void decryptMessage(int encryptedText[], Bignum *dPublic, Bignum *nPublic);
 
 int main(void) {
 
@@ -52,6 +53,7 @@ int main(void) {
     printBignum(&dPrivate);
 
     char plaintext[] = "Hello World!";
+    int encryptedText[] = {19,62,4,4,45,98,87,45,49,4,100,110};
 
     printf("\n\nPlaintext: ");
     for (unsigned long long int i = 0; i < strlen(plaintext); i++) {
@@ -61,8 +63,12 @@ int main(void) {
     for (unsigned long long int i = 0; i < strlen(plaintext); i++) {
         printf("%d,", plaintext[i]);
     }
+
     printf("\nEncrypted text: ");
     encryptMessage(plaintext, &ePublic, &nPublic);
+
+    printf("\nDecrypted text: ");
+    decryptMessage(encryptedText, &dPrivate, &nPublic);
 
     freeAllBignums();
 
@@ -89,4 +95,25 @@ void encryptMessage(char *plaintext, Bignum *ePublic, Bignum *nPublic) {
 
     freeBignum(&encryptedChar);
     freeBignum(&plaintextChar);
+}
+
+void decryptMessage(int encryptedText[], Bignum *dPublic, Bignum *nPublic) {
+    Bignum decryptedChar, encryptedTextChar;
+    initBignum(&decryptedChar);
+    initBignum(&encryptedTextChar);
+
+    for (unsigned long long int i = 0; i < 12; i++) {
+        intToBignum(&encryptedTextChar, encryptedText[i], positive);
+
+        modularExponentiationBignum(&decryptedChar, &encryptedTextChar, dPublic, nPublic);
+
+        printBignum(&decryptedChar);
+        printf(",");
+
+        resetBignum(&decryptedChar);
+        resetBignum(&encryptedTextChar);
+    }
+
+    freeBignum(&decryptedChar);
+    freeBignum(&encryptedTextChar);
 }
