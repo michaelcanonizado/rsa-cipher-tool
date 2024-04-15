@@ -1862,7 +1862,7 @@ int modularExponentiationBignum(Bignum *result, Bignum *base, Bignum *exponent, 
     return 0;
 }
 
-int modularInverse(Bignum *result, Bignum *num, Bignum *divisor) {
+int modularInverseBignum(Bignum *result, Bignum *num, Bignum *divisor) {
     Bignum quotient, remainder;
     initBignum(&quotient);
     initBignum(&remainder);
