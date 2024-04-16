@@ -4,10 +4,7 @@
 #include <time.h>
 #include <ctype.h>
 #include "../bignum.h"
-<<<<<<< HEAD:program/sandbox.c
-=======
 #include <pthread.h>
->>>>>>> 5e830f71c3cb0b7fb50307f80ca0769f4e144b27:src/program/sandbox.c
 
 // Includes the appropriate header file to use operating system-specific functions. This is useful for functions like clearing the screen, moving the cursor, and getting the terminal size.
 #ifdef _WIN32
@@ -298,23 +295,6 @@ void generateKeys(int width, int adjustedHeight, int i) {
 
 	clearScreen();	
 	if (confirm == 'Y' || confirm == 'y') {
-<<<<<<< HEAD:program/sandbox.c
-
-		Bignum keys;
-		initBignum(&keys);
-		unsigned long long int primeLength;
-
-		moveCursor((width - 37)/ 2, adjustedHeight - 1);
-		printf("Enter the length of the prime number to be generated.\n");
-		scanf("%llu", primeLength);		
-		// At this point, function calls can be made to generate the keys. For now, the program will display a message that the keys are generated.
-		generatePrimeBignum(&keys, primeLength);
-
-		// for (int i = 0; i <= 100; i++) {
-		// 	loadingBar(50, i);
-		// 	sleepProgram(50000); // Sleep for 50 milliseconds
-		// }
-=======
 
 		Bignum keys;
 		initBignum(&keys);
@@ -342,20 +322,11 @@ void generateKeys(int width, int adjustedHeight, int i) {
 		clock_t end = clock();
 		double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 
->>>>>>> 5e830f71c3cb0b7fb50307f80ca0769f4e144b27:src/program/sandbox.c
 
 		printf("\n");
 
 		clearScreen();
 		
-<<<<<<< HEAD:program/sandbox.c
-		moveCursor((width - 37)/ 2, adjustedHeight);
-		printf("Your prime number is: ");
-		moveCursor((width - 37)/ 2, adjustedHeight + 1);
-		printBignum(&keys);
-
-		moveCursor((width - 30)/ 2, adjustedHeight * 3 + 2);
-=======
 		moveCursor((width - 22)/ 2, adjustedHeight);
 		printf("Your prime number is:");
 		moveCursor((width - primeLength)/ 2, adjustedHeight + 1);
@@ -365,7 +336,6 @@ void generateKeys(int width, int adjustedHeight, int i) {
 		printf("Function executed in: %.2f seconds\n", cpu_time_used);
 
 		moveCursor((width - 30)/ 2, adjustedHeight * 3 - 2);
->>>>>>> 5e830f71c3cb0b7fb50307f80ca0769f4e144b27:src/program/sandbox.c
 		printf("Keys generated successfully!\n");
 
 	} else {
