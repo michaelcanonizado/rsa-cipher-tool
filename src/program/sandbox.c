@@ -194,25 +194,6 @@ void clearLines(int startLine, int endLine, int width) {
 	}
 }
 
-void loadingBar(int width, int progress) {
-	// Calculate the number of '#' characters
-	int pos = (width * progress) / 100;
-
-	// Start the loading bar
-	printf("[");
-	
-	// Print the '#' characters
-	for (int i = 0; i < width; i++) {
-		if (i < pos) printf("#");
-		else if (i == pos) printf(">");
-		else printf(" ");
-	}
-
-	// End the loading bar
-	printf("] %d%%\r", progress);
-	fflush(stdout);
-}
-
 void waitForDone(int width, int height) {
 	char done[100];
 	do {
