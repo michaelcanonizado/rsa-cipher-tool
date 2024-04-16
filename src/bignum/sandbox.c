@@ -50,6 +50,7 @@ int main() {
 
     printf("\n\n\n......................FREEING BIGNUMS.........................\n");
 
+    printBignumNodeList();
     freeAllBignums();
 
     clock_t end = clock();
