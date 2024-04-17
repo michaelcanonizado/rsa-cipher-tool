@@ -20,17 +20,26 @@ void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic) {
     initBignum(&pPrimePrivateMinusOne);
     initBignum(&qPrimePrivateMinusOne);
 
+    // Generate p and q primes
     setBignum(&pPrimePrivate, "11", positive);
     setBignum(&qPrimePrivate, "13", positive);
 
+    // Get n:
+    // n = p * q
     multiplyBignum(nPublic, &pPrimePrivate, &qPrimePrivate);
 
+    // Get phi of n:
+    // phi of n = (p - 1) * (q - 1)
     subtractBignum(&pPrimePrivateMinusOne, &pPrimePrivate, &one);
     subtractBignum(&qPrimePrivateMinusOne, &qPrimePrivate, &one);
     multiplyBignum(&phiOfNPrivate, &pPrimePrivateMinusOne, &qPrimePrivateMinusOne);
 
+    // Generate e (public key):
+    // 2 < e < phi of n
     setBignum(ePublic, "7",positive);
     
+    // Get d (private key):
+    // (e * d)mod(n) = 1
     modularInverseBignum(dPrivate, ePublic, &phiOfNPrivate);
 
     printf("\np: ");
@@ -47,10 +56,8 @@ void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic) {
     printBignum(dPrivate);
 
     freeBignum(&one);
-
     freeBignum(&pPrimePrivate);
     freeBignum(&qPrimePrivate);
-
     freeBignum(&phiOfNPrivate);
     freeBignum(&pPrimePrivateMinusOne);
     freeBignum(&qPrimePrivateMinusOne);
