@@ -6,63 +6,6 @@ void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic);
 void encryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
 void decryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPublic, Bignum *nPublic);
 
-void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic) {
-    Bignum one;
-    initBignum(&one);
-    setBignum(&one, "1", positive);
-
-    Bignum pPrimePrivate, qPrimePrivate;
-    initBignum(&pPrimePrivate);
-    initBignum(&qPrimePrivate);
-
-    Bignum phiOfNPrivate, pPrimePrivateMinusOne, qPrimePrivateMinusOne;
-    initBignum(&phiOfNPrivate);
-    initBignum(&pPrimePrivateMinusOne);
-    initBignum(&qPrimePrivateMinusOne);
-
-    // Generate p and q primes
-    setBignum(&pPrimePrivate, "11", positive);
-    setBignum(&qPrimePrivate, "13", positive);
-
-    // Get n:
-    // n = p * q
-    multiplyBignum(nPublic, &pPrimePrivate, &qPrimePrivate);
-
-    // Get phi of n:
-    // phi of n = (p - 1) * (q - 1)
-    subtractBignum(&pPrimePrivateMinusOne, &pPrimePrivate, &one);
-    subtractBignum(&qPrimePrivateMinusOne, &qPrimePrivate, &one);
-    multiplyBignum(&phiOfNPrivate, &pPrimePrivateMinusOne, &qPrimePrivateMinusOne);
-
-    // Generate e (public key):
-    // 2 < e < phi of n
-    setBignum(ePublic, "7",positive);
-    
-    // Get d (private key):
-    // (e * d)mod(n) = 1
-    modularInverseBignum(dPrivate, ePublic, &phiOfNPrivate);
-
-    printf("\np: ");
-    printBignum(&pPrimePrivate);
-    printf("\nq: ");
-    printBignum(&qPrimePrivate);
-    printf("\nnPublic: ");
-    printBignum(nPublic);
-    printf("\nphiOfN: ");
-    printBignum(&phiOfNPrivate);
-    printf("\ne: ");
-    printBignum(ePublic);
-    printf("\nd: ");
-    printBignum(dPrivate);
-
-    freeBignum(&one);
-    freeBignum(&pPrimePrivate);
-    freeBignum(&qPrimePrivate);
-    freeBignum(&phiOfNPrivate);
-    freeBignum(&pPrimePrivateMinusOne);
-    freeBignum(&qPrimePrivateMinusOne);
-}
-
 int main(void) {
     int userMenuState = 0;
 
@@ -140,6 +83,62 @@ int main(void) {
     return 0;
 }
 
+void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic) {
+    Bignum one;
+    initBignum(&one);
+    setBignum(&one, "1", positive);
+
+    Bignum pPrimePrivate, qPrimePrivate;
+    initBignum(&pPrimePrivate);
+    initBignum(&qPrimePrivate);
+
+    Bignum phiOfNPrivate, pPrimePrivateMinusOne, qPrimePrivateMinusOne;
+    initBignum(&phiOfNPrivate);
+    initBignum(&pPrimePrivateMinusOne);
+    initBignum(&qPrimePrivateMinusOne);
+
+    // Generate p and q primes
+    setBignum(&pPrimePrivate, "11", positive);
+    setBignum(&qPrimePrivate, "13", positive);
+
+    // Get n:
+    // n = p * q
+    multiplyBignum(nPublic, &pPrimePrivate, &qPrimePrivate);
+
+    // Get phi of n:
+    // phi of n = (p - 1) * (q - 1)
+    subtractBignum(&pPrimePrivateMinusOne, &pPrimePrivate, &one);
+    subtractBignum(&qPrimePrivateMinusOne, &qPrimePrivate, &one);
+    multiplyBignum(&phiOfNPrivate, &pPrimePrivateMinusOne, &qPrimePrivateMinusOne);
+
+    // Generate e (public key):
+    // 2 < e < phi of n
+    setBignum(ePublic, "7",positive);
+    
+    // Get d (private key):
+    // (e * d)mod(n) = 1
+    modularInverseBignum(dPrivate, ePublic, &phiOfNPrivate);
+
+    printf("\np: ");
+    printBignum(&pPrimePrivate);
+    printf("\nq: ");
+    printBignum(&qPrimePrivate);
+    printf("\nnPublic: ");
+    printBignum(nPublic);
+    printf("\nphiOfN: ");
+    printBignum(&phiOfNPrivate);
+    printf("\ne: ");
+    printBignum(ePublic);
+    printf("\nd: ");
+    printBignum(dPrivate);
+
+    freeBignum(&one);
+    freeBignum(&pPrimePrivate);
+    freeBignum(&qPrimePrivate);
+    freeBignum(&phiOfNPrivate);
+    freeBignum(&pPrimePrivateMinusOne);
+    freeBignum(&qPrimePrivateMinusOne);
+}
 
 void encryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic) {
     char character;
