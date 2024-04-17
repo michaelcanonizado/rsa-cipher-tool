@@ -3,8 +3,8 @@
 #include "src/bignum.h"
 
 void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic);
-void encryptMessage(char *plaintext, Bignum *ePublic, Bignum *nPublic);
-void decryptMessage(int encryptedText[], Bignum *dPublic, Bignum *nPublic);
+void encryptMessage(char *plaintext, Bignum *ePublic, Bignum *nPublic, FILE *inputFilePtr);
+void decryptMessage(int encryptedText[], Bignum *dPublic, Bignum *nPublic, FILE *outputFilePtr);
 
 void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic) {
     Bignum one;
@@ -91,31 +91,13 @@ int main(void) {
     fclose(inputFilePtr);
     fclose(outputFilePtr);
 
-    char plaintext[] = "Hello World!";
-    int encryptedText[] = {19,62,4,4,45,98,87,45,49,4,100,110};
-
-    printf("\n\nPlaintext: ");
-    for (unsigned long long int i = 0; i < strlen(plaintext); i++) {
-        printf("%c,", plaintext[i]);
-    }
-    printf("\nPlaintext: ");
-    for (unsigned long long int i = 0; i < strlen(plaintext); i++) {
-        printf("%d,", plaintext[i]);
-    }
-
-    printf("\nEncrypted text: ");
-    encryptMessage(plaintext, &ePublic, &nPublic);
-
-    printf("\nDecrypted text: ");
-    decryptMessage(encryptedText, &dPrivate, &nPublic);
-
     freeAllBignums();
 
     return 0;
 }
 
 
-void encryptMessage(char *plaintext, Bignum *ePublic, Bignum *nPublic) {
+void encryptMessage(char *plaintext, Bignum *ePublic, Bignum *nPublic, FILE *inputFilePtr) {
     Bignum encryptedChar, plaintextChar;
     initBignum(&encryptedChar);
     initBignum(&plaintextChar);
@@ -136,7 +118,7 @@ void encryptMessage(char *plaintext, Bignum *ePublic, Bignum *nPublic) {
     freeBignum(&plaintextChar);
 }
 
-void decryptMessage(int encryptedText[], Bignum *dPublic, Bignum *nPublic) {
+void decryptMessage(int encryptedText[], Bignum *dPublic, Bignum *nPublic, FILE *outputFilePtr) {
     Bignum decryptedChar, encryptedTextChar;
     initBignum(&decryptedChar);
     initBignum(&encryptedTextChar);
