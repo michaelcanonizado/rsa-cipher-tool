@@ -27,8 +27,10 @@ int main(void) {
     initBignum(&ePublic);
     initBignum(&dPrivate);
 
-    setBignum(&pPrimePrivate, "11", positive);
-    setBignum(&qPrimePrivate, "13", positive);
+    setBignum(&pPrimePrivate, "92726898528067157119", positive);
+    setBignum(&qPrimePrivate, "59596883466967193887", positive);
+    // setBignum(&pPrimePrivate, "11", positive);
+    // setBignum(&qPrimePrivate, "13", positive);
 
     multiplyBignum(&nPublic, &pPrimePrivate, &qPrimePrivate);
 
@@ -36,8 +38,9 @@ int main(void) {
     subtractBignum(&qPrimePrivateMinusOne, &qPrimePrivate, &one);
     multiplyBignum(&phiOfNPrivate, &pPrimePrivateMinusOne, &qPrimePrivateMinusOne);
 
-    setBignum(&ePublic, "7",positive);
-    setBignum(&dPrivate, "103",positive);
+    setBignum(&ePublic, "96139263103317626603",positive);
+    
+    modularInverseBignum(&dPrivate, &ePublic, &phiOfNPrivate);
 
     printf("\np: ");
     printBignum(&pPrimePrivate);
