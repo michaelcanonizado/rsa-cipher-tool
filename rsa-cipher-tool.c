@@ -3,8 +3,8 @@
 #include "src/bignum.h"
 
 void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic);
-void encryptMessage(Bignum *ePublic, Bignum *nPublic, FILE *inputFilePtr);
-void decryptMessage(Bignum *dPublic, Bignum *nPublic, FILE *outputFilePtr);
+void encryptMessage(FILE *inputFilePtr, Bignum *ePublic, Bignum *nPublic);
+void decryptMessage(FILE *outputFilePtr, Bignum *dPublic, Bignum *nPublic);
 
 void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic) {
     Bignum one;
@@ -97,7 +97,7 @@ int main(void) {
 }
 
 
-void encryptMessage(Bignum *ePublic, Bignum *nPublic, FILE *inputFilePtr) {
+void encryptMessage(FILE *inputFilePtr, Bignum *ePublic, Bignum *nPublic) {
     Bignum encryptedChar, plaintextChar;
     initBignum(&encryptedChar);
     initBignum(&plaintextChar);
@@ -116,7 +116,7 @@ void encryptMessage(Bignum *ePublic, Bignum *nPublic, FILE *inputFilePtr) {
     freeBignum(&plaintextChar);
 }
 
-void decryptMessage(Bignum *dPublic, Bignum *nPublic, FILE *outputFilePtr) {
+void decryptMessage(FILE *outputFilePtr, Bignum *dPublic, Bignum *nPublic) {
     Bignum decryptedChar, encryptedTextChar;
     initBignum(&decryptedChar);
     initBignum(&encryptedTextChar);
