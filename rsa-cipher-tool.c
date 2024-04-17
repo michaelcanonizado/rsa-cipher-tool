@@ -86,7 +86,9 @@ int main(void) {
         printf("Error opening output %s...\n", outputFilename);
         return 2;
     }
-    
+
+    printf("\n\n");
+    encryptMessage(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
     
     fclose(inputFilePtr);
     fclose(outputFilePtr);
@@ -98,22 +100,31 @@ int main(void) {
 
 
 void encryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic) {
-    Bignum encryptedChar, plaintextChar;
+    char character;
+
+    Bignum encryptedChar, plainChar;
     initBignum(&encryptedChar);
-    initBignum(&plaintextChar);
+    initBignum(&plainChar);
 
-    // intToBignum(&plaintextChar, plaintext[i], positive);
+    while ((character = fgetc(inputFilePtr)) != EOF) {
+        intToBignum(&plainChar, character, positive);
 
-    // modularExponentiationBignum(&encryptedChar, &plaintextChar, ePublic, nPublic);
+        modularExponentiationBignum(&encryptedChar, &plainChar, ePublic, nPublic);
 
-    // printBignum(&encryptedChar);
-    // printf(",");
+        printBignum(&encryptedChar);
+        printf(",");
 
-    resetBignum(&encryptedChar);
-    resetBignum(&plaintextChar);
+        for (unsigned long long int i = encryptedChar.length - 1; i > 0; i--) {
+            fprintf(outputFilePtr, "%d", encryptedChar.digits[i]);
+        }
+        fprintf(outputFilePtr, "%d/", encryptedChar.digits[0]);
+
+        resetBignum(&encryptedChar);
+        resetBignum(&plainChar);
+    };
 
     freeBignum(&encryptedChar);
-    freeBignum(&plaintextChar);
+    freeBignum(&plainChar);
 }
 
 void decryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPublic, Bignum *nPublic) {
