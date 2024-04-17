@@ -3,8 +3,8 @@
 #include "src/bignum.h"
 
 void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic);
-void encryptMessage(char *plaintext, Bignum *ePublic, Bignum *nPublic, FILE *inputFilePtr);
-void decryptMessage(int encryptedText[], Bignum *dPublic, Bignum *nPublic, FILE *outputFilePtr);
+void encryptMessage(Bignum *ePublic, Bignum *nPublic, FILE *inputFilePtr);
+void decryptMessage(Bignum *dPublic, Bignum *nPublic, FILE *outputFilePtr);
 
 void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic) {
     Bignum one;
@@ -97,43 +97,39 @@ int main(void) {
 }
 
 
-void encryptMessage(char *plaintext, Bignum *ePublic, Bignum *nPublic, FILE *inputFilePtr) {
+void encryptMessage(Bignum *ePublic, Bignum *nPublic, FILE *inputFilePtr) {
     Bignum encryptedChar, plaintextChar;
     initBignum(&encryptedChar);
     initBignum(&plaintextChar);
 
-    for (unsigned long long int i = 0; i < strlen(plaintext); i++) {
-        intToBignum(&plaintextChar, plaintext[i], positive);
+    // intToBignum(&plaintextChar, plaintext[i], positive);
 
-        modularExponentiationBignum(&encryptedChar, &plaintextChar, ePublic, nPublic);
+    // modularExponentiationBignum(&encryptedChar, &plaintextChar, ePublic, nPublic);
 
-        printBignum(&encryptedChar);
-        printf(",");
+    // printBignum(&encryptedChar);
+    // printf(",");
 
-        resetBignum(&encryptedChar);
-        resetBignum(&plaintextChar);
-    }
+    resetBignum(&encryptedChar);
+    resetBignum(&plaintextChar);
 
     freeBignum(&encryptedChar);
     freeBignum(&plaintextChar);
 }
 
-void decryptMessage(int encryptedText[], Bignum *dPublic, Bignum *nPublic, FILE *outputFilePtr) {
+void decryptMessage(Bignum *dPublic, Bignum *nPublic, FILE *outputFilePtr) {
     Bignum decryptedChar, encryptedTextChar;
     initBignum(&decryptedChar);
     initBignum(&encryptedTextChar);
 
-    for (unsigned long long int i = 0; i < 12; i++) {
-        intToBignum(&encryptedTextChar, encryptedText[i], positive);
+    // intToBignum(&encryptedTextChar, encryptedText[i], positive);
 
-        modularExponentiationBignum(&decryptedChar, &encryptedTextChar, dPublic, nPublic);
+    // modularExponentiationBignum(&decryptedChar, &encryptedTextChar, dPublic, nPublic);
 
-        printBignum(&decryptedChar);
-        printf(",");
+    // printBignum(&decryptedChar);
+    // printf(",");
 
-        resetBignum(&decryptedChar);
-        resetBignum(&encryptedTextChar);
-    }
+    resetBignum(&decryptedChar);
+    resetBignum(&encryptedTextChar);
 
     freeBignum(&decryptedChar);
     freeBignum(&encryptedTextChar);
