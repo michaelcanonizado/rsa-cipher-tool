@@ -2,11 +2,11 @@
 #include <string.h>
 #include "src/bignum.h"
 
+void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic);
 void encryptMessage(char *plaintext, Bignum *ePublic, Bignum *nPublic);
 void decryptMessage(int encryptedText[], Bignum *dPublic, Bignum *nPublic);
 
-int main(void) {
-
+void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic) {
     Bignum one;
     initBignum(&one);
     setBignum(&one, "1", positive);
@@ -15,45 +15,54 @@ int main(void) {
     initBignum(&pPrimePrivate);
     initBignum(&qPrimePrivate);
 
-    Bignum nPublic;
-    initBignum(&nPublic);
-
     Bignum phiOfNPrivate, pPrimePrivateMinusOne, qPrimePrivateMinusOne;
     initBignum(&phiOfNPrivate);
     initBignum(&pPrimePrivateMinusOne);
     initBignum(&qPrimePrivateMinusOne);
 
-    Bignum ePublic, dPrivate;
-    initBignum(&ePublic);
-    initBignum(&dPrivate);
+    setBignum(&pPrimePrivate, "11", positive);
+    setBignum(&qPrimePrivate, "13", positive);
 
-    setBignum(&pPrimePrivate, "92726898528067157119", positive);
-    setBignum(&qPrimePrivate, "59596883466967193887", positive);
-    // setBignum(&pPrimePrivate, "11", positive);
-    // setBignum(&qPrimePrivate, "13", positive);
-
-    multiplyBignum(&nPublic, &pPrimePrivate, &qPrimePrivate);
+    multiplyBignum(nPublic, &pPrimePrivate, &qPrimePrivate);
 
     subtractBignum(&pPrimePrivateMinusOne, &pPrimePrivate, &one);
     subtractBignum(&qPrimePrivateMinusOne, &qPrimePrivate, &one);
     multiplyBignum(&phiOfNPrivate, &pPrimePrivateMinusOne, &qPrimePrivateMinusOne);
 
-    setBignum(&ePublic, "96139263103317626603",positive);
+    setBignum(ePublic, "7",positive);
     
-    modularInverseBignum(&dPrivate, &ePublic, &phiOfNPrivate);
+    modularInverseBignum(dPrivate, ePublic, &phiOfNPrivate);
 
     printf("\np: ");
     printBignum(&pPrimePrivate);
     printf("\nq: ");
     printBignum(&qPrimePrivate);
     printf("\nnPublic: ");
-    printBignum(&nPublic);
+    printBignum(nPublic);
     printf("\nphiOfN: ");
     printBignum(&phiOfNPrivate);
     printf("\ne: ");
-    printBignum(&ePublic);
+    printBignum(ePublic);
     printf("\nd: ");
-    printBignum(&dPrivate);
+    printBignum(dPrivate);
+
+    freeBignum(&one);
+
+    freeBignum(&pPrimePrivate);
+    freeBignum(&qPrimePrivate);
+
+    freeBignum(&phiOfNPrivate);
+    freeBignum(&pPrimePrivateMinusOne);
+    freeBignum(&qPrimePrivateMinusOne);
+}
+
+int main(void) {
+    Bignum nPublic, ePublic, dPrivate;
+    initBignum(&nPublic);
+    initBignum(&ePublic);
+    initBignum(&dPrivate);
+
+    generateKeys(&ePublic, &dPrivate, &nPublic);
 
     char plaintext[] = "Hello World!";
     int encryptedText[] = {19,62,4,4,45,98,87,45,49,4,100,110};
