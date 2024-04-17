@@ -71,6 +71,26 @@ int main(void) {
 
     generateKeys(&ePublic, &dPrivate, &nPublic);
 
+    FILE *inputFilePtr, *outputFilePtr;
+    char inputFilename[] = "plaintext.txt";
+    char outputFilename[] = "encrypted.txt";
+    
+    inputFilePtr = fopen(inputFilename, "r");
+    outputFilePtr = fopen(outputFilename, "w");
+
+    if (inputFilePtr == NULL) {
+        printf("Error opening input %s...\n", inputFilename);
+        return 1;
+    }
+    if (outputFilePtr == NULL) {
+        printf("Error opening output %s...\n", outputFilename);
+        return 2;
+    }
+    
+    
+    fclose(inputFilePtr);
+    fclose(outputFilePtr);
+
     char plaintext[] = "Hello World!";
     int encryptedText[] = {19,62,4,4,45,98,87,45,49,4,100,110};
 
