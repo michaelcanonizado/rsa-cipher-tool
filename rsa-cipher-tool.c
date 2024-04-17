@@ -64,12 +64,50 @@ void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic) {
 }
 
 int main(void) {
-    Bignum nPublic, ePublic, dPrivate;
-    initBignum(&nPublic);
-    initBignum(&ePublic);
-    initBignum(&dPrivate);
+    int userMenuState = 0;
 
-    generateKeys(&ePublic, &dPrivate, &nPublic);
+    char *optionsArr[] = {"Generate Keys", "Encrypt Text", "Decrypt Text", "Exit"};
+
+    do {
+		for (int i = 0; i < sizeof(optionsArr)/sizeof(optionsArr[0]); i++) {
+			printf("\n%d) - %s", i+1, optionsArr[i]);
+		}
+        printf("Enter number: ");
+		scanf("%d", &userMenuState);
+
+        switch (userMenuState) {
+			case 1:
+                printf("\n.........................................");
+                printf("\n");
+				Bignum nPublic, ePublic, dPrivate;
+                initBignum(&nPublic);
+                initBignum(&ePublic);
+                initBignum(&dPrivate);
+
+                generateKeys(&ePublic, &dPrivate, &nPublic);
+
+                freeAllBignums();
+				break;
+			case 2:
+                printf("\n.........................................");
+                printf("\n");
+				printf("\nCase 2");
+				break;
+			case 3:
+                printf("\n.........................................");
+                printf("\n");
+				printf("\nCase 3");
+				break;
+            case 4:
+                freeAllBignums();
+                return 0;
+            default:
+                break;
+        }
+
+        printf("\n\n.........................................");
+
+    } while (userMenuState != sizeof(optionsArr)/sizeof(optionsArr[0]));
 
     FILE *inputFilePtr, *outputFilePtr;
     char inputFilename[] = "encrypted.txt";
@@ -92,7 +130,7 @@ int main(void) {
     // printf("\n\nEncrypting...\n\n");
     // encryptMessage(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
     printf("\n\nDecrypting...\n\n");
-    decryptMessage(inputFilePtr, outputFilePtr, &dPrivate, &nPublic);
+    // decryptMessage(inputFilePtr, outputFilePtr, &dPrivate, &nPublic);
     
     fclose(inputFilePtr);
     fclose(outputFilePtr);
