@@ -72,8 +72,10 @@ int main(void) {
     generateKeys(&ePublic, &dPrivate, &nPublic);
 
     FILE *inputFilePtr, *outputFilePtr;
-    char inputFilename[] = "plaintext.txt";
-    char outputFilename[] = "encrypted.txt";
+    char inputFilename[] = "encrypted.txt";
+    char outputFilename[] = "decrypted.txt";
+    // char inputFilename[] = "plaintext.txt";
+    // char outputFilename[] = "encrypted.txt";
     
     inputFilePtr = fopen(inputFilename, "r");
     outputFilePtr = fopen(outputFilename, "w");
@@ -87,8 +89,10 @@ int main(void) {
         return 2;
     }
 
-    printf("\n\n");
-    encryptMessage(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
+    // printf("\n\nEncrypting...\n\n");
+    // encryptMessage(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
+    printf("\n\nDecrypting...\n\n");
+    decryptMessage(inputFilePtr, outputFilePtr, &dPrivate, &nPublic);
     
     fclose(inputFilePtr);
     fclose(outputFilePtr);
@@ -128,20 +132,30 @@ void encryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bi
 }
 
 void decryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPublic, Bignum *nPublic) {
-    Bignum decryptedChar, encryptedTextChar;
+    char encryptedCharacter[100];
+    char decryptedCharacter;
+
+    Bignum decryptedChar, encryptedChar;
     initBignum(&decryptedChar);
-    initBignum(&encryptedTextChar);
+    initBignum(&encryptedChar);
 
-    // intToBignum(&encryptedTextChar, encryptedText[i], positive);
+    while (fscanf(inputFilePtr, "%[^/]/", encryptedCharacter) == 1) {
+        setBignum(&encryptedChar, encryptedCharacter, positive);
 
-    // modularExponentiationBignum(&decryptedChar, &encryptedTextChar, dPublic, nPublic);
+        modularExponentiationBignum(&decryptedChar, &encryptedChar, dPublic, nPublic);
 
-    // printBignum(&decryptedChar);
-    // printf(",");
+        decryptedCharacter = bignumToInt(&decryptedChar);
 
-    resetBignum(&decryptedChar);
-    resetBignum(&encryptedTextChar);
+        printf("%c", decryptedCharacter);
+
+        fprintf(outputFilePtr, "%c", decryptedCharacter);
+
+        resetBignum(&encryptedChar);
+        resetBignum(&decryptedChar);
+        encryptedCharacter[0] = '\0';
+        decryptedCharacter = '\0';
+    };
 
     freeBignum(&decryptedChar);
-    freeBignum(&encryptedTextChar);
+    freeBignum(&encryptedChar);
 }
