@@ -7,25 +7,6 @@ void encryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bi
 void decryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPublic, Bignum *nPublic);
 void getInputFile(FILE **inputFilePtr);
 
-void getInputFile(FILE **inputFilePtr) {
-    char inputFilename[100];
-
-    while (1) {
-        printf("Enter the name of the input file: ");
-        scanf("%s", inputFilename);
-
-        *inputFilePtr = fopen(inputFilename, "r");
-
-        if (*inputFilePtr != NULL) {
-            break;
-        } else {
-            printf("Could not open file \"%s\". Please try again...\n", inputFilename);
-        }
-    }
-
-    printf("\nFile opened successfully...!");
-}
-
 int main(void) {
     int userMenuState = 0;
 
@@ -116,6 +97,25 @@ int main(void) {
     freeAllBignums();
 
     return 0;
+}
+
+void getInputFile(FILE **inputFilePtr) {
+    char inputFilename[100];
+
+    while (1) {
+        printf("Enter the name of the input file: ");
+        scanf("%s", inputFilename);
+
+        *inputFilePtr = fopen(inputFilename, "r");
+
+        if (*inputFilePtr != NULL) {
+            break;
+        } else {
+            printf("Could not open file \"%s\". Please try again...\n", inputFilename);
+        }
+    }
+
+    printf("\nFile opened successfully...!");
 }
 
 void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic) {
