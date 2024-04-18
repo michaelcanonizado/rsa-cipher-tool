@@ -271,14 +271,12 @@ void generateKeys(int width, int adjustedHeight, int i) {
 		printf("number to be generated: ");
 		scanf("%llu", &primeLength);
 
-		// At this point, function calls can be made to generate the keys. For now, the program will display a message that the keys are generated.
 		clearScreen();
 		clock_t start = clock();
-
-
+		
+		// At this point, function calls can be made to generate the keys. For now, the program will display a message that the keys are generated.
 
 		generatePrimeBignum(&keys, primeLength);
-
 
 		clock_t end = clock();
 		double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
@@ -358,11 +356,7 @@ void encryptText(int width, int adjustedHeight) {
 					printf("Could not open file. Please try again.\n");
 				}
 			} while (encryptionFile == NULL);
-		
-			// At this point, 'file' is a pointer to the opened file
-			// You can use 'file' with functions like fprintf(), fscanf(), etc. to read from and write to the file
 
-			// TO BE CHANGED
 			if (publicKEY == NULL) {
 					printf("Failed to allocate memory for publicKEY\n");
 					exit(1);
@@ -459,10 +453,6 @@ void decryptText(int width, int adjustedHeight) {
 				}
 			} while (decryptionFile == NULL);
 
-			// At this point, 'file' is a pointer to the opened file
-			// You can use 'file' with functions like fprintf(), fscanf(), etc. to read from and write to the file
-
-			// TO BE CHANGED
 			if (privateKEY == NULL) {
 					printf("Failed to allocate memory for privateKEY\n");
 					exit(1);

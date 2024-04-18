@@ -164,13 +164,15 @@ void loadingBar(int width, int height, int percentDone) {
 	int numSpace = PROGRESS_BAR_LENGTH - numChar;
   int start = (width - PROGRESS_BAR_LENGTH) / 2;
 
+	char a = 177, b = 219;
+
   moveCursor(start, (height * 3) / 2);
 	printf("[");
 	for (int i = 0; i < numChar; i++) {
-		printf("#");
+		printf("%c", a);
 	}
 	for (int i = 0; i < numSpace; i++) {
-		printf(" ");
+		printf("%c", b);
 	}
 	printf("] %d%% Done", percentDone);
 	fflush(stdout);
@@ -269,14 +271,12 @@ void generateKeys(int width, int adjustedHeight, int i) {
 		printf("number to be generated: ");
 		scanf("%llu", &primeLength);
 
-		// At this point, function calls can be made to generate the keys. For now, the program will display a message that the keys are generated.
 		clearScreen();
 		clock_t start = clock();
-
-
+		
+		// At this point, function calls can be made to generate the keys. For now, the program will display a message that the keys are generated.
 
 		generatePrimeBignum(&keys, primeLength);
-
 
 		clock_t end = clock();
 		double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
@@ -310,7 +310,7 @@ void generateKeys(int width, int adjustedHeight, int i) {
 
 void encryptText(int width, int adjustedHeight) {
 	char* publicKEY = malloc(1000000000 * sizeof(char));
-	
+		
 	clearScreen();
 	char* msgEncrypt[] = {"Encryption includes the message to be encrypted and", "the public key of the recipient. The txt file of the", "message must be in the same folder of the C program."};
 	int countEncrypt = sizeof(msgEncrypt) / sizeof(msgEncrypt[0]);
@@ -356,11 +356,7 @@ void encryptText(int width, int adjustedHeight) {
 					printf("Could not open file. Please try again.\n");
 				}
 			} while (encryptionFile == NULL);
-		
-			// At this point, 'file' is a pointer to the opened file
-			// You can use 'file' with functions like fprintf(), fscanf(), etc. to read from and write to the file
 
-			// TO BE CHANGED
 			if (publicKEY == NULL) {
 					printf("Failed to allocate memory for publicKEY\n");
 					exit(1);
@@ -457,10 +453,6 @@ void decryptText(int width, int adjustedHeight) {
 				}
 			} while (decryptionFile == NULL);
 
-			// At this point, 'file' is a pointer to the opened file
-			// You can use 'file' with functions like fprintf(), fscanf(), etc. to read from and write to the file
-
-			// TO BE CHANGED
 			if (privateKEY == NULL) {
 					printf("Failed to allocate memory for privateKEY\n");
 					exit(1);
