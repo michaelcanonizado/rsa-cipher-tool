@@ -4,7 +4,7 @@
 #include "src/bignum.h"
 
 void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic);
-void encryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
+void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
 void decryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPublic, Bignum *nPublic);
 void getInputFile(FILE **inputFilePtr, char *inputFilename);
 void encryptText();
@@ -78,7 +78,7 @@ void encryptText() {
 
     printf("\n\nEncrypting %s...", inputFilename);
 
-    encryptMessage(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
+    encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
 
     freeAllBignums();
 
@@ -151,7 +151,7 @@ int main(void) {
     }
 
     // printf("\n\nEncrypting...\n\n");
-    // encryptMessage(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
+    // encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
     printf("\n\nDecrypting...\n\n");
     // decryptMessage(inputFilePtr, outputFilePtr, &dPrivate, &nPublic);
     
@@ -237,7 +237,7 @@ void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic) {
     freeBignum(&qPrimePrivateMinusOne);
 }
 
-void encryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic) {
+void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic) {
     char character;
 
     Bignum encryptedChar, plainChar;
