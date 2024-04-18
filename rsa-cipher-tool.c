@@ -6,7 +6,7 @@
 void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic);
 void encryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
 void decryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPublic, Bignum *nPublic);
-void getInputFile(FILE **inputFilePtr);
+void getInputFile(FILE **inputFilePtr, char *inputFilename);
 void encryptText();
 void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic);
 
@@ -54,9 +54,10 @@ void encryptText() {
     printf("\n.........................................\n");
     FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
 
-    char outputFilename[] = "asdasd.txt";
+    char inputFilename[100];
+    char outputFilename[] = "en.txt";
 
-    getInputFile(&inputFilePtr);
+    getInputFile(&inputFilePtr, inputFilename);
 
     outputFilePtr = fopen(outputFilename, "w");
     if (outputFilePtr == NULL) {
@@ -74,6 +75,8 @@ void encryptText() {
     printBignum(&ePublic);
     printf("\nBignum key n: ");
     printBignum(&nPublic);
+
+    printf("\n\nEncrypting %s...", inputFilename);
 
     freeAllBignums();
 
@@ -158,9 +161,7 @@ int main(void) {
     return 0;
 }
 
-void getInputFile(FILE **inputFilePtr) {
-    char inputFilename[100];
-
+void getInputFile(FILE **inputFilePtr, char *inputFilename) {
     while (1) {
         printf("\nEnter the name of the input file: ");
         scanf("%s", inputFilename);
