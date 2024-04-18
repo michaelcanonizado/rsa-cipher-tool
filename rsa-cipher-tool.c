@@ -5,7 +5,7 @@
 
 void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic);
 void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
-void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPublic, Bignum *nPublic);
+void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);
 void getInputFile(FILE **inputFilePtr, char *inputFilename);
 void encryptText();
 void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic);
@@ -299,7 +299,7 @@ void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, B
     freeBignum(&plainChar);
 }
 
-void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPublic, Bignum *nPublic) {
+void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic) {
     char encryptedCharacter[100];
     char decryptedCharacter;
 
@@ -310,7 +310,7 @@ void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPublic, B
     while (fscanf(inputFilePtr, "%[^/]/", encryptedCharacter) == 1) {
         setBignum(&encryptedChar, encryptedCharacter, positive);
 
-        modularExponentiationBignum(&decryptedChar, &encryptedChar, dPublic, nPublic);
+        modularExponentiationBignum(&decryptedChar, &encryptedChar, dPrivate, nPublic);
 
         decryptedCharacter = bignumToInt(&decryptedChar);
 
