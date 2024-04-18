@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "bignum.h"
+#include "../bignum.h"
 
 typedef struct nodeBignum {
     Bignum *value;

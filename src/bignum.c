@@ -130,6 +130,121 @@ int bignumToBinary(Bignum *result, Bignum *num) {
     return 0;
 }
 
+int millerRabinPrimalityTest(Bignum *num, int iterations) {
+    Bignum pOne;
+    initBignum(&pOne);
+    setBignum(&pOne, "1", positive);
+    Bignum two;
+    initBignum(&two);
+    setBignum(&two, "2", positive);
+
+    Bignum numMinusOne;
+    initBignum(&numMinusOne);
+    subtractBignum(&numMinusOne, num, &pOne);
+
+    Bignum numMinusOneCopy;
+    initBignum(&numMinusOneCopy);
+    copyBignum(&numMinusOneCopy, &numMinusOne);
+
+    // STEP 1:
+    while(numMinusOneCopy.digits[0] % 2 == 0) {
+        halfBignum(&numMinusOneCopy, &numMinusOneCopy);
+    }
+
+    Bignum a;
+    initBignum(&a);
+
+    Bignum temp, tempCopy;
+    initBignum(&temp);
+    initBignum(&tempCopy);
+    copyBignum(&temp, &numMinusOneCopy);
+    
+    Bignum mod;
+    initBignum(&mod);
+
+    Bignum modSquared;
+    initBignum(&modSquared);
+
+    for (int i = 0; i < iterations; i++) {
+        resetBignum(&a);
+
+        // STEP 2:
+        unsigned long long int min = 2;
+        unsigned long long int max = pow(10,ceil(numMinusOne.length / 7.0)) - 1;
+        // unsigned long long int max = pow(10,ceil(numMinusOne.length / 4.0)) - 1;
+        unsigned long long int aTemp = min + rand() % (max - min + 1);
+        intToBignum(&a, aTemp, positive);
+
+        printf("\n\t- a: ");
+        printBignum(&a);
+
+        // STEP 3:
+        modularExponentiationBignum(&mod, &a, &temp, num);
+
+        while(
+            !isEqualToBignum(&temp, &numMinusOne) &&
+            !isEqualToBignum(&mod, &pOne) &&
+            !isEqualToBignum(&mod, &numMinusOne)
+        ) {
+            // printf("\n( ");
+            // printBignum(&mod);
+            // printf(" * ");
+            // printBignum(&mod);
+            // printf(" ) mod ");
+            // printBignum(num);
+
+            powerBignum(&modSquared, &mod, &two);
+            moduloBignum(&mod, &modSquared, num);
+
+            // printf(" = ");
+            // printBignum(&mod);
+
+            // printf("\n");
+            // printBignum(&temp);
+            // printf(" * 2 = ");
+            multiplyBignum(&tempCopy, &temp, &two);
+            // printBignum(&tempCopy);
+            copyBignum(&temp, &tempCopy);
+            resetBignum(&tempCopy);
+        }
+
+        if (
+            !isEqualToBignum(&mod, &numMinusOne) &&
+            temp.digits[0] % 2 == 0
+        ) {
+            printf(" -> composite:( ");
+
+            freeBignum(&pOne);
+            freeBignum(&two);
+            freeBignum(&numMinusOne);
+            freeBignum(&a);
+            freeBignum(&numMinusOneCopy);
+            freeBignum(&tempCopy);
+            freeBignum(&temp);
+            freeBignum(&mod);
+            freeBignum(&modSquared);
+
+            return 0;
+        } else {
+            printf(" -> prime!");
+        }
+    }
+
+    freeBignum(&pOne);
+    freeBignum(&two);
+    freeBignum(&numMinusOne);
+
+    freeBignum(&a);
+
+    freeBignum(&numMinusOneCopy);
+    freeBignum(&tempCopy);
+    freeBignum(&temp);
+
+    freeBignum(&mod);
+    freeBignum(&modSquared);
+
+    return 1;
+}
 
 
 
@@ -296,8 +411,8 @@ void freeBignum(Bignum *num) {
         free(toRemoveNode->value->digits);
         toRemoveNode->value->digits = NULL;
         free(toRemoveNode);
-        // Point head to the next pointer (NULL)
-        bignumListHead = bignumListHead->next;
+        // Set head to NULL
+        bignumListHead = NULL;
 
         FREED_BIGNUMS_COUNT++;
 
@@ -942,6 +1057,16 @@ void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend) {
     // If you are subtracting a Bignum with 0, copy the other Bignum to result.
     if (isBignumZero(minuend)) {
         copyBignum(result, subtrahend);
+
+        // Flip sign:
+        // 0 - 1 = -1
+        // 0 - (-1) = 1
+        if (subtrahend->sign == positive) {
+            result->sign = negative;
+        } else if (subtrahend->sign == negative) {
+            result->sign = positive;
+        }
+
         return;
     }
     if (isBignumZero(subtrahend)) {
@@ -1737,6 +1862,81 @@ int modularExponentiationBignum(Bignum *result, Bignum *base, Bignum *exponent, 
     return 0;
 }
 
+int modularInverseBignum(Bignum *result, Bignum *num, Bignum *divisor) {
+    Bignum quotient, remainder;
+    initBignum(&quotient);
+    initBignum(&remainder);
+
+    Bignum t, t1, t2;
+    initBignum(&t);
+    initBignum(&t1);
+    initBignum(&t2);
+    setBignum(&t1, "0", positive);
+    setBignum(&t2, "1", positive);
+
+    Bignum a, b;
+    initBignum(&a);
+    initBignum(&b);
+
+    copyBignum(&a, isGreaterThanBignum(num, divisor) ? num : divisor);
+    copyBignum(&b, isLessThanBignum(num, divisor) ? num : divisor);
+
+    // printf("\nA: ");
+    // printBignum(&a);
+    // printf("\nB: ");
+    // printBignum(&b);
+
+    Bignum t2TimesQuotient;
+    initBignum(&t2TimesQuotient);
+
+    while (!isBignumZero(&b)) {
+        resetBignum(&remainder);
+        resetBignum(&quotient);
+
+        moduloBignum(&remainder, &a, &b);
+        divideBignum(&quotient, &a, &b);
+
+        // printf("\nr: ");
+        // printBignum(&remainder);
+        // printf("\nq: ");
+        // printBignum(&quotient);
+
+        multiplyBignum(&t2TimesQuotient, &t2, &quotient);
+        subtractBignum(&t, &t1, &t2TimesQuotient);
+
+        // printf("\nt: ");
+        // printBignum(&t);
+        // printf("\nt1: ");
+        // printBignum(&t1);
+        // printf("\nt2: ");
+        // printBignum(&t2);
+        // printf("\n-------------------------");
+
+        copyBignum(&a, &b);
+        copyBignum(&b, &remainder);
+        copyBignum(&t1, &t2);
+        copyBignum(&t2, &t);
+    }
+
+    if (t1.sign == negative) {
+        addBignum(result, &t1, divisor);
+    } else {
+        copyBignum(result, &t1);
+    }
+
+    freeBignum(&quotient);
+    freeBignum(&remainder);
+    freeBignum(&t);
+    freeBignum(&t1);
+    freeBignum(&t2);
+    freeBignum(&a);
+    freeBignum(&b);
+
+    freeBignum(&t2TimesQuotient);
+
+    return 0;
+}
+
 
 
 int halfBignum(Bignum *result, Bignum *num) {
@@ -1786,122 +1986,6 @@ int halfBignum(Bignum *result, Bignum *num) {
     result->sign = num->sign;
 
     trimBignum(result);
-}
-
-int millerRabinPrimalityTest(Bignum *num, int iterations) {
-    Bignum pOne;
-    initBignum(&pOne);
-    setBignum(&pOne, "1", positive);
-    Bignum two;
-    initBignum(&two);
-    setBignum(&two, "2", positive);
-
-    Bignum numMinusOne;
-    initBignum(&numMinusOne);
-    subtractBignum(&numMinusOne, num, &pOne);
-
-    Bignum numMinusOneCopy;
-    initBignum(&numMinusOneCopy);
-    copyBignum(&numMinusOneCopy, &numMinusOne);
-
-    // STEP 1:
-    while(numMinusOneCopy.digits[0] % 2 == 0) {
-        halfBignum(&numMinusOneCopy, &numMinusOneCopy);
-    }
-
-    Bignum a;
-    initBignum(&a);
-
-    Bignum temp, tempCopy;
-    initBignum(&temp);
-    initBignum(&tempCopy);
-    copyBignum(&temp, &numMinusOneCopy);
-    
-    Bignum mod;
-    initBignum(&mod);
-
-    Bignum modSquared;
-    initBignum(&modSquared);
-
-    for (int i = 0; i < iterations; i++) {
-        resetBignum(&a);
-
-        // STEP 2:
-        unsigned long long int min = 2;
-        unsigned long long int max = pow(10,ceil(numMinusOne.length / 7.0)) - 1;
-        // unsigned long long int max = pow(10,ceil(numMinusOne.length / 4.0)) - 1;
-        unsigned long long int aTemp = min + rand() % (max - min + 1);
-        intToBignum(&a, aTemp, positive);
-
-        printf("\n\t- a: ");
-        printBignum(&a);
-
-        // STEP 3:
-        modularExponentiationBignum(&mod, &a, &temp, num);
-
-        while(
-            !isEqualToBignum(&temp, &numMinusOne) &&
-            !isEqualToBignum(&mod, &pOne) &&
-            !isEqualToBignum(&mod, &numMinusOne)
-        ) {
-            // printf("\n( ");
-            // printBignum(&mod);
-            // printf(" * ");
-            // printBignum(&mod);
-            // printf(" ) mod ");
-            // printBignum(num);
-
-            powerBignum(&modSquared, &mod, &two);
-            moduloBignum(&mod, &modSquared, num);
-
-            // printf(" = ");
-            // printBignum(&mod);
-
-            // printf("\n");
-            // printBignum(&temp);
-            // printf(" * 2 = ");
-            multiplyBignum(&tempCopy, &temp, &two);
-            // printBignum(&tempCopy);
-            copyBignum(&temp, &tempCopy);
-            resetBignum(&tempCopy);
-        }
-
-        if (
-            !isEqualToBignum(&mod, &numMinusOne) &&
-            temp.digits[0] % 2 == 0
-        ) {
-            printf(" -> composite:( ");
-
-            freeBignum(&pOne);
-            freeBignum(&two);
-            freeBignum(&numMinusOne);
-            freeBignum(&a);
-            freeBignum(&numMinusOneCopy);
-            freeBignum(&tempCopy);
-            freeBignum(&temp);
-            freeBignum(&mod);
-            freeBignum(&modSquared);
-
-            return 0;
-        } else {
-            printf(" -> prime!");
-        }
-    }
-
-    freeBignum(&pOne);
-    freeBignum(&two);
-    freeBignum(&numMinusOne);
-
-    freeBignum(&a);
-
-    freeBignum(&numMinusOneCopy);
-    freeBignum(&tempCopy);
-    freeBignum(&temp);
-
-    freeBignum(&mod);
-    freeBignum(&modSquared);
-
-    return 1;
 }
 
 int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
