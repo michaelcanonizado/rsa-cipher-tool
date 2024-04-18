@@ -5,6 +5,40 @@
 void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic);
 void encryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
 void decryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPublic, Bignum *nPublic);
+void getInputAndOutputFiles(FILE *inputFilePtr, FILE *outputFilePtr);
+
+void getInputAndOutputFiles(FILE *inputFilePtr, FILE *outputFilePtr) {
+    char inputFilename[100];
+    char outputFilename[100];
+
+    while (inputFilePtr == NULL) {
+        printf("\nPlease enter the input file name (E.g: input.txt): ");
+        scanf("%s", inputFilename);
+
+        printf("\nFilename: %s|", inputFilename);
+
+        inputFilePtr = fopen(inputFilename, "r");
+
+        if (inputFilePtr == NULL) {
+            printf("Error opening %s. Please try again...\n", inputFilename);
+        }
+    }
+
+    while (outputFilePtr == NULL) {
+        printf("\nPlease enter the output file name (E.g: output.txt): ");
+        scanf("%s", outputFilename);
+
+        printf("\nFilename: %s|", outputFilename);
+
+        outputFilePtr = fopen("en.txt", "w");
+
+        if (outputFilePtr == NULL) {
+            printf("Error opening %s. Please try again...\n", outputFilename);
+        }
+    }
+
+    printf("\n\nSuccess!");
+}
 
 int main(void) {
     int userMenuState = 0;
@@ -32,9 +66,13 @@ int main(void) {
                 freeAllBignums();
 				break;
 			case 2:
-                printf("\n.........................................");
-                printf("\n");
-				printf("\nCase 2");
+                printf("\n.........................................\n");
+                FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
+
+                getInputAndOutputFiles(inputFilePtr, outputFilePtr);
+
+                fclose(inputFilePtr);
+                fclose(outputFilePtr);
 				break;
 			case 3:
                 printf("\n.........................................");
