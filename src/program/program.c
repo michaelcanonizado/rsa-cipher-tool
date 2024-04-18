@@ -25,7 +25,7 @@
 	// Function to clear lines. This function will clear the specified lines starting from the startLine to the endLine using the specified width.
 	void clearLines(int startLine, int endLine, int width);
 	// Function to display a loading bar.
-	void loadingBar(int width, int progress);
+	void loadingBar(int width, int height, int progress);
 	// Function to wait for the user to input "DONE" to continue.
 	void waitForInput(char *message);
 	// Function to get the user's confirmation. This function will get the user's confirmation by asking the user to input 'Y' or 'N' and return the input.
@@ -49,6 +49,7 @@ int offsetY;
 char fileName[100];
 FILE *encryptionFile;
 FILE *decryptionFile;
+const int PROGRESS_BAR_LENGTH = 50;
 
 int main() {
 	clearScreen();
@@ -156,6 +157,23 @@ void clearLines(int startLine, int endLine, int width) {
 			printf(" ");
 		}
 	}
+}
+
+void loadingBar(int width, int height, int percentDone) { 
+	int numChar = percentDone * PROGRESS_BAR_LENGTH / 100;
+	int numSpace = PROGRESS_BAR_LENGTH - numChar;
+  int start = (width - PROGRESS_BAR_LENGTH) / 2;
+
+  moveCursor(start, (height * 3) / 2);
+	printf("[");
+	for (int i = 0; i < numChar; i++) {
+		printf("#");
+	}
+	for (int i = 0; i < numSpace; i++) {
+		printf(" ");
+	}
+	printf("] %d%% Done", percentDone);
+	fflush(stdout);
 }
 
 void waitForDone(int width, int height) {
