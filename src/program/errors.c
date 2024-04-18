@@ -1,44 +1,88 @@
 #include <stdio.h>
-#include <unistd.h>
 
-// Function to print the indeterminate progress bar
-void printIndeterminateProgressBar() {
-    char progressChars[] = {'|', '/', '-', '\\'};
-    int i = 0;
-    
-    while (1) {
-        printf("\r%c", progressChars[i]); // Print the progress character
-        fflush(stdout); // Flush the output buffer
-        
-        i = (i + 1) % 4; // Rotate through the progress characters
-        
-        usleep(200000); // Sleep for 200 milliseconds (adjust as needed)
-    }
-}
+void print_progress(size_t count, size_t max) {
+    const int bar_width = 50;
 
-// Your other function that runs concurrently with the progress bar
-void otherFunction() {
-    // Example of another function
-    for (int i = 0; i < 10; ++i) {
-        printf("Doing some work... %d\n", i);
-        sleep(1); // Simulate some work being done
+    float progress = (float) count / max;
+    int bar_length = progress * bar_width;
+
+    printf("\rProgress: [");
+    for (int i = 0; i < bar_length; ++i) {
+        printf("#");
     }
+    for (int i = bar_length; i < bar_width; ++i) {
+        printf(" ");
+    }
+    printf("] %.2f%%", progress * 100);
+
+    fflush(stdout);
 }
 
 int main() {
-    pid_t pid = fork(); // Create a new process
-    
-    if (pid == -1) {
-        // Fork failed
-        perror("fork");
-        return 1;
-    } else if (pid == 0) {
-        // Child process
-        printIndeterminateProgressBar();
-    } else {
-        // Parent process
-        otherFunction();
+    for (size_t i = 0; i <= 100; ++i) {
+        print_progress(i, 100);
     }
-    
+    printf("\n");
+
     return 0;
+}
+
+#include <stdio.h> 
+#include <windows.h> 
+
+// Function to creating loading bar 
+void loadingBar(void (*task)(int*), int* taskProgress) 
+{ 
+    // 0 - black background, 
+    // A - Green Foreground 
+    system("color 0A"); 
+
+    // Initialize char for printing 
+    // loading bar 
+    char a = 177, b = 219; 
+
+    printf("\n\n\n\n\t\t\t\t\tLoading...\n\n"); 
+    printf("\t\t\t\t\t"); 
+
+    // Print initial loading bar 
+    for (int i = 0; i < 26; i++) 
+        printf("%c", a); 
+
+    // Set the cursor again starting 
+    // point of loading bar 
+    printf("\r"); 
+    printf("\t\t\t\t\t"); 
+
+    // Print loading bar progress 
+    for (int i = 0; i < 26; i++) { 
+        printf("%c", b); 
+
+        // Run the task and update the progress
+        task(taskProgress);
+
+        // Sleep for 1 second 
+        Sleep(1000); 
+    } 
+} 
+
+// Example task function
+void exampleTask(int* progress) {
+    // Do some work here...
+
+    // Update the progress
+    (*progress)++;
+}
+
+// Driver Code 
+int main() 
+{ 
+    int progress = 0;
+
+    // Function Call 
+    loadingBar(exampleTask, &progress); 
+
+    // Reset the color of the terminal text to the default
+    system("color 07");
+
+    return 0; 
 }
