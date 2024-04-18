@@ -23,7 +23,7 @@ void loadingBar(int percentDone) {
 	fflush(stdout);
 }
 
-// Function to copy a very long string one character at a time
+// Function to convert a very long string to their ASCII value
 void convertToASCII(const char* str) {
 	int length = strlen(str);
 	for (int i = 0; i < length; i++) {
