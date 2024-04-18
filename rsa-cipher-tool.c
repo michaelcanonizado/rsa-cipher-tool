@@ -165,36 +165,6 @@ int main(void) {
     } while (userMenuState != sizeof(optionsArr)/sizeof(optionsArr[0]));
 
     return 0;
-
-    FILE *inputFilePtr, *outputFilePtr;
-    char inputFilename[] = "encrypted.txt";
-    char outputFilename[] = "decrypted.txt";
-    // char inputFilename[] = "plaintext.txt";
-    // char outputFilename[] = "encrypted.txt";
-    
-    inputFilePtr = fopen(inputFilename, "r");
-    outputFilePtr = fopen(outputFilename, "w");
-
-    if (inputFilePtr == NULL) {
-        printf("Error opening input %s...\n", inputFilename);
-        return 1;
-    }
-    if (outputFilePtr == NULL) {
-        printf("Error opening output %s...\n", outputFilename);
-        return 2;
-    }
-
-    // printf("\n\nEncrypting...\n\n");
-    // encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
-    printf("\n\nDecrypting...\n\n");
-    // decryptTextFile(inputFilePtr, outputFilePtr, &dPrivate, &nPublic);
-    
-    fclose(inputFilePtr);
-    fclose(outputFilePtr);
-
-    freeAllBignums();
-
-    return 0;
 }
 
 void getInputFile(FILE **inputFilePtr, char *inputFilename) {
