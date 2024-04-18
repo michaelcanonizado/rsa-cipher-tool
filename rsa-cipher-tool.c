@@ -1,11 +1,32 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "src/bignum.h"
 
 void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic);
 void encryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
 void decryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPublic, Bignum *nPublic);
 void getInputFile(FILE **inputFilePtr);
+void encryptText();
+
+void encryptText() {
+    printf("\n.........................................\n");
+    FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
+
+    char outputFilename[] = "asdasd.txt";
+
+    getInputFile(&inputFilePtr);
+
+    outputFilePtr = fopen(outputFilename, "w");
+    if (outputFilePtr == NULL) {
+        printf("Error opening output %s...\n", outputFilename);
+        exit(1);
+    }
+
+    fclose(inputFilePtr);
+    fclose(outputFilePtr);
+
+}
 
 int main(void) {
     int userMenuState = 0;
@@ -33,22 +54,7 @@ int main(void) {
                 freeAllBignums();
 				break;
 			case 2:
-                printf("\n.........................................\n");
-                FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
-
-                char outputFilename[] = "en.txt";
-
-                getInputFile(&inputFilePtr);
-
-                outputFilePtr = fopen(outputFilename, "w");
-                if (outputFilePtr == NULL) {
-                    printf("Error opening output %s...\n", outputFilename);
-                    return 2;
-                }
-
-                fclose(inputFilePtr);
-                fclose(outputFilePtr);
-
+                encryptText();
 				break;
 			case 3:
                 printf("\n.........................................");
@@ -103,7 +109,7 @@ void getInputFile(FILE **inputFilePtr) {
     char inputFilename[100];
 
     while (1) {
-        printf("Enter the name of the input file: ");
+        printf("\nEnter the name of the input file: ");
         scanf("%s", inputFilename);
 
         *inputFilePtr = fopen(inputFilename, "r");
@@ -111,11 +117,11 @@ void getInputFile(FILE **inputFilePtr) {
         if (*inputFilePtr != NULL) {
             break;
         } else {
-            printf("Could not open file \"%s\". Please try again...\n", inputFilename);
+            printf("Could not open \"%s\". Please try again...", inputFilename);
         }
     }
 
-    printf("\nFile opened successfully...!");
+    printf("File opened successfully...");
 }
 
 void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic) {
