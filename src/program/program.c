@@ -47,7 +47,8 @@
 char confirm;
 int offsetY;
 char fileName[100];
-FILE *file;
+FILE *encryptionFile;
+FILE *decryptionFile;
 
 int main() {
 	clearScreen();
@@ -329,21 +330,21 @@ void encryptText(int width, int adjustedHeight) {
 				}
 		
 				// Try to open the file for reading and appending. If the file does not exist, it will be created.
-				file = fopen(fileName, "a+");
+				encryptionFile = fopen(fileName, "a+");
 		
-				if (file == NULL) {
+				if (encryptionFile == NULL) {
 					// If the file could not be opened, print an error message
 					moveCursor((width - 38)/ 2, adjustedHeight + offsetY + 3);
 					printf("Could not open file. Please try again.\n");
 				}
-			} while (file == NULL);
+			} while (encryptionFile == NULL);
 		
 			// At this point, 'file' is a pointer to the opened file
 			// You can use 'file' with functions like fprintf(), fscanf(), etc. to read from and write to the file
 
 			// TO BE CHANGED
 			if (publicKEY == NULL) {
-					fprintf(stderr, "Failed to allocate memory for publicKEY\n");
+					printf("Failed to allocate memory for publicKEY\n");
 					exit(1);
 			}
 			moveCursor((width - 38)/ 2, adjustedHeight + 1);
@@ -356,8 +357,8 @@ void encryptText(int width, int adjustedHeight) {
 
 			// At this point, function calls can be made to ENCRYPT the MESSAGE. For now, the program will display a message that the MESSAGE IS ENCRYPTED.
 
-			fprintf(file, "Encrypted message here\n");
-			fprintf(file, "%s", publicKEY);
+			fprintf(encryptionFile, "Encrypted message here\n");
+			fprintf(encryptionFile, "%s", publicKEY);
 			printf("Public key: %s\n", publicKEY);
 			
 			clock_t end = clock();
@@ -370,7 +371,7 @@ void encryptText(int width, int adjustedHeight) {
 			moveCursor((width - 30)/ 2, adjustedHeight + 2);
 			printf("Encrypted ____ characters in __ seconds\n");
 
-			fclose(file);
+			fclose(encryptionFile);
 		} else {
 			clearScreen();
 			moveCursor((width - 25)/ 2, adjustedHeight);
@@ -429,21 +430,21 @@ void decryptText(int width, int adjustedHeight) {
 				}
 		
 				// Try to open the file for reading and appending. If the file does not exist, it will be created.
-				file = fopen(fileName, "a+");
+				decryptionFile = fopen(fileName, "a+");
 		
-				if (file == NULL) {
+				if (decryptionFile == NULL) {
 					// If the file could not be opened, print an error message
 					moveCursor((width - 38)/ 2, adjustedHeight + offsetY + 3);
 					printf("Could not open file. Please try again.\n");
 				}
-			} while (file == NULL);
+			} while (decryptionFile == NULL);
 
 			// At this point, 'file' is a pointer to the opened file
 			// You can use 'file' with functions like fprintf(), fscanf(), etc. to read from and write to the file
 
 			// TO BE CHANGED
 			if (privateKEY == NULL) {
-					fprintf(stderr, "Failed to allocate memory for privateKEY\n");
+					printf("Failed to allocate memory for privateKEY\n");
 					exit(1);
 			}
 			moveCursor((width - 38)/ 2, adjustedHeight + 1);
@@ -456,8 +457,8 @@ void decryptText(int width, int adjustedHeight) {
 
 			// At this point, function calls can be made to DECRYPT the MESSAGE. For now, the program will display a message that the MESSAGE IS DECRYPTED.
 
-			fprintf(file, "Decrypted message here\n");
-			fprintf(file, "%s", privateKEY);
+			fprintf(decryptionFile, "Decrypted message here\n");
+			fprintf(decryptionFile, "%s", privateKEY);
 			printf("Private key: %s\n", privateKEY);
 			
 			clock_t end = clock();
@@ -470,7 +471,7 @@ void decryptText(int width, int adjustedHeight) {
 			moveCursor((width - 30)/ 2, adjustedHeight + 2);
 			printf("Decrypted ____ characters in __ seconds\n");
 
-			fclose(file);
+			fclose(decryptionFile);
 		} else {
 			clearScreen();
 			moveCursor((width - 25)/ 2, adjustedHeight);
