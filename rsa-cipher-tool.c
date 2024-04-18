@@ -5,39 +5,25 @@
 void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic);
 void encryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
 void decryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPublic, Bignum *nPublic);
-void getInputAndOutputFiles(FILE *inputFilePtr, FILE *outputFilePtr);
+void getInputFile(FILE **inputFilePtr);
 
-void getInputAndOutputFiles(FILE *inputFilePtr, FILE *outputFilePtr) {
+void getInputFile(FILE **inputFilePtr) {
     char inputFilename[100];
-    char outputFilename[100];
 
-    while (inputFilePtr == NULL) {
-        printf("\nPlease enter the input file name (E.g: input.txt): ");
+    while (1) {
+        printf("Enter the name of the input file: ");
         scanf("%s", inputFilename);
 
-        printf("\nFilename: %s|", inputFilename);
+        *inputFilePtr = fopen(inputFilename, "r");
 
-        inputFilePtr = fopen(inputFilename, "r");
-
-        if (inputFilePtr == NULL) {
-            printf("Error opening %s. Please try again...\n", inputFilename);
+        if (*inputFilePtr != NULL) {
+            break;
+        } else {
+            printf("Could not open file \"%s\". Please try again...\n", inputFilename);
         }
     }
 
-    while (outputFilePtr == NULL) {
-        printf("\nPlease enter the output file name (E.g: output.txt): ");
-        scanf("%s", outputFilename);
-
-        printf("\nFilename: %s|", outputFilename);
-
-        outputFilePtr = fopen("en.txt", "w");
-
-        if (outputFilePtr == NULL) {
-            printf("Error opening %s. Please try again...\n", outputFilename);
-        }
-    }
-
-    printf("\n\nSuccess!");
+    printf("\nFile opened successfully...!");
 }
 
 int main(void) {
@@ -49,7 +35,7 @@ int main(void) {
 		for (int i = 0; i < sizeof(optionsArr)/sizeof(optionsArr[0]); i++) {
 			printf("\n%d) - %s", i+1, optionsArr[i]);
 		}
-        printf("Enter number: ");
+        printf("\nEnter number: ");
 		scanf("%d", &userMenuState);
 
         switch (userMenuState) {
@@ -69,10 +55,19 @@ int main(void) {
                 printf("\n.........................................\n");
                 FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
 
-                getInputAndOutputFiles(inputFilePtr, outputFilePtr);
+                char outputFilename[] = "en.txt";
+
+                getInputFile(&inputFilePtr);
+
+                outputFilePtr = fopen(outputFilename, "w");
+                if (outputFilePtr == NULL) {
+                    printf("Error opening output %s...\n", outputFilename);
+                    return 2;
+                }
 
                 fclose(inputFilePtr);
                 fclose(outputFilePtr);
+
 				break;
 			case 3:
                 printf("\n.........................................");
@@ -89,6 +84,8 @@ int main(void) {
         printf("\n\n.........................................");
 
     } while (userMenuState != sizeof(optionsArr)/sizeof(optionsArr[0]));
+
+    return 0;
 
     FILE *inputFilePtr, *outputFilePtr;
     char inputFilename[] = "encrypted.txt";
