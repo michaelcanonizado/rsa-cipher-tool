@@ -76,7 +76,7 @@ void encryptText() {
     printf("\nBignum key n: ");
     printBignum(&nPublic);
 
-    printf("\n\nEncrypting %s...", inputFilename);
+    printf("\n\nEncrypting %s...\n\n", inputFilename);
 
     encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
 
@@ -112,7 +112,7 @@ void decryptText() {
     printf("\nBignum key n: ");
     printBignum(&nPublic);
 
-    printf("\n\ndecrypting %s...", inputFilename);
+    printf("\n\ndecrypting %s...\n\n", inputFilename);
 
     decryptTextFile(inputFilePtr, outputFilePtr, &dPrivate, &nPublic);
 
