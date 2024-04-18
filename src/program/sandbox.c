@@ -4,7 +4,6 @@
 #include <time.h>
 #include <ctype.h>
 #include "../bignum.h"
-#include <pthread.h>
 
 // Includes the appropriate header file to use operating system-specific functions. This is useful for functions like clearing the screen, moving the cursor, and getting the terminal size.
 #ifdef _WIN32
@@ -26,7 +25,7 @@
 	// Function to clear lines. This function will clear the specified lines starting from the startLine to the endLine using the specified width.
 	void clearLines(int startLine, int endLine, int width);
 	// Function to display a loading bar.
-	void loadingBar(int width, int progress);
+	void loadingBar(int width, int height, int progress);
 	// Function to wait for the user to input "DONE" to continue.
 	void waitForInput(char *message);
 	// Function to get the user's confirmation. This function will get the user's confirmation by asking the user to input 'Y' or 'N' and return the input.
@@ -44,47 +43,13 @@
 	// Function to display information about the program.
 	void aboutProgram(int width, int height);
 
-
-void* indeterminateProgressBar(void* arg) {
-    const char* cursor = "|/-\\";
-    int i = 0;
-	#ifdef _WIN32
-			HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
-			CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
-			while (*(bool*)arg) {
-					GetConsoleScreenBufferInfo(console, &bufferInfo);
-					int centerColumn = (bufferInfo.dwSize.X - 30) / 2; // Calculate center column
-					COORD cursorPos = { centerColumn, bufferInfo.dwCursorPosition.Y };
-					SetConsoleCursorPosition(console, cursorPos);
-					for (int j = 0; j < 30; j++) {
-							printf("%c", cursor[(i + j) % 4]); // Print 30 characters from the cursor array
-					}
-					fflush(stdout);
-					i += 30;
-					Sleep(200); // Sleep for demonstration purposes
-			}
-	#else
-			struct winsize w;
-			while (*(int*)arg) {
-					ioctl(STDOUT_FILENO, TIOCGWINSZ, &w); // Get terminal size
-					int centerColumn = (w.ws_col - 30) / 2; // Calculate center column
-					printf("\033[%d;%dH", (w.ws_row + 1) / 2, centerColumn); // Move cursor to center of the terminal
-					for (int j = 0; j < 30; j++) {
-							printf("%c", cursor[(i + j) % 4]); // Print 30 characters from the cursor array
-					}
-					fflush(stdout);
-					i += 30;
-					usleep(200000); // Sleep for demonstration purposes
-			}
-	#endif
-		return NULL;
-}
-
 // Global variables
 char confirm;
 int offsetY;
 char fileName[100];
-FILE *file;
+FILE *encryptionFile;
+FILE *decryptionFile;
+const int PROGRESS_BAR_LENGTH = 50;
 
 int main() {
 	clearScreen();
@@ -194,6 +159,23 @@ void clearLines(int startLine, int endLine, int width) {
 	}
 }
 
+void loadingBar(int width, int height, int percentDone) { 
+	int numChar = percentDone * PROGRESS_BAR_LENGTH / 100;
+	int numSpace = PROGRESS_BAR_LENGTH - numChar;
+  int start = (width - PROGRESS_BAR_LENGTH) / 2;
+
+  moveCursor(start, (height * 3) / 2);
+	printf("[");
+	for (int i = 0; i < numChar; i++) {
+		printf("#");
+	}
+	for (int i = 0; i < numSpace; i++) {
+		printf(" ");
+	}
+	printf("] %d%% Done", percentDone);
+	fflush(stdout);
+}
+
 void waitForDone(int width, int height) {
 	char done[100];
 	do {
@@ -291,14 +273,10 @@ void generateKeys(int width, int adjustedHeight, int i) {
 		clearScreen();
 		clock_t start = clock();
 
-		int running = 1;
-		pthread_t threadId;
-    pthread_create(&threadId, NULL, indeterminateProgressBar, &running);
+
 
 		generatePrimeBignum(&keys, primeLength);
 
-		running = 0;
-    pthread_join(threadId, NULL);
 
 		clock_t end = clock();
 		double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
@@ -332,7 +310,7 @@ void generateKeys(int width, int adjustedHeight, int i) {
 
 void encryptText(int width, int adjustedHeight) {
 	char* publicKEY = malloc(1000000000 * sizeof(char));
-	
+		
 	clearScreen();
 	char* msgEncrypt[] = {"Encryption includes the message to be encrypted and", "the public key of the recipient. The txt file of the", "message must be in the same folder of the C program."};
 	int countEncrypt = sizeof(msgEncrypt) / sizeof(msgEncrypt[0]);
@@ -370,21 +348,21 @@ void encryptText(int width, int adjustedHeight) {
 				}
 		
 				// Try to open the file for reading and appending. If the file does not exist, it will be created.
-				file = fopen(fileName, "a+");
+				encryptionFile = fopen(fileName, "a+");
 		
-				if (file == NULL) {
+				if (encryptionFile == NULL) {
 					// If the file could not be opened, print an error message
 					moveCursor((width - 38)/ 2, adjustedHeight + offsetY + 3);
 					printf("Could not open file. Please try again.\n");
 				}
-			} while (file == NULL);
+			} while (encryptionFile == NULL);
 		
 			// At this point, 'file' is a pointer to the opened file
 			// You can use 'file' with functions like fprintf(), fscanf(), etc. to read from and write to the file
 
 			// TO BE CHANGED
 			if (publicKEY == NULL) {
-					fprintf(stderr, "Failed to allocate memory for publicKEY\n");
+					printf("Failed to allocate memory for publicKEY\n");
 					exit(1);
 			}
 			moveCursor((width - 38)/ 2, adjustedHeight + 1);
@@ -397,8 +375,8 @@ void encryptText(int width, int adjustedHeight) {
 
 			// At this point, function calls can be made to ENCRYPT the MESSAGE. For now, the program will display a message that the MESSAGE IS ENCRYPTED.
 
-			fprintf(file, "Encrypted message here\n");
-			fprintf(file, "%s", publicKEY);
+			fprintf(encryptionFile, "Encrypted message here\n");
+			fprintf(encryptionFile, "%s", publicKEY);
 			printf("Public key: %s\n", publicKEY);
 			
 			clock_t end = clock();
@@ -411,7 +389,7 @@ void encryptText(int width, int adjustedHeight) {
 			moveCursor((width - 30)/ 2, adjustedHeight + 2);
 			printf("Encrypted ____ characters in __ seconds\n");
 
-			fclose(file);
+			fclose(encryptionFile);
 		} else {
 			clearScreen();
 			moveCursor((width - 25)/ 2, adjustedHeight);
@@ -470,21 +448,21 @@ void decryptText(int width, int adjustedHeight) {
 				}
 		
 				// Try to open the file for reading and appending. If the file does not exist, it will be created.
-				file = fopen(fileName, "a+");
+				decryptionFile = fopen(fileName, "a+");
 		
-				if (file == NULL) {
+				if (decryptionFile == NULL) {
 					// If the file could not be opened, print an error message
 					moveCursor((width - 38)/ 2, adjustedHeight + offsetY + 3);
 					printf("Could not open file. Please try again.\n");
 				}
-			} while (file == NULL);
+			} while (decryptionFile == NULL);
 
 			// At this point, 'file' is a pointer to the opened file
 			// You can use 'file' with functions like fprintf(), fscanf(), etc. to read from and write to the file
 
 			// TO BE CHANGED
 			if (privateKEY == NULL) {
-					fprintf(stderr, "Failed to allocate memory for privateKEY\n");
+					printf("Failed to allocate memory for privateKEY\n");
 					exit(1);
 			}
 			moveCursor((width - 38)/ 2, adjustedHeight + 1);
@@ -497,8 +475,8 @@ void decryptText(int width, int adjustedHeight) {
 
 			// At this point, function calls can be made to DECRYPT the MESSAGE. For now, the program will display a message that the MESSAGE IS DECRYPTED.
 
-			fprintf(file, "Decrypted message here\n");
-			fprintf(file, "%s", privateKEY);
+			fprintf(decryptionFile, "Decrypted message here\n");
+			fprintf(decryptionFile, "%s", privateKEY);
 			printf("Private key: %s\n", privateKEY);
 			
 			clock_t end = clock();
@@ -511,7 +489,7 @@ void decryptText(int width, int adjustedHeight) {
 			moveCursor((width - 30)/ 2, adjustedHeight + 2);
 			printf("Decrypted ____ characters in __ seconds\n");
 
-			fclose(file);
+			fclose(decryptionFile);
 		} else {
 			clearScreen();
 			moveCursor((width - 25)/ 2, adjustedHeight);
