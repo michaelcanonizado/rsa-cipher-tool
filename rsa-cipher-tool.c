@@ -8,6 +8,47 @@ void encryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bi
 void decryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPublic, Bignum *nPublic);
 void getInputFile(FILE **inputFilePtr);
 void encryptText();
+void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic);
+
+void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic) {
+    char key[5000];
+    char firstKey[2500];
+    char secondKey[2500];
+    char flag = '.';
+    int flagIndex;
+
+    printf("\n");
+    printf("\nPlease enter the private key: ");
+    scanf("%s", key);
+
+    while(1) {
+        int flagCount = 0, i;
+
+        for (i = 0; i < strlen(key); i++) {
+            if (key[i] == flag) {
+                flagIndex = i;
+                flagCount++;
+            }
+        }
+
+        if (flagCount == 1) {
+            break;
+        }
+
+        printf("Invalid key! Please make sure you properly copied the key generated...");
+        printf("\nPlease enter the private key: ");
+        scanf("%s", key);
+    }
+
+    strncpy(firstKey, key, flagIndex);
+    firstKey[flagIndex] = '\0';
+    strcpy(secondKey, key + flagIndex + 1);
+    // printf("String before '.': %s\n", firstKey);
+    // printf("String after '.': %s\n", secondKey);
+
+    setBignum(ePublicOrDPrivate, firstKey, positive);
+    setBignum(nPublic, secondKey, positive);
+}
 
 void encryptText() {
     printf("\n.........................................\n");
@@ -23,9 +64,21 @@ void encryptText() {
         exit(1);
     }
 
+    Bignum nPublic, ePublic;
+    initBignum(&nPublic);
+    initBignum(&ePublic);
+
+    getKeys(&ePublic, &nPublic);
+
+    printf("\nBignum key e: ");
+    printBignum(&ePublic);
+    printf("\nBignum key n: ");
+    printBignum(&nPublic);
+
+    freeAllBignums();
+
     fclose(inputFilePtr);
     fclose(outputFilePtr);
-
 }
 
 int main(void) {
