@@ -164,13 +164,15 @@ void loadingBar(int width, int height, int percentDone) {
 	int numSpace = PROGRESS_BAR_LENGTH - numChar;
   int start = (width - PROGRESS_BAR_LENGTH) / 2;
 
+	char a = 177, b = 219;
+
   moveCursor(start, (height * 3) / 2);
 	printf("[");
 	for (int i = 0; i < numChar; i++) {
-		printf("#");
+		printf("%c", a);
 	}
 	for (int i = 0; i < numSpace; i++) {
-		printf(" ");
+		printf("%c", b);
 	}
 	printf("] %d%% Done", percentDone);
 	fflush(stdout);
