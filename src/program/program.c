@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include <ctype.h>
+#include "../bignum.h"
 
 // Includes the appropriate header file to use operating system-specific functions. This is useful for functions like clearing the screen, moving the cursor, and getting the terminal size.
 #ifdef _WIN32
@@ -23,6 +24,8 @@
 	void moveCursor(int x, int y);
 	// Function to clear lines. This function will clear the specified lines starting from the startLine to the endLine using the specified width.
 	void clearLines(int startLine, int endLine, int width);
+	// Function to display a loading bar.
+	void loadingBar(int width, int progress);
 	// Function to wait for the user to input "DONE" to continue.
 	void waitForInput(char *message);
 	// Function to get the user's confirmation. This function will get the user's confirmation by asking the user to input 'Y' or 'N' and return the input.
@@ -53,7 +56,7 @@ int main() {
 	getTerminalSize(&width, &height);
 	printf("Width: %d\nHeight: %d\n", width, height);
 
-	// Since the horizontal positioning of the outputs can be adjusted by incrementing the y-axis, this integer variable stores value of the height divided by 3 as all the outputs starts to be displayed at this value. This can't be applied to the x-axis as the outputs are displayed at the center of the screen. The x-axis is adjusted by subtracting the length of the string from the width of the screen and dividing the result by 2. It is depedent on the length of the string to be displayed.
+	// Since the horizontal positioning of the outputs can be adjusted by incrementing the y-axis, this integer variable stores value of the height divided by 3 as all the outputs starts to be displayed at this value. This can't be applied to the x-axis as the outputs are displayed at the center of the screen. The vertical positioning is depedent on the length of the string to be displayed.
 	int adjustedHeight = height / 3;
 	int i, userInput;
 
@@ -105,44 +108,44 @@ int main() {
 }
 
 void getTerminalSize(int *width, int *height) {
-#ifdef _WIN32
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-	*width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-	*height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
-#else
-	struct winsize size;
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
-	*width = size.ws_col;
-	*height = size.ws_row;
-#endif
+	#ifdef _WIN32
+		CONSOLE_SCREEN_BUFFER_INFO csbi;
+		GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+		*width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+		*height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+	#else
+		struct winsize size;
+		ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
+		*width = size.ws_col;
+		*height = size.ws_row;
+	#endif
 }
 
 void clearScreen() {
-#ifdef _WIN32
-	system("cls");
-#else
-	printf("\033[2J");
-	printf("\033[H");
-#endif
+	#ifdef _WIN32
+		system("cls");
+	#else
+		printf("\033[2J");
+		printf("\033[H");
+	#endif
 }
 
 void sleepProgram(int milliseconds) {
-#ifdef _WIN32
-	Sleep(milliseconds);
-#else
-	usleep(milliseconds * 1000);
-#endif
+	#ifdef _WIN32
+		Sleep(milliseconds);
+	#else
+		usleep(milliseconds * 1000);
+	#endif
 }
 
 void moveCursor(int x, int y) {
-#ifdef _WIN32
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	COORD pos = {x, y};
-	SetConsoleCursorPosition(hConsole, pos);
-#else
-	printf("\033[%d;%dH", y, x);
-#endif
+	#ifdef _WIN32
+		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+		COORD pos = {x, y};
+		SetConsoleCursorPosition(hConsole, pos);
+	#else
+		printf("\033[%d;%dH", y, x);
+	#endif
 }
 
 void clearLines(int startLine, int endLine, int width) {
@@ -236,17 +239,53 @@ void generateKeys(int width, int adjustedHeight, int i) {
 
 	clearScreen();	
 	if (confirm == 'Y' || confirm == 'y') {
-		
-		// At this point, function calls can be made to generate the keys. For now, the program will display a message that the keys are generated.
+
+		Bignum keys;
+		initBignum(&keys);
+		unsigned long long int primeLength;
 
 		moveCursor((width - 30)/ 2, adjustedHeight);
+		printf("Enter the length of the prime");
+		moveCursor((width - 30)/ 2, adjustedHeight + 1);
+		printf("number to be generated: ");
+		scanf("%llu", &primeLength);
+
+		// At this point, function calls can be made to generate the keys. For now, the program will display a message that the keys are generated.
+		clearScreen();
+		clock_t start = clock();
+
+
+
+		generatePrimeBignum(&keys, primeLength);
+
+
+		clock_t end = clock();
+		double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+
+
+		printf("\n");
+
+		clearScreen();
+		
+		moveCursor((width - 22)/ 2, adjustedHeight);
+		printf("Your prime number is:");
+		moveCursor((width - primeLength)/ 2, adjustedHeight + 1);
+		printBignum(&keys);
+
+		moveCursor((width - 36)/ 2, adjustedHeight + 2);
+		printf("Function executed in: %.2f seconds\n", cpu_time_used);
+
+		moveCursor((width - 30)/ 2, adjustedHeight * 3 - 2);
 		printf("Keys generated successfully!\n");
+
 	} else {
 		moveCursor((width - 25)/ 2, adjustedHeight);
 		printf("Keys generation failed!\n");
+
 	}
 
 	waitForDone(width, adjustedHeight * 3);
+	freeAllBignums();
 	clearScreen();
 }
 
