@@ -78,6 +78,8 @@ void encryptText() {
 
     printf("\n\nEncrypting %s...", inputFilename);
 
+    encryptMessage(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
+
     freeAllBignums();
 
     fclose(inputFilePtr);
