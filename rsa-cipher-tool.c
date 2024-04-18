@@ -5,7 +5,7 @@
 
 void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic);
 void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
-void decryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPublic, Bignum *nPublic);
+void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPublic, Bignum *nPublic);
 void getInputFile(FILE **inputFilePtr, char *inputFilename);
 void encryptText();
 void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic);
@@ -153,7 +153,7 @@ int main(void) {
     // printf("\n\nEncrypting...\n\n");
     // encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
     printf("\n\nDecrypting...\n\n");
-    // decryptMessage(inputFilePtr, outputFilePtr, &dPrivate, &nPublic);
+    // decryptTextFile(inputFilePtr, outputFilePtr, &dPrivate, &nPublic);
     
     fclose(inputFilePtr);
     fclose(outputFilePtr);
@@ -265,7 +265,7 @@ void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, B
     freeBignum(&plainChar);
 }
 
-void decryptMessage(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPublic, Bignum *nPublic) {
+void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPublic, Bignum *nPublic) {
     char encryptedCharacter[100];
     char decryptedCharacter;
 
