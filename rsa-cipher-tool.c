@@ -86,6 +86,42 @@ void encryptText() {
     fclose(outputFilePtr);
 }
 
+void decryptText() {
+    printf("\n.........................................\n");
+    FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
+
+    char inputFilename[100];
+    char outputFilename[] = "dc.txt";
+
+    getInputFile(&inputFilePtr, inputFilename);
+
+    outputFilePtr = fopen(outputFilename, "w");
+    if (outputFilePtr == NULL) {
+        printf("Error opening output %s...\n", outputFilename);
+        exit(1);
+    }
+
+    Bignum nPublic, dPrivate;
+    initBignum(&nPublic);
+    initBignum(&dPrivate);
+
+    getKeys(&dPrivate, &nPublic);
+
+    printf("\nBignum key d: ");
+    printBignum(&dPrivate);
+    printf("\nBignum key n: ");
+    printBignum(&nPublic);
+
+    printf("\n\ndecrypting %s...", inputFilename);
+
+    decryptTextFile(inputFilePtr, outputFilePtr, &dPrivate, &nPublic);
+
+    freeAllBignums();
+
+    fclose(inputFilePtr);
+    fclose(outputFilePtr);
+}
+
 int main(void) {
     int userMenuState = 0;
 
@@ -115,9 +151,7 @@ int main(void) {
                 encryptText();
 				break;
 			case 3:
-                printf("\n.........................................");
-                printf("\n");
-				printf("\nCase 3");
+                decryptText();
 				break;
             case 4:
                 freeAllBignums();
