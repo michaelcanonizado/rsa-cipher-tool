@@ -10,6 +10,8 @@ void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, 
 void getInputFile(FILE **inputFilePtr, char *inputFilename);
 void encryptText();
 void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic);
+void encryptText();
+void decryptText();
 
 int main(void) {
     int userMenuState = 0;
@@ -47,18 +49,38 @@ int main(void) {
     return 0;
 }
 
+typedef struct {
+    char name[50];
+    int size;
+} KeySize;
+
 void generateKeys() {
     printf("\n.........................................");
     printf("\n");
 
-    int privateKeyLength = 0;
+    KeySize keySizeOptions[] = {
+        {"16 bit", 16},
+        {"32 bit", 32},
+        {"64 bit", 64},
+        {"128 bit", 128},
+        {"256 bit", 256},
+        {"512 bit", 512},
+    };
 
-    printf("\nPrivate Key Length: ");
-    scanf("%d", &privateKeyLength);
-    printf("Chosen key length: %d", privateKeyLength);
+    int chosenKeySize = 0;
 
-    int pPrivateLength = floor(privateKeyLength/ 2.0) + 1;
-    int qPrivateLength = ceil(privateKeyLength/ 2.0);
+    printf("\nPlease choose a key size: ");
+    for (int i = 0; i < sizeof(keySizeOptions)/sizeof(keySizeOptions[0]); i++) {
+        printf("\n%d) - %s", i+1, keySizeOptions[i].name);
+    }
+    printf("\nEnter number: ");
+    scanf("%d", &chosenKeySize);
+    chosenKeySize = keySizeOptions[chosenKeySize-1].size;
+    printf("Chosen key size: %d", chosenKeySize);
+    printf("\nTemp: %f\n", log2(10.0));
+
+    int pPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
+    int qPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
     printf("\np prime length: %d", pPrivateLength);
     printf("\nq prime length: %d", qPrivateLength);
 
