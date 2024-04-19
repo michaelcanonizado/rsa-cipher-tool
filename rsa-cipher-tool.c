@@ -111,8 +111,6 @@ void generateKeys() {
     while (isEqualToBignum(&pPrimePrivate, &qPrimePrivate)) {
         generatePrimeBignum(&qPrimePrivate, qPrivateLength);
     }
-    // setBignum(&pPrimePrivate, "11", positive);
-    // setBignum(&qPrimePrivate, "13", positive);
 
     // Get n:
     // n = p * q
@@ -127,7 +125,6 @@ void generateKeys() {
     // Generate e (public key):
     // 2 < e < phi of n
     generatePrimeBignum(&ePublic, ePublicLength);
-    // setBignum(&ePublic, "7", positive);
     
     // Get d (private key):
     // (e * d)mod(n) = 1
