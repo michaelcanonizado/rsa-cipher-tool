@@ -68,6 +68,7 @@ void generateKeys() {
     };
 
     int chosenKeySize = 0;
+    int pPrivateLength, qPrivateLength, ePublicLength;
 
     printf("\nPlease choose a key size: ");
     for (int i = 0; i < sizeof(keySizeOptions)/sizeof(keySizeOptions[0]); i++) {
@@ -78,8 +79,9 @@ void generateKeys() {
     chosenKeySize = keySizeOptions[chosenKeySize-1].size;
     printf("Chosen key size: %d", chosenKeySize);
 
-    int pPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
-    int qPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
+    pPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
+    qPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
+    ePublicLength = ceil(chosenKeySize / log2(10.0)) - 1;
     printf("\np prime length: %d", pPrivateLength);
     printf("\nq prime length: %d\n", qPrivateLength);
 
@@ -123,7 +125,8 @@ void generateKeys() {
 
     // Generate e (public key):
     // 2 < e < phi of n
-    setBignum(&ePublic, "7", positive);
+    generatePrimeBignum(&ePublic, ePublicLength);
+    // setBignum(&ePublic, "7", positive);
     
     // Get d (private key):
     // (e * d)mod(n) = 1
