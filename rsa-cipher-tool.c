@@ -77,12 +77,11 @@ void generateKeys() {
     scanf("%d", &chosenKeySize);
     chosenKeySize = keySizeOptions[chosenKeySize-1].size;
     printf("Chosen key size: %d", chosenKeySize);
-    printf("\nTemp: %f\n", log2(10.0));
 
     int pPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
     int qPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
     printf("\np prime length: %d", pPrivateLength);
-    printf("\nq prime length: %d", qPrivateLength);
+    printf("\nq prime length: %d\n", qPrivateLength);
 
 	Bignum nPublic, ePublic, dPrivate;
     initBignum(&nPublic);
@@ -103,8 +102,14 @@ void generateKeys() {
     initBignum(&qPrimePrivateMinusOne);
 
     // Generate p and q primes
-    setBignum(&pPrimePrivate, "11", positive);
-    setBignum(&qPrimePrivate, "13", positive);
+    generatePrimeBignum(&pPrimePrivate, pPrivateLength);
+    generatePrimeBignum(&qPrimePrivate, qPrivateLength);
+    if (isEqualToBignum(&pPrimePrivate, &qPrimePrivate)) {
+        printf("\nGenerating new, ");
+        generatePrimeBignum(&qPrimePrivate, qPrivateLength);
+    }
+    // setBignum(&pPrimePrivate, "11", positive);
+    // setBignum(&qPrimePrivate, "13", positive);
 
     // Get n:
     // n = p * q
