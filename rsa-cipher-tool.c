@@ -183,6 +183,16 @@ void generateKeys() {
     printf("\nd: ");
     printBignum(&dPrivate);
 
+    printf("\n\nPUBLIC KEY: ");
+    printBignum(&ePublic);
+    printf(".");
+    printBignum(&nPublic);
+    printf("\nPRIVATE KEY: ");
+    printBignum(&dPrivate);
+    printf(".");
+    printBignum(&nPublic);
+    printf("\n\n");
+
     freeAllBignums();
 }
 
