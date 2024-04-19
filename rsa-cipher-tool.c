@@ -4,6 +4,15 @@
 #include <math.h>
 #include "src/bignum.h"
 
+
+
+typedef struct {
+    char name[50];
+    int size;
+} KeySize;
+
+
+
 void generateKeys();
 void encryptText();
 void decryptText();
@@ -11,6 +20,8 @@ void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, B
 void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);
 void getInputFile(FILE **inputFilePtr, char *inputFilename);
 void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic);
+
+
 
 int main(void) {
     int userMenuState = 0;
@@ -47,11 +58,6 @@ int main(void) {
 
     return 0;
 }
-
-typedef struct {
-    char name[50];
-    int size;
-} KeySize;
 
 void generateKeys() {
     printf("\n.........................................");
