@@ -5,13 +5,12 @@
 #include "src/bignum.h"
 
 void generateKeys();
+void encryptText();
+void decryptText();
 void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
 void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);
 void getInputFile(FILE **inputFilePtr, char *inputFilename);
-void encryptText();
 void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic);
-void encryptText();
-void decryptText();
 
 int main(void) {
     int userMenuState = 0;
@@ -181,46 +180,6 @@ void generateKeys() {
     freeAllBignums();
 }
 
-void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic) {
-    char key[5000];
-    char firstKey[2500];
-    char secondKey[2500];
-    char flag = '.';
-    int flagIndex;
-
-    printf("\n");
-    printf("\nPlease enter the private key: ");
-    scanf("%s", key);
-
-    while(1) {
-        int flagCount = 0, i;
-
-        for (i = 0; i < strlen(key); i++) {
-            if (key[i] == flag) {
-                flagIndex = i;
-                flagCount++;
-            }
-        }
-
-        if (flagCount == 1) {
-            break;
-        }
-
-        printf("Invalid key! Please make sure you properly copied the key generated...");
-        printf("\nPlease enter the private key: ");
-        scanf("%s", key);
-    }
-
-    strncpy(firstKey, key, flagIndex);
-    firstKey[flagIndex] = '\0';
-    strcpy(secondKey, key + flagIndex + 1);
-    // printf("String before '.': %s\n", firstKey);
-    // printf("String after '.': %s\n", secondKey);
-
-    setBignum(ePublicOrDPrivate, firstKey, positive);
-    setBignum(nPublic, secondKey, positive);
-}
-
 void encryptText() {
     printf("\n.........................................\n");
     FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
@@ -293,23 +252,6 @@ void decryptText() {
     fclose(outputFilePtr);
 }
 
-void getInputFile(FILE **inputFilePtr, char *inputFilename) {
-    while (1) {
-        printf("\nEnter the name of the input file: ");
-        scanf("%s", inputFilename);
-
-        *inputFilePtr = fopen(inputFilename, "r");
-
-        if (*inputFilePtr != NULL) {
-            break;
-        } else {
-            printf("Could not open \"%s\". Please try again...", inputFilename);
-        }
-    }
-
-    printf("File opened successfully...");
-}
-
 void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic) {
     char character;
 
@@ -365,4 +307,61 @@ void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, 
 
     freeBignum(&decryptedChar);
     freeBignum(&encryptedChar);
+}
+
+void getInputFile(FILE **inputFilePtr, char *inputFilename) {
+    while (1) {
+        printf("\nEnter the name of the input file: ");
+        scanf("%s", inputFilename);
+
+        *inputFilePtr = fopen(inputFilename, "r");
+
+        if (*inputFilePtr != NULL) {
+            break;
+        } else {
+            printf("Could not open \"%s\". Please try again...", inputFilename);
+        }
+    }
+
+    printf("File opened successfully...");
+}
+
+void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic) {
+    char key[5000];
+    char firstKey[2500];
+    char secondKey[2500];
+    char flag = '.';
+    int flagIndex;
+
+    printf("\n");
+    printf("\nPlease enter the private key: ");
+    scanf("%s", key);
+
+    while(1) {
+        int flagCount = 0, i;
+
+        for (i = 0; i < strlen(key); i++) {
+            if (key[i] == flag) {
+                flagIndex = i;
+                flagCount++;
+            }
+        }
+
+        if (flagCount == 1) {
+            break;
+        }
+
+        printf("Invalid key! Please make sure you properly copied the key generated...");
+        printf("\nPlease enter the private key: ");
+        scanf("%s", key);
+    }
+
+    strncpy(firstKey, key, flagIndex);
+    firstKey[flagIndex] = '\0';
+    strcpy(secondKey, key + flagIndex + 1);
+    // printf("String before '.': %s\n", firstKey);
+    // printf("String after '.': %s\n", secondKey);
+
+    setBignum(ePublicOrDPrivate, firstKey, positive);
+    setBignum(nPublic, secondKey, positive);
 }
