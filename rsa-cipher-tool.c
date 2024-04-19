@@ -64,7 +64,6 @@ void generateKeys() {
         {"64 bit", 64},
         {"128 bit", 128},
         {"256 bit", 256},
-        {"512 bit", 512},
     };
 
     int chosenKeySize = 0;
