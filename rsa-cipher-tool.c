@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "src/bignum.h"
 
-void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic);
+void generateKeys();
 void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
 void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);
 void getInputFile(FILE **inputFilePtr, char *inputFilename);
@@ -136,16 +136,7 @@ int main(void) {
 
         switch (userMenuState) {
 			case 1:
-                printf("\n.........................................");
-                printf("\n");
-				Bignum nPublic, ePublic, dPrivate;
-                initBignum(&nPublic);
-                initBignum(&ePublic);
-                initBignum(&dPrivate);
-
-                generateKeys(&ePublic, &dPrivate, &nPublic);
-
-                freeAllBignums();
+                generateKeys();
 				break;
 			case 2:
                 encryptText();
@@ -184,7 +175,14 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename) {
     printf("File opened successfully...");
 }
 
-void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic) {
+void generateKeys() {
+    printf("\n.........................................");
+    printf("\n");
+	Bignum nPublic, ePublic, dPrivate;
+    initBignum(&nPublic);
+    initBignum(&ePublic);
+    initBignum(&dPrivate);
+
     Bignum one;
     initBignum(&one);
     setBignum(&one, "1", positive);
@@ -204,7 +202,7 @@ void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic) {
 
     // Get n:
     // n = p * q
-    multiplyBignum(nPublic, &pPrimePrivate, &qPrimePrivate);
+    multiplyBignum(&nPublic, &pPrimePrivate, &qPrimePrivate);
 
     // Get phi of n:
     // phi of n = (p - 1) * (q - 1)
@@ -214,31 +212,26 @@ void generateKeys(Bignum *ePublic, Bignum *dPrivate, Bignum *nPublic) {
 
     // Generate e (public key):
     // 2 < e < phi of n
-    setBignum(ePublic, "7",positive);
+    setBignum(&ePublic, "7", positive);
     
     // Get d (private key):
     // (e * d)mod(n) = 1
-    modularInverseBignum(dPrivate, ePublic, &phiOfNPrivate);
+    modularInverseBignum(&dPrivate, &ePublic, &phiOfNPrivate);
 
     printf("\np: ");
     printBignum(&pPrimePrivate);
     printf("\nq: ");
     printBignum(&qPrimePrivate);
     printf("\nnPublic: ");
-    printBignum(nPublic);
+    printBignum(&nPublic);
     printf("\nphiOfN: ");
     printBignum(&phiOfNPrivate);
     printf("\ne: ");
-    printBignum(ePublic);
+    printBignum(&ePublic);
     printf("\nd: ");
-    printBignum(dPrivate);
+    printBignum(&dPrivate);
 
-    freeBignum(&one);
-    freeBignum(&pPrimePrivate);
-    freeBignum(&qPrimePrivate);
-    freeBignum(&phiOfNPrivate);
-    freeBignum(&pPrimePrivateMinusOne);
-    freeBignum(&qPrimePrivateMinusOne);
+    freeAllBignums();
 }
 
 void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic) {
