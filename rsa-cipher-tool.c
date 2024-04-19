@@ -85,11 +85,10 @@ void generateKeys() {
 
     pPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
     qPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
-    // ePublicLength = ceil(chosenKeySize / log2(10.0)) - 1;
-    // ePublicLength = pPrivateLength - 1;
-    ePublicLength = pPrivateLength / 2;
+    ePublicLength = pPrivateLength > 3 ? pPrivateLength / 2 : (chosenKeySize / log2(10.0)) - 1;
     printf("\np prime length: %d", pPrivateLength);
-    printf("\nq prime length: %d\n", qPrivateLength);
+    printf("\nq prime length: %d", qPrivateLength);
+    printf("\ne public length: %d\n", ePublicLength);
 
 	Bignum nPublic, ePublic, dPrivate;
     initBignum(&nPublic);
