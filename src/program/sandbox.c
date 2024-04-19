@@ -309,7 +309,7 @@ void generateKeys(int width, int adjustedHeight, int i) {
 }
 
 void encryptText(int width, int adjustedHeight) {
-	char* publicKEY = malloc(1000000000 * sizeof(char));
+  Bignum publicKey;
 		
 	clearScreen();
 	char* msgEncrypt[] = {"Encryption includes the message to be encrypted and", "the public key of the recipient. The txt file of the", "message must be in the same folder of the C program."};
@@ -357,23 +357,35 @@ void encryptText(int width, int adjustedHeight) {
 				}
 			} while (encryptionFile == NULL);
 
-			if (publicKEY == NULL) {
-					printf("Failed to allocate memory for publicKEY\n");
-					exit(1);
-			}
 			moveCursor((width - 38)/ 2, adjustedHeight + 1);
 			printf("Enter public key: ");
-			scanf("%s", publicKEY);
+			scanf("%s", &publicKey);
 
 			clearScreen();
 
 			clock_t start = clock();
 
-			// At this point, function calls can be made to ENCRYPT the MESSAGE. For now, the program will display a message that the MESSAGE IS ENCRYPTED.
+			// Get the file size
+			fseek(encryptionFile, 0, SEEK_END);
+			long fileSize = ftell(encryptionFile);
+			rewind(encryptionFile);
 
-			fprintf(encryptionFile, "Encrypted message here\n");
-			fprintf(encryptionFile, "%s", publicKEY);
-			printf("Public key: %s\n", publicKEY);
+			// Allocate memory for the file content
+			char* content = malloc((fileSize + 1) * sizeof(char));
+			if (content == NULL) {
+					printf("Failed to allocate memory\n");
+					fclose(encryptionFile);
+			}
+
+			// Read the file content
+			fread(content, sizeof(char), fileSize, encryptionFile);
+			content[fileSize] = '\0';
+
+			// Encryption function call
+
+
+			fprintf(encryptionFile, "\n\nEncrypted message:\n");
+			fprintf(encryptionFile, "%s\n", content);
 			
 			clock_t end = clock();
 			double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
@@ -401,7 +413,7 @@ void encryptText(int width, int adjustedHeight) {
 	waitForDone(width, adjustedHeight * 3);
 	clearScreen();
 
-	free(publicKEY);
+	freeBignum(&publicKey);
 }
 
 void decryptText(int width, int adjustedHeight) {
