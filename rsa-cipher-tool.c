@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 #include "src/bignum.h"
 
 void generateKeys();
@@ -178,6 +179,18 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename) {
 void generateKeys() {
     printf("\n.........................................");
     printf("\n");
+
+    int privateKeyLength = 0;
+
+    printf("\nPrivate Key Length: ");
+    scanf("%d", &privateKeyLength);
+    printf("Chosen key length: %d", privateKeyLength);
+
+    int pPrivateLength = floor(privateKeyLength/ 2.0) + 1;
+    int qPrivateLength = ceil(privateKeyLength/ 2.0);
+    printf("\np prime length: %d", pPrivateLength);
+    printf("\nq prime length: %d", qPrivateLength);
+
 	Bignum nPublic, ePublic, dPrivate;
     initBignum(&nPublic);
     initBignum(&ePublic);
