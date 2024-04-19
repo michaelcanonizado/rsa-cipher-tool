@@ -106,7 +106,7 @@ void generateKeys() {
     // Generate p and q primes
     generatePrimeBignum(&pPrimePrivate, pPrivateLength);
     generatePrimeBignum(&qPrimePrivate, qPrivateLength);
-    if (isEqualToBignum(&pPrimePrivate, &qPrimePrivate)) {
+    while (isEqualToBignum(&pPrimePrivate, &qPrimePrivate)) {
         printf("\nGenerating new, ");
         generatePrimeBignum(&qPrimePrivate, qPrivateLength);
     }
