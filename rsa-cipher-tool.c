@@ -105,31 +105,67 @@ void generateKeys() {
     initBignum(&pPrimePrivateMinusOne);
     initBignum(&qPrimePrivateMinusOne);
 
-    // Generate p and q primes
-    generatePrimeBignum(&pPrimePrivate, pPrivateLength);
-    generatePrimeBignum(&qPrimePrivate, qPrivateLength);
-    while (isEqualToBignum(&pPrimePrivate, &qPrimePrivate)) {
+    Bignum plainChar, encryptedChar, decryptedChar;
+    initBignum(&plainChar);
+    initBignum(&encryptedChar);
+    initBignum(&decryptedChar);
+    setBignum(&plainChar, "2", positive);
+
+    while (1) {
+        // Generate p and q primes
+        generatePrimeBignum(&pPrimePrivate, pPrivateLength);
         generatePrimeBignum(&qPrimePrivate, qPrivateLength);
+        while (isEqualToBignum(&pPrimePrivate, &qPrimePrivate)) {
+            generatePrimeBignum(&qPrimePrivate, qPrivateLength);
+        }
+
+        // Get n:
+        // n = p * q
+        multiplyBignum(&nPublic, &pPrimePrivate, &qPrimePrivate);
+
+        // Get phi of n:
+        // phi of n = (p - 1) * (q - 1)
+        subtractBignum(&pPrimePrivateMinusOne, &pPrimePrivate, &one);
+        subtractBignum(&qPrimePrivateMinusOne, &qPrimePrivate, &one);
+        multiplyBignum(&phiOfNPrivate, &pPrimePrivateMinusOne, &qPrimePrivateMinusOne);
+
+        // Generate e (public key):
+        // 2 < e < phi of n
+        generatePrimeBignum(&ePublic, ePublicLength);
+    
+        // Get d (private key):
+        // (e * d)mod(n) = 1
+        modularInverseBignum(&dPrivate, &ePublic, &phiOfNPrivate);
+
+        printf("\n\nTesting keys: ");
+
+        modularExponentiationBignum(&encryptedChar, &plainChar, &ePublic, &nPublic);
+        modularExponentiationBignum(&decryptedChar, &encryptedChar, &dPrivate, &nPublic);
+
+        printf("\nplain char: ");
+        printBignum(&plainChar);
+        printf("\nencrypted char: ");
+        printBignum(&encryptedChar);
+        printf("\ndecrypted char: ");
+        printBignum(&decryptedChar);
+
+        if (isEqualToBignum(&plainChar, &decryptedChar)) {
+            break;
+        }
+
+        resetBignum(&nPublic);
+        resetBignum(&ePublic);
+        resetBignum(&dPrivate);
+        resetBignum(&pPrimePrivate);
+        resetBignum(&qPrimePrivate);
+        resetBignum(&phiOfNPrivate);
+        resetBignum(&pPrimePrivateMinusOne);
+        resetBignum(&qPrimePrivateMinusOne);
+        resetBignum(&encryptedChar);
+        resetBignum(&decryptedChar);
     }
 
-    // Get n:
-    // n = p * q
-    multiplyBignum(&nPublic, &pPrimePrivate, &qPrimePrivate);
-
-    // Get phi of n:
-    // phi of n = (p - 1) * (q - 1)
-    subtractBignum(&pPrimePrivateMinusOne, &pPrimePrivate, &one);
-    subtractBignum(&qPrimePrivateMinusOne, &qPrimePrivate, &one);
-    multiplyBignum(&phiOfNPrivate, &pPrimePrivateMinusOne, &qPrimePrivateMinusOne);
-
-    // Generate e (public key):
-    // 2 < e < phi of n
-    generatePrimeBignum(&ePublic, ePublicLength);
-    
-    // Get d (private key):
-    // (e * d)mod(n) = 1
-    modularInverseBignum(&dPrivate, &ePublic, &phiOfNPrivate);
-
+    printf("\n\nRESULTS: ");
     printf("\np: ");
     printBignum(&pPrimePrivate);
     printf("\nq: ");
@@ -142,25 +178,6 @@ void generateKeys() {
     printBignum(&ePublic);
     printf("\nd: ");
     printBignum(&dPrivate);
-    
-    printf("\n\nTesting keys: ");
-
-    Bignum plainChar, encryptedChar, decryptedChar;
-    initBignum(&plainChar);
-    initBignum(&encryptedChar);
-    initBignum(&decryptedChar);
-
-    setBignum(&plainChar, "2", positive);
-
-    modularExponentiationBignum(&encryptedChar, &plainChar, &ePublic, &nPublic);
-    modularExponentiationBignum(&decryptedChar, &encryptedChar, &dPrivate, &nPublic);
-
-    printf("\nplain char: ");
-    printBignum(&plainChar);
-    printf("\nencrypted char: ");
-    printBignum(&encryptedChar);
-    printf("\ndecrypted char: ");
-    printBignum(&decryptedChar);
 
     freeAllBignums();
 }
