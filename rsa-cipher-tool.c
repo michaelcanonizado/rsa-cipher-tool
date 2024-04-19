@@ -11,6 +11,113 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename);
 void encryptText();
 void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic);
 
+int main(void) {
+    int userMenuState = 0;
+
+    char *optionsArr[] = {"Generate Keys", "Encrypt Text", "Decrypt Text", "Exit"};
+
+    do {
+		for (int i = 0; i < sizeof(optionsArr)/sizeof(optionsArr[0]); i++) {
+			printf("\n%d) - %s", i+1, optionsArr[i]);
+		}
+        printf("\nEnter number: ");
+		scanf("%d", &userMenuState);
+
+        switch (userMenuState) {
+			case 1:
+                generateKeys();
+				break;
+			case 2:
+                encryptText();
+				break;
+			case 3:
+                decryptText();
+				break;
+            case 4:
+                freeAllBignums();
+                return 0;
+            default:
+                break;
+        }
+
+        printf("\n\n.........................................");
+
+    } while (userMenuState != sizeof(optionsArr)/sizeof(optionsArr[0]));
+
+    return 0;
+}
+
+void generateKeys() {
+    printf("\n.........................................");
+    printf("\n");
+
+    int privateKeyLength = 0;
+
+    printf("\nPrivate Key Length: ");
+    scanf("%d", &privateKeyLength);
+    printf("Chosen key length: %d", privateKeyLength);
+
+    int pPrivateLength = floor(privateKeyLength/ 2.0) + 1;
+    int qPrivateLength = ceil(privateKeyLength/ 2.0);
+    printf("\np prime length: %d", pPrivateLength);
+    printf("\nq prime length: %d", qPrivateLength);
+
+	Bignum nPublic, ePublic, dPrivate;
+    initBignum(&nPublic);
+    initBignum(&ePublic);
+    initBignum(&dPrivate);
+
+    Bignum one;
+    initBignum(&one);
+    setBignum(&one, "1", positive);
+
+    Bignum pPrimePrivate, qPrimePrivate;
+    initBignum(&pPrimePrivate);
+    initBignum(&qPrimePrivate);
+
+    Bignum phiOfNPrivate, pPrimePrivateMinusOne, qPrimePrivateMinusOne;
+    initBignum(&phiOfNPrivate);
+    initBignum(&pPrimePrivateMinusOne);
+    initBignum(&qPrimePrivateMinusOne);
+
+    // Generate p and q primes
+    setBignum(&pPrimePrivate, "11", positive);
+    setBignum(&qPrimePrivate, "13", positive);
+
+    // Get n:
+    // n = p * q
+    multiplyBignum(&nPublic, &pPrimePrivate, &qPrimePrivate);
+
+    // Get phi of n:
+    // phi of n = (p - 1) * (q - 1)
+    subtractBignum(&pPrimePrivateMinusOne, &pPrimePrivate, &one);
+    subtractBignum(&qPrimePrivateMinusOne, &qPrimePrivate, &one);
+    multiplyBignum(&phiOfNPrivate, &pPrimePrivateMinusOne, &qPrimePrivateMinusOne);
+
+    // Generate e (public key):
+    // 2 < e < phi of n
+    setBignum(&ePublic, "7", positive);
+    
+    // Get d (private key):
+    // (e * d)mod(n) = 1
+    modularInverseBignum(&dPrivate, &ePublic, &phiOfNPrivate);
+
+    printf("\np: ");
+    printBignum(&pPrimePrivate);
+    printf("\nq: ");
+    printBignum(&qPrimePrivate);
+    printf("\nnPublic: ");
+    printBignum(&nPublic);
+    printf("\nphiOfN: ");
+    printBignum(&phiOfNPrivate);
+    printf("\ne: ");
+    printBignum(&ePublic);
+    printf("\nd: ");
+    printBignum(&dPrivate);
+
+    freeAllBignums();
+}
+
 void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic) {
     char key[5000];
     char firstKey[2500];
@@ -123,42 +230,6 @@ void decryptText() {
     fclose(outputFilePtr);
 }
 
-int main(void) {
-    int userMenuState = 0;
-
-    char *optionsArr[] = {"Generate Keys", "Encrypt Text", "Decrypt Text", "Exit"};
-
-    do {
-		for (int i = 0; i < sizeof(optionsArr)/sizeof(optionsArr[0]); i++) {
-			printf("\n%d) - %s", i+1, optionsArr[i]);
-		}
-        printf("\nEnter number: ");
-		scanf("%d", &userMenuState);
-
-        switch (userMenuState) {
-			case 1:
-                generateKeys();
-				break;
-			case 2:
-                encryptText();
-				break;
-			case 3:
-                decryptText();
-				break;
-            case 4:
-                freeAllBignums();
-                return 0;
-            default:
-                break;
-        }
-
-        printf("\n\n.........................................");
-
-    } while (userMenuState != sizeof(optionsArr)/sizeof(optionsArr[0]));
-
-    return 0;
-}
-
 void getInputFile(FILE **inputFilePtr, char *inputFilename) {
     while (1) {
         printf("\nEnter the name of the input file: ");
@@ -174,77 +245,6 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename) {
     }
 
     printf("File opened successfully...");
-}
-
-void generateKeys() {
-    printf("\n.........................................");
-    printf("\n");
-
-    int privateKeyLength = 0;
-
-    printf("\nPrivate Key Length: ");
-    scanf("%d", &privateKeyLength);
-    printf("Chosen key length: %d", privateKeyLength);
-
-    int pPrivateLength = floor(privateKeyLength/ 2.0) + 1;
-    int qPrivateLength = ceil(privateKeyLength/ 2.0);
-    printf("\np prime length: %d", pPrivateLength);
-    printf("\nq prime length: %d", qPrivateLength);
-
-	Bignum nPublic, ePublic, dPrivate;
-    initBignum(&nPublic);
-    initBignum(&ePublic);
-    initBignum(&dPrivate);
-
-    Bignum one;
-    initBignum(&one);
-    setBignum(&one, "1", positive);
-
-    Bignum pPrimePrivate, qPrimePrivate;
-    initBignum(&pPrimePrivate);
-    initBignum(&qPrimePrivate);
-
-    Bignum phiOfNPrivate, pPrimePrivateMinusOne, qPrimePrivateMinusOne;
-    initBignum(&phiOfNPrivate);
-    initBignum(&pPrimePrivateMinusOne);
-    initBignum(&qPrimePrivateMinusOne);
-
-    // Generate p and q primes
-    setBignum(&pPrimePrivate, "11", positive);
-    setBignum(&qPrimePrivate, "13", positive);
-
-    // Get n:
-    // n = p * q
-    multiplyBignum(&nPublic, &pPrimePrivate, &qPrimePrivate);
-
-    // Get phi of n:
-    // phi of n = (p - 1) * (q - 1)
-    subtractBignum(&pPrimePrivateMinusOne, &pPrimePrivate, &one);
-    subtractBignum(&qPrimePrivateMinusOne, &qPrimePrivate, &one);
-    multiplyBignum(&phiOfNPrivate, &pPrimePrivateMinusOne, &qPrimePrivateMinusOne);
-
-    // Generate e (public key):
-    // 2 < e < phi of n
-    setBignum(&ePublic, "7", positive);
-    
-    // Get d (private key):
-    // (e * d)mod(n) = 1
-    modularInverseBignum(&dPrivate, &ePublic, &phiOfNPrivate);
-
-    printf("\np: ");
-    printBignum(&pPrimePrivate);
-    printf("\nq: ");
-    printBignum(&qPrimePrivate);
-    printf("\nnPublic: ");
-    printBignum(&nPublic);
-    printf("\nphiOfN: ");
-    printBignum(&phiOfNPrivate);
-    printf("\ne: ");
-    printBignum(&ePublic);
-    printf("\nd: ");
-    printBignum(&dPrivate);
-
-    freeAllBignums();
 }
 
 void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic) {
