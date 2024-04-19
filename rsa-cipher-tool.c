@@ -146,6 +146,25 @@ void generateKeys() {
     printBignum(&ePublic);
     printf("\nd: ");
     printBignum(&dPrivate);
+    
+    printf("\n\nTesting keys: ");
+
+    Bignum plainChar, encryptedChar, decryptedChar;
+    initBignum(&plainChar);
+    initBignum(&encryptedChar);
+    initBignum(&decryptedChar);
+
+    setBignum(&plainChar, "2", positive);
+
+    modularExponentiationBignum(&encryptedChar, &plainChar, &ePublic, &nPublic);
+    modularExponentiationBignum(&decryptedChar, &encryptedChar, &dPrivate, &nPublic);
+
+    printf("\nplain char: ");
+    printBignum(&plainChar);
+    printf("\nencrypted char: ");
+    printBignum(&encryptedChar);
+    printf("\ndecrypted char: ");
+    printBignum(&decryptedChar);
 
     freeAllBignums();
 }
