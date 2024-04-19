@@ -109,7 +109,6 @@ void generateKeys() {
     generatePrimeBignum(&pPrimePrivate, pPrivateLength);
     generatePrimeBignum(&qPrimePrivate, qPrivateLength);
     while (isEqualToBignum(&pPrimePrivate, &qPrimePrivate)) {
-        printf("\nGenerating new, ");
         generatePrimeBignum(&qPrimePrivate, qPrivateLength);
     }
     // setBignum(&pPrimePrivate, "11", positive);
