@@ -74,6 +74,12 @@ int getMaxStringLengthInArray(char *stringsArr[], int stringsCount) {
     return maxLength;
 }
 
+int calculateLeftPadding(int width, int strLength) {
+    int remainingWidth = width - strLength;
+    int leftPadding = remainingWidth % 2 ? (remainingWidth + 1) / 2 : remainingWidth / 2;
+    return leftPadding;
+}
+
 
 int main(void) {
     clearScreen();
@@ -88,18 +94,17 @@ int main(void) {
 
     char *optionsArr[] = {"Generate Keys", "Encrypt Text", "Decrypt Text", "About","Exit"};
     int optionsArrSize = sizeof(optionsArr)/sizeof(optionsArr[0]);
+    int optionsLeftPadding = calculateLeftPadding(terminalWidth, getMaxStringLengthInArray(optionsArr, optionsArrSize));
 
     do {
 		for (i = 0; i < optionsArrSize; i++) {
             moveCursor(0, adjustedHeight + i);
-			PRINT_FORMATS_CENTER(terminalWidth, "(%d) %s", i+1, optionsArr[i]);
-            // moveCursor((terminalWidth - getMaxStringLengthInArray(optionsArr, optionsArrSize)) / 2, adjustedHeight + i);
-			// printf("%d) - %s", i+1, optionsArr[i]);
+			printf("\n%*s%d) - %s", optionsLeftPadding, "", i+1, optionsArr[i]);
 		}
 
         char str[] = "Enter number: ";
-		moveCursor((terminalWidth - strlen(str))/ 2, adjustedHeight + (i + 1));
-        printf("%s", str);
+		moveCursor(0, adjustedHeight + (i + 2));
+        printf("%*s%s", calculateLeftPadding(terminalWidth, strlen(str)), "", str);
 		scanf("%d", &userMenuState);
 		while (getchar() != '\n');
 
