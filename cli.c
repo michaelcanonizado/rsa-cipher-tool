@@ -56,22 +56,6 @@ void clearScreen();
 void getTerminalSize();
 void moveCursor(int x, int y);
 
-int printfAligned(const char *string, ...) {
-    va_list arg;
-    int done;
-
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	COORD pos;
-    pos.X = (terminalWidth - strlen(string)) / 2;
-	SetConsoleCursorPosition(hConsole, pos);
-
-    va_start (arg, string);
-    done = vfprintf(stdout, string, arg);
-    va_end (arg);
-
-    return done;
-}
-
 
 int main(void) {
     clearScreen();
@@ -90,7 +74,7 @@ int main(void) {
     do {
 		for (i = 0; i < sizeof(optionsArr)/sizeof(optionsArr[0]); i++) {
             moveCursor(0, adjustedHeight + i);
-			PRINT_FORMATS_CENTER(terminalWidth, "(%d) %s", i+1, optionsArr[i]);
+			PRINT_FORMATS_CENTER(terminalWidth, "%d) - %s", i+1, optionsArr[i]);
             // moveCursor((terminalWidth - 14) / 2, adjustedHeight + i);
 			// printf("%d) - %s", i+1, optionsArr[i]);
 		}
