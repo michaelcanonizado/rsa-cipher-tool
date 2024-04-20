@@ -27,7 +27,7 @@
 	// Function to display a loading bar.
 	void loadingBar(int progress);
 	// Function to wait for the user to input "DONE" to continue.
-	void waitForInput(char *message);
+	void waitForDone();
 	// Function to get the user's confirmation. This function will get the user's confirmation by asking the user to input 'Y' or 'N' and return the input.
 	char getConfirm();
 	// Function to display a message with the specified width and height and return the number of lines displayed.
@@ -272,7 +272,7 @@ void loadingBar(int percentDone) {
 	fflush(stdout);
 }
 
-void waitForDone(int width, int height) {
+void waitForDone() {
 	char done[100];
 	do {
 		clearLines(height - 2, height - 2, width);
@@ -397,7 +397,7 @@ void generateKeys(int i) {
 
 	}
 
-	waitForDone(width, adjustedHeight * 3);
+	waitForDone();
 	freeAllBignums();
 	clearScreen();
 }
@@ -485,7 +485,7 @@ void encryptText() {
 		printf("Message encryption failed!\n");
 	}
 
-	waitForDone(width, adjustedHeight * 3);
+	waitForDone();
 	clearScreen();
 
 	freeAllBignums();
@@ -584,7 +584,7 @@ void decryptText() {
 			printf("Message encryption failed!\n");
 	}
 
-	waitForDone(width, adjustedHeight * 3);
+	waitForDone();
 	clearScreen();
 
 	free(privateKEY);
