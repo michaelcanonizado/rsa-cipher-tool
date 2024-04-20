@@ -361,7 +361,7 @@ void decryptText(int width, int adjustedHeight) {
 	do {
 		clearLines(adjustedHeight + offsetY, adjustedHeight + offsetY, width);
 		moveCursor((width - 60)/ 2, adjustedHeight + offsetY);
-		printf("Is the txt file in the same folder of the C program? [Y/N] ");
+		printf("Is the txt file in the same folder of the C program? [Y/N]");
 		confirm = getConfirm(width, adjustedHeight, offsetY);
 
 	} while (confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
