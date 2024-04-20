@@ -92,9 +92,10 @@ int main(void) {
     PRINT_FORMATS_CENTER("Width: %d", terminalWidth);
     PRINT_FORMATS_CENTER("Height: %d", terminalHeight);
 
+    char promptStr[] = "Enter number: ";
     char *optionsArr[] = {"Generate Keys", "Encrypt Text", "Decrypt Text", "About","Exit"};
     int optionsArrSize = sizeof(optionsArr)/sizeof(optionsArr[0]);
-    int optionsLeftPadding = calculateLeftPadding(terminalWidth, getMaxStringLengthInArray(optionsArr, optionsArrSize));
+    int optionsLeftPadding = calculateLeftPadding(terminalWidth, strlen(promptStr));
 
     do {
 		for (i = 0; i < optionsArrSize; i++) {
@@ -102,9 +103,8 @@ int main(void) {
 			printf("\n%*s%d) - %s", optionsLeftPadding, "", i+1, optionsArr[i]);
 		}
 
-        char str[] = "Enter number: ";
 		moveCursor(0, startingHeight + (i + 2));
-        printf("%*s%s", calculateLeftPadding(terminalWidth, strlen(str)), "", str);
+        printf("%*s%s", calculateLeftPadding(terminalWidth, strlen(promptStr)), "", promptStr);
 		scanf("%d", &userMenuState);
 		while (getchar() != '\n');
 
@@ -226,8 +226,8 @@ void promptExitConfirm() {
 	char userInput[100];
 
 	do {
-		clearLines(terminalHeight - 2, terminalHeight - 2, terminalWidth);
-		moveCursor((terminalWidth - 21)/ 2, terminalHeight - 2);
+		clearLines(terminalHeight - 5, terminalHeight - 5, terminalWidth);
+		moveCursor((terminalWidth - 21)/ 2, terminalHeight - 5);
         // Ask user for confirmation
 		printf("Enter DONE to go back: ");
 		fgets(userInput, sizeof(userInput), stdin);
