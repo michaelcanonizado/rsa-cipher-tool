@@ -15,7 +15,7 @@
 
 // Function prototypes
 	// Function to get the terminal size. This function will set the width and height variables to the width and height of the terminal, respectively. The function will use operating system-specific functions to get the terminal size.
-	void getTerminalSize(int *width, int *height);
+	void getTerminalSize();
 	// Function to clear the screen. This function will clear the screen using operating system-specific functions.
 	void clearScreen();
 	// Function to sleep the program. This function will pause the program for a specified number of milliseconds using operating system-specific functions.
@@ -25,27 +25,28 @@
 	// Function to clear lines. This function will clear the specified lines starting from the startLine to the endLine using the specified width.
 	void clearLines(int startLine, int endLine, int width);
 	// Function to display a loading bar.
-	void loadingBar(int width, int height, int progress);
+	void loadingBar(int progress);
 	// Function to wait for the user to input "DONE" to continue.
-	void waitForInput(char *message);
+	void waitForDone();
 	// Function to get the user's confirmation. This function will get the user's confirmation by asking the user to input 'Y' or 'N' and return the input.
 	char getConfirm();
 	// Function to display a message with the specified width and height and return the number of lines displayed.
-	int displayMessage(char *message[], int count, int width, int height);
+	int displayMessage(char *message[], int count);
 	// Function to display the About message. Separate function was made because it starts at a different y position.
-	void displayAbout(char *message[], int count, int width, int height, int offsestY);
+	void displayAbout(char *message[], int count, int offsestY);
 	// Function to generate the public and private keys for the RSA algorithm.
-	void generateKeys(int width, int height, int i);
+	void generateKeys(int i);
 	// Function to encrypt the text using the RSA algorithm.
-	void encryptText(int width, int height);
+	void encryptText();
 	// Function to decrypt the text using the RSA algorithm.
-	void decryptText(int width, int height);
+	void decryptText();
 	// Function to display information about the program.
-	void aboutProgram(int width, int height);
+	void aboutProgram();
 
 // Global variables
 char confirm;
-int offsetY;
+int offsetY, width, height, adjustedHeight;
+
 char fileName[100];
 FILE *encryptionFile;
 FILE *decryptionFile;
@@ -54,12 +55,9 @@ const int PROGRESS_BAR_LENGTH = 50;
 int main() {
 	clearScreen();
 
-	int width, height;
-	getTerminalSize(&width, &height);
+	getTerminalSize();
 	printf("Width: %d\nHeight: %d\n", width, height);
 
-	// Since the horizontal positioning of the outputs can be adjusted by incrementing the y-axis, this integer variable stores value of the height divided by 3 as all the outputs starts to be displayed at this value. This can't be applied to the x-axis as the outputs are displayed at the center of the screen. The vertical positioning is depedent on the length of the string to be displayed.
-	int adjustedHeight = height / 3;
 	int i, userInput;
 
 	do {
@@ -77,16 +75,16 @@ int main() {
 
 		switch (userInput) {
 			case 1:
-				generateKeys(width, adjustedHeight, i);
+				generateKeys(i);
 				break;
 			case 2:
-				encryptText(width, adjustedHeight);
+				encryptText();
 				break;
 			case 3:
-				decryptText(width, adjustedHeight);
+				decryptText();
 				break;
 			case 4:
-				aboutProgram(width, height);
+				aboutProgram();
 				break;
 			case 5:
 				clearScreen();
@@ -109,18 +107,20 @@ int main() {
 	return 0;
 }
 
-void getTerminalSize(int *width, int *height) {
+void getTerminalSize() {
 	#ifdef _WIN32
 		CONSOLE_SCREEN_BUFFER_INFO csbi;
 		GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-		*width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-		*height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+		width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+		height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
 	#else
 		struct winsize size;
 		ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
-		*width = size.ws_col;
-		*height = size.ws_row;
+		width = size.ws_col;
+		height = size.ws_row;
 	#endif
+		// Since the horizontal positioning of the outputs can be adjusted by incrementing the y-axis, this integer variable stores value of the height divided by 3 as all the outputs starts to be displayed at this value. This can't be applied to the x-axis as the outputs are displayed at the center of the screen. The vertical positioning is depedent on the length of the string to be displayed.
+	  adjustedHeight = height / 3;
 }
 
 void clearScreen() {
@@ -159,7 +159,7 @@ void clearLines(int startLine, int endLine, int width) {
 	}
 }
 
-void loadingBar(int width, int height, int percentDone) { 
+void loadingBar(int percentDone) { 
 	int numChar = percentDone * PROGRESS_BAR_LENGTH / 100;
 	int numSpace = PROGRESS_BAR_LENGTH - numChar;
   int start = (width - PROGRESS_BAR_LENGTH) / 2;
@@ -178,7 +178,7 @@ void loadingBar(int width, int height, int percentDone) {
 	fflush(stdout);
 }
 
-void waitForDone(int width, int height) {
+void waitForDone() {
 	char done[100];
 	do {
 		clearLines(height - 2, height - 2, width);
@@ -225,7 +225,7 @@ char getConfirm(int width, int adjustedHeight, int offsetY) {
 	return confirm;
 }
 
-int displayMessage(char *message[], int count, int width, int adjustedHeight) {
+int displayMessage(char *message[], int count) {
 	int i;
 	for ( i = 0; i < count; i++) {
 		moveCursor((width - strlen(message[i])) / 2, adjustedHeight + i);
@@ -235,18 +235,18 @@ int displayMessage(char *message[], int count, int width, int adjustedHeight) {
 	return i;
 }
 
-void displayAbout(char *message[], int count, int width, int height, int offsetY) {
+void displayAbout(char *message[], int count, int offsetY) {
 	for (int i = 0; i < count; i++) {
 		moveCursor((width - strlen(message[i])) / 2, height / 4 + i + offsetY);
 		printf("%s\n", message[i]);
 	}
 }
 
-void generateKeys(int width, int adjustedHeight, int i) {
+void generateKeys(int i) {
 	clearScreen();
 	char *msgGenerate[] = {"You are about to generate an RSA key", "this option. This will display a private key", "and public key of the generated private key."};
 	int countGenerate = sizeof(msgGenerate) / sizeof(msgGenerate[0]);
-	offsetY = displayMessage(msgGenerate, countGenerate, width, adjustedHeight);
+	offsetY = displayMessage(msgGenerate, countGenerate);
 
 	do{
 		clearLines(adjustedHeight + offsetY, adjustedHeight + offsetY + 1, width);
@@ -303,18 +303,18 @@ void generateKeys(int width, int adjustedHeight, int i) {
 
 	}
 
-	waitForDone(width, adjustedHeight * 3);
+	waitForDone();
 	freeAllBignums();
 	clearScreen();
 }
 
-void encryptText(int width, int adjustedHeight) {
+void encryptText() {
 	char* publicKEY = malloc(1000000000 * sizeof(char));
 		
 	clearScreen();
 	char* msgEncrypt[] = {"Encryption includes the message to be encrypted and", "the public key of the recipient. The txt file of the", "message must be in the same folder of the C program."};
 	int countEncrypt = sizeof(msgEncrypt) / sizeof(msgEncrypt[0]);
-	offsetY = displayMessage(msgEncrypt, countEncrypt, width, adjustedHeight);
+	offsetY = displayMessage(msgEncrypt, countEncrypt);
 
 	do {
 		clearLines(adjustedHeight + offsetY, adjustedHeight + offsetY, width);
@@ -398,19 +398,19 @@ void encryptText(int width, int adjustedHeight) {
 			printf("Message encryption failed!\n");
 	}
 
-	waitForDone(width, adjustedHeight * 3);
+	waitForDone();
 	clearScreen();
 
 	free(publicKEY);
 }
 
-void decryptText(int width, int adjustedHeight) {
+void decryptText() {
 	char* privateKEY = malloc(1000000000 * sizeof(char));
 
 	clearScreen();
 	char* msgDecrypt[] = {"Decryption includes the message to be decrypted and", "the private key of the recipient. The txt file of the", "message must be in the same folder of the C program."};
 	int countDecrypt = sizeof(msgDecrypt) / sizeof(msgDecrypt[0]);
-	offsetY = displayMessage(msgDecrypt, countDecrypt, width, adjustedHeight);
+	offsetY = displayMessage(msgDecrypt, countDecrypt);
 
 	do {
 		clearLines(adjustedHeight + offsetY, adjustedHeight + offsetY, width);
@@ -494,33 +494,33 @@ void decryptText(int width, int adjustedHeight) {
 			printf("Message encryption failed!\n");
 	}
 
-	waitForDone(width, adjustedHeight * 3);
+	waitForDone();
 	clearScreen();
 
 	free(privateKEY);
 }
 
-void aboutProgram(int width, int height) {
+void aboutProgram() {
 	clearScreen();
 	moveCursor((width - 45) / 2, height / 4);
 	printf("RSA Cipher Tool with Custom Bignum Library");
 
 	char *about[] = {"The RSA Cipher Tool program generates, encrypts, and decrypts messages using the RSA", "algorithm. The program uses the RSA (Rivest, Shamir, Adleman) Algorithm to generate public", "and private keys needed to encrypt and decrypt messages and a custom bignum library to", "handle large numbers numbers for the RSA encryption and decryption processes."};
 	int aboutCount = sizeof(about) / sizeof(about[0]);
-	displayAbout(about, aboutCount, width, height, 2);
+	displayAbout(about, aboutCount, 2);
 
 	char* about2[] = {"The user will use the program to encrypt a message in a file, where it will then return the", "encrypted/secret message. Then, they can now send it to the recipient of the message safely,", "where they can also use the same program to decrypt the message and reveal the actual message."};
 	int about2Count = sizeof(about2) / sizeof(about2[0]);
-	displayAbout(about2, about2Count, width, height, 7);
+	displayAbout(about2, about2Count, 7);
 
 	char* about3[] = {"This is a programming project for Computer Programming 2 during the Academic Year", "2023-2024 at the Bicol University College of Science. The program is developed by the", "following students of Bicol University College of Science:"};
 	int about3Count = sizeof(about3) / sizeof(about3[0]);
-	displayAbout(about3, about3Count, width, height, 11);
+	displayAbout(about3, about3Count, 11);
 
 	char* members[] = { "Michael Xavier Canonizado", "Deanne Clarice Bea", "Simon Narvaez", "Marc Jordan Campopos"};
 	int membersCount = sizeof(members) / sizeof(members[0]);
-	displayAbout(members, membersCount, width, height, 14);
+	displayAbout(members, membersCount, 14);
 
-	waitForDone(width, height);
+	waitForDone();
 	clearScreen();
 }
