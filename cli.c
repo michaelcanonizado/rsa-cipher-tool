@@ -102,6 +102,7 @@ int main(void) {
 
         switch (userMenuState) {
 			case 1:
+                generateKeys();
                 clearScreen();
 				break;
 			case 2:
@@ -209,4 +210,149 @@ void clearLines(int startLine, int endLine, int width) {
 			printf(" ");
 		}
 	}
+}
+
+
+
+
+
+
+
+
+
+void generateKeys() {
+    clearScreen();
+    printf("\n.........................................");
+    printf("\n");
+
+    KeySize keySizeOptions[] = {
+        {"16 bit", 16},
+        {"32 bit", 32},
+        {"64 bit", 64},
+        {"128 bit", 128},
+        {"256 bit", 256},
+    };
+
+    int chosenKeySize = 0;
+    int pPrivateLength, qPrivateLength, ePublicLength;
+
+    printf("\nPlease choose a key size: ");
+    for (int i = 0; i < sizeof(keySizeOptions)/sizeof(keySizeOptions[0]); i++) {
+        printf("\n%d) - %s", i+1, keySizeOptions[i].name);
+    }
+    printf("\nEnter number: ");
+    scanf("%d", &chosenKeySize);
+    chosenKeySize = keySizeOptions[chosenKeySize-1].size;
+    printf("Chosen key size: %d", chosenKeySize);
+
+    pPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
+    qPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
+    ePublicLength = pPrivateLength > 3 ? pPrivateLength / 2 : (chosenKeySize / log2(10.0)) - 1;
+    printf("\np prime length: %d", pPrivateLength);
+    printf("\nq prime length: %d", qPrivateLength);
+    printf("\ne public length: %d\n", ePublicLength);
+
+	Bignum nPublic, ePublic, dPrivate;
+    initBignum(&nPublic);
+    initBignum(&ePublic);
+    initBignum(&dPrivate);
+
+    Bignum one;
+    initBignum(&one);
+    setBignum(&one, "1", positive);
+
+    Bignum pPrimePrivate, qPrimePrivate;
+    initBignum(&pPrimePrivate);
+    initBignum(&qPrimePrivate);
+
+    Bignum phiOfNPrivate, pPrimePrivateMinusOne, qPrimePrivateMinusOne;
+    initBignum(&phiOfNPrivate);
+    initBignum(&pPrimePrivateMinusOne);
+    initBignum(&qPrimePrivateMinusOne);
+
+    Bignum plainChar, encryptedChar, decryptedChar;
+    initBignum(&plainChar);
+    initBignum(&encryptedChar);
+    initBignum(&decryptedChar);
+    setBignum(&plainChar, "2", positive);
+
+    while (1) {
+        // Generate p and q primes
+        generatePrimeBignum(&pPrimePrivate, pPrivateLength);
+        generatePrimeBignum(&qPrimePrivate, qPrivateLength);
+        while (isEqualToBignum(&pPrimePrivate, &qPrimePrivate)) {
+            generatePrimeBignum(&qPrimePrivate, qPrivateLength);
+        }
+
+        // Get n:
+        // n = p * q
+        multiplyBignum(&nPublic, &pPrimePrivate, &qPrimePrivate);
+
+        // Get phi of n:
+        // phi of n = (p - 1) * (q - 1)
+        subtractBignum(&pPrimePrivateMinusOne, &pPrimePrivate, &one);
+        subtractBignum(&qPrimePrivateMinusOne, &qPrimePrivate, &one);
+        multiplyBignum(&phiOfNPrivate, &pPrimePrivateMinusOne, &qPrimePrivateMinusOne);
+
+        // Generate e (public key):
+        // 2 < e < phi of n
+        generatePrimeBignum(&ePublic, ePublicLength);
+    
+        // Get d (private key):
+        // (e * d)mod(n) = 1
+        modularInverseBignum(&dPrivate, &ePublic, &phiOfNPrivate);
+
+        printf("\n\nTesting keys: ");
+
+        modularExponentiationBignum(&encryptedChar, &plainChar, &ePublic, &nPublic);
+        modularExponentiationBignum(&decryptedChar, &encryptedChar, &dPrivate, &nPublic);
+
+        printf("\nplain char: ");
+        printBignum(&plainChar);
+        printf("\nencrypted char: ");
+        printBignum(&encryptedChar);
+        printf("\ndecrypted char: ");
+        printBignum(&decryptedChar);
+
+        if (isEqualToBignum(&plainChar, &decryptedChar)) {
+            break;
+        }
+
+        resetBignum(&nPublic);
+        resetBignum(&ePublic);
+        resetBignum(&dPrivate);
+        resetBignum(&pPrimePrivate);
+        resetBignum(&qPrimePrivate);
+        resetBignum(&phiOfNPrivate);
+        resetBignum(&pPrimePrivateMinusOne);
+        resetBignum(&qPrimePrivateMinusOne);
+        resetBignum(&encryptedChar);
+        resetBignum(&decryptedChar);
+    }
+
+    printf("\n\nRESULTS: ");
+    printf("\np: ");
+    printBignum(&pPrimePrivate);
+    printf("\nq: ");
+    printBignum(&qPrimePrivate);
+    printf("\nnPublic: ");
+    printBignum(&nPublic);
+    printf("\nphiOfN: ");
+    printBignum(&phiOfNPrivate);
+    printf("\ne: ");
+    printBignum(&ePublic);
+    printf("\nd: ");
+    printBignum(&dPrivate);
+
+    printf("\n\nPUBLIC KEY: ");
+    printBignum(&ePublic);
+    printf(".");
+    printBignum(&nPublic);
+    printf("\nPRIVATE KEY: ");
+    printBignum(&dPrivate);
+    printf(".");
+    printBignum(&nPublic);
+    printf("\n\n");
+
+    freeAllBignums();
 }
