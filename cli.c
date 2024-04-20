@@ -27,16 +27,16 @@ typedef struct {
 
 
 
-#define PRINT_CENTER(width, str) ({ \
+#define PRINT_CENTER(str) ({ \
     int remainingWidth = terminalWidth - strlen(str); \
     int leftPadding = remainingWidth % 2 ? (remainingWidth + 1) / 2 : remainingWidth / 2; \
     int rightPadding = remainingWidth % 2 ? (remainingWidth - 1) / 2 : remainingWidth / 2; \
     printf("\n%*s%s%*s", leftPadding, "", str, rightPadding, ""); \
 })
 
-#define PRINT_FORMATS_CENTER(width, fmt, ...) ({ \
+#define PRINT_FORMATS_CENTER(fmt, ...) ({ \
     int charCount = snprintf(NULL, 0, fmt, __VA_ARGS__); \
-    int remainingWidth = width - charCount; \
+    int remainingWidth = terminalWidth - charCount; \
     int leftPadding = remainingWidth % 2 ? (remainingWidth + 1) / 2 : remainingWidth / 2; \
     int rightPadding = remainingWidth % 2 ? (remainingWidth - 1) / 2 : remainingWidth / 2; \
     printf("%*s" fmt "%*s\n", leftPadding, "", \
@@ -89,8 +89,8 @@ int main(void) {
     int userMenuState = 0;
     int i;
 
-    PRINT_FORMATS_CENTER(terminalWidth, "Width: %d", terminalWidth);
-    PRINT_FORMATS_CENTER(terminalWidth, "Height: %d", terminalHeight);
+    PRINT_FORMATS_CENTER("Width: %d", terminalWidth);
+    PRINT_FORMATS_CENTER("Height: %d", terminalHeight);
 
     char *optionsArr[] = {"Generate Keys", "Encrypt Text", "Decrypt Text", "About","Exit"};
     int optionsArrSize = sizeof(optionsArr)/sizeof(optionsArr[0]);
@@ -261,25 +261,31 @@ void generateKeys() {
         {"128 bit", 128},
         {"256 bit", 256},
     };
+    char promptStr[] = "Enter number: ";
 
     int chosenKeySize = 0;
     int pPrivateLength, qPrivateLength, ePublicLength;
 
     printf("\nPlease choose a key size: ");
     for (int i = 0; i < sizeof(keySizeOptions)/sizeof(keySizeOptions[0]); i++) {
-        printf("\n%d) - %s", i+1, keySizeOptions[i].name);
+        moveCursor(0, startingHeight + i);
+        printf("\n%*s%d) - %s", calculateLeftPadding(terminalWidth, strlen(promptStr)), "", i+1, keySizeOptions[i].name);
     }
-    printf("\nEnter number: ");
+
+    printf("\n\n%*s%s", calculateLeftPadding(terminalWidth, strlen(promptStr)), "", promptStr);
     scanf("%d", &chosenKeySize);
     chosenKeySize = keySizeOptions[chosenKeySize-1].size;
-    printf("Chosen key size: %d", chosenKeySize);
+
+    clearScreen();
+    moveCursor(0, startingHeight);
+    PRINT_FORMATS_CENTER("Generating %d bit keys...", chosenKeySize);
 
     pPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
     qPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
     ePublicLength = pPrivateLength > 3 ? pPrivateLength / 2 : (chosenKeySize / log2(10.0)) - 1;
-    printf("\np prime length: %d", pPrivateLength);
-    printf("\nq prime length: %d", qPrivateLength);
-    printf("\ne public length: %d\n", ePublicLength);
+    // printf("\np prime length: %d", pPrivateLength);
+    // printf("\nq prime length: %d", qPrivateLength);
+    // printf("\ne public length: %d\n", ePublicLength);
 
 	Bignum nPublic, ePublic, dPrivate;
     initBignum(&nPublic);
@@ -331,17 +337,15 @@ void generateKeys() {
         // (e * d)mod(n) = 1
         modularInverseBignum(&dPrivate, &ePublic, &phiOfNPrivate);
 
-        printf("\n\nTesting keys: ");
-
         modularExponentiationBignum(&encryptedChar, &plainChar, &ePublic, &nPublic);
         modularExponentiationBignum(&decryptedChar, &encryptedChar, &dPrivate, &nPublic);
 
-        printf("\nplain char: ");
-        printBignum(&plainChar);
-        printf("\nencrypted char: ");
-        printBignum(&encryptedChar);
-        printf("\ndecrypted char: ");
-        printBignum(&decryptedChar);
+        // printf("\nplain char: ");
+        // printBignum(&plainChar);
+        // printf("\nencrypted char: ");
+        // printBignum(&encryptedChar);
+        // printf("\ndecrypted char: ");
+        // printBignum(&decryptedChar);
 
         if (isEqualToBignum(&plainChar, &decryptedChar)) {
             break;
@@ -359,29 +363,41 @@ void generateKeys() {
         resetBignum(&decryptedChar);
     }
 
-    printf("\n\nRESULTS: ");
-    printf("\np: ");
-    printBignum(&pPrimePrivate);
-    printf("\nq: ");
-    printBignum(&qPrimePrivate);
-    printf("\nnPublic: ");
-    printBignum(&nPublic);
-    printf("\nphiOfN: ");
-    printBignum(&phiOfNPrivate);
-    printf("\ne: ");
-    printBignum(&ePublic);
-    printf("\nd: ");
-    printBignum(&dPrivate);
+    // printf("\n\nRESULTS: ");
+    // printf("\np: ");
+    // printBignum(&pPrimePrivate);
+    // printf("\nq: ");
+    // printBignum(&qPrimePrivate);
+    // printf("\nnPublic: ");
+    // printBignum(&nPublic);
+    // printf("\nphiOfN: ");
+    // printBignum(&phiOfNPrivate);
+    // printf("\ne: ");
+    // printBignum(&ePublic);
+    // printf("\nd: ");
+    // printBignum(&dPrivate);
 
-    printf("\n\nPUBLIC KEY: ");
+    // printf("\n\nPUBLIC KEY: ");
+    // printBignum(&ePublic);
+    // printf(".");
+    // printBignum(&nPublic);
+    // printf("\nPRIVATE KEY: ");
+    // printBignum(&dPrivate);
+    // printf(".");
+    // printBignum(&nPublic);
+    // printf("\n\n");
+
+    int keyPromptLength = 13 + dPrivate.length + nPublic.length;
+
+    printf("\n\n%*s%s", calculateLeftPadding(terminalWidth, keyPromptLength), "", "PUBLIC KEY: ");
     printBignum(&ePublic);
     printf(".");
     printBignum(&nPublic);
-    printf("\nPRIVATE KEY: ");
+
+    printf("\n%*s%s", calculateLeftPadding(terminalWidth, keyPromptLength), "", "PRIVATE KEY: ");
     printBignum(&dPrivate);
     printf(".");
     printBignum(&nPublic);
-    printf("\n\n");
 
     freeAllBignums();
 }
