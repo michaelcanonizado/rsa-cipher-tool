@@ -59,7 +59,7 @@ void moveCursor(int x, int y);
 void waitForDone();
 void sleepProgram(int milliseconds);
 void clearLines(int startLine, int endLine, int width);
-void confirmToExit();
+void promptExitConfirm();
 
 int getMaxStringLengthInArray(char *stringsArr[], int stringsCount) {
     int maxLength = 0;
@@ -91,8 +91,10 @@ int main(void) {
 
     do {
 		for (i = 0; i < optionsArrSize; i++) {
-            moveCursor((terminalWidth - getMaxStringLengthInArray(optionsArr, optionsArrSize)) / 2, adjustedHeight + i);
-			printf("%d) - %s", i+1, optionsArr[i]);
+            moveCursor(0, adjustedHeight + i);
+			PRINT_FORMATS_CENTER(terminalWidth, "(%d) %s", i+1, optionsArr[i]);
+            // moveCursor((terminalWidth - getMaxStringLengthInArray(optionsArr, optionsArrSize)) / 2, adjustedHeight + i);
+			// printf("%d) - %s", i+1, optionsArr[i]);
 		}
 
         char str[] = "Enter number: ";
@@ -245,8 +247,6 @@ void promptExitConfirm() {
 
 void generateKeys() {
     clearScreen();
-    printf("\n.........................................");
-    printf("\n");
 
     KeySize keySizeOptions[] = {
         {"16 bit", 16},
