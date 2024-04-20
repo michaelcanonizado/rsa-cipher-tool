@@ -56,6 +56,21 @@ void clearScreen();
 void getTerminalSize();
 void moveCursor(int x, int y);
 
+int getMaxStringLengthInArray(char *stringsArr[], int stringsCount) {
+    int maxLength = 0;
+
+    printf("\nCount: %d", stringsCount);
+
+    for (int i = 0; i < stringsCount; i++) {
+        int length = strlen(stringsArr[i]);
+        if (length > maxLength) {
+            maxLength = length;
+        }
+    }
+    
+    return maxLength;
+}
+
 
 int main(void) {
     clearScreen();
@@ -74,7 +89,7 @@ int main(void) {
     do {
 		for (i = 0; i < sizeof(optionsArr)/sizeof(optionsArr[0]); i++) {
             moveCursor(0, adjustedHeight + i);
-			PRINT_FORMATS_CENTER(terminalWidth, "%d) - %s", i+1, optionsArr[i]);
+			PRINT_FORMATS_CENTER(terminalWidth, "[(%d) %s]", i+1, optionsArr[i]);
             // moveCursor((terminalWidth - 14) / 2, adjustedHeight + i);
 			// printf("%d) - %s", i+1, optionsArr[i]);
 		}
