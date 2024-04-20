@@ -81,8 +81,6 @@ int main(void) {
     PRINT_FORMATS_CENTER(terminalWidth, "Width: %d", terminalWidth);
     PRINT_FORMATS_CENTER(terminalWidth, "Height: %d", terminalHeight);
 
-
-
     char *optionsArr[] = {"Generate Keys", "Encrypt Text", "Decrypt Text", "Exit"};
     int optionsArrSize = sizeof(optionsArr)/sizeof(optionsArr[0]);
 
@@ -122,6 +120,8 @@ int main(void) {
 }
 
 void generateKeys() {
+    clearScreen();
+
     printf("\n.........................................");
     printf("\n");
 
