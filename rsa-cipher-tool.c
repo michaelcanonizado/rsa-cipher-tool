@@ -1,11 +1,99 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <math.h>
 #include "src/bignum.h"
 
-void encryptMessage(char *plaintext, Bignum *ePublic, Bignum *nPublic);
-void decryptMessage(int encryptedText[], Bignum *dPublic, Bignum *nPublic);
+
+
+typedef struct {
+    char name[50];
+    int size;
+} KeySize;
+
+
+
+void generateKeys();
+void encryptText();
+void decryptText();
+void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
+void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);
+void getInputFile(FILE **inputFilePtr, char *inputFilename);
+void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic);
+
+
 
 int main(void) {
+    int userMenuState = 0;
+
+    char *optionsArr[] = {"Generate Keys", "Encrypt Text", "Decrypt Text", "Exit"};
+
+    do {
+		for (int i = 0; i < sizeof(optionsArr)/sizeof(optionsArr[0]); i++) {
+			printf("\n%d) - %s", i+1, optionsArr[i]);
+		}
+        printf("\nEnter number: ");
+		scanf("%d", &userMenuState);
+
+        switch (userMenuState) {
+			case 1:
+                generateKeys();
+				break;
+			case 2:
+                encryptText();
+				break;
+			case 3:
+                decryptText();
+				break;
+            case 4:
+                freeAllBignums();
+                return 0;
+            default:
+                break;
+        }
+
+        printf("\n\n.........................................");
+
+    } while (userMenuState != sizeof(optionsArr)/sizeof(optionsArr[0]));
+
+    return 0;
+}
+
+void generateKeys() {
+    printf("\n.........................................");
+    printf("\n");
+
+    KeySize keySizeOptions[] = {
+        {"16 bit", 16},
+        {"32 bit", 32},
+        {"64 bit", 64},
+        {"128 bit", 128},
+        {"256 bit", 256},
+    };
+
+    int chosenKeySize = 0;
+    int pPrivateLength, qPrivateLength, ePublicLength;
+
+    printf("\nPlease choose a key size: ");
+    for (int i = 0; i < sizeof(keySizeOptions)/sizeof(keySizeOptions[0]); i++) {
+        printf("\n%d) - %s", i+1, keySizeOptions[i].name);
+    }
+    printf("\nEnter number: ");
+    scanf("%d", &chosenKeySize);
+    chosenKeySize = keySizeOptions[chosenKeySize-1].size;
+    printf("Chosen key size: %d", chosenKeySize);
+
+    pPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
+    qPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
+    ePublicLength = pPrivateLength > 3 ? pPrivateLength / 2 : (chosenKeySize / log2(10.0)) - 1;
+    printf("\np prime length: %d", pPrivateLength);
+    printf("\nq prime length: %d", qPrivateLength);
+    printf("\ne public length: %d\n", ePublicLength);
+
+	Bignum nPublic, ePublic, dPrivate;
+    initBignum(&nPublic);
+    initBignum(&ePublic);
+    initBignum(&dPrivate);
 
     Bignum one;
     initBignum(&one);
@@ -15,33 +103,72 @@ int main(void) {
     initBignum(&pPrimePrivate);
     initBignum(&qPrimePrivate);
 
-    Bignum nPublic;
-    initBignum(&nPublic);
-
     Bignum phiOfNPrivate, pPrimePrivateMinusOne, qPrimePrivateMinusOne;
     initBignum(&phiOfNPrivate);
     initBignum(&pPrimePrivateMinusOne);
     initBignum(&qPrimePrivateMinusOne);
 
-    Bignum ePublic, dPrivate;
-    initBignum(&ePublic);
-    initBignum(&dPrivate);
+    Bignum plainChar, encryptedChar, decryptedChar;
+    initBignum(&plainChar);
+    initBignum(&encryptedChar);
+    initBignum(&decryptedChar);
+    setBignum(&plainChar, "2", positive);
 
-    setBignum(&pPrimePrivate, "92726898528067157119", positive);
-    setBignum(&qPrimePrivate, "59596883466967193887", positive);
-    // setBignum(&pPrimePrivate, "11", positive);
-    // setBignum(&qPrimePrivate, "13", positive);
+    while (1) {
+        // Generate p and q primes
+        generatePrimeBignum(&pPrimePrivate, pPrivateLength);
+        generatePrimeBignum(&qPrimePrivate, qPrivateLength);
+        while (isEqualToBignum(&pPrimePrivate, &qPrimePrivate)) {
+            generatePrimeBignum(&qPrimePrivate, qPrivateLength);
+        }
 
-    multiplyBignum(&nPublic, &pPrimePrivate, &qPrimePrivate);
+        // Get n:
+        // n = p * q
+        multiplyBignum(&nPublic, &pPrimePrivate, &qPrimePrivate);
 
-    subtractBignum(&pPrimePrivateMinusOne, &pPrimePrivate, &one);
-    subtractBignum(&qPrimePrivateMinusOne, &qPrimePrivate, &one);
-    multiplyBignum(&phiOfNPrivate, &pPrimePrivateMinusOne, &qPrimePrivateMinusOne);
+        // Get phi of n:
+        // phi of n = (p - 1) * (q - 1)
+        subtractBignum(&pPrimePrivateMinusOne, &pPrimePrivate, &one);
+        subtractBignum(&qPrimePrivateMinusOne, &qPrimePrivate, &one);
+        multiplyBignum(&phiOfNPrivate, &pPrimePrivateMinusOne, &qPrimePrivateMinusOne);
 
-    setBignum(&ePublic, "96139263103317626603",positive);
+        // Generate e (public key):
+        // 2 < e < phi of n
+        generatePrimeBignum(&ePublic, ePublicLength);
     
-    modularInverseBignum(&dPrivate, &ePublic, &phiOfNPrivate);
+        // Get d (private key):
+        // (e * d)mod(n) = 1
+        modularInverseBignum(&dPrivate, &ePublic, &phiOfNPrivate);
 
+        printf("\n\nTesting keys: ");
+
+        modularExponentiationBignum(&encryptedChar, &plainChar, &ePublic, &nPublic);
+        modularExponentiationBignum(&decryptedChar, &encryptedChar, &dPrivate, &nPublic);
+
+        printf("\nplain char: ");
+        printBignum(&plainChar);
+        printf("\nencrypted char: ");
+        printBignum(&encryptedChar);
+        printf("\ndecrypted char: ");
+        printBignum(&decryptedChar);
+
+        if (isEqualToBignum(&plainChar, &decryptedChar)) {
+            break;
+        }
+
+        resetBignum(&nPublic);
+        resetBignum(&ePublic);
+        resetBignum(&dPrivate);
+        resetBignum(&pPrimePrivate);
+        resetBignum(&qPrimePrivate);
+        resetBignum(&phiOfNPrivate);
+        resetBignum(&pPrimePrivateMinusOne);
+        resetBignum(&qPrimePrivateMinusOne);
+        resetBignum(&encryptedChar);
+        resetBignum(&decryptedChar);
+    }
+
+    printf("\n\nRESULTS: ");
     printf("\np: ");
     printBignum(&pPrimePrivate);
     printf("\nq: ");
@@ -55,68 +182,201 @@ int main(void) {
     printf("\nd: ");
     printBignum(&dPrivate);
 
-    char plaintext[] = "Hello World!";
-    int encryptedText[] = {19,62,4,4,45,98,87,45,49,4,100,110};
+    printf("\n\nPUBLIC KEY: ");
+    printBignum(&ePublic);
+    printf(".");
+    printBignum(&nPublic);
+    printf("\nPRIVATE KEY: ");
+    printBignum(&dPrivate);
+    printf(".");
+    printBignum(&nPublic);
+    printf("\n\n");
 
-    printf("\n\nPlaintext: ");
-    for (unsigned long long int i = 0; i < strlen(plaintext); i++) {
-        printf("%c,", plaintext[i]);
+    freeAllBignums();
+}
+
+void encryptText() {
+    printf("\n.........................................\n");
+    FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
+
+    char inputFilename[100];
+    char outputFilename[] = "en.txt";
+
+    getInputFile(&inputFilePtr, inputFilename);
+
+    outputFilePtr = fopen(outputFilename, "w");
+    if (outputFilePtr == NULL) {
+        printf("Error opening output %s...\n", outputFilename);
+        exit(1);
     }
-    printf("\nPlaintext: ");
-    for (unsigned long long int i = 0; i < strlen(plaintext); i++) {
-        printf("%d,", plaintext[i]);
-    }
 
-    printf("\nEncrypted text: ");
-    encryptMessage(plaintext, &ePublic, &nPublic);
+    Bignum nPublic, ePublic;
+    initBignum(&nPublic);
+    initBignum(&ePublic);
 
-    printf("\nDecrypted text: ");
-    decryptMessage(encryptedText, &dPrivate, &nPublic);
+    getKeys(&ePublic, &nPublic);
+
+    printf("\nBignum key e: ");
+    printBignum(&ePublic);
+    printf("\nBignum key n: ");
+    printBignum(&nPublic);
+
+    printf("\n\nEncrypting %s...\n\n", inputFilename);
+
+    encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
 
     freeAllBignums();
 
-    return 0;
+    fclose(inputFilePtr);
+    fclose(outputFilePtr);
 }
 
+void decryptText() {
+    printf("\n.........................................\n");
+    FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
 
-void encryptMessage(char *plaintext, Bignum *ePublic, Bignum *nPublic) {
-    Bignum encryptedChar, plaintextChar;
+    char inputFilename[100];
+    char outputFilename[] = "dc.txt";
+
+    getInputFile(&inputFilePtr, inputFilename);
+
+    outputFilePtr = fopen(outputFilename, "w");
+    if (outputFilePtr == NULL) {
+        printf("Error opening output %s...\n", outputFilename);
+        exit(1);
+    }
+
+    Bignum nPublic, dPrivate;
+    initBignum(&nPublic);
+    initBignum(&dPrivate);
+
+    getKeys(&dPrivate, &nPublic);
+
+    printf("\nBignum key d: ");
+    printBignum(&dPrivate);
+    printf("\nBignum key n: ");
+    printBignum(&nPublic);
+
+    printf("\n\ndecrypting %s...\n\n", inputFilename);
+
+    decryptTextFile(inputFilePtr, outputFilePtr, &dPrivate, &nPublic);
+
+    freeAllBignums();
+
+    fclose(inputFilePtr);
+    fclose(outputFilePtr);
+}
+
+void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic) {
+    char character;
+
+    Bignum encryptedChar, plainChar;
     initBignum(&encryptedChar);
-    initBignum(&plaintextChar);
+    initBignum(&plainChar);
 
-    for (unsigned long long int i = 0; i < strlen(plaintext); i++) {
-        intToBignum(&plaintextChar, plaintext[i], positive);
+    while ((character = fgetc(inputFilePtr)) != EOF) {
+        intToBignum(&plainChar, character, positive);
 
-        modularExponentiationBignum(&encryptedChar, &plaintextChar, ePublic, nPublic);
+        modularExponentiationBignum(&encryptedChar, &plainChar, ePublic, nPublic);
 
         printBignum(&encryptedChar);
         printf(",");
 
+        for (unsigned long long int i = encryptedChar.length - 1; i > 0; i--) {
+            fprintf(outputFilePtr, "%d", encryptedChar.digits[i]);
+        }
+        fprintf(outputFilePtr, "%d/", encryptedChar.digits[0]);
+
         resetBignum(&encryptedChar);
-        resetBignum(&plaintextChar);
-    }
+        resetBignum(&plainChar);
+    };
 
     freeBignum(&encryptedChar);
-    freeBignum(&plaintextChar);
+    freeBignum(&plainChar);
 }
 
-void decryptMessage(int encryptedText[], Bignum *dPublic, Bignum *nPublic) {
-    Bignum decryptedChar, encryptedTextChar;
+void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic) {
+    char encryptedCharacter[100];
+    char decryptedCharacter;
+
+    Bignum decryptedChar, encryptedChar;
     initBignum(&decryptedChar);
-    initBignum(&encryptedTextChar);
+    initBignum(&encryptedChar);
 
-    for (unsigned long long int i = 0; i < 12; i++) {
-        intToBignum(&encryptedTextChar, encryptedText[i], positive);
+    while (fscanf(inputFilePtr, "%[^/]/", encryptedCharacter) == 1) {
+        setBignum(&encryptedChar, encryptedCharacter, positive);
 
-        modularExponentiationBignum(&decryptedChar, &encryptedTextChar, dPublic, nPublic);
+        modularExponentiationBignum(&decryptedChar, &encryptedChar, dPrivate, nPublic);
 
-        printBignum(&decryptedChar);
-        printf(",");
+        decryptedCharacter = bignumToInt(&decryptedChar);
 
+        printf("%c", decryptedCharacter);
+
+        fprintf(outputFilePtr, "%c", decryptedCharacter);
+
+        resetBignum(&encryptedChar);
         resetBignum(&decryptedChar);
-        resetBignum(&encryptedTextChar);
-    }
+        encryptedCharacter[0] = '\0';
+        decryptedCharacter = '\0';
+    };
 
     freeBignum(&decryptedChar);
-    freeBignum(&encryptedTextChar);
+    freeBignum(&encryptedChar);
+}
+
+void getInputFile(FILE **inputFilePtr, char *inputFilename) {
+    while (1) {
+        printf("\nEnter the name of the input file: ");
+        scanf("%s", inputFilename);
+
+        *inputFilePtr = fopen(inputFilename, "r");
+
+        if (*inputFilePtr != NULL) {
+            break;
+        } else {
+            printf("Could not open \"%s\". Please try again...", inputFilename);
+        }
+    }
+
+    printf("File opened successfully...");
+}
+
+void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic) {
+    char key[5000];
+    char firstKey[2500];
+    char secondKey[2500];
+    char flag = '.';
+    int flagIndex;
+
+    printf("\n");
+    printf("\nPlease enter the private key: ");
+    scanf("%s", key);
+
+    while(1) {
+        int flagCount = 0, i;
+
+        for (i = 0; i < strlen(key); i++) {
+            if (key[i] == flag) {
+                flagIndex = i;
+                flagCount++;
+            }
+        }
+
+        if (flagCount == 1) {
+            break;
+        }
+
+        printf("Invalid key! Please make sure you properly copied the key generated...");
+        printf("\nPlease enter the private key: ");
+        scanf("%s", key);
+    }
+
+    strncpy(firstKey, key, flagIndex);
+    firstKey[flagIndex] = '\0';
+    strcpy(secondKey, key + flagIndex + 1);
+    // printf("String before '.': %s\n", firstKey);
+    // printf("String after '.': %s\n", secondKey);
+
+    setBignum(ePublicOrDPrivate, firstKey, positive);
+    setBignum(nPublic, secondKey, positive);
 }

@@ -175,8 +175,8 @@ int millerRabinPrimalityTest(Bignum *num, int iterations) {
         unsigned long long int aTemp = min + rand() % (max - min + 1);
         intToBignum(&a, aTemp, positive);
 
-        printf("\n\t- a: ");
-        printBignum(&a);
+        // printf("\n\t- a: ");
+        // printBignum(&a);
 
         // STEP 3:
         modularExponentiationBignum(&mod, &a, &temp, num);
@@ -212,7 +212,7 @@ int millerRabinPrimalityTest(Bignum *num, int iterations) {
             !isEqualToBignum(&mod, &numMinusOne) &&
             temp.digits[0] % 2 == 0
         ) {
-            printf(" -> composite:( ");
+            // printf(" -> composite:( ");
 
             freeBignum(&pOne);
             freeBignum(&two);
@@ -226,7 +226,7 @@ int millerRabinPrimalityTest(Bignum *num, int iterations) {
 
             return 0;
         } else {
-            printf(" -> prime!");
+            // printf(" -> prime!");
         }
     }
 
@@ -2011,15 +2011,15 @@ int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
         n.digits[0] = primeLastDigits[randPrimeLastDigitIndex];
         n.length = primeLength;
 
-        printf("\nChecking if ");
-        printBignum(&n);
-        printf(" isPrime...");
+        // printf("\nChecking if ");
+        // printBignum(&n);
+        // printf(" isPrime...");
 
         isPrime = millerRabinPrimalityTest(&n, 10);
 
-        printf("\n");
-        printBignum(&n);
-        printf(" isPrime: %d", isPrime);
+        // printf("\n");
+        // printBignum(&n);
+        // printf(" isPrime: %d", isPrime);
     }
 
     copyBignum(result, &n);

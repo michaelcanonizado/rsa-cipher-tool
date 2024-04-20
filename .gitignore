@@ -1,5 +1,9 @@
 *.exe
 *.out
 
+pt.txt
+en.txt
+dc.txt
+
 program/program
 program/sandbox
