@@ -2,6 +2,7 @@
 #include <stdio.h> 
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #define MAX_STRING_LENGTH 1000000
 
@@ -11,15 +12,29 @@ const int PROGRESS_BAR_LENGTH = 50;
 void loadingBar(int percentDone) { 
 	int numChar = percentDone * PROGRESS_BAR_LENGTH / 100;
 	int numSpace = PROGRESS_BAR_LENGTH - numChar;
+  // int start = (width - PROGRESS_BAR_LENGTH) / 2;
 
-	printf("\r[");
+  // moveCursor(start, (height * 3) / 2);
+	printf("\r");
+#ifdef _WIN32
+	char a = 219, b = 177;
 	for (int i = 0; i < numChar; i++) {
-		printf("#");
+		printf("%c", a);
 	}
 	for (int i = 0; i < numSpace; i++) {
-		printf(" ");
+		printf("%c", b);
 	}
-	printf("] %d%% Done", percentDone);
+#else
+	char *a = "█", *b = "░";
+	for (int i = 0; i < numChar; i++) {
+		printf("%s", a);
+	}
+	for (int i = 0; i < numSpace; i++) {
+		printf("%s", b);
+	}
+#endif
+
+	printf(" %d%% Done", percentDone);
 	fflush(stdout);
 }
 
@@ -42,8 +57,10 @@ int main()
 	printf("Length: %d\n", plainTextLength);
 	loadingBar(0);
 	for (int i = 0; i < plainTextLength; i++) {
-		convertToASCII(plainText);
+		// convertToASCII(plainText);
 		loadingBar((i+1)*100/plainTextLength);
+		usleep(10000);
 	}
+	printf("\n");
 	return 0; 
 }
