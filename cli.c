@@ -18,6 +18,7 @@
 
 int terminalWidth = 0;
 int terminalHeight = 0;
+int startingHeight = 0;
 
 typedef struct {
     char name[50];
@@ -86,7 +87,6 @@ int main(void) {
     getTerminalSize();
 
     int userMenuState = 0;
-    int adjustedHeight = terminalHeight / 3;
     int i;
 
     PRINT_FORMATS_CENTER(terminalWidth, "Width: %d", terminalWidth);
@@ -98,12 +98,12 @@ int main(void) {
 
     do {
 		for (i = 0; i < optionsArrSize; i++) {
-            moveCursor(0, adjustedHeight + i);
+            moveCursor(0, startingHeight + i);
 			printf("\n%*s%d) - %s", optionsLeftPadding, "", i+1, optionsArr[i]);
 		}
 
         char str[] = "Enter number: ";
-		moveCursor(0, adjustedHeight + (i + 2));
+		moveCursor(0, startingHeight + (i + 2));
         printf("%*s%s", calculateLeftPadding(terminalWidth, strlen(str)), "", str);
 		scanf("%d", &userMenuState);
 		while (getchar() != '\n');
@@ -157,6 +157,7 @@ void getTerminalSize() {
 	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
 	terminalWidth = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 	terminalHeight = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+    startingHeight = terminalHeight / 3;
 #else
 	struct winsize size;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
