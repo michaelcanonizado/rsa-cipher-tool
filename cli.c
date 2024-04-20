@@ -30,7 +30,7 @@ typedef struct {
     int remainingWidth = terminalWidth - strlen(str); \
     int leftPadding = remainingWidth % 2 ? (remainingWidth + 1) / 2 : remainingWidth / 2; \
     int rightPadding = remainingWidth % 2 ? (remainingWidth - 1) / 2 : remainingWidth / 2; \
-    printf("%*s%s%*s\n\n", leftPadding, "", str, rightPadding, ""); \
+    printf("\n%*s%s%*s", leftPadding, "", str, rightPadding, ""); \
 })
 
 #define PRINT_FORMATS_CENTER(width, fmt, ...) ({ \
@@ -59,8 +59,6 @@ void moveCursor(int x, int y);
 int getMaxStringLengthInArray(char *stringsArr[], int stringsCount) {
     int maxLength = 0;
 
-    printf("\nCount: %d", stringsCount);
-
     for (int i = 0; i < stringsCount; i++) {
         int length = strlen(stringsArr[i]);
         if (length > maxLength) {
@@ -76,25 +74,27 @@ int main(void) {
     clearScreen();
     getTerminalSize();
 
-    PRINT_FORMATS_CENTER(terminalWidth, "Width: %d", terminalWidth);
-    PRINT_FORMATS_CENTER(terminalWidth, "Height: %d", terminalHeight);
-    PRINT_CENTER(terminalWidth, "Height:asdasd");
-
     int userMenuState = 0;
     int adjustedHeight = terminalHeight / 3;
     int i;
 
+    PRINT_FORMATS_CENTER(terminalWidth, "Width: %d", terminalWidth);
+    PRINT_FORMATS_CENTER(terminalWidth, "Height: %d", terminalHeight);
+
+
+
     char *optionsArr[] = {"Generate Keys", "Encrypt Text", "Decrypt Text", "Exit"};
+    int optionsArrSize = sizeof(optionsArr)/sizeof(optionsArr[0]);
 
     do {
-		for (i = 0; i < sizeof(optionsArr)/sizeof(optionsArr[0]); i++) {
-            moveCursor(0, adjustedHeight + i);
-			PRINT_FORMATS_CENTER(terminalWidth, "[(%d) %s]", i+1, optionsArr[i]);
-            // moveCursor((terminalWidth - 14) / 2, adjustedHeight + i);
-			// printf("%d) - %s", i+1, optionsArr[i]);
+		for (i = 0; i < optionsArrSize; i++) {
+            moveCursor((terminalWidth - getMaxStringLengthInArray(optionsArr, optionsArrSize)) / 2, adjustedHeight + i);
+			printf("%d) - %s", i+1, optionsArr[i]);
 		}
-		moveCursor((terminalWidth - 10)/ 2, adjustedHeight + (i + 1));
-        printf("Enter number: ");
+
+        char str[] = "Enter number: ";
+		moveCursor((terminalWidth - strlen(str))/ 2, adjustedHeight + (i + 1));
+        printf("%s", str);
 		scanf("%d", &userMenuState);
 
         switch (userMenuState) {
