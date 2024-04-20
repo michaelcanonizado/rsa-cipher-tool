@@ -59,6 +59,7 @@ void moveCursor(int x, int y);
 void waitForDone();
 void sleepProgram(int milliseconds);
 void clearLines(int startLine, int endLine, int width);
+void confirmToExit();
 
 int getMaxStringLengthInArray(char *stringsArr[], int stringsCount) {
     int maxLength = 0;
@@ -103,6 +104,7 @@ int main(void) {
         switch (userMenuState) {
 			case 1:
                 generateKeys();
+                promptExitConfirm();
                 clearScreen();
 				break;
 			case 2:
@@ -212,7 +214,28 @@ void clearLines(int startLine, int endLine, int width) {
 	}
 }
 
+void promptExitConfirm() {
+	char userInput[100];
 
+	do {
+		clearLines(terminalHeight - 2, terminalHeight - 2, terminalWidth);
+		moveCursor((terminalWidth - 21)/ 2, terminalHeight - 2);
+        // Ask user for confirmation
+		printf("Enter DONE to go back: ");
+		fgets(userInput, sizeof(userInput), stdin);
+
+		// Replace the newline character at the end of the input to NULL
+		if (userInput[strlen(userInput) - 1] == '\n') {
+			userInput[strlen(userInput) - 1] = '\0';
+		}
+
+		// Convert the user's input to lowercase
+		for(int i = 0; userInput[i]; i++){
+			userInput[i] = tolower(userInput[i]);
+		}
+
+	} while (strcmp(userInput, "done") != 0);
+}
 
 
 
