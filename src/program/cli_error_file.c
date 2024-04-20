@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include <ctype.h>
+#include <math.h>
 #include "../bignum.h"
 
 // Includes the appropriate header file to use operating system-specific functions. This is useful for functions like clearing the screen, moving the cursor, and getting the terminal size.
@@ -34,121 +35,181 @@
 	int displayMessage(char *message[], int count);
 	// Function to display the About message. Separate function was made because it starts at a different y position.
 	void displayAbout(char *message[], int count, int offsestY);
+	// Function to get the input file. This function will get the input file from the user and return the file pointer.
+	void getInputFile(FILE **inputFilePtr, char *inputFilename);
+	// Function to get the public or private key.
+	void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic, char *whatKey);
+	// Function to get the file size in bytes.
+	long int getFileSize(FILE *file);
 	// Function to generate the public and private keys for the RSA algorithm.
 	void generateKeys(int i);
-	// Function to encrypt the text using the RSA algorithm.
+	// Functions to encrypt the text file using the RSA algorithm.
+	void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
 	void encryptText();
 	// Function to decrypt the text using the RSA algorithm.
+	void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);
 	void decryptText();
 	// Function to display information about the program.
 	void aboutProgram();
 
-	void getInputFile(FILE **inputFilePtr, char *inputFilename, int width, int adjustedHeight) {
-		do
-		{
-			clearLines(adjustedHeight, adjustedHeight, width);
-			moveCursor((width - 35)/ 2, adjustedHeight);
-			printf("Enter input file name: ");
-			scanf("%s", inputFilename);
-
-			*inputFilePtr = fopen(inputFilename, "r");
-
-			if (*inputFilePtr != NULL) {
-				break;
-			} else {
-				moveCursor((width - 41)/ 2, adjustedHeight + 1);
-				printf("Could not open file. Please try again...");
-			}
-		} while (1);
-		
-		clearLines(adjustedHeight + 1, adjustedHeight + 3, width);
-		moveCursor((width - 28)/ 2, adjustedHeight + 1);
-    printf("File opened successfully...");
-
-		// Get the number of characters
-
-}
-
-void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic, int width, int adjustedHeight, char *whatKey) {
-	char key[5000];
-	char firstKey[2500];
-	char secondKey[2500];
-	char flag = '.';
-	int flagIndex;
-
-	while(1) {
-		clearLines(adjustedHeight + 2, adjustedHeight + 2, width);
-		moveCursor((width - (strlen(whatKey) + 23) )/ 2, adjustedHeight + 2);
-		printf("Please enter the key: ", whatKey);
-		scanf("%s", key);
-
-		int flagCount = 0, i;
-
-		for (i = 0; i < strlen(key); i++) {
-			if (key[i] == flag) {
-				flagIndex = i;
-				flagCount++;
-			}
-		}
-
-		if (flagCount == 1) {
-			break;
-		}
-		moveCursor((width - 34)/ 2, adjustedHeight + 3);
-		printf("Invalid key! Please make sure you");
-		moveCursor((width - 37)/ 2, adjustedHeight + 4);
-		printf("properly copied the key generated...");
-	}
-
-	strncpy(firstKey, key, flagIndex);
-	firstKey[flagIndex] = '\0';
-	strcpy(secondKey, key + flagIndex + 1);
-	// printf("String before '.': %s\n", firstKey);
-	// printf("String after '.': %s\n", secondKey);
-
-	setBignum(ePublicOrDPrivate, firstKey, positive);
-	setBignum(nPublic, secondKey, positive);
-}
-
-void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic) {
-    char character;
-
-    Bignum encryptedChar, plainChar;
-    initBignum(&encryptedChar);
-    initBignum(&plainChar);
-
-    while ((character = fgetc(inputFilePtr)) != EOF) {
-        intToBignum(&plainChar, character, positive);
-
-        modularExponentiationBignum(&encryptedChar, &plainChar, ePublic, nPublic);
-
-        printBignum(&encryptedChar);
-        printf(",");
-
-        for (unsigned long long int i = encryptedChar.length - 1; i > 0; i--) {
-            fprintf(outputFilePtr, "%d", encryptedChar.digits[i]);
-        }
-        fprintf(outputFilePtr, "%d/", encryptedChar.digits[0]);
-
-        resetBignum(&encryptedChar);
-        resetBignum(&plainChar);
-    };
-
-    freeBignum(&encryptedChar);
-    freeBignum(&plainChar);
-}
-
 // Global variables
 char confirm;
 int offsetY;
-const int PROGRESS_BAR_LENGTH = 50;
+const int PROGRESS_BAR_LENGTH = 30;
 							FILE *decryptionFile;
 							char fileName[100];
 int width, height, adjustedHeight;
 
+typedef struct keySize {
+    char name[50];
+    int size;
+} KeySize;
+
+void generate(int chosenKeySize) {
+	// printf("\n.........................................");
+	// printf("\n");
+
+	// KeySize keySizeOptions[] = {
+	//     {"16 bit", 16},
+	//     {"32 bit", 32},
+	//     {"64 bit", 64},
+	//     {"128 bit", 128},
+	//     {"256 bit", 256},
+	// };
+
+	int pPrivateLength, qPrivateLength, ePublicLength;
+
+	// printf("\nPlease choose a key size: ");
+	// for (int i = 0; i < sizeof(keySizeOptions)/sizeof(keySizeOptions[0]); i++) {
+	//     printf("\n%d) - %s", i+1, keySizeOptions[i].name);
+	// }
+	// printf("\nEnter number: ");
+	// scanf("%d", &chosenKeySize);
+	// chosenKeySize = keySizeOptions[chosenKeySize-1].size;
+	// printf("Chosen key size: %d", chosenKeySize);
+
+	pPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
+	qPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
+	ePublicLength = pPrivateLength > 3 ? pPrivateLength / 2 : (chosenKeySize / log2(10.0)) - 1;
+	// printf("\np prime length: %d", pPrivateLength);
+	// printf("\nq prime length: %d", qPrivateLength);
+	// printf("\ne public length: %d\n", ePublicLength);
+
+Bignum nPublic, ePublic, dPrivate;
+	initBignum(&nPublic);
+	initBignum(&ePublic);
+	initBignum(&dPrivate);
+
+	Bignum one;
+	initBignum(&one);
+	setBignum(&one, "1", positive);
+
+	Bignum pPrimePrivate, qPrimePrivate;
+	initBignum(&pPrimePrivate);
+	initBignum(&qPrimePrivate);
+
+	Bignum phiOfNPrivate, pPrimePrivateMinusOne, qPrimePrivateMinusOne;
+	initBignum(&phiOfNPrivate);
+	initBignum(&pPrimePrivateMinusOne);
+	initBignum(&qPrimePrivateMinusOne);
+
+	Bignum plainChar, encryptedChar, decryptedChar;
+	initBignum(&plainChar);
+	initBignum(&encryptedChar);
+	initBignum(&decryptedChar);
+	setBignum(&plainChar, "2", positive);
+
+	while (1) {
+		// Generate p and q primes
+		generatePrimeBignum(&pPrimePrivate, pPrivateLength);
+		generatePrimeBignum(&qPrimePrivate, qPrivateLength);
+		while (isEqualToBignum(&pPrimePrivate, &qPrimePrivate)) {
+			generatePrimeBignum(&qPrimePrivate, qPrivateLength);
+		}
+
+		// Get n:
+		// n = p * q
+		multiplyBignum(&nPublic, &pPrimePrivate, &qPrimePrivate);
+
+		// Get phi of n:
+		// phi of n = (p - 1) * (q - 1)
+		subtractBignum(&pPrimePrivateMinusOne, &pPrimePrivate, &one);
+		subtractBignum(&qPrimePrivateMinusOne, &qPrimePrivate, &one);
+		multiplyBignum(&phiOfNPrivate, &pPrimePrivateMinusOne, &qPrimePrivateMinusOne);
+
+		// Generate e (public key):
+		// 2 < e < phi of n
+		generatePrimeBignum(&ePublic, ePublicLength);
+
+		// Get d (private key):
+		// (e * d)mod(n) = 1
+		modularInverseBignum(&dPrivate, &ePublic, &phiOfNPrivate);
+
+		// printf("\n\nTesting keys: ");
+
+		modularExponentiationBignum(&encryptedChar, &plainChar, &ePublic, &nPublic);
+		modularExponentiationBignum(&decryptedChar, &encryptedChar, &dPrivate, &nPublic);
+
+		// printf("\nplain char: ");
+		// printBignum(&plainChar);
+		// printf("\nencrypted char: ");
+		// printBignum(&encryptedChar);
+		// printf("\ndecrypted char: ");
+		// printBignum(&decryptedChar);
+
+		if (isEqualToBignum(&plainChar, &decryptedChar)) {
+			break;
+		}
+
+		resetBignum(&nPublic);
+		resetBignum(&ePublic);
+		resetBignum(&dPrivate);
+		resetBignum(&pPrimePrivate);
+		resetBignum(&qPrimePrivate);
+		resetBignum(&phiOfNPrivate);
+		resetBignum(&pPrimePrivateMinusOne);
+		resetBignum(&qPrimePrivateMinusOne);
+		resetBignum(&encryptedChar);
+		resetBignum(&decryptedChar);
+	}
+
+	// printf("\n\nRESULTS: ");
+	// printf("\np: ");
+	// printBignum(&pPrimePrivate);
+	// printf("\nq: ");
+	// printBignum(&qPrimePrivate);
+	// printf("\nnPublic: ");
+	// printBignum(&nPublic);
+	// printf("\nphiOfN: ");
+	// printBignum(&phiOfNPrivate);
+	// printf("\ne: ");
+	// printBignum(&ePublic);
+	// printf("\nd: ");
+	// printBignum(&dPrivate);
+
+	clearLines((height / 2) - 1, (height / 2) + 1, width);
+
+	moveCursor((width - 12) / 2, adjustedHeight);
+	printf("PUBLIC KEY:");
+	moveCursor((width - 30) / 2, adjustedHeight + 1);
+	printBignum(&ePublic);
+	printf(".");
+	printBignum(&nPublic);
+	moveCursor((width - 12) / 2, adjustedHeight + 2);
+	printf("PRIVATE KEY:");
+	moveCursor((width - 30) / 2, adjustedHeight + 3);
+	printBignum(&dPrivate);
+	printf(".");
+	printBignum(&nPublic);
+
+	// print("\n\n");
+
+	freeAllBignums();
+}
 
 int main() {
-	// clearScreen();
+	clearScreen();
+
 	getTerminalSize();
 	printf("Width: %d\nHeight: %d\n", width, height);
 
@@ -256,19 +317,29 @@ void clearLines(int startLine, int endLine, int width) {
 void loadingBar(int percentDone) { 
 	int numChar = percentDone * PROGRESS_BAR_LENGTH / 100;
 	int numSpace = PROGRESS_BAR_LENGTH - numChar;
-  int start = (width - PROGRESS_BAR_LENGTH) / 2;
+  int start = (width - (PROGRESS_BAR_LENGTH + 11)) / 2;
 
-	char a = 177, b = 219;
+  moveCursor(start, height / 2);
+	printf(" ");
 
-  moveCursor(start, (height * 3) / 2);
-	printf("[");
+#ifdef _WIN32
+	char a = 219, b = 177;
 	for (int i = 0; i < numChar; i++) {
 		printf("%c", a);
 	}
 	for (int i = 0; i < numSpace; i++) {
 		printf("%c", b);
 	}
-	printf("] %d%% Done", percentDone);
+#else
+	char *a = "█", *b = "░";
+	for (int i = 0; i < numChar; i++) {
+		printf("%s", a);
+	}
+	for (int i = 0; i < numSpace; i++) {
+		printf("%s", b);
+	}
+#endif
+	printf(" %d%% Done", percentDone);
 	fflush(stdout);
 }
 
@@ -336,6 +407,88 @@ void displayAbout(char *message[], int count, int offsetY) {
 	}
 }
 
+void getInputFile(FILE **inputFilePtr, char *inputFilename) {
+	do
+	{
+		clearLines(adjustedHeight, adjustedHeight, width);
+		moveCursor((width - 35)/ 2, adjustedHeight);
+		printf("Enter input file name: ");
+		scanf("%s", inputFilename);
+
+		*inputFilePtr = fopen(inputFilename, "r");
+
+		if (*inputFilePtr != NULL) {
+			break;
+		} else {
+			moveCursor((width - 41)/ 2, adjustedHeight + 1);
+			printf("Could not open file. Please try again...");
+		}
+	} while (1);
+	
+	clearLines(adjustedHeight + 1, adjustedHeight + 3, width);
+	moveCursor((width - 28)/ 2, adjustedHeight + 1);
+	printf("File opened successfully...");
+
+	// Get the number of characters
+
+}
+
+void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic, char *whatKey) {
+	char key[5000];
+	char firstKey[2500];
+	char secondKey[2500];
+	char flag = '.';
+	int flagIndex;
+
+	while(1) {
+		clearLines(adjustedHeight + 2, adjustedHeight + 2, width);
+		moveCursor((width - (strlen(whatKey) + 35) )/ 2, adjustedHeight + 2);
+		printf("Please enter the %s key: ", whatKey);
+		scanf("%s", key);
+
+		int flagCount = 0, i;
+
+		for (i = 0; i < strlen(key); i++) {
+			if (key[i] == flag) {
+				flagIndex = i;
+				flagCount++;
+			}
+		}
+
+		if (flagCount == 1) {
+			break;
+		}
+		moveCursor((width - 34)/ 2, adjustedHeight + 3);
+		printf("Invalid key! Please make sure you");
+		moveCursor((width - 37)/ 2, adjustedHeight + 4);
+		printf("properly copied the key generated...");
+	}
+
+	strncpy(firstKey, key, flagIndex);
+	firstKey[flagIndex] = '\0';
+	strcpy(secondKey, key + flagIndex + 1);
+	// printf("String before '.': %s\n", firstKey);
+	// printf("String after '.': %s\n", secondKey);
+
+	setBignum(ePublicOrDPrivate, firstKey, positive);
+	setBignum(nPublic, secondKey, positive);
+}
+
+long int getFileSize(FILE *file) {
+    long int size;
+
+    // Move the file pointer to the end of the file
+    fseek(file, 0, SEEK_END);
+
+    // Get the current file pointer position which represents the file size
+    size = ftell(file);
+
+    // Move the file pointer back to the start of the file
+    rewind(file);
+
+    return size;
+}
+
 void generateKeys(int i) {
 	clearScreen();
 	char *msgGenerate[] = {"You are about to generate an RSA key", "this option. This will display a private key", "and public key of the generated private key."};
@@ -355,41 +508,66 @@ void generateKeys(int i) {
 	clearScreen();	
 	if (confirm == 'Y' || confirm == 'y') {
 
-		Bignum keys;
-		initBignum(&keys);
-		unsigned long long int primeLength;
+    KeySize keySizeOptions[] = {
+        {"16 bit", 16},
+        {"32 bit", 32},
+        {"64 bit", 64},
+        {"128 bit", 128},
+        {"256 bit", 256},
+    };
 
-		moveCursor((width - 30)/ 2, adjustedHeight);
-		printf("Enter the length of the prime");
-		moveCursor((width - 30)/ 2, adjustedHeight + 1);
-		printf("number to be generated: ");
-		scanf("%llu", &primeLength);
+    int chosenKeySize = 0;
+
+		moveCursor((width - 28)/ 2, adjustedHeight);
+    printf("Please choose a key size: ");
+    for (int i = 0; i < sizeof(keySizeOptions)/sizeof(keySizeOptions[0]); i++) {
+			moveCursor((width - 9)/ 2, adjustedHeight + i + 1);
+			printf("%d) %s", i+1, keySizeOptions[i].name);
+    }
+		do {
+			clearLines(adjustedHeight + 6, adjustedHeight + 6, width);
+			moveCursor((width - 22)/ 2, adjustedHeight + 6);
+			printf("Enter number: ");
+			scanf("%d", &chosenKeySize);
+
+			if (chosenKeySize < 1 || chosenKeySize > 5) {
+				moveCursor((width - 15) / 2, adjustedHeight + 7);
+				printf("Invalid input.");
+				moveCursor((width - 39) / 2, adjustedHeight + 8);
+				printf("Please enter a number between 1 and 5.");			}
+
+		} while (chosenKeySize < 1 || chosenKeySize > 5);
+
+		clearScreen();
+
+		chosenKeySize = keySizeOptions[chosenKeySize-1].size;
+    moveCursor((width - 25)/ 2, adjustedHeight);
+		printf("Chosen key size: %d bit", chosenKeySize);
 
 		clearScreen();
 		clock_t start = clock();
 		
 		// At this point, function calls can be made to generate the keys. For now, the program will display a message that the keys are generated.
 
-		generatePrimeBignum(&keys, primeLength);
+		loadingBar(0);
+		int progress = 0;
+		while (1) {
+			for (int i = 0; i < 100; i++) {
+				loadingBar(progress);
+				sleepProgram(10);
+				progress = (progress + 1) % 101;
+			}
+			generate(chosenKeySize);
+			break;
+		}
+
+		// MAAYOS KANG SCREEEN TA NAWAWALAT SU LOADING BAR KAPAG MAY KEYS NA
 
 		clock_t end = clock();
 		double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 
-
-		printf("\n");
-
-		clearScreen();
-		
-		moveCursor((width - 22)/ 2, adjustedHeight);
-		printf("Your prime number is:");
-		moveCursor((width - primeLength)/ 2, adjustedHeight + 1);
-		printBignum(&keys);
-
-		moveCursor((width - 36)/ 2, adjustedHeight + 2);
-		printf("Function executed in: %.2f seconds\n", cpu_time_used);
-
-		moveCursor((width - 30)/ 2, adjustedHeight * 3 - 2);
-		printf("Keys generated successfully!\n");
+		moveCursor((width - 33)/ 2, adjustedHeight + 7);
+		printf("Keys generated in: %.2f seconds", cpu_time_used);
 
 	} else {
 		moveCursor((width - 25)/ 2, adjustedHeight);
@@ -402,8 +580,35 @@ void generateKeys(int i) {
 	clearScreen();
 }
 
+void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic) {
+	char character;
+
+	Bignum encryptedChar, plainChar;
+	initBignum(&encryptedChar);
+	initBignum(&plainChar);
+
+	while ((character = fgetc(inputFilePtr)) != EOF) {
+		intToBignum(&plainChar, character, positive);
+
+		modularExponentiationBignum(&encryptedChar, &plainChar, ePublic, nPublic);
+
+		// printBignum(&encryptedChar);
+		// printf(",");
+
+		for (unsigned long long int i = encryptedChar.length - 1; i > 0; i--) {
+				fprintf(outputFilePtr, "%d", encryptedChar.digits[i]);
+		}
+		fprintf(outputFilePtr, "%d/", encryptedChar.digits[0]);
+
+		resetBignum(&encryptedChar);
+		resetBignum(&plainChar);
+	};
+
+	freeBignum(&encryptedChar);
+	freeBignum(&plainChar);
+}
+
 void encryptText() {
-  Bignum publicKey;
 	FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
 
 	char inputFilename[100];
@@ -434,8 +639,7 @@ void encryptText() {
 		if (confirm == 'Y' || confirm == 'y') {
 			clearScreen();
 
-
-			getInputFile(&inputFilePtr, inputFilename, width, adjustedHeight);
+			getInputFile(&inputFilePtr, inputFilename);
 
 			outputFilePtr = fopen(outputFilename, "w");
 			if (outputFilePtr == NULL) {
@@ -447,7 +651,7 @@ void encryptText() {
 			initBignum(&nPublic);
 			initBignum(&ePublic);
 
-			getKeys(&ePublic, &nPublic, width, adjustedHeight, "public");
+			getKeys(&ePublic, &nPublic, "public");
 
 			clearScreen();
 
@@ -460,43 +664,80 @@ void encryptText() {
 
 			clock_t start = clock();
 
-			// Encryption function call
-			encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
+			unsigned long long int fileSize = getFileSize(inputFilePtr);
+
+			loadingBar(0);
+			for (int i = 0; i < fileSize; i++) {
+				encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
+				loadingBar((i+1)*100/fileSize);
+			}
 			
 			clock_t end = clock();
 			double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 
 			moveCursor((width - 30)/ 2, adjustedHeight);
-			printf("Message encryption success!\n");
-			moveCursor((width - 30)/ 2, adjustedHeight + 1);
-			printf("Function executed in: %f seconds\n", cpu_time_used);
-			moveCursor((width - 30)/ 2, adjustedHeight + 2);
-			printf("Encrypted ____ characters in __ seconds\n");
+			printf("Message encryption success!");
+			moveCursor((width - (28 + fileSize + 7))/ 2, adjustedHeight + 2);
+			printf("Encrypted %llu bytes in %.3f seconds", fileSize, cpu_time_used);
 
 		} else {
-			clearScreen();
-			moveCursor((width - 25)/ 2, adjustedHeight);
-			printf("Message encryption failed!\n");
+		clearScreen();
+		moveCursor((width - 25)/ 2, adjustedHeight);
+		printf("Message encryption failed!\n");
 		}
-	}
+	} 
 	else {
 		clearScreen();
 		moveCursor((width - 25)/ 2, adjustedHeight);
 		printf("Message encryption failed!\n");
 	}
+	
+	freeAllBignums();
+
+	if (inputFilePtr != NULL) {
+		fclose(inputFilePtr);
+	}
+	if (outputFilePtr != NULL) {
+		fclose(outputFilePtr);
+	}
 
 	waitForDone();
 	clearScreen();
+}
 
-	freeAllBignums();
+void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic) {
+    char encryptedCharacter[100];
+    char decryptedCharacter;
 
-	fclose(inputFilePtr);
-	fclose(outputFilePtr);
+    Bignum decryptedChar, encryptedChar;
+    initBignum(&decryptedChar);
+    initBignum(&encryptedChar);
+
+    while (fscanf(inputFilePtr, "%[^/]/", encryptedCharacter) == 1) {
+        setBignum(&encryptedChar, encryptedCharacter, positive);
+
+        modularExponentiationBignum(&decryptedChar, &encryptedChar, dPrivate, nPublic);
+
+        decryptedCharacter = bignumToInt(&decryptedChar);
+
+        fprintf(outputFilePtr, "%c", decryptedCharacter);
+
+        resetBignum(&encryptedChar);
+        resetBignum(&decryptedChar);
+        encryptedCharacter[0] = '\0';
+        decryptedCharacter = '\0';
+    };
+
+    freeBignum(&decryptedChar);
+    freeBignum(&encryptedChar);
 }
 
 void decryptText() {
-	char* privateKEY = malloc(1000000000 * sizeof(char));
+	FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
 
+	char inputFilename[100];
+	char outputFilename[] = "dc.txt";
+	
 	clearScreen();
 	char* msgDecrypt[] = {"Decryption includes the message to be decrypted and", "the private key of the recipient. The txt file of the", "message must be in the same folder of the C program."};
 	int countDecrypt = sizeof(msgDecrypt) / sizeof(msgDecrypt[0]);
@@ -522,72 +763,70 @@ void decryptText() {
 		if (confirm == 'Y' || confirm == 'y') {
 			clearScreen();
 
-			do {
-				clearLines(adjustedHeight, adjustedHeight, width);
-				moveCursor((width - 38)/ 2, adjustedHeight);
-				printf("Enter file name: ");
-				fgets(fileName, sizeof(fileName), stdin);
+			getInputFile(&inputFilePtr, inputFilename);
 
-				// Remove the newline character at the end of the filename
-				if (fileName[strlen(fileName) - 1] == '\n') {
-					fileName[strlen(fileName) - 1] = '\0';
-				}
-		
-				// Try to open the file for reading and appending. If the file does not exist, it will be created.
-				decryptionFile = fopen(fileName, "a+");
-		
-				if (decryptionFile == NULL) {
-					// If the file could not be opened, print an error message
-					moveCursor((width - 38)/ 2, adjustedHeight + offsetY + 3);
-					printf("Could not open file. Please try again.\n");
-				}
-			} while (decryptionFile == NULL);
-
-			if (privateKEY == NULL) {
-					printf("Failed to allocate memory for privateKEY\n");
-					exit(1);
+			outputFilePtr = fopen(outputFilename, "w");
+			if (outputFilePtr == NULL) {
+				printf("Error opening output %s...\n", outputFilename);
+				exit(1);
 			}
-			moveCursor((width - 38)/ 2, adjustedHeight + 1);
-			printf("Enter private key: ");
-			scanf("%s", privateKEY);
+
+    	Bignum nPublic, dPrivate;
+    	initBignum(&nPublic);
+    	initBignum(&dPrivate);
+
+			getKeys(&dPrivate, &nPublic, "private");
+
+			clearScreen();
+
+			printf("\nBignum key d: ");
+			printBignum(&dPrivate);
+			printf("\nBignum key n: ");
+			printBignum(&nPublic);
 
 			clearScreen();
 
 			clock_t start = clock();
 
-			// At this point, function calls can be made to DECRYPT the MESSAGE. For now, the program will display a message that the MESSAGE IS DECRYPTED.
+			unsigned long long int fileSize = getFileSize(inputFilePtr);
 
-			fprintf(decryptionFile, "Decrypted message here\n");
-			fprintf(decryptionFile, "%s", privateKEY);
-			printf("Private key: %s\n", privateKEY);
+			loadingBar(0);
+			for ( int i = 0; i < fileSize; i++) {
+				decryptTextFile(inputFilePtr, outputFilePtr, &dPrivate, &nPublic);
+				loadingBar((i+1)*100/fileSize);
+			}
 			
 			clock_t end = clock();
 			double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 
 			moveCursor((width - 30)/ 2, adjustedHeight);
-			printf("Message encryption success!\n");
-			moveCursor((width - 30)/ 2, adjustedHeight + 1);
-			printf("Function executed in: %f seconds\n", cpu_time_used);
-			moveCursor((width - 30)/ 2, adjustedHeight + 2);
-			printf("Decrypted ____ characters in __ seconds\n");
+			printf("Message decryption success!");
+			moveCursor((width - (28 + fileSize + 7))/ 2, adjustedHeight + 2);
+			printf("Decrypted %llu bytes in %.3f seconds", fileSize, cpu_time_used);
 
-			fclose(decryptionFile);
 		} else {
-			clearScreen();
-			moveCursor((width - 25)/ 2, adjustedHeight);
-			printf("Message encryption failed!\n");
+		clearScreen();
+		moveCursor((width - 25)/ 2, adjustedHeight);
+		printf("Message encryption failed!\n");
 		}
 	}
 	else {
-			clearScreen();
-			moveCursor((width - 25)/ 2, adjustedHeight);
-			printf("Message encryption failed!\n");
+		clearScreen();
+		moveCursor((width - 25)/ 2, adjustedHeight);
+		printf("Message decryption failed!\n");
+	}
+	
+	freeAllBignums();
+
+	if (inputFilePtr != NULL) {
+		fclose(inputFilePtr);
+	}
+	if (outputFilePtr != NULL) {
+		fclose(outputFilePtr);
 	}
 
 	waitForDone();
 	clearScreen();
-
-	free(privateKEY);
 }
 
 void aboutProgram() {
