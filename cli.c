@@ -392,7 +392,33 @@ void encryptText() {
     fclose(outputFilePtr);
 }
 
+void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic) {
+    char character;
 
+    Bignum encryptedChar, plainChar;
+    initBignum(&encryptedChar);
+    initBignum(&plainChar);
+
+    while ((character = fgetc(inputFilePtr)) != EOF) {
+        intToBignum(&plainChar, character, positive);
+
+        modularExponentiationBignum(&encryptedChar, &plainChar, ePublic, nPublic);
+
+        printBignum(&encryptedChar);
+        printf(",");
+
+        for (unsigned long long int i = encryptedChar.length - 1; i > 0; i--) {
+            fprintf(outputFilePtr, "%d", encryptedChar.digits[i]);
+        }
+        fprintf(outputFilePtr, "%d/", encryptedChar.digits[0]);
+
+        resetBignum(&encryptedChar);
+        resetBignum(&plainChar);
+    };
+
+    freeBignum(&encryptedChar);
+    freeBignum(&plainChar);
+}
 
 
 
