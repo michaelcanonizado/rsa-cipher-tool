@@ -68,7 +68,7 @@ int calculateLeftPadding(int strLength) {
     return leftPadding;
 }
 
-void printMainHeader() {
+void printProgramHeader() {
     moveCursor(0,0);
     printf("\n");
     for (int i = 0; i < terminalWidth; i++) printf("-");
@@ -91,7 +91,7 @@ int main(void) {
     int optionsArrSize = sizeof(optionsArr)/sizeof(optionsArr[0]);
 
     do {
-        printMainHeader();
+        printProgramHeader();
 
 		for (i = 0; i < optionsArrSize; i++) {
 			printf("\n%d) - %s", i+1, optionsArr[i]);
@@ -172,10 +172,13 @@ void getTerminalSize() {
 }
 
 void getCursorPosition(int *x, int *y) {
+#ifdef _WIN32
     CONSOLE_SCREEN_BUFFER_INFO info;
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
     *x = info.dwCursorPosition.X;
     *y = info.dwCursorPosition.Y;
+#else
+#endif
 }
 
 void moveCursor(int x, int y) {
