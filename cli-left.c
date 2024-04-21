@@ -154,6 +154,7 @@ void clearPrompts() {
 		    printf("                            ");
         }
     }
+    moveCursor(0, 5);
 }
 
 void getTerminalSize() {
