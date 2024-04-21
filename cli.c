@@ -27,21 +27,6 @@ typedef struct {
 
 
 
-#define PRINT_CENTER(str) ({ \
-    int remainingWidth = terminalWidth - strlen(str); \
-    int leftPadding = remainingWidth % 2 ? (remainingWidth + 1) / 2 : remainingWidth / 2; \
-    printf("\n%*s%s", leftPadding, "", str); \
-})
-
-#define PRINT_FORMATS_CENTER(fmt, ...) ({ \
-    int charCount = snprintf(NULL, 0, fmt, __VA_ARGS__); \
-    int remainingWidth = terminalWidth - charCount; \
-    int leftPadding = remainingWidth % 2 ? (remainingWidth + 1) / 2 : remainingWidth / 2; \
-    printf("\n%*s" fmt, leftPadding, "", __VA_ARGS__); \
-})
-
-
-
 void generateKeys();
 void encryptText();
 void decryptText();
@@ -89,8 +74,8 @@ int main(void) {
     int userMenuState = 0;
     int i;
 
-    char promptStr[] = "Enter number: ";
     char *optionsArr[] = {"Generate Keys", "Encrypt Text", "Decrypt Text", "About","Exit"};
+    char promptStr[] = "Enter number: ";
     int optionsArrSize = sizeof(optionsArr)/sizeof(optionsArr[0]);
     int optionsLeftPadding = calculateLeftPadding(strlen(promptStr));
 
@@ -275,7 +260,7 @@ void generateKeys() {
 
     clearScreen();
     moveCursor(0, startingHeight);
-    PRINT_FORMATS_CENTER("Generating %d bit keys...", chosenKeySize);
+    printf("%*sGenerating %d bit keys...", calculateLeftPadding(strlen("Generating 256 bit keys...")), "", chosenKeySize);
 
     pPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
     qPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
