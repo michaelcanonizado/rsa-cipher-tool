@@ -67,6 +67,16 @@ int calculateLeftPadding(int strLength) {
     return leftPadding;
 }
 
+void printMainHeader() {
+    printf("\n");
+    for (int i = 0; i < terminalWidth; i++) printf("-");
+
+    printf("\n%*sRSA Cipher Tool", calculateLeftPadding(strlen("RSA Cipher Tool")), "");
+
+    printf("\n");
+    for (int i = 0; i < terminalWidth; i++) printf("-");
+    printf("\n");
+}
 
 int main(void) {
     getTerminalSize();
@@ -78,6 +88,8 @@ int main(void) {
     int optionsArrSize = sizeof(optionsArr)/sizeof(optionsArr[0]);
 
     do {
+        printMainHeader();
+
 		for (i = 0; i < optionsArrSize; i++) {
 			printf("\n%d) - %s", i+1, optionsArr[i]);
 		}
