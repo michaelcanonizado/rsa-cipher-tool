@@ -38,9 +38,7 @@ typedef struct {
     int charCount = snprintf(NULL, 0, fmt, __VA_ARGS__); \
     int remainingWidth = terminalWidth - charCount; \
     int leftPadding = remainingWidth % 2 ? (remainingWidth + 1) / 2 : remainingWidth / 2; \
-    int rightPadding = remainingWidth % 2 ? (remainingWidth - 1) / 2 : remainingWidth / 2; \
-    printf("%*s" fmt "%*s\n", leftPadding, "", \
-           __VA_ARGS__, rightPadding, ""); \
+    printf("\n%*s" fmt, leftPadding, "", __VA_ARGS__); \
 })
 
 
@@ -89,8 +87,8 @@ int main(void) {
     int userMenuState = 0;
     int i;
 
-    PRINT_FORMATS_CENTER("Width: %d", terminalWidth);
-    PRINT_FORMATS_CENTER("Height: %d", terminalHeight);
+    PRINT_FORMATS_CENTER("[Width: %d]", terminalWidth);
+    PRINT_FORMATS_CENTER("[Height: %d]", terminalHeight);
 
     char promptStr[] = "Enter number: ";
     char *optionsArr[] = {"Generate Keys", "Encrypt Text", "Decrypt Text", "About","Exit"};
