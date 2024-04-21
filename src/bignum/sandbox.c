@@ -13,7 +13,7 @@ int main() {
     Bignum y;
     Bignum z;
 
-    printf("\n......................INITIALIZEING BIGNUMS.................\n");
+    printf("\n......................INITIALIZING BIGNUMS.................\n");
 
     initBignum(&num);
     initBignum(&x);
