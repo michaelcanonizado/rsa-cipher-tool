@@ -20,6 +20,8 @@ int terminalWidth = 0;
 int terminalHeight = 0;
 int startingHeight = 0;
 int currLeftPadding = 0;
+int prevCursorX = 0;
+int prevCursorY = 0;
 
 typedef struct {
     char name[50];
@@ -40,6 +42,7 @@ void aboutProject();
 void clearScreen();
 void getTerminalSize();
 void moveCursor(int x, int y);
+void getCursorPosition(int *x, int *y);
 void sleepProgram(int milliseconds);
 void clearLines(int startLine, int endLine);
 void clearWord(int y, int startCol, int endCol);
@@ -151,8 +154,16 @@ void getTerminalSize() {
 #endif
 }
 
+void getCursorPosition(int *x, int *y) {
+    CONSOLE_SCREEN_BUFFER_INFO info;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
+    *x = info.dwCursorPosition.X;
+    *y = info.dwCursorPosition.Y;
+}
+
 void moveCursor(int x, int y) {
 #ifdef _WIN32
+    getCursorPosition(&prevCursorX, &prevCursorY);
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	COORD pos = {x, y};
 	SetConsoleCursorPosition(hConsole, pos);
@@ -443,6 +454,8 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename) {
         *inputFilePtr = fopen(inputFilename, "r");
 
         if (*inputFilePtr != NULL) {
+            clearWord(terminalHeight - 7, 0, terminalWidth);
+            moveCursor(prevCursorX, prevCursorY);
             break;
         } else {
             clearWord(startingHeight, currLeftPadding + strlen("Enter the name of the input file: "), terminalWidth);
