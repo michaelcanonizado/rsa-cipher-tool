@@ -69,6 +69,7 @@ int calculateLeftPadding(int strLength) {
 }
 
 void printMainHeader() {
+    moveCursor(0,0);
     printf("\n");
     for (int i = 0; i < terminalWidth; i++) printf("-");
 
