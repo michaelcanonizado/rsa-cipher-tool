@@ -39,7 +39,6 @@ void aboutProject();
 void clearScreen();
 void getTerminalSize();
 void moveCursor(int x, int y);
-void waitForDone();
 void sleepProgram(int milliseconds);
 void clearLines(int startLine, int endLine, int width);
 void promptExitConfirm();
@@ -156,35 +155,6 @@ void moveCursor(int x, int y) {
 #else
 	printf("\033[%d;%dH", y, x);
 #endif
-}
-
-void waitForDone() {
-	char done[100];
-	do {
-		clearLines(terminalHeight - 2, terminalHeight - 2, terminalWidth);
-		moveCursor((terminalWidth - 21)/ 2, terminalHeight - 2);
-		printf("Enter DONE to back: ");
-		// Get the user's input from the standard input stream	
-		fgets(done, sizeof(done), stdin); 
-
-		// Remove the newline character at the end of the input
-		if (done[strlen(done) - 1] == '\n') {
-			done[strlen(done) - 1] = '\0';
-		}
-
-		// If the input was just a newline character, continue with the next iteration
-		if (strlen(done) == 0) {
-			continue;
-		}
-
-		// Convert the user's input to lowercase. This allows the user to enter "done" or "DONE" to exit the loop in any case.
-		for(int i = 0; done[i]; i++){
-			done[i] = tolower(done[i]);
-		}
-
-		moveCursor((terminalWidth - 21)/ 2, terminalHeight - 2);
-
-	} while (strcmp(done, "done") != 0);
 }
 
 void sleepProgram(int milliseconds) {
