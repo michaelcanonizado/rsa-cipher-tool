@@ -391,12 +391,12 @@ void encryptText() {
 
     getKeys(&ePublic, &nPublic);
 
-    printf("\nBignum key e: ");
-    printBignum(&ePublic);
-    printf("\nBignum key n: ");
-    printBignum(&nPublic);
+    // printf("\nBignum key e: ");
+    // printBignum(&ePublic);
+    // printf("\nBignum key n: ");
+    // printBignum(&nPublic);
 
-    printf("\n\nEncrypting %s...\n\n", inputFilename);
+    printf("\n\n%*sEncrypting %s...\n\n", currLeftPadding, "" ,inputFilename);
 
     encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
 
@@ -418,8 +418,8 @@ void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, B
 
         modularExponentiationBignum(&encryptedChar, &plainChar, ePublic, nPublic);
 
-        printBignum(&encryptedChar);
-        printf(",");
+        // printBignum(&encryptedChar);
+        // printf(",");
 
         for (unsigned long long int i = encryptedChar.length - 1; i > 0; i--) {
             fprintf(outputFilePtr, "%d", encryptedChar.digits[i]);
