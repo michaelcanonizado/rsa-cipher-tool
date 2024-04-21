@@ -40,7 +40,8 @@ void clearScreen();
 void getTerminalSize();
 void moveCursor(int x, int y);
 void sleepProgram(int milliseconds);
-void clearLines(int startLine, int endLine, int width);
+void clearLines(int startLine, int endLine);
+void clearWord(int y, int startCol, int endCol);
 void promptExitConfirm();
 
 int getMaxStringLengthInArray(char *stringsArr[], int stringsCount) {
@@ -167,20 +168,27 @@ void sleepProgram(int milliseconds) {
 #endif
 }
 
-void clearLines(int startLine, int endLine, int width) {
+void clearLines(int startLine, int endLine) {
 	for (int i = startLine; i <= endLine; i++) {
 		moveCursor(0, i);
-		for (int j = 0; j < width; j++) {
+		for (int j = 0; j < terminalWidth; j++) {
 			printf(" ");
 		}
 	}
+}
+
+void clearWord(int y, int startCol, int endCol) {
+    moveCursor(startCol, y);
+    for (int i = 0; i < endCol - startCol; i++) {
+			printf(" ");
+    }
 }
 
 void promptExitConfirm() {
 	char userInput[100];
 
 	do {
-		clearLines(terminalHeight - 5, terminalHeight - 5, terminalWidth);
+		clearLines(terminalHeight - 5, terminalHeight - 5);
 		moveCursor((terminalWidth - 21)/ 2, terminalHeight - 5);
         // Ask user for confirmation
 		printf("Enter DONE to go back: ");
@@ -422,8 +430,11 @@ void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, B
 }
 
 void getInputFile(FILE **inputFilePtr, char *inputFilename) {
+    int promptLeftPadding = calculateLeftPadding(strlen("Enter the name of the input file: "));
+
     while (1) {
-        printf("\nEnter the name of the input file: ");
+        moveCursor(0, startingHeight);
+        printf("%*sEnter the name of the input file: ", promptLeftPadding, "");
         scanf("%s", inputFilename);
 
         *inputFilePtr = fopen(inputFilename, "r");
@@ -431,11 +442,14 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename) {
         if (*inputFilePtr != NULL) {
             break;
         } else {
-            printf("Could not open \"%s\". Please try again...", inputFilename);
+            clearWord(startingHeight, promptLeftPadding + strlen("Enter the name of the input file: "), terminalWidth);
+
+            moveCursor(0, terminalHeight - 7);
+            printf("%*sCould not open \"%s\". Please try again...", promptLeftPadding, "", inputFilename);
         }
     }
 
-    printf("File opened successfully...");
+    printf("%*sFile opened successfully...", promptLeftPadding, "");
 }
 
 void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic) {
