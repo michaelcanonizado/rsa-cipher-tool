@@ -80,6 +80,11 @@ void printProgramHeader() {
     printf("\n");
 }
 
+void printLineBreak() {
+    printf("\n");
+    for (int i = 0; i < terminalWidth; i++) printf("-");
+}
+
 int main(void) {
     clearScreen();
     getTerminalSize();
@@ -275,7 +280,7 @@ void generateKeys() {
     clearPrompts();
     printf("\nKey length: %d bit",  chosenKeySize);
     printf("\nGenerating: ");
-    printf("[=========================================] 100%%)");
+    printf("[=========================================] (100%%)");
 
     pPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
     qPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
@@ -352,7 +357,10 @@ void generateKeys() {
 
     int keyPromptLength = 13 + dPrivate.length + nPublic.length;
 
-    printf("\n\nPUBLIC KEY: ");
+    printf("\n");
+    // printLineBreak();
+
+    printf("\nPUBLIC KEY: ");
     printBignum(&ePublic);
     printf(".");
     printBignum(&nPublic);
@@ -361,6 +369,10 @@ void generateKeys() {
     printBignum(&dPrivate);
     printf(".");
     printBignum(&nPublic);
+
+    // printLineBreak();
+
+    printf("\n\nPlease make sure to safely secure and properly copy the keys above!");
 
     freeAllBignums();
 }
