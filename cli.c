@@ -420,7 +420,22 @@ void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, B
     freeBignum(&plainChar);
 }
 
+void getInputFile(FILE **inputFilePtr, char *inputFilename) {
+    while (1) {
+        printf("\nEnter the name of the input file: ");
+        scanf("%s", inputFilename);
 
+        *inputFilePtr = fopen(inputFilename, "r");
+
+        if (*inputFilePtr != NULL) {
+            break;
+        } else {
+            printf("Could not open \"%s\". Please try again...", inputFilename);
+        }
+    }
+
+    printf("File opened successfully...");
+}
 
 
 
