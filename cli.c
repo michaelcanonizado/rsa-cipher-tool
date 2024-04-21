@@ -32,8 +32,8 @@ void encryptText();
 void decryptText();
 void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
 void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);
-void getInputFile(FILE **inputFilePtr, char *inputFilename);
-void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic);
+void getInputFile(int promptLeftPadding, FILE **inputFilePtr, char *inputFilename);
+void getKeys(int promptLeftPadding, Bignum *ePublicOrDPrivate, Bignum *nPublic);
 void aboutProject();
 
 void clearScreen();
@@ -367,17 +367,17 @@ void generateKeys() {
 void encryptText() {
     clearScreen();
 
+    int promptLeftPadding = calculateLeftPadding(strlen("Enter the name of the input file: "));
+
     FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
 
     char inputFilename[100];
     char outputFilename[] = "en.txt";
 
-    getInputFile(&inputFilePtr, inputFilename);
+    getInputFile(promptLeftPadding, &inputFilePtr, inputFilename);
 
     outputFilePtr = fopen(outputFilename, "w");
     if (outputFilePtr == NULL) {
-        int promptLeftPadding = calculateLeftPadding(strlen("Could not open output file \"en.txt\". Please try again..."));
-
         moveCursor(0, terminalHeight - 7);
         printf("%*sCould not open output file \"%s\". Please try again...", promptLeftPadding, "", inputFilename);
 
@@ -388,7 +388,7 @@ void encryptText() {
     initBignum(&nPublic);
     initBignum(&ePublic);
 
-    getKeys(&ePublic, &nPublic);
+    getKeys(promptLeftPadding, &ePublic, &nPublic);
 
     printf("\nBignum key e: ");
     printBignum(&ePublic);
@@ -433,9 +433,7 @@ void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, B
     freeBignum(&plainChar);
 }
 
-void getInputFile(FILE **inputFilePtr, char *inputFilename) {
-    int promptLeftPadding = calculateLeftPadding(strlen("Enter the name of the input file: "));
-
+void getInputFile(int promptLeftPadding, FILE **inputFilePtr, char *inputFilename) {
     while (1) {
         moveCursor(0, startingHeight);
         printf("%*sEnter the name of the input file: ", promptLeftPadding, "");
@@ -456,7 +454,7 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename) {
     printf("%*sFile opened successfully...", promptLeftPadding, "");
 }
 
-void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic) {
+void getKeys(int promptLeftPadding, Bignum *ePublicOrDPrivate, Bignum *nPublic) {
     char key[5000];
     char firstKey[2500];
     char secondKey[2500];
@@ -464,7 +462,7 @@ void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic) {
     int flagIndex;
 
     printf("\n");
-    printf("\nPlease enter the private key: ");
+    printf("%*sPlease enter the private key: ", promptLeftPadding, "");
     scanf("%s", key);
 
     while(1) {
