@@ -83,11 +83,11 @@ int main(void) {
     clearScreen();
     getTerminalSize();
 
+    printf("\n%*sWidth: %d", calculateLeftPadding(strlen("Width")), "", terminalWidth);
+	printf("\n%*sHeight: %d", calculateLeftPadding(strlen("Height")), "", terminalHeight);
+
     int userMenuState = 0;
     int i;
-
-    PRINT_FORMATS_CENTER("[Width: %d]", terminalWidth);
-    PRINT_FORMATS_CENTER("[Height: %d]", terminalHeight);
 
     char promptStr[] = "Enter number: ";
     char *optionsArr[] = {"Generate Keys", "Encrypt Text", "Decrypt Text", "About","Exit"};
