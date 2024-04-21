@@ -376,7 +376,11 @@ void encryptText() {
 
     outputFilePtr = fopen(outputFilename, "w");
     if (outputFilePtr == NULL) {
-        printf("Error opening output %s...\n", outputFilename);
+        int promptLeftPadding = calculateLeftPadding(strlen("Could not open output file \"en.txt\". Please try again..."));
+
+        moveCursor(0, terminalHeight - 7);
+        printf("%*sCould not open output file \"%s\". Please try again...", promptLeftPadding, "", inputFilename);
+
         exit(1);
     }
 
