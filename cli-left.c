@@ -372,7 +372,7 @@ void generateKeys() {
 
     // printLineBreak();
 
-    printf("\n\nPlease make sure to safely secure and properly copy the keys above!");
+    printf("\n\nRemember: please make sure to safely secure and properly copy the keys above!");
 
     freeAllBignums();
 }
