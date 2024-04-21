@@ -30,8 +30,7 @@ typedef struct {
 #define PRINT_CENTER(str) ({ \
     int remainingWidth = terminalWidth - strlen(str); \
     int leftPadding = remainingWidth % 2 ? (remainingWidth + 1) / 2 : remainingWidth / 2; \
-    int rightPadding = remainingWidth % 2 ? (remainingWidth - 1) / 2 : remainingWidth / 2; \
-    printf("\n%*s%s%*s", leftPadding, "", str, rightPadding, ""); \
+    printf("\n%*s%s", leftPadding, "", str); \
 })
 
 #define PRINT_FORMATS_CENTER(fmt, ...) ({ \
