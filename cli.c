@@ -72,8 +72,8 @@ int getMaxStringLengthInArray(char *stringsArr[], int stringsCount) {
     return maxLength;
 }
 
-int calculateLeftPadding(int width, int strLength) {
-    int remainingWidth = width - strLength;
+int calculateLeftPadding(int strLength) {
+    int remainingWidth = terminalWidth - strLength;
     int leftPadding = remainingWidth % 2 ? (remainingWidth + 1) / 2 : remainingWidth / 2;
     return leftPadding;
 }
@@ -92,7 +92,7 @@ int main(void) {
     char promptStr[] = "Enter number: ";
     char *optionsArr[] = {"Generate Keys", "Encrypt Text", "Decrypt Text", "About","Exit"};
     int optionsArrSize = sizeof(optionsArr)/sizeof(optionsArr[0]);
-    int optionsLeftPadding = calculateLeftPadding(terminalWidth, strlen(promptStr));
+    int optionsLeftPadding = calculateLeftPadding(strlen(promptStr));
 
     do {
 		for (i = 0; i < optionsArrSize; i++) {
@@ -101,7 +101,7 @@ int main(void) {
 		}
 
 		moveCursor(0, startingHeight + (i + 2));
-        printf("%*s%s", calculateLeftPadding(terminalWidth, strlen(promptStr)), "", promptStr);
+        printf("%*s%s", calculateLeftPadding(strlen(promptStr)), "", promptStr);
 		scanf("%d", &userMenuState);
 		while (getchar() != '\n');
 
@@ -266,10 +266,10 @@ void generateKeys() {
     printf("\nPlease choose a key size: ");
     for (int i = 0; i < sizeof(keySizeOptions)/sizeof(keySizeOptions[0]); i++) {
         moveCursor(0, startingHeight + i);
-        printf("\n%*s%d) - %s", calculateLeftPadding(terminalWidth, strlen(promptStr)), "", i+1, keySizeOptions[i].name);
+        printf("\n%*s%d) - %s", calculateLeftPadding(strlen(promptStr)), "", i+1, keySizeOptions[i].name);
     }
 
-    printf("\n\n%*s%s", calculateLeftPadding(terminalWidth, strlen(promptStr)), "", promptStr);
+    printf("\n\n%*s%s", calculateLeftPadding(strlen(promptStr)), "", promptStr);
     scanf("%d", &chosenKeySize);
     chosenKeySize = keySizeOptions[chosenKeySize-1].size;
 
@@ -386,12 +386,12 @@ void generateKeys() {
 
     int keyPromptLength = 13 + dPrivate.length + nPublic.length;
 
-    printf("\n\n%*s%s", calculateLeftPadding(terminalWidth, keyPromptLength), "", "PUBLIC KEY: ");
+    printf("\n\n%*s%s", calculateLeftPadding(keyPromptLength), "", "PUBLIC KEY: ");
     printBignum(&ePublic);
     printf(".");
     printBignum(&nPublic);
 
-    printf("\n%*s%s", calculateLeftPadding(terminalWidth, keyPromptLength), "", "PRIVATE KEY: ");
+    printf("\n%*s%s", calculateLeftPadding(keyPromptLength), "", "PRIVATE KEY: ");
     printBignum(&dPrivate);
     printf(".");
     printBignum(&nPublic);
