@@ -93,6 +93,7 @@ int main(void) {
     do {
         printProgramHeader();
 
+        printf("\nWhat do you want to do?\n");
 		for (i = 0; i < optionsArrSize; i++) {
 			printf("\n%d) - %s", i+1, optionsArr[i]);
 		}
@@ -148,13 +149,15 @@ void clearScreen() {
 }
 
 void clearPrompts() {
-    moveCursor(0, 5);
-    for (int i = 5; i < terminalWidth; i++) {
-        for (int j = 0; j < terminalHeight/2; j += 27) {
-		    printf("                            ");
-        }
-    }
-    moveCursor(0, 5);
+    // moveCursor(0, 5);
+    // for (int i = 5; i < terminalWidth; i++) {
+    //     for (int j = 0; j < terminalHeight/2; j += 27) {
+	// 	    printf("                            ");
+    //     }
+    // }
+    // moveCursor(0, 5);
+    clearScreen();
+    printProgramHeader();
 }
 
 void getTerminalSize() {
