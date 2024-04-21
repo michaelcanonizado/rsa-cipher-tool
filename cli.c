@@ -407,7 +407,8 @@ void encryptText() {
     // printf("\nBignum key n: ");
     // printBignum(&nPublic);
 
-    printf("\n%*sEncrypting %s...\n\n", currLeftPadding, "" ,inputFilename);
+    printf("%*sEncrypting %s: ", currLeftPadding, "" ,inputFilename);
+    printf("[=======================================]");
 
     encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
 
@@ -464,8 +465,6 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename) {
             printf("%*sCould not open \"%s\". Please try again...", currLeftPadding, "", inputFilename);
         }
     }
-
-    printf("%*sFile opened successfully...", currLeftPadding, "");
 }
 
 void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic) {
@@ -478,7 +477,7 @@ void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic) {
     while(1) {
         int flagCount = 0, i;
 
-        printf("\n\n%*sPlease enter the public key: ", currLeftPadding, "");
+        printf("%*sPlease enter the public key: ", currLeftPadding, "");
         scanf("%s", key);
 
         int tempCursorX, tempCursorY;
