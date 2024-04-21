@@ -40,6 +40,7 @@ void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic);
 void aboutProject();
 
 void clearScreen();
+void clearPrompts();
 void getTerminalSize();
 void moveCursor(int x, int y);
 void getCursorPosition(int *x, int *y);
@@ -79,6 +80,7 @@ void printMainHeader() {
 }
 
 int main(void) {
+    clearScreen();
     getTerminalSize();
 
     int userMenuState = 0;
@@ -100,9 +102,10 @@ int main(void) {
 
         switch (userMenuState) {
 			case 1:
+                clearPrompts();
                 generateKeys();
                 promptExitConfirm();
-                clearScreen();
+                clearPrompts();
 				break;
 			case 2:
                 encryptText();
@@ -141,6 +144,15 @@ void clearScreen() {
 	printf("\033[2J");
 	printf("\033[H");
 #endif
+}
+
+void clearPrompts() {
+    moveCursor(0, 5);
+    for (int i = 5; i < terminalWidth; i++) {
+        for (int j = 0; j < terminalHeight/2; j += 27) {
+		    printf("                            ");
+        }
+    }
 }
 
 void getTerminalSize() {
@@ -230,7 +242,7 @@ void promptExitConfirm() {
 
 
 void generateKeys() {
-    clearScreen();
+    moveCursor(0, 4);
 
     KeySize keySizeOptions[] = {
         {"16 bit", 16},
