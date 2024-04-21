@@ -268,7 +268,7 @@ void generateKeys() {
     scanf("%d", &chosenKeySize);
     chosenKeySize = keySizeOptions[chosenKeySize-1].size;
 
-    clearScreen();
+    clearPrompts();
     printf("\nGenerating %d bit keys...",  chosenKeySize);
 
     pPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
