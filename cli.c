@@ -357,7 +357,8 @@ void generateKeys() {
 }
 
 void encryptText() {
-    printf("\n.........................................\n");
+    clearScreen();
+
     FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
 
     char inputFilename[100];
