@@ -407,7 +407,7 @@ void encryptText() {
     // printf("\nBignum key n: ");
     // printBignum(&nPublic);
 
-    printf("\n\n%*sEncrypting %s...\n\n", currLeftPadding, "" ,inputFilename);
+    printf("\n%*sEncrypting %s...\n\n", currLeftPadding, "" ,inputFilename);
 
     encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
 
@@ -481,6 +481,9 @@ void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic) {
         printf("\n\n%*sPlease enter the public key: ", currLeftPadding, "");
         scanf("%s", key);
 
+        int tempCursorX, tempCursorY;
+        getCursorPosition(&tempCursorX, &tempCursorY);
+
         for (i = 0; i < strlen(key); i++) {
             if (key[i] == flag) {
                 flagIndex = i;
@@ -489,6 +492,9 @@ void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic) {
         }
 
         if (flagCount == 1) {
+            clearWord(terminalHeight - 7, 0, terminalWidth);
+            clearWord(terminalHeight - 6, 0, terminalWidth);
+            moveCursor(tempCursorX, tempCursorY);
             break;
         }
 
