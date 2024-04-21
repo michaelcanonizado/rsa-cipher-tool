@@ -96,6 +96,8 @@ int main(void) {
                 clearScreen();
 				break;
 			case 2:
+                encryptText();
+                promptExitConfirm();
                 clearScreen();
 				break;
 			case 3:
@@ -353,3 +355,46 @@ void generateKeys() {
 
     freeAllBignums();
 }
+
+void encryptText() {
+    printf("\n.........................................\n");
+    FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
+
+    char inputFilename[100];
+    char outputFilename[] = "en.txt";
+
+    getInputFile(&inputFilePtr, inputFilename);
+
+    outputFilePtr = fopen(outputFilename, "w");
+    if (outputFilePtr == NULL) {
+        printf("Error opening output %s...\n", outputFilename);
+        exit(1);
+    }
+
+    Bignum nPublic, ePublic;
+    initBignum(&nPublic);
+    initBignum(&ePublic);
+
+    getKeys(&ePublic, &nPublic);
+
+    printf("\nBignum key e: ");
+    printBignum(&ePublic);
+    printf("\nBignum key n: ");
+    printBignum(&nPublic);
+
+    printf("\n\nEncrypting %s...\n\n", inputFilename);
+
+    encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
+
+    freeAllBignums();
+
+    fclose(inputFilePtr);
+    fclose(outputFilePtr);
+}
+
+
+
+
+
+
+
