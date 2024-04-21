@@ -69,28 +69,20 @@ int calculateLeftPadding(int strLength) {
 
 
 int main(void) {
-    clearScreen();
     getTerminalSize();
-
-    printf("\n%*sWidth: %d", calculateLeftPadding(strlen("Width")), "", terminalWidth);
-	printf("\n%*sHeight: %d", calculateLeftPadding(strlen("Height")), "", terminalHeight);
 
     int userMenuState = 0;
     int i;
 
     char *optionsArr[] = {"Generate Keys", "Encrypt Text", "Decrypt Text", "About","Exit"};
-    char promptStr[] = "Enter number: ";
     int optionsArrSize = sizeof(optionsArr)/sizeof(optionsArr[0]);
-    int optionsLeftPadding = calculateLeftPadding(strlen(promptStr));
 
     do {
 		for (i = 0; i < optionsArrSize; i++) {
-            moveCursor(0, startingHeight + i);
-			printf("\n%*s%d) - %s", optionsLeftPadding, "", i+1, optionsArr[i]);
+			printf("\n%d) - %s", i+1, optionsArr[i]);
 		}
 
-		moveCursor(0, startingHeight + (i + 2));
-        printf("%*s%s", calculateLeftPadding(strlen(promptStr)), "", promptStr);
+        printf("\nEnter number: ");
 		scanf("%d", &userMenuState);
 		while (getchar() != '\n');
 
