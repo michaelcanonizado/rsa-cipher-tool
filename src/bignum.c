@@ -358,7 +358,7 @@ void freeAllBignums() {
     }
 
     // Print allocation results
-    printf("\n\nAllocated %llu Bignums, Freed %llu Bignums, Remaining unfreed: %llu", ALLOCATED_BIGNUMS_COUNT, FREED_BIGNUMS_COUNT, ALLOCATED_BIGNUMS_COUNT - FREED_BIGNUMS_COUNT);
+    // printf("\n\nAllocated %llu Bignums, Freed %llu Bignums, Remaining unfreed: %llu", ALLOCATED_BIGNUMS_COUNT, FREED_BIGNUMS_COUNT, ALLOCATED_BIGNUMS_COUNT - FREED_BIGNUMS_COUNT);
 }
 
 void freeBignum(Bignum *num) {
