@@ -437,5 +437,45 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename) {
     printf("File opened successfully...");
 }
 
+void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic) {
+    char key[5000];
+    char firstKey[2500];
+    char secondKey[2500];
+    char flag = '.';
+    int flagIndex;
+
+    printf("\n");
+    printf("\nPlease enter the private key: ");
+    scanf("%s", key);
+
+    while(1) {
+        int flagCount = 0, i;
+
+        for (i = 0; i < strlen(key); i++) {
+            if (key[i] == flag) {
+                flagIndex = i;
+                flagCount++;
+            }
+        }
+
+        if (flagCount == 1) {
+            break;
+        }
+
+        printf("Invalid key! Please make sure you properly copied the key generated...");
+        printf("\nPlease enter the private key: ");
+        scanf("%s", key);
+    }
+
+    strncpy(firstKey, key, flagIndex);
+    firstKey[flagIndex] = '\0';
+    strcpy(secondKey, key + flagIndex + 1);
+    // printf("String before '.': %s\n", firstKey);
+    // printf("String after '.': %s\n", secondKey);
+
+    setBignum(ePublicOrDPrivate, firstKey, positive);
+    setBignum(nPublic, secondKey, positive);
+}
+
 
 
