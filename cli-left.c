@@ -107,36 +107,40 @@ int main(void) {
 		scanf("%d", &userMenuState);
 		while (getchar() != '\n');
 
-        switch (userMenuState) {
-			case 1:
-                clearPrompts();
-                generateKeys();
-                clearPrompts();
-				break;
-			case 2:
-                encryptText();
-                promptExitConfirm();
-                clearScreen();
-				break;
-			case 3:
-                clearScreen();
-				break;
-            case 4:
-                clearScreen();
-				break;
-            case 5:
-            	clearScreen();
-				printf("Exiting program...\n");
-                freeAllBignums();
-				sleepProgram(500);
-                return 0;
-            default:
-                clearScreen();
-				printf("Please enter a number between 1 and 5.");
-				sleepProgram(1000);
-				clearScreen();
-                break;
+        if (userMenuState > 0 && userMenuState <= optionsArrSize) {
+            switch (userMenuState) {
+			    case 1:
+                    clearPrompts();
+                    generateKeys();
+                    clearPrompts();
+			    	break;
+			    case 2:
+                    encryptText();
+                    promptExitConfirm();
+                    clearScreen();
+			    	break;
+			    case 3:
+                    clearScreen();
+				    break;
+                case 4:
+                    clearScreen();
+				    break;
+                case 5:
+            	    clearScreen();
+				    printf("Exiting program...\n");
+                    freeAllBignums();
+				    sleepProgram(500);
+                    return 0;
+                default:
+                    clearScreen();
+				    printf("Please enter a number between 1 and 5.");
+				    sleepProgram(1000);
+				    clearScreen();
+                    break;
+            }
         }
+
+        clearPrompts();
 
     } while (userMenuState != optionsArrSize);
 
