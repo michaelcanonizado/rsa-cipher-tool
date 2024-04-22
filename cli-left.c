@@ -464,8 +464,7 @@ void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, B
 
 void getInputFile(FILE **inputFilePtr, char *inputFilename) {
     while (1) {
-        moveCursor(0, startingHeight);
-        printf("%*sEnter the name of the input file: ", currLeftPadding, "");
+        printf("Enter the name of the input file: ");
         scanf("%s", inputFilename);
 
         *inputFilePtr = fopen(inputFilename, "r");
