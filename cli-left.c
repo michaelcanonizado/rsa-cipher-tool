@@ -17,7 +17,6 @@
 
 int terminalWidth = 0;
 int terminalHeight = 0;
-int startingHeight = 0;
 int currLeftPadding = 0;
 int prevCursorX = 0;
 int prevCursorY = 0;
@@ -138,15 +137,18 @@ int main(void) {
 				    sleepProgram(500);
                     return 0;
                 default:
-                    clearScreen();
-				    printf("Please enter a number between 1 and 5.");
-				    sleepProgram(1000);
-				    clearScreen();
                     break;
             }
+        } else {
+            char errorPrompt[] = "Please enter a number between 1 and 5.";
+            clearPrompts();
+            moveCursor(0, 9);
+		    printf("%*s%s",
+            calculateLeftPadding(strlen(errorPrompt)), "", errorPrompt);
+		    sleepProgram(1500);
+            moveCursor(prevCursorX, prevCursorY);
+		    clearPrompts();
         }
-
-        clearPrompts();
 
     } while (userMenuState != optionsArrSize);
 
@@ -180,7 +182,6 @@ void getTerminalSize() {
 	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
 	terminalWidth = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 	terminalHeight = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
-    startingHeight = terminalHeight / 3;
 #else
 	struct winsize size;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
