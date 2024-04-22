@@ -401,8 +401,6 @@ void generateKeys() {
 void encryptText() {
     clearPrompts();
 
-    currLeftPadding = calculateLeftPadding(strlen("Enter the name of the input file: "));
-
     FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
 
     char inputFilename[100];
