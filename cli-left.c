@@ -96,6 +96,8 @@ int main(void) {
 		}
 
         printf("\n\nEnter number: ");
+        int tempCursorX, tempCursorY;
+        getCursorPosition(&tempCursorX, &tempCursorY);
 		scanf("%d", &userMenuState);
 		while (getchar() != '\n');
 
@@ -128,15 +130,18 @@ int main(void) {
                 default:
                     break;
             }
-        } else {
-            char errorPrompt[] = "Please enter a number between 1 and 5.";
-            clearPrompts();
-            moveCursor(0, 9);
-		    printf("%*s%s",
-            calculateLeftPadding(strlen(errorPrompt)), "", errorPrompt);
-		    sleepProgram(1500);
-            moveCursor(prevCursorX, prevCursorY);
-		    clearPrompts();
+        } else {         
+            clearWord(tempCursorY, strlen("Enter number: "), terminalWidth);
+
+            moveCursor(0, terminalHeight - 7);
+
+            printf("%*sInvalid number!", 
+            calculateLeftPadding(strlen("Invalid number!")), "");
+
+            printf("\n%*sPlease choose a number between 1 - 5.", 
+            calculateLeftPadding(strlen("Please choose a number between 1 - 5.")), "");
+
+            moveCursor(0, tempCursorY);
         }
 
     } while (userMenuState != optionsArrSize);
