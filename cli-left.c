@@ -438,6 +438,70 @@ void encryptText() {
     promptExitConfirm();
 }
 
+void decryptText() {
+    clearPrompts();
+
+    FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
+
+    char inputFilename[100];
+    char outputFilename[] = "dc.txt";
+
+    getInputFile(&inputFilePtr, inputFilename);
+
+    outputFilePtr = fopen(outputFilename, "w");
+    if (outputFilePtr == NULL) {
+        printf("Could not open output file \"%s\". Please try again...", inputFilename);
+        exit(1);
+    }
+
+    Bignum nPublic, dPrivate;
+    initBignum(&dPrivate);
+    initBignum(&nPublic);
+
+    getKeys(decrypt, &dPrivate, &nPublic);
+    printf("\nDecryption progress: [=======================================] (100%%)");
+
+    decryptTextFile(inputFilePtr, outputFilePtr, &dPrivate, &nPublic);
+
+    printf("\nDecryption complete!");
+
+    freeAllBignums();
+
+    fclose(inputFilePtr);
+    fclose(outputFilePtr);
+
+    promptExitConfirm();
+}
+
+void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic) {
+    char encryptedCharacter[100];
+    char decryptedCharacter;
+
+    Bignum decryptedChar, encryptedChar;
+    initBignum(&decryptedChar);
+    initBignum(&encryptedChar);
+
+    while (fscanf(inputFilePtr, "%[^/]/", encryptedCharacter) == 1) {
+        setBignum(&encryptedChar, encryptedCharacter, positive);
+
+        modularExponentiationBignum(&decryptedChar, &encryptedChar, dPrivate, nPublic);
+
+        decryptedCharacter = bignumToInt(&decryptedChar);
+
+        printf("%c", decryptedCharacter);
+
+        fprintf(outputFilePtr, "%c", decryptedCharacter);
+
+        resetBignum(&encryptedChar);
+        resetBignum(&decryptedChar);
+        encryptedCharacter[0] = '\0';
+        decryptedCharacter = '\0';
+    };
+
+    freeBignum(&decryptedChar);
+    freeBignum(&encryptedChar);
+}
+
 void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic) {
     char character;
 
