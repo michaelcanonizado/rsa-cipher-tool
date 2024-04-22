@@ -660,10 +660,10 @@ void loadingBar(int x, int y, int percentDone) {
 	}
 #else
 	char *a = "█", *b = "░";
-	for (int i = 0; i < numChar; i++) {
+	for (int i = 0; i < fill; i++) {
 		printf("%s", a);
 	}
-	for (int i = 0; i < numSpace; i++) {
+	for (int i = 0; i < track; i++) {
 		printf("%s", b);
 	}
 #endif
