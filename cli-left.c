@@ -398,6 +398,7 @@ void encryptText() {
     encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
 
     printf("\nEncryption complete!");
+    printf("\nView encrypted file at: %s", outputFilename);
 
     freeAllBignums();
 
@@ -434,6 +435,7 @@ void decryptText() {
     decryptTextFile(inputFilePtr, outputFilePtr, &dPrivate, &nPublic);
 
     printf("\nDecryption complete!");
+    printf("\nView decrypted file at: %s", outputFilename);
 
     freeAllBignums();
 
