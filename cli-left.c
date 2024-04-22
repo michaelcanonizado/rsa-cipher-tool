@@ -504,11 +504,13 @@ void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic) {
         int tempCursorX, tempCursorY;
         getCursorPosition(&tempCursorX, &tempCursorY);
 
+        char promptMsg[20];
         if (type == encrypt) {
-            printf("Public key: ");
+            strcpy(promptMsg, "Public key: ");
         } else if (type == decrypt) {
-            printf("Private key: ");
+            strcpy(promptMsg, "Private key: ");
         }
+        printf("%s", promptMsg);
         scanf("%s", key);
 
         for (i = 0; i < strlen(key); i++) {
@@ -525,7 +527,7 @@ void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic) {
             break;
         }
 
-        clearWord(tempCursorY, strlen("Please enter the public key: "), terminalWidth);
+        clearWord(tempCursorY, strlen(promptMsg), terminalWidth);
 
         moveCursor(0, terminalHeight - 7);
 
