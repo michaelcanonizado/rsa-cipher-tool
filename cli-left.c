@@ -14,6 +14,7 @@
 #ifdef __linux__
     #include <sys/ioctl.h>
 	#include <unistd.h>
+    #include <termios.h>
 #endif
 
 
@@ -167,7 +168,49 @@ void getCursorPosition(int *x, int *y) {
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
     *x = info.dwCursorPosition.X;
     *y = info.dwCursorPosition.Y;
-#else
+#endif
+
+#ifdef __linux__
+    // https://stackoverflow.com/questions/50884685/how-to-get-cursor-position-in-c-using-ansi-code/50888457#50888457
+    char buf[30]={0};
+    int ret, i, pow;
+    char ch;
+
+    *y = 0; *x = 0;
+
+    struct termios term, restore;
+
+    tcgetattr(0, &term);
+    tcgetattr(0, &restore);
+    term.c_lflag &= ~(ICANON|ECHO);
+    tcsetattr(0, TCSANOW, &term);
+
+    write(1, "\033[6n", 4);
+
+    for( i = 0, ch = 0; ch != 'R'; i++ )
+    {
+        ret = read(0, &ch, 1);
+        if ( !ret ) {
+            tcsetattr(0, TCSANOW, &restore);
+            fprintf(stderr, "getpos: error reading response!\n");
+            return;
+        }
+        buf[i] = ch;
+    }
+
+    if (i < 2) {
+        tcsetattr(0, TCSANOW, &restore);
+        printf("i < 2\n");
+        return;
+    }
+
+    for( i -= 2, pow = 1; buf[i] != ';'; i--, pow *= 10)
+        *x = *x + ( buf[i] - '0' ) * pow;
+
+    for( i-- , pow = 1; buf[i] != '['; i--, pow *= 10)
+        *y = *y + ( buf[i] - '0' ) * pow;
+
+    tcsetattr(0, TCSANOW, &restore);
 #endif
 }
 
@@ -279,6 +322,10 @@ void generateKeys() {
 
     int loadingBarX, loadingBarY;
     getCursorPosition(&loadingBarX, &loadingBarY);
+
+#ifdef __linux__
+    loadingBarX += strlen("Generating: ");
+#endif
 
     loadingBar(loadingBarX, loadingBarY, 0);
 

@@ -11,6 +11,7 @@
 		"limits": "c",
 		"cmath": "c",
 		"type_traits": "c",
-		"windows.h": "c"
+		"windows.h": "c",
+		"unistd.h": "c"
 	}
 }
