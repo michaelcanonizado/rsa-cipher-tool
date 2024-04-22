@@ -52,18 +52,7 @@ void clearLines(int startLine, int endLine);
 void clearWord(int y, int startCol, int endCol);
 void promptExitConfirm();
 
-int getMaxStringLengthInArray(char *stringsArr[], int stringsCount) {
-    int maxLength = 0;
 
-    for (int i = 0; i < stringsCount; i++) {
-        int length = strlen(stringsArr[i]);
-        if (length > maxLength) {
-            maxLength = length;
-        }
-    }
-    
-    return maxLength;
-}
 
 int calculateLeftPadding(int strLength) {
     int remainingWidth = terminalWidth - strLength;
