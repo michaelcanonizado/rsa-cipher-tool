@@ -6,7 +6,6 @@
 #include <time.h>
 #include <ctype.h>
 #include "src/bignum.h"
-
 #ifdef _WIN32
 	#include <windows.h>
 #else
@@ -27,6 +26,11 @@ typedef struct {
     char name[50];
     int size;
 } KeySize;
+
+typedef enum {
+    encrypt = 0,
+    decrypt = 1
+} Action;
 
 
 
