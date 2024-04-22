@@ -464,6 +464,9 @@ void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, B
 
 void getInputFile(FILE **inputFilePtr, char *inputFilename) {
     while (1) {
+        int tempCursorX, tempCursorY;
+        getCursorPosition(&tempCursorX, &tempCursorY);
+
         printf("\nEnter the name of the input file: ");
         scanf("%s", inputFilename);
 
@@ -474,10 +477,11 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename) {
             moveCursor(prevCursorX, prevCursorY);
             break;
         } else {
-            clearWord(startingHeight, currLeftPadding + strlen("Enter the name of the input file: "), terminalWidth);
+            clearWord(tempCursorY+1, strlen("Enter the name of the input file: "), terminalWidth);
 
             moveCursor(0, terminalHeight - 7);
             printf("%*sCould not open \"%s\". Please try again...", currLeftPadding, "", inputFilename);
+            moveCursor(tempCursorX, tempCursorY);
         }
     }
 }
