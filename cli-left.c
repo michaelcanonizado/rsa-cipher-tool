@@ -488,8 +488,6 @@ void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, 
 
         decryptedCharacter = bignumToInt(&decryptedChar);
 
-        printf("%c", decryptedCharacter);
-
         fprintf(outputFilePtr, "%c", decryptedCharacter);
 
         resetBignum(&encryptedChar);
