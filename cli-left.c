@@ -54,7 +54,7 @@ void promptExitConfirm();
 
 int calculateLeftPadding(int strLength);
 void printProgramHeader();
-void loadingBar(int percentageDone);
+void loadingBar(int x, int y, int percentageDone);
 
 
 
@@ -598,13 +598,11 @@ void printProgramHeader() {
     printf("\n");
 }
 
-void loadingBar(int percentDone) { 
+void loadingBar(int x, int y, int percentDone) { 
 	int fill = percentDone * PROGRESS_BAR_LENGTH / 100;
     int track = PROGRESS_BAR_LENGTH - fill;
-    // int start = (width - (PROGRESS_BAR_LENGTH + 11)) / 2;
 
-    // moveCursor(start, height / 2);
-	printf(" ");
+    moveCursor(x, y);
 
 #ifdef _WIN32
 	char a = 219, b = 177;
@@ -623,7 +621,7 @@ void loadingBar(int percentDone) {
 		printf("%s", b);
 	}
 #endif
-	printf(" %d%% Done", percentDone);
+	printf(" ( %d%% )", percentDone);
 	fflush(stdout);
 }
 
