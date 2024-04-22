@@ -40,7 +40,7 @@ typedef enum {
 void generateKeys();
 void encryptText();
 void decryptText();
-void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic, unsigned long long int characterCount);
+unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic, unsigned long long int characterCount);
 void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);
 unsigned long long int getInputFile(FILE **inputFilePtr, char *inputFilename);
 void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic);
@@ -568,7 +568,7 @@ void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, 
     freeBignum(&encryptedChar);
 }
 
-void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic, unsigned long long int characterCount) {
+unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic, unsigned long long int characterCount) {
     unsigned long long int totalCharactersEncrypted = 0;
     int percentageEncrypted = 0;
     char character;
@@ -611,6 +611,8 @@ void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, B
     freeBignum(&plainChar);
 
     loadingBar(loadingBarX, loadingBarY, 100);
+
+    return totalCharactersEncrypted;
 }
 
 unsigned long long int getInputFile(FILE **inputFilePtr, char *inputFilename) {
