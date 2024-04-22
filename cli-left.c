@@ -491,9 +491,10 @@ void encryptText() {
 
     getKeys(encrypt, &ePublic, &nPublic);
 
-    encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic, characterCount);
+    unsigned long long int charactersEncrypted = encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic, characterCount);
 
     printf("\nEncryption complete!");
+    printf("\nCharacters encrypted: %llu", charactersEncrypted);
     printf("\nView encrypted file at: %s", outputFilename);
 
     freeAllBignums();
