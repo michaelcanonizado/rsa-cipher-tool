@@ -40,7 +40,7 @@ void decryptText();
 void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
 void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);
 void getInputFile(FILE **inputFilePtr, char *inputFilename);
-void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic);
+void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic);
 void aboutProject();
 
 void clearScreen();
@@ -423,7 +423,7 @@ void encryptText() {
     initBignum(&ePublic);
     initBignum(&nPublic);
 
-    getKeys(&ePublic, &nPublic);
+    getKeys(encrypt, &ePublic, &nPublic);
     printf("\nEncryption progress: [=======================================] (100%%)");
 
     encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
@@ -490,7 +490,7 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename) {
     }
 }
 
-void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic) {
+void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic) {
     char key[5000];
     char firstKey[2500];
     char secondKey[2500];
@@ -503,7 +503,11 @@ void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic) {
         int tempCursorX, tempCursorY;
         getCursorPosition(&tempCursorX, &tempCursorY);
 
-        printf("Public key: ");
+        if (type == encrypt) {
+            printf("Public key: ");
+        } else if (type == decrypt) {
+            printf("Private key: ");
+        }
         scanf("%s", key);
 
         for (i = 0; i < strlen(key); i++) {
