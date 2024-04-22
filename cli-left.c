@@ -416,15 +416,22 @@ void encryptText() {
     }
 
     Bignum nPublic, ePublic;
-    initBignum(&nPublic);
     initBignum(&ePublic);
+    initBignum(&nPublic);
 
     getKeys(&ePublic, &nPublic);
+    clearPrompts();
 
-    printf("Encrypting %s: ",inputFilename);
-    printf("[=======================================]");
+    printf("\nFile name: %s",inputFilename);
+    printf("\nPublic key: ");
+    printBignum(&ePublic);
+    printf(".");
+    printBignum(&nPublic);
+    printf("\nEncrypting: [=======================================] (100%%)");
 
     encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
+
+    printf("\nEncryption complete!");
 
     freeAllBignums();
 
