@@ -408,6 +408,7 @@ void encryptText() {
     char inputFilename[100];
     char outputFilename[] = "en.txt";
 
+    printf("\nAction: Encryption");
     getInputFile(&inputFilePtr, inputFilename);
 
     outputFilePtr = fopen(outputFilename, "w");
