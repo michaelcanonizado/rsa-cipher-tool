@@ -273,11 +273,26 @@ void generateKeys() {
     clearPrompts();
     printf("\nKey length: %d bit",  chosenKeySize);
     printf("\nGenerating: ");
-    printf("[=========================================] (100%%)");
+
+    int loadingBarX, loadingBarY;
+    getCursorPosition(&loadingBarX, &loadingBarY);
+
+    loadingBar(loadingBarX, loadingBarY, 0);
 
     pPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
+
+    sleepProgram(300);
+    loadingBar(loadingBarX, loadingBarY, 5);
+
     qPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
+
+    sleepProgram(300);
+    loadingBar(loadingBarX, loadingBarY, 10);
+
     ePublicLength = pPrivateLength > 3 ? pPrivateLength / 2 : (chosenKeySize / log2(10.0)) - 1;
+
+    sleepProgram(300);
+    loadingBar(loadingBarX, loadingBarY, 20);
 
 	Bignum nPublic, ePublic, dPrivate;
     initBignum(&nPublic);
@@ -303,17 +318,34 @@ void generateKeys() {
     initBignum(&decryptedChar);
     setBignum(&plainChar, "2", positive);
 
+    sleepProgram(300);
+    loadingBar(loadingBarX, loadingBarY, 30);
+
     while (1) {
         // Generate p and q primes
         generatePrimeBignum(&pPrimePrivate, pPrivateLength);
+
+        sleepProgram(300);
+        loadingBar(loadingBarX, loadingBarY, 35);
+
         generatePrimeBignum(&qPrimePrivate, qPrivateLength);
+
+        sleepProgram(300);
+        loadingBar(loadingBarX, loadingBarY, 40);
+
         while (isEqualToBignum(&pPrimePrivate, &qPrimePrivate)) {
             generatePrimeBignum(&qPrimePrivate, qPrivateLength);
         }
 
+        sleepProgram(300);
+        loadingBar(loadingBarX, loadingBarY, 50);
+
         // Get n:
         // n = p * q
         multiplyBignum(&nPublic, &pPrimePrivate, &qPrimePrivate);
+
+        sleepProgram(300);
+        loadingBar(loadingBarX, loadingBarY, 60);
 
         // Get phi of n:
         // phi of n = (p - 1) * (q - 1)
@@ -321,9 +353,15 @@ void generateKeys() {
         subtractBignum(&qPrimePrivateMinusOne, &qPrimePrivate, &one);
         multiplyBignum(&phiOfNPrivate, &pPrimePrivateMinusOne, &qPrimePrivateMinusOne);
 
+        sleepProgram(300);
+        loadingBar(loadingBarX, loadingBarY, 70);
+
         // Generate e (public key):
         // 2 < e < phi of n
         generatePrimeBignum(&ePublic, ePublicLength);
+
+        sleepProgram(300);
+        loadingBar(loadingBarX, loadingBarY, 80);
     
         // Get d (private key):
         // (e * d)mod(n) = 1
@@ -332,7 +370,12 @@ void generateKeys() {
         modularExponentiationBignum(&encryptedChar, &plainChar, &ePublic, &nPublic);
         modularExponentiationBignum(&decryptedChar, &encryptedChar, &dPrivate, &nPublic);
 
+        sleepProgram(300);
+        loadingBar(loadingBarX, loadingBarY, 85);
+
         if (isEqualToBignum(&plainChar, &decryptedChar)) {
+            sleepProgram(300);
+            loadingBar(loadingBarX, loadingBarY, 90);
             break;
         }
 
@@ -348,10 +391,15 @@ void generateKeys() {
         resetBignum(&decryptedChar);
     }
 
+    sleepProgram(300);
+    loadingBar(loadingBarX, loadingBarY, 95);
+
     int keyPromptLength = 13 + dPrivate.length + nPublic.length;
 
+    sleepProgram(300);
+    loadingBar(loadingBarX, loadingBarY, 100);
+
     printf("\n");
-    // printLineBreak();
 
     printf("\nPUBLIC KEY: ");
     printBignum(&ePublic);
@@ -362,8 +410,6 @@ void generateKeys() {
     printBignum(&dPrivate);
     printf(".");
     printBignum(&nPublic);
-
-    // printLineBreak();
 
     printf("\n\nRemember: please make sure to safely secure and properly copy the keys above!");
 
