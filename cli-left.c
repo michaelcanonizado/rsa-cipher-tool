@@ -420,14 +420,7 @@ void encryptText() {
     initBignum(&nPublic);
 
     getKeys(&ePublic, &nPublic);
-    clearPrompts();
-
-    printf("\nFile name: %s",inputFilename);
-    printf("\nPublic key: ");
-    printBignum(&ePublic);
-    printf(".");
-    printBignum(&nPublic);
-    printf("\nEncrypting: [=======================================] (100%%)");
+    printf("\nEncryption progress: [=======================================] (100%%)");
 
     encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
 
@@ -474,7 +467,7 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename) {
         int tempCursorX, tempCursorY;
         getCursorPosition(&tempCursorX, &tempCursorY);
 
-        printf("\nEnter the name of the input file: ");
+        printf("\nFile name: ");
         scanf("%s", inputFilename);
 
         *inputFilePtr = fopen(inputFilename, "r");
@@ -506,7 +499,7 @@ void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic) {
         int tempCursorX, tempCursorY;
         getCursorPosition(&tempCursorX, &tempCursorY);
 
-        printf("Please enter the public key: ");
+        printf("Public key: ");
         scanf("%s", key);
 
         for (i = 0; i < strlen(key); i++) {
