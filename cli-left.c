@@ -492,7 +492,7 @@ void getKeys(Bignum *ePublicOrDPrivate, Bignum *nPublic) {
     while(1) {
         int flagCount = 0, i;
 
-        printf("%*sPlease enter the public key: ", currLeftPadding, "");
+        printf("Please enter the public key: ");
         scanf("%s", key);
 
         int tempCursorX, tempCursorY;
