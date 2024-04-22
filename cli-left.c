@@ -111,7 +111,6 @@ int main(void) {
 			case 1:
                 clearPrompts();
                 generateKeys();
-                promptExitConfirm();
                 clearPrompts();
 				break;
 			case 2:
@@ -263,6 +262,7 @@ void generateKeys() {
         {"64 bit", 64},
         {"128 bit", 128},
         {"256 bit", 256},
+        {"Back", 0},
     };
     int keySizeOptionsSize = sizeof(keySizeOptions)/sizeof(keySizeOptions[0]);
 
@@ -287,6 +287,9 @@ void generateKeys() {
         clearPrompts();
     }
 
+    if (chosenKeySize == 0) {
+        return;
+    }
 
     clearPrompts();
     printf("\nKey length: %d bit",  chosenKeySize);
@@ -386,6 +389,8 @@ void generateKeys() {
     printf("\n\nRemember: please make sure to safely secure and properly copy the keys above!");
 
     freeAllBignums();
+
+    promptExitConfirm();
 }
 
 void encryptText() {
