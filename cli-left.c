@@ -125,6 +125,8 @@ int main(void) {
 			    	break;
 			    case 3:
                     clearScreen();
+                    decryptText();
+                    clearScreen();
 				    break;
                 case 4:
                     clearScreen();
