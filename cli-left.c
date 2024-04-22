@@ -471,7 +471,8 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename) {
         int tempCursorX, tempCursorY;
         getCursorPosition(&tempCursorX, &tempCursorY);
 
-        printf("\nFile name: ");
+        char *promptMsg = "File name: ";
+        printf("\n%s", promptMsg);
         scanf("%s", inputFilename);
 
         *inputFilePtr = fopen(inputFilename, "r");
@@ -481,7 +482,7 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename) {
             moveCursor(prevCursorX, prevCursorY);
             break;
         } else {
-            clearWord(tempCursorY+1, strlen("Enter the name of the input file: "), terminalWidth);
+            clearWord(tempCursorY+1, strlen(promptMsg), terminalWidth);
 
             moveCursor(0, terminalHeight - 7);
             printf("%*sCould not open \"%s\". Please try again...", currLeftPadding, "", inputFilename);
