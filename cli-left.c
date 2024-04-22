@@ -42,7 +42,7 @@ void encryptText();
 void decryptText();
 void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
 void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);
-void getInputFile(FILE **inputFilePtr, char *inputFilename);
+unsigned long long int getInputFile(FILE **inputFilePtr, char *inputFilename);
 void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic);
 void aboutProject();
 
@@ -477,7 +477,7 @@ void encryptText() {
     char outputFilename[] = "en.txt";
 
     printf("\nAction: Encryption");
-    getInputFile(&inputFilePtr, inputFilename);
+    unsigned long long int characterCount = getInputFile(&inputFilePtr, inputFilename);
 
     outputFilePtr = fopen(outputFilename, "w");
     if (outputFilePtr == NULL) {
@@ -490,7 +490,8 @@ void encryptText() {
     initBignum(&nPublic);
 
     getKeys(encrypt, &ePublic, &nPublic);
-    printf("\nEncryption progress: [=======================================] (100%%)");
+
+    printf("\nEncryption progress: ");
 
     encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
 
@@ -576,6 +577,17 @@ void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, B
     initBignum(&encryptedChar);
     initBignum(&plainChar);
 
+//     printf("\nEncryption progress: ");
+
+//     int loadingBarX, loadingBarY;
+//     getCursorPosition(&loadingBarX, &loadingBarY);
+
+// #ifdef __linux__
+//     loadingBarX += strlen("Encryption progress: ");
+// #endif
+
+    // loadingBar(loadingBarX, loadingBarY, 0);
+
     while ((character = fgetc(inputFilePtr)) != EOF) {
         intToBignum(&plainChar, character, positive);
 
@@ -594,7 +606,10 @@ void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, B
     freeBignum(&plainChar);
 }
 
-void getInputFile(FILE **inputFilePtr, char *inputFilename) {
+unsigned long long int getInputFile(FILE **inputFilePtr, char *inputFilename) {
+    unsigned long long int characterCount = 0;
+    char character;
+
     while (1) {
         int tempCursorX, tempCursorY;
         getCursorPosition(&tempCursorX, &tempCursorY);
@@ -606,17 +621,24 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename) {
         *inputFilePtr = fopen(inputFilename, "r");
 
         if (*inputFilePtr != NULL) {
+            fseek(*inputFilePtr, 0, SEEK_END);
+            characterCount = ftell(*inputFilePtr);
+            fseek(*inputFilePtr, 0, SEEK_SET);
+
             clearWord(terminalHeight - 7, 0, terminalWidth);
             moveCursor(prevCursorX, prevCursorY);
             break;
-        } else {
-            clearWord(tempCursorY+1, strlen(promptMsg), terminalWidth);
-
-            moveCursor(0, terminalHeight - 7);
-            printf("%*sCould not open \"%s\". Please try again...", currLeftPadding, "", inputFilename);
-            moveCursor(tempCursorX, tempCursorY);
         }
+
+        clearWord(tempCursorY+1, strlen(promptMsg), terminalWidth);
+
+        moveCursor(0, terminalHeight - 7);
+        printf("%*sCould not open \"%s\". Please try again...", currLeftPadding, "", inputFilename);
+        moveCursor(tempCursorX, tempCursorY);
+        
     }
+
+    return characterCount;
 }
 
 void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic) {
