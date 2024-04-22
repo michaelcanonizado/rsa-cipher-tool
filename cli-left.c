@@ -264,18 +264,29 @@ void generateKeys() {
         {"128 bit", 128},
         {"256 bit", 256},
     };
+    int keySizeOptionsSize = sizeof(keySizeOptions)/sizeof(keySizeOptions[0]);
 
     int chosenKeySize = 0;
     int pPrivateLength, qPrivateLength, ePublicLength;
 
-    printf("\nPlease choose a key size:\n");
-    for (int i = 0; i < sizeof(keySizeOptions)/sizeof(keySizeOptions[0]); i++) {
-        printf("\n%d) - %s", i+1, keySizeOptions[i].name);
+    while(1) {
+        printf("\nPlease choose a key size:\n");
+        for (int i = 0; i < keySizeOptionsSize; i++) {
+            printf("\n%d) - %s", i+1, keySizeOptions[i].name);
+        }
+
+        printf("\n\nEnter number: ");
+        scanf("%d", &chosenKeySize);
+		while (getchar() != '\n');
+
+        if (chosenKeySize > 0 && chosenKeySize <= keySizeOptionsSize) {
+            chosenKeySize = keySizeOptions[chosenKeySize-1].size;
+            break;
+        }
+
+        clearPrompts();
     }
 
-    printf("\n\nEnter number: ");
-    scanf("%d", &chosenKeySize);
-    chosenKeySize = keySizeOptions[chosenKeySize-1].size;
 
     clearPrompts();
     printf("\nKey length: %d bit",  chosenKeySize);
