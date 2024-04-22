@@ -398,7 +398,7 @@ void generateKeys() {
 }
 
 void encryptText() {
-    clearScreen();
+    clearPrompts();
 
     currLeftPadding = calculateLeftPadding(strlen("Enter the name of the input file: "));
 
@@ -464,7 +464,7 @@ void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, B
 
 void getInputFile(FILE **inputFilePtr, char *inputFilename) {
     while (1) {
-        printf("Enter the name of the input file: ");
+        printf("\nEnter the name of the input file: ");
         scanf("%s", inputFilename);
 
         *inputFilePtr = fopen(inputFilename, "r");
