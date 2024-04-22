@@ -115,8 +115,8 @@ int main(void) {
                     clearPrompts();
 			    	break;
 			    case 2:
+                    clearPrompts();
                     encryptText();
-                    promptExitConfirm();
                     clearScreen();
 			    	break;
 			    case 3:
@@ -411,9 +411,7 @@ void encryptText() {
 
     outputFilePtr = fopen(outputFilename, "w");
     if (outputFilePtr == NULL) {
-        moveCursor(0, terminalHeight - 7);
-        printf("%*sCould not open output file \"%s\". Please try again...", currLeftPadding, "", inputFilename);
-
+        printf("Could not open output file \"%s\". Please try again...", inputFilename);
         exit(1);
     }
 
@@ -423,12 +421,7 @@ void encryptText() {
 
     getKeys(&ePublic, &nPublic);
 
-    // printf("\nBignum key e: ");
-    // printBignum(&ePublic);
-    // printf("\nBignum key n: ");
-    // printBignum(&nPublic);
-
-    printf("%*sEncrypting %s: ", currLeftPadding, "" ,inputFilename);
+    printf("Encrypting %s: ",inputFilename);
     printf("[=======================================]");
 
     encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
@@ -437,6 +430,8 @@ void encryptText() {
 
     fclose(inputFilePtr);
     fclose(outputFilePtr);
+
+    promptExitConfirm();
 }
 
 void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic) {
