@@ -10,6 +10,7 @@
 		"time.h": "c",
 		"limits": "c",
 		"cmath": "c",
-		"type_traits": "c"
+		"type_traits": "c",
+		"windows.h": "c"
 	}
 }

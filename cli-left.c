@@ -6,10 +6,13 @@
 #include <time.h>
 #include <ctype.h>
 #include "src/bignum.h"
+
 #ifdef _WIN32
 	#include <windows.h>
-#else
-	#include <sys/ioctl.h>
+#endif
+
+#ifdef __linux__
+    #include <sys/ioctl.h>
 	#include <unistd.h>
 #endif
 
