@@ -40,7 +40,7 @@ typedef enum {
 void generateKeys();
 void encryptText();
 void decryptText();
-void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
+void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic, unsigned long long int characterCount);
 void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);
 unsigned long long int getInputFile(FILE **inputFilePtr, char *inputFilename);
 void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic);
@@ -491,9 +491,7 @@ void encryptText() {
 
     getKeys(encrypt, &ePublic, &nPublic);
 
-    printf("\nEncryption progress: ");
-
-    encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
+    encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic, characterCount);
 
     printf("\nEncryption complete!");
     printf("\nView encrypted file at: %s", outputFilename);
@@ -570,23 +568,25 @@ void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, 
     freeBignum(&encryptedChar);
 }
 
-void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic) {
+void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic, unsigned long long int characterCount) {
+    unsigned long long int totalCharactersEncrypted = 0;
+    int percentageEncrypted = 0;
     char character;
 
     Bignum encryptedChar, plainChar;
     initBignum(&encryptedChar);
     initBignum(&plainChar);
 
-//     printf("\nEncryption progress: ");
+    printf("\nEncryption progress: ");
 
-//     int loadingBarX, loadingBarY;
-//     getCursorPosition(&loadingBarX, &loadingBarY);
+    int loadingBarX, loadingBarY;
+    getCursorPosition(&loadingBarX, &loadingBarY);
 
-// #ifdef __linux__
-//     loadingBarX += strlen("Encryption progress: ");
-// #endif
+#ifdef __linux__
+    loadingBarX += strlen("Encryption progress: ");
+#endif
 
-    // loadingBar(loadingBarX, loadingBarY, 0);
+    loadingBar(loadingBarX, loadingBarY, 0);
 
     while ((character = fgetc(inputFilePtr)) != EOF) {
         intToBignum(&plainChar, character, positive);
@@ -600,10 +600,17 @@ void encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, B
 
         resetBignum(&encryptedChar);
         resetBignum(&plainChar);
+
+        totalCharactersEncrypted++;
+
+        percentageEncrypted = (totalCharactersEncrypted / (float)characterCount) * 100;
+        loadingBar(loadingBarX, loadingBarY, percentageEncrypted);
     };
 
     freeBignum(&encryptedChar);
     freeBignum(&plainChar);
+
+    loadingBar(loadingBarX, loadingBarY, 100);
 }
 
 unsigned long long int getInputFile(FILE **inputFilePtr, char *inputFilename) {
