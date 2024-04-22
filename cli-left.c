@@ -444,6 +444,7 @@ void decryptText() {
     char inputFilename[100];
     char outputFilename[] = "dc.txt";
 
+    printf("\nAction: Decryption");
     getInputFile(&inputFilePtr, inputFilename);
 
     outputFilePtr = fopen(outputFilename, "w");
