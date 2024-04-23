@@ -514,7 +514,7 @@ void decryptText() {
     char outputFilename[] = "dc.txt";
 
     printf("\nAction: Decryption");
-    getInputFile(&inputFilePtr, inputFilename);
+    unsigned long long int characterCount = getInputFile(&inputFilePtr, inputFilename);
 
     outputFilePtr = fopen(outputFilename, "w");
     if (outputFilePtr == NULL) {
@@ -527,7 +527,6 @@ void decryptText() {
     initBignum(&nPublic);
 
     getKeys(decrypt, &dPrivate, &nPublic);
-    printf("\nDecryption progress: [=======================================] (100%%)");
 
     decryptTextFile(inputFilePtr, outputFilePtr, &dPrivate, &nPublic);
 
@@ -543,12 +542,32 @@ void decryptText() {
 }
 
 void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic) {
+    unsigned long long int characterCount = 0;
+    unsigned long long int totalCharactersEncrypted = 0;
+    int percentageEncrypted = 0;
+    char tempCharacter;
     char encryptedCharacter[100];
     char decryptedCharacter;
 
     Bignum decryptedChar, encryptedChar;
     initBignum(&decryptedChar);
     initBignum(&encryptedChar);
+
+    while((tempCharacter = fgetc(inputFilePtr)) != EOF) {
+        if (tempCharacter == '/') {
+            characterCount++;
+        }
+    }
+    rewind(inputFilePtr);
+
+    printf("\nEncryption progress: ");
+
+    int loadingBarX, loadingBarY;
+    getCursorPosition(&loadingBarX, &loadingBarY);
+
+#ifdef __linux__
+    loadingBarX += strlen("Encryption progress: ");
+#endif
 
     while (fscanf(inputFilePtr, "%[^/]/", encryptedCharacter) == 1) {
         setBignum(&encryptedChar, encryptedCharacter, positive);
@@ -563,7 +582,14 @@ void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, 
         resetBignum(&decryptedChar);
         encryptedCharacter[0] = '\0';
         decryptedCharacter = '\0';
+
+        totalCharactersEncrypted++;
+
+        percentageEncrypted = (totalCharactersEncrypted / (float)characterCount) * 100;
+        loadingBar(loadingBarX, loadingBarY, percentageEncrypted);
     };
+
+    loadingBar(loadingBarX, loadingBarY, 100);
 
     freeBignum(&decryptedChar);
     freeBignum(&encryptedChar);
