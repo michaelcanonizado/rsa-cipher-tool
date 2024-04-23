@@ -18,6 +18,14 @@
 #endif
 
 
+
+
+
+
+
+
+
+
 int loadingBarLength = 0;
 int terminalWidth = 0;
 int terminalHeight = 0;
@@ -37,27 +45,42 @@ typedef enum {
 
 
 
+
+
+
+
+
+
+
 void generateKeys();
 void encryptText();
-void decryptText();
 unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
+void decryptText();
 unsigned long long int decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);void getInputFile(FILE **inputFilePtr, char *inputFilename);
 void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic);
 void aboutProject();
 
-void clearScreen();
-void clearPrompts();
-void getTerminalSize();
-void moveCursor(int x, int y);
-void getCursorPosition(int *x, int *y);
-void sleepProgram(int milliseconds);
-void clearLines(int startLine, int endLine);
-void clearWord(int y, int startCol, int endCol);
-void promptExitConfirm();
+
 
 int calculateLeftPadding(int strLength);
-void printProgramHeader();
+void clearLines(int startLine, int endLine);
+void clearPrompts();
+void clearScreen();
+void clearWord(int y, int startCol, int endCol);
+void getCursorPosition(int *x, int *y);
+void getTerminalSize();
 void loadingBar(int x, int y, int percentageDone);
+void moveCursor(int x, int y);
+void printProgramHeader();
+void promptExitConfirm();
+void sleepProgram(int milliseconds);
+
+
+
+
+
+
+
 
 
 
@@ -133,145 +156,8 @@ int main(void) {
     return 0;
 }
 
-void clearScreen() {
-#ifdef _WIN32
-	system("cls");
-#else
-	printf("\033[2J");
-	printf("\033[H");
-#endif
-}
 
-void clearPrompts() {
-    clearScreen();
-    printProgramHeader();
-}
 
-void getTerminalSize() {
-#ifdef _WIN32
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-	terminalWidth = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-	terminalHeight = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
-
-    loadingBarLength = terminalWidth - strlen("Encryption progress:   ( 100%% )");
-#else
-	struct winsize size;
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
-	terminalWidth = size.ws_col;
-	terminalHeight = size.ws_row;
-#endif
-}
-
-void getCursorPosition(int *x, int *y) {
-#ifdef _WIN32
-    CONSOLE_SCREEN_BUFFER_INFO info;
-    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
-    *x = info.dwCursorPosition.X;
-    *y = info.dwCursorPosition.Y;
-#endif
-
-#ifdef __linux__
-    // https://stackoverflow.com/questions/50884685/how-to-get-cursor-position-in-c-using-ansi-code/50888457#50888457
-    char buf[30]={0};
-    int ret, i, pow;
-    char ch;
-
-    *y = 0; *x = 0;
-
-    struct termios term, restore;
-
-    tcgetattr(0, &term);
-    tcgetattr(0, &restore);
-    term.c_lflag &= ~(ICANON|ECHO);
-    tcsetattr(0, TCSANOW, &term);
-
-    write(1, "\033[6n", 4);
-
-    for( i = 0, ch = 0; ch != 'R'; i++ )
-    {
-        ret = read(0, &ch, 1);
-        if ( !ret ) {
-            tcsetattr(0, TCSANOW, &restore);
-            fprintf(stderr, "getpos: error reading response!\n");
-            return;
-        }
-        buf[i] = ch;
-    }
-
-    if (i < 2) {
-        tcsetattr(0, TCSANOW, &restore);
-        printf("i < 2\n");
-        return;
-    }
-
-    for( i -= 2, pow = 1; buf[i] != ';'; i--, pow *= 10)
-        *x = *x + ( buf[i] - '0' ) * pow;
-
-    for( i-- , pow = 1; buf[i] != '['; i--, pow *= 10)
-        *y = *y + ( buf[i] - '0' ) * pow;
-
-    tcsetattr(0, TCSANOW, &restore);
-#endif
-}
-
-void moveCursor(int x, int y) {
-#ifdef _WIN32
-    getCursorPosition(&prevCursorX, &prevCursorY);
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	COORD pos = {x, y};
-	SetConsoleCursorPosition(hConsole, pos);
-#else
-	printf("\033[%d;%dH", y, x);
-#endif
-}
-
-void sleepProgram(int milliseconds) {
-#ifdef _WIN32
-	Sleep(milliseconds);
-#else
-	usleep(milliseconds * 1000);
-#endif
-}
-
-void clearLines(int startLine, int endLine) {
-	for (int i = startLine; i <= endLine; i++) {
-		moveCursor(0, i);
-		for (int j = 0; j < terminalWidth; j++) {
-			printf(" ");
-		}
-	}
-}
-
-void clearWord(int y, int startCol, int endCol) {
-    moveCursor(startCol, y);
-    for (int i = 0; i < endCol - startCol; i++) {
-		printf(" ");
-    }
-}
-
-void promptExitConfirm() {
-	char userInput[100];
-
-	do {
-		clearLines(terminalHeight - 5, terminalHeight - 5);
-		moveCursor((terminalWidth - 21)/ 2, terminalHeight - 5);
-        // Ask user for confirmation
-		printf("Enter DONE to go back: ");
-		fgets(userInput, sizeof(userInput), stdin);
-
-		// Replace the newline character at the end of the input to NULL
-		if (userInput[strlen(userInput) - 1] == '\n') {
-			userInput[strlen(userInput) - 1] = '\0';
-		}
-
-		// Convert the user's input to lowercase
-		for(int i = 0; userInput[i]; i++){
-			userInput[i] = tolower(userInput[i]);
-		}
-
-	} while (strcmp(userInput, "done") != 0);
-}
 
 
 
@@ -506,6 +392,58 @@ void encryptText() {
     promptExitConfirm();
 }
 
+unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic) {
+    unsigned long long int characterCount = 0;
+    unsigned long long int totalCharactersEncrypted = 0;
+    int percentageEncrypted = 0;
+    char character;
+
+    Bignum encryptedChar, plainChar;
+    initBignum(&encryptedChar);
+    initBignum(&plainChar);
+
+    fseek(inputFilePtr, 0, SEEK_END);
+    characterCount = ftell(inputFilePtr);
+    fseek(inputFilePtr, 0, SEEK_SET);
+
+    printf("\nEncryption progress: ");
+
+    int loadingBarX, loadingBarY;
+    getCursorPosition(&loadingBarX, &loadingBarY);
+
+#ifdef __linux__
+    loadingBarX += strlen("Encryption progress: ");
+#endif
+
+    loadingBar(loadingBarX, loadingBarY, 0);
+
+    while ((character = fgetc(inputFilePtr)) != EOF) {
+        intToBignum(&plainChar, character, positive);
+
+        modularExponentiationBignum(&encryptedChar, &plainChar, ePublic, nPublic);
+
+        for (unsigned long long int i = encryptedChar.length - 1; i > 0; i--) {
+            fprintf(outputFilePtr, "%d", encryptedChar.digits[i]);
+        }
+        fprintf(outputFilePtr, "%d/", encryptedChar.digits[0]);
+
+        resetBignum(&encryptedChar);
+        resetBignum(&plainChar);
+
+        totalCharactersEncrypted++;
+
+        percentageEncrypted = (totalCharactersEncrypted / (float)characterCount) * 100;
+        loadingBar(loadingBarX, loadingBarY, percentageEncrypted);
+    };
+
+    freeBignum(&encryptedChar);
+    freeBignum(&plainChar);
+
+    loadingBar(loadingBarX, loadingBarY, 100);
+
+    return totalCharactersEncrypted;
+}
+
 void decryptText() {
     clearPrompts();
 
@@ -595,58 +533,6 @@ unsigned long long int decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, 
 
     freeBignum(&decryptedChar);
     freeBignum(&encryptedChar);
-
-    return totalCharactersEncrypted;
-}
-
-unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic) {
-    unsigned long long int characterCount = 0;
-    unsigned long long int totalCharactersEncrypted = 0;
-    int percentageEncrypted = 0;
-    char character;
-
-    Bignum encryptedChar, plainChar;
-    initBignum(&encryptedChar);
-    initBignum(&plainChar);
-
-    fseek(inputFilePtr, 0, SEEK_END);
-    characterCount = ftell(inputFilePtr);
-    fseek(inputFilePtr, 0, SEEK_SET);
-
-    printf("\nEncryption progress: ");
-
-    int loadingBarX, loadingBarY;
-    getCursorPosition(&loadingBarX, &loadingBarY);
-
-#ifdef __linux__
-    loadingBarX += strlen("Encryption progress: ");
-#endif
-
-    loadingBar(loadingBarX, loadingBarY, 0);
-
-    while ((character = fgetc(inputFilePtr)) != EOF) {
-        intToBignum(&plainChar, character, positive);
-
-        modularExponentiationBignum(&encryptedChar, &plainChar, ePublic, nPublic);
-
-        for (unsigned long long int i = encryptedChar.length - 1; i > 0; i--) {
-            fprintf(outputFilePtr, "%d", encryptedChar.digits[i]);
-        }
-        fprintf(outputFilePtr, "%d/", encryptedChar.digits[0]);
-
-        resetBignum(&encryptedChar);
-        resetBignum(&plainChar);
-
-        totalCharactersEncrypted++;
-
-        percentageEncrypted = (totalCharactersEncrypted / (float)characterCount) * 100;
-        loadingBar(loadingBarX, loadingBarY, percentageEncrypted);
-    };
-
-    freeBignum(&encryptedChar);
-    freeBignum(&plainChar);
-
-    loadingBar(loadingBarX, loadingBarY, 100);
 
     return totalCharactersEncrypted;
 }
@@ -741,22 +627,111 @@ void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic) {
     setBignum(nPublic, secondKey, positive);
 }
 
+
+
+
 int calculateLeftPadding(int strLength) {
     int remainingWidth = terminalWidth - strLength;
     int leftPadding = remainingWidth % 2 ? (remainingWidth + 1) / 2 : remainingWidth / 2;
     return leftPadding;
 }
 
-void printProgramHeader() {
-    moveCursor(0,0);
-    printf("\n");
-    for (int i = 0; i < terminalWidth; i++) printf("-");
+void clearLines(int startLine, int endLine) {
+	for (int i = startLine; i <= endLine; i++) {
+		moveCursor(0, i);
+		for (int j = 0; j < terminalWidth; j++) {
+			printf(" ");
+		}
+	}
+}
 
-    printf("\n%*sRSA Cipher Tool", calculateLeftPadding(strlen("RSA Cipher Tool")), "");
+void clearPrompts() {
+    clearScreen();
+    printProgramHeader();
+}
 
-    printf("\n");
-    for (int i = 0; i < terminalWidth; i++) printf("-");
-    printf("\n");
+void clearScreen() {
+#ifdef _WIN32
+	system("cls");
+#else
+	printf("\033[2J");
+	printf("\033[H");
+#endif
+}
+
+void clearWord(int y, int startCol, int endCol) {
+    moveCursor(startCol, y);
+    for (int i = 0; i < endCol - startCol; i++) {
+		printf(" ");
+    }
+}
+
+void getCursorPosition(int *x, int *y) {
+#ifdef _WIN32
+    CONSOLE_SCREEN_BUFFER_INFO info;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
+    *x = info.dwCursorPosition.X;
+    *y = info.dwCursorPosition.Y;
+#endif
+
+#ifdef __linux__
+    // https://stackoverflow.com/questions/50884685/how-to-get-cursor-position-in-c-using-ansi-code/50888457#50888457
+    char buf[30]={0};
+    int ret, i, pow;
+    char ch;
+
+    *y = 0; *x = 0;
+
+    struct termios term, restore;
+
+    tcgetattr(0, &term);
+    tcgetattr(0, &restore);
+    term.c_lflag &= ~(ICANON|ECHO);
+    tcsetattr(0, TCSANOW, &term);
+
+    write(1, "\033[6n", 4);
+
+    for( i = 0, ch = 0; ch != 'R'; i++ )
+    {
+        ret = read(0, &ch, 1);
+        if ( !ret ) {
+            tcsetattr(0, TCSANOW, &restore);
+            fprintf(stderr, "getpos: error reading response!\n");
+            return;
+        }
+        buf[i] = ch;
+    }
+
+    if (i < 2) {
+        tcsetattr(0, TCSANOW, &restore);
+        printf("i < 2\n");
+        return;
+    }
+
+    for( i -= 2, pow = 1; buf[i] != ';'; i--, pow *= 10)
+        *x = *x + ( buf[i] - '0' ) * pow;
+
+    for( i-- , pow = 1; buf[i] != '['; i--, pow *= 10)
+        *y = *y + ( buf[i] - '0' ) * pow;
+
+    tcsetattr(0, TCSANOW, &restore);
+#endif
+}
+
+void getTerminalSize() {
+#ifdef _WIN32
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+	terminalWidth = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+	terminalHeight = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+
+    loadingBarLength = terminalWidth - strlen("Encryption progress:   ( 100%% )");
+#else
+	struct winsize size;
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
+	terminalWidth = size.ws_col;
+	terminalHeight = size.ws_row;
+#endif
 }
 
 void loadingBar(int x, int y, int percentDone) { 
@@ -793,6 +768,60 @@ void loadingBar(int x, int y, int percentDone) {
 #endif
 	printf(" ( %d%% )", percentDone);
 	fflush(stdout);
+}
+
+void moveCursor(int x, int y) {
+#ifdef _WIN32
+    getCursorPosition(&prevCursorX, &prevCursorY);
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	COORD pos = {x, y};
+	SetConsoleCursorPosition(hConsole, pos);
+#else
+	printf("\033[%d;%dH", y, x);
+#endif
+}
+
+void printProgramHeader() {
+    moveCursor(0,0);
+    printf("\n");
+    for (int i = 0; i < terminalWidth; i++) printf("-");
+
+    printf("\n%*sRSA Cipher Tool", calculateLeftPadding(strlen("RSA Cipher Tool")), "");
+
+    printf("\n");
+    for (int i = 0; i < terminalWidth; i++) printf("-");
+    printf("\n");
+}
+
+void promptExitConfirm() {
+	char userInput[100];
+
+	do {
+		clearLines(terminalHeight - 5, terminalHeight - 5);
+		moveCursor((terminalWidth - 21)/ 2, terminalHeight - 5);
+        // Ask user for confirmation
+		printf("Enter DONE to go back: ");
+		fgets(userInput, sizeof(userInput), stdin);
+
+		// Replace the newline character at the end of the input to NULL
+		if (userInput[strlen(userInput) - 1] == '\n') {
+			userInput[strlen(userInput) - 1] = '\0';
+		}
+
+		// Convert the user's input to lowercase
+		for(int i = 0; userInput[i]; i++){
+			userInput[i] = tolower(userInput[i]);
+		}
+
+	} while (strcmp(userInput, "done") != 0);
+}
+
+void sleepProgram(int milliseconds) {
+#ifdef _WIN32
+	Sleep(milliseconds);
+#else
+	usleep(milliseconds * 1000);
+#endif
 }
 
 
