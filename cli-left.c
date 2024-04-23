@@ -40,7 +40,7 @@ typedef enum {
 void generateKeys();
 void encryptText();
 void decryptText();
-unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic, unsigned long long int characterCount);
+unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
 unsigned long long int decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);
 unsigned long long int getInputFile(FILE **inputFilePtr, char *inputFilename);
 void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic);
@@ -491,7 +491,7 @@ void encryptText() {
 
     getKeys(encrypt, &ePublic, &nPublic);
 
-    unsigned long long int charactersEncrypted = encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic, characterCount);
+    unsigned long long int charactersEncrypted = encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
 
     printf("\nEncryption complete!");
     printf("\nCharacters encrypted: %llu", charactersEncrypted);
@@ -598,7 +598,8 @@ unsigned long long int decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, 
     return totalCharactersEncrypted;
 }
 
-unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic, unsigned long long int characterCount) {
+unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic) {
+    unsigned long long int characterCount = 0;
     unsigned long long int totalCharactersEncrypted = 0;
     int percentageEncrypted = 0;
     char character;
@@ -606,6 +607,10 @@ unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, 
     Bignum encryptedChar, plainChar;
     initBignum(&encryptedChar);
     initBignum(&plainChar);
+
+    fseek(inputFilePtr, 0, SEEK_END);
+    characterCount = ftell(inputFilePtr);
+    fseek(inputFilePtr, 0, SEEK_SET);
 
     printf("\nEncryption progress: ");
 
