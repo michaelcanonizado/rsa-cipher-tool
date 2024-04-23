@@ -629,6 +629,55 @@ void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic) {
     setBignum(nPublic, secondKey, positive);
 }
 
+#define ABOUT_MAX_LENGTH 500
+#define ABOUT_MAX_SUBSTRINGS 100
+#define ABOUT_LINE_CAP 50
+
+void splitString(const char *inputStr, char outputArr[][ABOUT_MAX_LENGTH], int *outputArrCount, int lineCap) {
+    int indexOffset = 0;
+    int substringIndex = 0;
+
+    int chunkToCopy = lineCap;
+
+    int numOfCharactersBeforeASpace = 0;
+    int j = 0;
+    int k = 0;
+
+    // Iterate through the input string
+    for (int i = 0; i < strlen(inputStr); i += lineCap) {
+        while (indexOffset + chunkToCopy + j < strlen(inputStr) && inputStr[indexOffset + chunkToCopy + j] != ' ') {
+            numOfCharactersBeforeASpace++;
+            j++;
+        }
+
+        chunkToCopy += numOfCharactersBeforeASpace;
+
+        if (inputStr[indexOffset + k] == '\t' && indexOffset != 0) {
+            chunkToCopy -= 8;
+        }
+        if (inputStr[indexOffset] == ' ' && indexOffset != 0) {
+            k++;
+        }
+
+        strncpy(outputArr[*outputArrCount], inputStr + indexOffset + k, chunkToCopy);
+
+        // Null terminate the substring
+        outputArr[*outputArrCount][chunkToCopy + numOfCharactersBeforeASpace] = '\0';
+        // outputArr[*outputArrCount][lineCap] = '\0';
+
+        // Update indices
+        indexOffset += chunkToCopy;
+
+        // Increment count of substrings
+        (*outputArrCount)++;
+
+        chunkToCopy = lineCap;
+        j = 0;
+        k = 0;
+        numOfCharactersBeforeASpace = 0;
+    }
+}
+
 void about() {
 /*
 
@@ -646,6 +695,48 @@ Simon Narvaez
 Marc Jordan Campopos
 
 */
+    // char paragraphs[][300] = {
+    //     "This tool is a smart way to keep secrets safe online! It's like a", "lock and key system, where only the right key can unlock the secret", "message. It uses the RSA encryption magic to keep your messages", "secure. You can encrypt messages that you want to keep tucked away,", "or encrypt a message that you want to send to your friend using their", "public key.",
+    //     "\n",
+    //     "Using our tool is easy-peasy!",
+    //     "    - Generate your very own private and public keys, but remember",
+    //     "    to keep, these keys safe and hidden.",
+    //     "    - With the keys generate, you can now lock and unlock", "    messages. The public key will encrypt messages, and the", "    private key will decrypt them back to the original text.", "    Note: Only the corresponding private key can be used to", "    decrypt the text encrypted with its corresponding public key."
+    // };
+    // int paragraphsSize = sizeof(paragraphs) / sizeof(paragraphs[0]);
+
+    char paragraphs[][ABOUT_MAX_LENGTH] = {
+        "This tool is a smart way to keep secrets safe online! It's like a lock and key system, where only the right key can unlock the secret message. It uses the RSA encryption magic to keep your messages secure. You can encrypt messages that you want to keep tucked away, or encrypt a message that you want to send to your friend using their public key.\n",
+        "Using our tool is easy-peasy!",
+        "(1) Generate your very own private and public keys, but remember to keep these keys safe and hidden.",
+        "(2) With the keys generate, you can now lock and unlock messages. The public key will encrypt messages, and the private key will decrypt them back to the original text. Note: Only the corresponding private key can be used to decrypt the text encrypted with its corresponding public key.\n",
+        "This is a freshman Computer Science final project for Computer Programming 2 (CS103), Academic Year 2023-2024, at Bicol University College of Science. This project would not be possible without our amazing contributors:\n",
+        "Michael Xavier Canonizado",
+        "Deanne Clarice Bea",
+        "Simon Narvaez",
+        "Marc Jordan Campopos"
+    };
+    int paragraphsSize = sizeof(paragraphs) / sizeof(paragraphs[0]);
+    char substrings[ABOUT_MAX_SUBSTRINGS][ABOUT_MAX_LENGTH];
+    int substringCount = 0;
+
+    int leftPaddingAnchor = calculateLeftPadding(ABOUT_LINE_CAP);
+
+    for (int i = 0; i < paragraphsSize; i++) {
+        splitString(paragraphs[i], substrings, &substringCount, ABOUT_LINE_CAP);
+    }
+    
+    printProgramHeader();
+
+    moveCursor(0, (terminalHeight - substringCount) / 3);
+
+    // Output the substrings
+    for (int i = 0; i < substringCount; i++) {
+        printf("\n%*s%s", calculateLeftPadding(strlen(substrings[i])), "", substrings[i]);
+        // printf("\n%*s%s", leftPaddingAnchor, "", substrings[i]);
+    }
+    
+    promptExitConfirm();
 }
 
 
