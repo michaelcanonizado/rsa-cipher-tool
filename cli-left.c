@@ -41,7 +41,7 @@ void generateKeys();
 void encryptText();
 void decryptText();
 unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic, unsigned long long int characterCount);
-void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);
+unsigned long long int decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);
 unsigned long long int getInputFile(FILE **inputFilePtr, char *inputFilename);
 void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic);
 void aboutProject();
@@ -528,9 +528,10 @@ void decryptText() {
 
     getKeys(decrypt, &dPrivate, &nPublic);
 
-    decryptTextFile(inputFilePtr, outputFilePtr, &dPrivate, &nPublic);
+    unsigned long long int charactersEncrypted = decryptTextFile(inputFilePtr, outputFilePtr, &dPrivate, &nPublic);
 
     printf("\nDecryption complete!");
+    printf("\nCharacters decrypted: %llu", charactersEncrypted);
     printf("\nView decrypted file at: %s", outputFilename);
 
     freeAllBignums();
@@ -541,7 +542,7 @@ void decryptText() {
     promptExitConfirm();
 }
 
-void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic) {
+unsigned long long int decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic) {
     unsigned long long int characterCount = 0;
     unsigned long long int totalCharactersEncrypted = 0;
     int percentageEncrypted = 0;
@@ -593,6 +594,8 @@ void decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, 
 
     freeBignum(&decryptedChar);
     freeBignum(&encryptedChar);
+
+    return totalCharactersEncrypted;
 }
 
 unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic, unsigned long long int characterCount) {
