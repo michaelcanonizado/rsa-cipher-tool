@@ -18,7 +18,7 @@
 #endif
 
 
-int progressBarLength = 0;
+int loadingBarLength = 0;
 int terminalWidth = 0;
 int terminalHeight = 0;
 int currLeftPadding = 0;
@@ -154,7 +154,7 @@ void getTerminalSize() {
 	terminalWidth = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 	terminalHeight = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
 
-    progressBarLength = terminalWidth - strlen("Encryption progress: ( 100%% ) ");
+    loadingBarLength = terminalWidth - strlen("Encryption progress: ( 100%% ) ");
 #else
 	struct winsize size;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
@@ -760,8 +760,8 @@ void printProgramHeader() {
 }
 
 void loadingBar(int x, int y, int percentDone) { 
-	int fill = percentDone * progressBarLength / 100;
-    int track = progressBarLength - fill;
+	int fill = percentDone * loadingBarLength / 100;
+    int track = loadingBarLength - fill;
 
     moveCursor(x, y);
 
