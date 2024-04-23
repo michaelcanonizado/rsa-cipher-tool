@@ -41,8 +41,7 @@ void generateKeys();
 void encryptText();
 void decryptText();
 unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
-unsigned long long int decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);
-unsigned long long int getInputFile(FILE **inputFilePtr, char *inputFilename);
+unsigned long long int decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);void getInputFile(FILE **inputFilePtr, char *inputFilename);
 void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic);
 void aboutProject();
 
@@ -477,7 +476,7 @@ void encryptText() {
     char outputFilename[] = "en.txt";
 
     printf("\nAction: Encryption");
-    unsigned long long int characterCount = getInputFile(&inputFilePtr, inputFilename);
+    getInputFile(&inputFilePtr, inputFilename);
 
     outputFilePtr = fopen(outputFilename, "w");
     if (outputFilePtr == NULL) {
@@ -514,7 +513,7 @@ void decryptText() {
     char outputFilename[] = "dc.txt";
 
     printf("\nAction: Decryption");
-    unsigned long long int characterCount = getInputFile(&inputFilePtr, inputFilename);
+    getInputFile(&inputFilePtr, inputFilename);
 
     outputFilePtr = fopen(outputFilename, "w");
     if (outputFilePtr == NULL) {
@@ -649,8 +648,7 @@ unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, 
 
     return totalCharactersEncrypted;
 }
-
-unsigned long long int getInputFile(FILE **inputFilePtr, char *inputFilename) {
+void getInputFile(FILE **inputFilePtr, char *inputFilename) {
     unsigned long long int characterCount = 0;
     char character;
 
@@ -681,8 +679,6 @@ unsigned long long int getInputFile(FILE **inputFilePtr, char *inputFilename) {
         moveCursor(tempCursorX, tempCursorY);
         
     }
-
-    return characterCount;
 }
 
 void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic) {
