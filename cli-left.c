@@ -18,7 +18,7 @@
 #endif
 
 
-int PROGRESS_BAR_LENGTH = 30;
+int progressBarLength = 0;
 int terminalWidth = 0;
 int terminalHeight = 0;
 int currLeftPadding = 0;
@@ -153,6 +153,8 @@ void getTerminalSize() {
 	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
 	terminalWidth = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 	terminalHeight = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+
+    progressBarLength = terminalWidth - strlen("Encryption progress: ( 100%% ) ");
 #else
 	struct winsize size;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
@@ -648,6 +650,7 @@ unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, 
 
     return totalCharactersEncrypted;
 }
+
 void getInputFile(FILE **inputFilePtr, char *inputFilename) {
     unsigned long long int characterCount = 0;
     char character;
@@ -757,12 +760,21 @@ void printProgramHeader() {
 }
 
 void loadingBar(int x, int y, int percentDone) { 
-	int fill = percentDone * PROGRESS_BAR_LENGTH / 100;
-    int track = PROGRESS_BAR_LENGTH - fill;
+	int fill = percentDone * progressBarLength / 100;
+    int track = progressBarLength - fill;
 
     moveCursor(x, y);
 
 #ifdef _WIN32
+    // printf("[");
+	// char a = '=', b = ' ';
+	// for (int i = 0; i < fill; i++) {
+	// 	printf("%c", a);
+	// }
+	// for (int i = 0; i < track; i++) {
+	// 	printf("%c", b);
+	// }
+    // printf("]");
 	char a = 219, b = 177;
 	for (int i = 0; i < fill; i++) {
 		printf("%c", a);
