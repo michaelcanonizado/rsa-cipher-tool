@@ -496,7 +496,7 @@ void encryptText() {
 
     printf("\nEncryption complete!");
     printf("\nCharacters encrypted: %llu", charactersEncrypted);
-    printf("\nView encrypted file at: %s", outputFilename);
+    printf("\nView the encrypted file at: %s", outputFilename);
 
     freeAllBignums();
 
@@ -533,7 +533,7 @@ void decryptText() {
 
     printf("\nDecryption complete!");
     printf("\nCharacters decrypted: %llu", charactersEncrypted);
-    printf("\nView decrypted file at: %s", outputFilename);
+    printf("\nView the decrypted file at: %s", outputFilename);
 
     freeAllBignums();
 
