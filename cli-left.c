@@ -728,15 +728,58 @@ Marc Jordan Campopos
     
     printProgramHeader();
 
-    moveCursor(0, (terminalHeight - substringCount) / 3);
+    int topPadding = (terminalHeight - substringCount) / 4;
+
+    for (int i = 0; i < topPadding; i++) {
+        printf("\n");
+    }
 
     // Output the substrings
     for (int i = 0; i < substringCount; i++) {
         printf("\n%*s%s", calculateLeftPadding(strlen(substrings[i])), "", substrings[i]);
         // printf("\n%*s%s", leftPaddingAnchor, "", substrings[i]);
     }
+
+    char userInput[100];
+    int bottomPadding = topPadding;
+    int bottomLeftPadding = calculateLeftPadding(strlen("Enter DONE to go back: "));
     
-    promptExitConfirm();
+    int tempCursorX, tempCursorY;
+    int cursorXToDelete, cursorYToDelete;
+
+    getCursorPosition(&tempCursorX, &tempCursorY);
+    
+	do {
+		// clearLines(terminalHeight - 5, terminalHeight - 5);
+		// moveCursor((terminalWidth - 21)/ 2, terminalHeight - 5);
+        for (int i = 0; i < bottomPadding + 1; i++) {
+            printf("\n");
+        }
+        for (int i = 0; i < bottomLeftPadding; i++) {
+            printf(" ");
+        }
+        
+		printf("Enter DONE to go back: ");
+        getCursorPosition(&cursorXToDelete, &cursorYToDelete);
+		fgets(userInput, sizeof(userInput), stdin);
+
+		// Replace the newline character at the end of the input to NULL
+		if (userInput[strlen(userInput) - 1] == '\n') {
+			userInput[strlen(userInput) - 1] = '\0';
+		}
+
+		// Convert the user's input to lowercase
+		for(int i = 0; userInput[i]; i++){
+			userInput[i] = tolower(userInput[i]);
+		}
+
+
+        clearWord(cursorYToDelete, 0, terminalWidth);
+        moveCursor(tempCursorX, tempCursorY);
+
+	} while (strcmp(userInput, "done") != 0);
+    
+    // promptExitConfirm();
 }
 
 
