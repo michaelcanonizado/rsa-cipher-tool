@@ -695,15 +695,6 @@ Simon Narvaez
 Marc Jordan Campopos
 
 */
-    // char paragraphs[][300] = {
-    //     "This tool is a smart way to keep secrets safe online! It's like a", "lock and key system, where only the right key can unlock the secret", "message. It uses the RSA encryption magic to keep your messages", "secure. You can encrypt messages that you want to keep tucked away,", "or encrypt a message that you want to send to your friend using their", "public key.",
-    //     "\n",
-    //     "Using our tool is easy-peasy!",
-    //     "    - Generate your very own private and public keys, but remember",
-    //     "    to keep, these keys safe and hidden.",
-    //     "    - With the keys generate, you can now lock and unlock", "    messages. The public key will encrypt messages, and the", "    private key will decrypt them back to the original text.", "    Note: Only the corresponding private key can be used to", "    decrypt the text encrypted with its corresponding public key."
-    // };
-    // int paragraphsSize = sizeof(paragraphs) / sizeof(paragraphs[0]);
 
     char paragraphs[][ABOUT_MAX_LENGTH] = {
         "This tool is a smart way to keep secrets safe online! It's like a lock and key system, where only the right key can unlock the secret message. It uses the RSA encryption magic to keep your messages secure. You can encrypt messages that you want to keep tucked away, or encrypt a message that you want to send to your friend using their public key.\n",
@@ -734,7 +725,6 @@ Marc Jordan Campopos
         printf("\n");
     }
 
-    // Output the substrings
     for (int i = 0; i < substringCount; i++) {
         printf("\n%*s%s", calculateLeftPadding(strlen(substrings[i])), "", substrings[i]);
         // printf("\n%*s%s", leftPaddingAnchor, "", substrings[i]);
