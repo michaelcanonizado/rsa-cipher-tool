@@ -544,9 +544,22 @@ unsigned long long int decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, 
     return totalCharactersEncrypted;
 }
 
+int isValidEncryptedFile(FILE *inputFilePtr) {
+    char character;
+    while((character = fgetc(inputFilePtr)) != EOF) {
+        if (!isdigit(character) && character != '/') {
+            rewind(inputFilePtr);
+            return 0;
+        }
+    }
+    rewind(inputFilePtr);
+    return 1;
+}
+
 void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type) {
     unsigned long long int characterCount = 0;
     char character;
+    int isValidFile = 0;
 
     while (1) {
         int tempCursorX, tempCursorY;
@@ -558,17 +571,21 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type) {
 
         *inputFilePtr = fopen(inputFilename, "r");
 
+
         if (*inputFilePtr != NULL) {
+            isValidFile = type == decrypt ? isValidEncryptedFile(*inputFilePtr) : 1;
+        }
+
+        if (isValidFile) {
             clearWord(terminalHeight - 7, 0, terminalWidth);
             moveCursor(prevCursorX, prevCursorY);
             break;
         }
+            clearWord(tempCursorY+1, strlen(promptMsg), terminalWidth);
 
-        clearWord(tempCursorY+1, strlen(promptMsg), terminalWidth);
-
-        moveCursor(0, terminalHeight - 7);
-        printf("%*sCould not open \"%s\". Please try again...", currLeftPadding, "", inputFilename);
-        moveCursor(tempCursorX, tempCursorY);
+            moveCursor(0, terminalHeight - 7);
+            printf("%*sCould not open \"%s\". Please try again...", currLeftPadding, "", inputFilename);
+            moveCursor(tempCursorX, tempCursorY);
         
     }
 }
