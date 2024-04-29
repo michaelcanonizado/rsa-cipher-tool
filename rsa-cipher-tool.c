@@ -76,6 +76,7 @@ void loadingBar(int x, int y, int percentageDone);
 void moveCursor(int x, int y);
 void printProgramHeader();
 void promptExitConfirm();
+void showCursor();
 void sleepProgram(int milliseconds);
 
 
@@ -956,6 +957,14 @@ void promptExitConfirm() {
 		}
 
 	} while (strcmp(userInput, "done") != 0);
+}
+
+void showCursor() {
+   HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+   CONSOLE_CURSOR_INFO info;
+   info.dwSize = 100;
+   info.bVisible = TRUE;
+   SetConsoleCursorInfo(consoleHandle, &info);
 }
 
 void sleepProgram(int milliseconds) {
