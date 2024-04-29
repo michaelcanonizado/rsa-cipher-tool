@@ -897,6 +897,8 @@ void getTerminalSize() {
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
 	terminalWidth = size.ws_col;
 	terminalHeight = size.ws_row;
+
+    loadingBarLength = terminalWidth - strlen("Encryption progress:   ( 100%% )");
 #endif
 }
 
