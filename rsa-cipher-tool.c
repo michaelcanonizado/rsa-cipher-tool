@@ -636,6 +636,7 @@ void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic) {
 
         int tempCursorX, tempCursorY;
         getCursorPosition(&tempCursorX, &tempCursorY);
+        moveCursor(tempCursorX, tempCursorY);
 
         char promptMsg[20];
         if (type == encrypt) {
