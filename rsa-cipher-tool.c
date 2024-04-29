@@ -882,7 +882,11 @@ void hideCursor() {
    SetConsoleCursorInfo(consoleHandle, &info);
 }
 
-void loadingBar(int x, int y, int percentDone) { 
+void loadingBar(int x, int y, int percentDone) {
+    if (percentDone > 100) {
+        percentDone = 100;
+    }
+
 	int fill = percentDone * loadingBarLength / 100;
     int track = loadingBarLength - fill;
 
