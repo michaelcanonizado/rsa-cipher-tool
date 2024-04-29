@@ -71,6 +71,7 @@ void clearScreen();
 void clearWord(int y, int startCol, int endCol);
 void getCursorPosition(int *x, int *y);
 void getTerminalSize();
+void hideCursor();
 void loadingBar(int x, int y, int percentageDone);
 void moveCursor(int x, int y);
 void printProgramHeader();
@@ -870,6 +871,14 @@ void getTerminalSize() {
 	terminalWidth = size.ws_col;
 	terminalHeight = size.ws_row;
 #endif
+}
+
+void hideCursor() {
+   HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+   CONSOLE_CURSOR_INFO info;
+   info.dwSize = 100;
+   info.bVisible = FALSE;
+   SetConsoleCursorInfo(consoleHandle, &info);
 }
 
 void loadingBar(int x, int y, int percentDone) { 
