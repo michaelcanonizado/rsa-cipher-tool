@@ -901,11 +901,15 @@ void getTerminalSize() {
 }
 
 void hideCursor() {
+#ifdef _WIN32
    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
    CONSOLE_CURSOR_INFO info;
    info.dwSize = 100;
    info.bVisible = FALSE;
    SetConsoleCursorInfo(consoleHandle, &info);
+#else
+    printf("\e[?25l");
+#endif
 }
 
 void loadingBar(int x, int y, int percentDone) {
@@ -998,11 +1002,15 @@ void promptExitConfirm() {
 }
 
 void showCursor() {
+#ifdef _WIN32
    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
    CONSOLE_CURSOR_INFO info;
    info.dwSize = 100;
    info.bVisible = TRUE;
    SetConsoleCursorInfo(consoleHandle, &info);
+#else
+    printf("\e[?25h");
+#endif
 }
 
 void sleepProgram(int milliseconds) {
