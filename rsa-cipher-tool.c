@@ -559,10 +559,6 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type) {
         *inputFilePtr = fopen(inputFilename, "r");
 
         if (*inputFilePtr != NULL) {
-            fseek(*inputFilePtr, 0, SEEK_END);
-            characterCount = ftell(*inputFilePtr);
-            fseek(*inputFilePtr, 0, SEEK_SET);
-
             clearWord(terminalHeight - 7, 0, terminalWidth);
             moveCursor(prevCursorX, prevCursorY);
             break;
