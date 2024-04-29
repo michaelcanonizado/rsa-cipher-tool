@@ -173,6 +173,10 @@ int main(void) {
 
 
 void generateKeys() {
+    clock_t startTime, endTime;
+    double elapsedTime;
+    startTime = clock();
+
     moveCursor(0, 4);
 
     KeySize keySizeOptions[] = {
@@ -344,6 +348,10 @@ void generateKeys() {
 
     sleepProgram(300);
     loadingBar(loadingBarX, loadingBarY, 100);
+
+    endTime = clock();
+    elapsedTime = (double) (endTime - startTime) / CLOCKS_PER_SEC;
+    printf("\nGenerated keys in: %.2f seconds", elapsedTime);
 
     printf("\n");
 
