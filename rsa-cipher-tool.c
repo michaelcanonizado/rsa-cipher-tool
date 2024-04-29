@@ -769,6 +769,7 @@ void about() {
 }
 
 
+
 int calculateLeftPadding(int strLength) {
     int remainingWidth = terminalWidth - strLength;
     int leftPadding = remainingWidth % 2 ? (remainingWidth + 1) / 2 : remainingWidth / 2;
