@@ -471,6 +471,10 @@ unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, 
 }
 
 void decryptText() {
+    clock_t startTime, endTime;
+    double elapsedTime;
+    startTime = clock();
+
     clearPrompts();
 
     FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
@@ -496,6 +500,11 @@ void decryptText() {
     unsigned long long int charactersEncrypted = decryptTextFile(inputFilePtr, outputFilePtr, &dPrivate, &nPublic);
 
     printf("\nDecryption complete!");
+
+    endTime = clock();
+    elapsedTime = (double) (endTime - startTime) / CLOCKS_PER_SEC;
+    printf("\nDecrypted file in: %.2f seconds", elapsedTime);
+
     printf("\nCharacters decrypted: %llu", charactersEncrypted);
     printf("\nView the decrypted file at: %s", outputFilename);
 
