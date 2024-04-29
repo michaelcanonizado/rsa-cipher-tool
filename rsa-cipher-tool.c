@@ -928,27 +928,29 @@ void loadingBar(int x, int y, int percentDone) {
         hideCursor();
     }
 
+    printf("[");
+
 #ifdef _WIN32
 	char a = '=', b = ' ';
-	// char a = 219, b = 177;
     
-    printf("[");
 	for (int i = 0; i < fill; i++) {
 		printf("%c", a);
 	}
 	for (int i = 0; i < track; i++) {
 		printf("%c", b);
 	}
-    printf("]");
 #else
-	char *a = "█", *b = "░";
+	char a = '=', b = ' ';
 	for (int i = 0; i < fill; i++) {
-		printf("%s", a);
+		printf("%c", a);
 	}
 	for (int i = 0; i < track; i++) {
-		printf("%s", b);
+		printf("%c", b);
 	}
 #endif
+
+    printf("]");
+    
 	printf(" ( %d%% )", percentDone);
 	fflush(stdout);
 
