@@ -535,13 +535,13 @@ unsigned long long int decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, 
     }
     rewind(inputFilePtr);
 
-    printf("\nEncryption progress: ");
+    printf("\nDecryption progress: ");
 
     int loadingBarX, loadingBarY;
     getCursorPosition(&loadingBarX, &loadingBarY);
 
 #ifndef _WIN32
-    loadingBarX += strlen("Encryption progress: ");
+    loadingBarX += strlen("Decryption progress: ");
 #endif
 
     while (fscanf(inputFilePtr, "%[^/]/", encryptedCharacter) == 1) {
