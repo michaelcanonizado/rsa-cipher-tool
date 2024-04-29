@@ -560,6 +560,7 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type) {
     unsigned long long int characterCount = 0;
     char character;
     int isValidFile = 0;
+    char errorPrompt[100];
 
     while (1) {
         int tempCursorX, tempCursorY;
@@ -569,11 +570,16 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type) {
         printf("\n%s", promptMsg);
         scanf("%s", inputFilename);
 
-        *inputFilePtr = fopen(inputFilename, "r");
+        sprintf(errorPrompt, "Could not open \"%s\". Please try again...", inputFilename);
 
+        *inputFilePtr = fopen(inputFilename, "r");
 
         if (*inputFilePtr != NULL) {
             isValidFile = type == decrypt ? isValidEncryptedFile(*inputFilePtr) : 1;
+
+            if (type == decrypt) {
+                sprintf(errorPrompt, "\"%s\" is not a valid file encrypted by the program.", inputFilename);
+            }
         }
 
         if (isValidFile) {
@@ -584,7 +590,7 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type) {
             clearWord(tempCursorY+1, strlen(promptMsg), terminalWidth);
 
             moveCursor(0, terminalHeight - 7);
-            printf("%*sCould not open \"%s\". Please try again...", currLeftPadding, "", inputFilename);
+            printf("%*s%s", calculateLeftPadding(strlen(errorPrompt)), "", errorPrompt);
             moveCursor(tempCursorX, tempCursorY);
         
     }
