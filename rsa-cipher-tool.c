@@ -373,6 +373,10 @@ void generateKeys() {
 }
 
 void encryptText() {
+    clock_t startTime, endTime;
+    double elapsedTime;
+    startTime = clock();
+
     clearPrompts();
 
     FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
@@ -398,6 +402,11 @@ void encryptText() {
     unsigned long long int charactersEncrypted = encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
 
     printf("\nEncryption complete!");
+
+    endTime = clock();
+    elapsedTime = (double) (endTime - startTime) / CLOCKS_PER_SEC;
+    printf("\nEncrypted file in: %.2f seconds", elapsedTime);
+
     printf("\nCharacters encrypted: %llu", charactersEncrypted);
     printf("\nView the encrypted file at: %s", outputFilename);
 
