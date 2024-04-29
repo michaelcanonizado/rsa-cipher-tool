@@ -130,9 +130,10 @@ int main(void) {
 				    break;
                 case 5:
             	    clearScreen();
-				    printf("Exiting program...\n");
+                    moveCursor(0, (terminalHeight/2) - 4);
+				    printf("%*s%s\n", calculateLeftPadding(strlen("Exiting RSA Cipher Tool...")), "", "Exiting RSA Cipher Tool...");
                     freeAllBignums();
-				    sleepProgram(500);
+				    sleepProgram(1000);
                     return 0;
                 default:
                     break;
