@@ -888,6 +888,10 @@ void loadingBar(int x, int y, int percentDone) {
 
     moveCursor(x, y);
 
+    if (percentDone < 100) {
+        hideCursor();
+    }
+
 #ifdef _WIN32
 	char a = '=', b = ' ';
 	// char a = 219, b = 177;
@@ -911,6 +915,10 @@ void loadingBar(int x, int y, int percentDone) {
 #endif
 	printf(" ( %d%% )", percentDone);
 	fflush(stdout);
+
+    if (percentDone >= 100) {
+        showCursor();
+    }
 }
 
 void moveCursor(int x, int y) {
