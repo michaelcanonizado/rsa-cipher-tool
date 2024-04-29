@@ -9,9 +9,7 @@
 
 #ifdef _WIN32
 	#include <windows.h>
-#endif
-
-#ifdef __linux__
+#else
     #include <sys/ioctl.h>
 	#include <unistd.h>
     #include <termios.h>
@@ -212,7 +210,7 @@ void generateKeys() {
     int loadingBarX, loadingBarY;
     getCursorPosition(&loadingBarX, &loadingBarY);
 
-#ifdef __linux__
+#ifndef _WIN32
     loadingBarX += strlen("Generating: ");
 #endif
 
@@ -413,7 +411,7 @@ unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, 
     int loadingBarX, loadingBarY;
     getCursorPosition(&loadingBarX, &loadingBarY);
 
-#ifdef __linux__
+#ifndef _WIN32
     loadingBarX += strlen("Encryption progress: ");
 #endif
 
@@ -507,7 +505,7 @@ unsigned long long int decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, 
     int loadingBarX, loadingBarY;
     getCursorPosition(&loadingBarX, &loadingBarY);
 
-#ifdef __linux__
+#ifndef _WIN32
     loadingBarX += strlen("Encryption progress: ");
 #endif
 
@@ -815,9 +813,7 @@ void getCursorPosition(int *x, int *y) {
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
     *x = info.dwCursorPosition.X;
     *y = info.dwCursorPosition.Y;
-#endif
-
-#ifdef __linux__
+#else
     // https://stackoverflow.com/questions/50884685/how-to-get-cursor-position-in-c-using-ansi-code/50888457#50888457
     char buf[30]={0};
     int ret, i, pow;
