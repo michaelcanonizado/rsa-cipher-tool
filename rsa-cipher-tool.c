@@ -879,8 +879,10 @@ void loadingBar(int x, int y, int percentDone) {
     moveCursor(x, y);
 
 #ifdef _WIN32
-    printf("[");
 	char a = '=', b = ' ';
+	// char a = 219, b = 177;
+    
+    printf("[");
 	for (int i = 0; i < fill; i++) {
 		printf("%c", a);
 	}
@@ -888,13 +890,6 @@ void loadingBar(int x, int y, int percentDone) {
 		printf("%c", b);
 	}
     printf("]");
-	// char a = 219, b = 177;
-	// for (int i = 0; i < fill; i++) {
-	// 	printf("%c", a);
-	// }
-	// for (int i = 0; i < track; i++) {
-	// 	printf("%c", b);
-	// }
 #else
 	char *a = "█", *b = "░";
 	for (int i = 0; i < fill; i++) {
@@ -961,7 +956,6 @@ void sleepProgram(int milliseconds) {
 	usleep(milliseconds * 1000);
 #endif
 }
-
 
 
 
