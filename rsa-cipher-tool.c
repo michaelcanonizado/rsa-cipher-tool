@@ -24,6 +24,10 @@
 
 
 
+#define ABOUT_MAX_LENGTH 500
+#define ABOUT_MAX_SUBSTRINGS 100
+#define ABOUT_LINE_CAP 50
+
 int loadingBarLength = 0;
 int terminalWidth = 0;
 int terminalHeight = 0;
@@ -629,10 +633,6 @@ void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic) {
     setBignum(ePublicOrDPrivate, firstKey, positive);
     setBignum(nPublic, secondKey, positive);
 }
-
-#define ABOUT_MAX_LENGTH 500
-#define ABOUT_MAX_SUBSTRINGS 100
-#define ABOUT_LINE_CAP 50
 
 void splitString(const char *inputStr, char outputArr[][ABOUT_MAX_LENGTH], int *outputArrCount, int lineCap) {
     int indexOffset = 0;
