@@ -692,25 +692,23 @@ void about() {
         "Marc Jordan Campopos"
     };
     int paragraphsSize = sizeof(paragraphs) / sizeof(paragraphs[0]);
-    char substrings[ABOUT_MAX_SUBSTRINGS][ABOUT_MAX_LENGTH];
-    int substringCount = 0;
-
-    int leftPaddingAnchor = calculateLeftPadding(ABOUT_LINE_CAP);
+    char paragraphsSubstrings[ABOUT_MAX_SUBSTRINGS][ABOUT_MAX_LENGTH];
+    int paragraphSubstringCount = 0;
 
     for (int i = 0; i < paragraphsSize; i++) {
-        splitString(paragraphs[i], substrings, &substringCount, ABOUT_LINE_CAP);
+        splitString(paragraphs[i], paragraphsSubstrings, &paragraphSubstringCount, ABOUT_LINE_CAP);
     }
     
     printProgramHeader();
 
-    int topPadding = (terminalHeight - substringCount) / 4;
+    int topPadding = (terminalHeight - paragraphSubstringCount) / 4;
 
     for (int i = 0; i < topPadding; i++) {
         printf("\n");
     }
 
-    for (int i = 0; i < substringCount; i++) {
-        printf("\n%*s%s", calculateLeftPadding(strlen(substrings[i])), "", substrings[i]);
+    for (int i = 0; i < paragraphSubstringCount; i++) {
+        printf("\n%*s%s", calculateLeftPadding(strlen(paragraphsSubstrings[i])), "", paragraphsSubstrings[i]);
     }
 
     char userInput[100];
@@ -723,8 +721,6 @@ void about() {
     getCursorPosition(&tempCursorX, &tempCursorY);
     
 	do {
-		// clearLines(terminalHeight - 5, terminalHeight - 5);
-		// moveCursor((terminalWidth - 21)/ 2, terminalHeight - 5);
         for (int i = 0; i < bottomPadding + 1; i++) {
             printf("\n");
         }
@@ -751,8 +747,6 @@ void about() {
         moveCursor(tempCursorX, tempCursorY);
 
 	} while (strcmp(userInput, "done") != 0);
-    
-    // promptExitConfirm();
 }
 
 
