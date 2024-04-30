@@ -424,8 +424,6 @@ void encryptText() {
 
     unsigned long long int charactersEncrypted = encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
 
-    printf("\nEncryption complete!");
-
     endTime = clock();
     elapsedTime = (double) (endTime - startTime) / CLOCKS_PER_SEC;
     printf("\nEncrypted file in: %.2f seconds", elapsedTime);
@@ -456,15 +454,20 @@ unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, 
     fseek(inputFilePtr, 0, SEEK_SET);
 
     printf("\nEncryption progress: ");
-
     int loadingBarX, loadingBarY;
     getCursorPosition(&loadingBarX, &loadingBarY);
 
+    printf("\nStatus: ");
+    int loadingStatusX, loadingStatusY;
+    getCursorPosition(&loadingStatusX, &loadingStatusY);
+
 #ifndef _WIN32
     loadingBarX += strlen("Encryption progress: ");
+    loadingStatusX += strlen("Status: ");
 #endif
 
     loadingBar(loadingBarX, loadingBarY, 0);
+    loadingStatus(loadingStatusX, loadingStatusY, "Encrypting file...");
 
     while ((character = fgetc(inputFilePtr)) != EOF) {
         intToBignum(&plainChar, character, positive);
@@ -489,6 +492,7 @@ unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, 
     freeBignum(&plainChar);
 
     loadingBar(loadingBarX, loadingBarY, 100);
+    loadingStatus(loadingStatusX, loadingStatusY, "Complete");
 
     return totalCharactersEncrypted;
 }
