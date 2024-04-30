@@ -170,7 +170,11 @@ int main(void) {
 
 
 
-
+void loadingStatus(int x, int y, char message[]) {
+    clearWord(y, x, terminalWidth);
+    moveCursor(x, y);
+    printf("%s", message);
+}
 
 void generateKeys() {
     clock_t startTime, endTime;
@@ -218,8 +222,8 @@ void generateKeys() {
 
     clearPrompts();
     printf("\nKey length: %d bit",  chosenKeySize);
-    printf("\nGenerating: ");
 
+    printf("\nGenerating: ");
     int loadingBarX, loadingBarY;
     getCursorPosition(&loadingBarX, &loadingBarY);
 
@@ -317,15 +321,17 @@ void generateKeys() {
         // (e * d)mod(n) = 1
         modularInverseBignum(&dPrivate, &ePublic, &phiOfNPrivate);
 
+        sleepProgram(300);
+        loadingBar(loadingBarX, loadingBarY, 85);
+
         modularExponentiationBignum(&encryptedChar, &plainChar, &ePublic, &nPublic);
         modularExponentiationBignum(&decryptedChar, &encryptedChar, &dPrivate, &nPublic);
 
-        sleepProgram(300);
-        loadingBar(loadingBarX, loadingBarY, 85);
 
         if (isEqualToBignum(&plainChar, &decryptedChar)) {
             sleepProgram(300);
             loadingBar(loadingBarX, loadingBarY, 90);
+            loadingStatus(loadingStatusX, loadingStatusY, "Keys passed the test");
             break;
         }
 
@@ -341,7 +347,7 @@ void generateKeys() {
         resetBignum(&decryptedChar);
     }
 
-    sleepProgram(300);
+    sleepProgram(500);
     loadingBar(loadingBarX, loadingBarY, 95);
 
     int keyPromptLength = 13 + dPrivate.length + nPublic.length;
