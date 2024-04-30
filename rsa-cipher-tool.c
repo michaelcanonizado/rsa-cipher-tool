@@ -73,6 +73,7 @@ void getCursorPosition(int *x, int *y);
 void getTerminalSize();
 void hideCursor();
 void loadingBar(int x, int y, int percentageDone);
+void loadingStatus(int x, int y, char message[]);
 void moveCursor(int x, int y);
 void printProgramHeader();
 void promptExitConfirm();
@@ -170,11 +171,6 @@ int main(void) {
 
 
 
-void loadingStatus(int x, int y, char message[]) {
-    clearWord(y, x, terminalWidth);
-    moveCursor(x, y);
-    printf("%s", message);
-}
 
 void generateKeys() {
     clearPrompts();
@@ -985,6 +981,13 @@ void loadingBar(int x, int y, int percentDone) {
     if (percentDone >= 100) {
         showCursor();
     }
+}
+
+void loadingStatus(int x, int y, char message[]) {
+    clearWord(y, x, terminalWidth);
+    moveCursor(x, y);
+    printf("%s", message);
+	fflush(stdout);
 }
 
 void moveCursor(int x, int y) {
