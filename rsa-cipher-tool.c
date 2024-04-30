@@ -31,7 +31,6 @@
 int loadingBarLength = 0;
 int terminalWidth = 0;
 int terminalHeight = 0;
-int currLeftPadding = 0;
 int prevCursorX = 0;
 int prevCursorY = 0;
 
