@@ -431,6 +431,8 @@ void encryptText() {
     printf("\nCharacters encrypted: %llu", charactersEncrypted);
     printf("\nView the encrypted file at: %s", outputFilename);
 
+    printf("\n\nNote: Make sure you encrypted the file with the recipient's public key, or else they won't be able to decrypt it!");
+
     freeAllBignums();
 
     fclose(inputFilePtr);
