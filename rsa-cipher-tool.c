@@ -227,26 +227,35 @@ void generateKeys() {
     int loadingBarX, loadingBarY;
     getCursorPosition(&loadingBarX, &loadingBarY);
 
+    printf("\nStatus: ");
+    int loadingStatusX, loadingStatusY;
+    getCursorPosition(&loadingStatusX, &loadingStatusY);
+
 #ifndef _WIN32
     loadingBarX += strlen("Generating: ");
+    loadingStatusX += strlen("Status: ");
 #endif
 
     loadingBar(loadingBarX, loadingBarY, 0);
+    loadingStatus(loadingStatusX, loadingStatusY, "Calculating P prime length");
 
     pPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
 
     sleepProgram(300);
     loadingBar(loadingBarX, loadingBarY, 5);
+    loadingStatus(loadingStatusX, loadingStatusY, "Calculating Q prime length");
 
     qPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
 
     sleepProgram(300);
     loadingBar(loadingBarX, loadingBarY, 10);
+    loadingStatus(loadingStatusX, loadingStatusY, "Calculating E public length");
 
     ePublicLength = pPrivateLength > 3 ? pPrivateLength / 2 : (chosenKeySize / log2(10.0)) - 1;
 
     sleepProgram(300);
     loadingBar(loadingBarX, loadingBarY, 20);
+    loadingStatus(loadingStatusX, loadingStatusY, "Initializing Bignums");
 
 	Bignum nPublic, ePublic, dPrivate;
     initBignum(&nPublic);
@@ -274,6 +283,7 @@ void generateKeys() {
 
     sleepProgram(300);
     loadingBar(loadingBarX, loadingBarY, 30);
+    loadingStatus(loadingStatusX, loadingStatusY, "Generating P prime");
 
     while (1) {
         // Generate p and q primes
@@ -281,6 +291,7 @@ void generateKeys() {
 
         sleepProgram(300);
         loadingBar(loadingBarX, loadingBarY, 35);
+        loadingStatus(loadingStatusX, loadingStatusY, "Generating Q prime");
 
         generatePrimeBignum(&qPrimePrivate, qPrivateLength);
 
@@ -293,6 +304,7 @@ void generateKeys() {
 
         sleepProgram(300);
         loadingBar(loadingBarX, loadingBarY, 50);
+        loadingStatus(loadingStatusX, loadingStatusY, "Generating N public");
 
         // Get n:
         // n = p * q
@@ -300,6 +312,7 @@ void generateKeys() {
 
         sleepProgram(300);
         loadingBar(loadingBarX, loadingBarY, 60);
+        loadingStatus(loadingStatusX, loadingStatusY, "Generating phi of N");
 
         // Get phi of n:
         // phi of n = (p - 1) * (q - 1)
@@ -309,6 +322,7 @@ void generateKeys() {
 
         sleepProgram(300);
         loadingBar(loadingBarX, loadingBarY, 70);
+        loadingStatus(loadingStatusX, loadingStatusY, "Generating E public");
 
         // Generate e (public key):
         // 2 < e < phi of n
@@ -316,6 +330,7 @@ void generateKeys() {
 
         sleepProgram(300);
         loadingBar(loadingBarX, loadingBarY, 80);
+        loadingStatus(loadingStatusX, loadingStatusY, "Generating D private");
     
         // Get d (private key):
         // (e * d)mod(n) = 1
@@ -323,6 +338,7 @@ void generateKeys() {
 
         sleepProgram(300);
         loadingBar(loadingBarX, loadingBarY, 85);
+        loadingStatus(loadingStatusX, loadingStatusY, "Testing keys");
 
         modularExponentiationBignum(&encryptedChar, &plainChar, &ePublic, &nPublic);
         modularExponentiationBignum(&decryptedChar, &encryptedChar, &dPrivate, &nPublic);
@@ -334,6 +350,9 @@ void generateKeys() {
             loadingStatus(loadingStatusX, loadingStatusY, "Keys passed the test");
             break;
         }
+
+        sleepProgram(500);
+        loadingStatus(loadingStatusX, loadingStatusY, "Keys failed! Regenerating new keys");
 
         resetBignum(&nPublic);
         resetBignum(&ePublic);
@@ -349,11 +368,13 @@ void generateKeys() {
 
     sleepProgram(500);
     loadingBar(loadingBarX, loadingBarY, 95);
+    loadingStatus(loadingStatusX, loadingStatusY, "Finishing up");
 
     int keyPromptLength = 13 + dPrivate.length + nPublic.length;
 
     sleepProgram(300);
     loadingBar(loadingBarX, loadingBarY, 100);
+    loadingStatus(loadingStatusX, loadingStatusY, "Complete");
 
     endTime = clock();
     elapsedTime = (double) (endTime - startTime) / CLOCKS_PER_SEC;
