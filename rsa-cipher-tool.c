@@ -526,8 +526,6 @@ void decryptText() {
 
     unsigned long long int charactersEncrypted = decryptTextFile(inputFilePtr, outputFilePtr, &dPrivate, &nPublic);
 
-    printf("\nDecryption complete!");
-
     endTime = clock();
     elapsedTime = (double) (endTime - startTime) / CLOCKS_PER_SEC;
     printf("\nDecrypted file in: %.2f seconds", elapsedTime);
@@ -563,13 +561,20 @@ unsigned long long int decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, 
     rewind(inputFilePtr);
 
     printf("\nDecryption progress: ");
-
     int loadingBarX, loadingBarY;
     getCursorPosition(&loadingBarX, &loadingBarY);
 
+    printf("\nStatus: ");
+    int loadingStatusX, loadingStatusY;
+    getCursorPosition(&loadingStatusX, &loadingStatusY);
+
 #ifndef _WIN32
     loadingBarX += strlen("Decryption progress: ");
+    loadingStatusX += strlen("Status: ");
 #endif
+
+    loadingBar(loadingBarX, loadingBarY, 0);
+    loadingStatus(loadingStatusX, loadingStatusY, "Decrypting file...");
 
     while (fscanf(inputFilePtr, "%[^/]/", encryptedCharacter) == 1) {
         setBignum(&encryptedChar, encryptedCharacter, positive);
@@ -592,6 +597,7 @@ unsigned long long int decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, 
     };
 
     loadingBar(loadingBarX, loadingBarY, 100);
+    loadingStatus(loadingStatusX, loadingStatusY, "Complete");
 
     freeBignum(&decryptedChar);
     freeBignum(&encryptedChar);
