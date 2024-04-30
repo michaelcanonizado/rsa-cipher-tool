@@ -190,7 +190,7 @@ void generateKeys() {
 
     while(1) {
         printf("\nThe key size determines the security of the encrypted text!");
-        printf("\nBut the longer the key size, the longer it will take to encrypt and decrypt.");
+        printf("\nThe longer the key size, the longer it will take to encrypt and decrypt.");
         printf("\n\nPlease choose a key size:\n");
         for (int i = 0; i < keySizeOptionsSize; i++) {
             printf("\n%d) - %s", i+1, keySizeOptions[i].name);
