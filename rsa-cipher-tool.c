@@ -1024,7 +1024,7 @@ void printProgramHeader() {
 
 #ifdef _WIN32
     moveCursor(0,4);
-#elif
+#else
     moveCursor(0,5);
 #endif
 }
