@@ -396,10 +396,6 @@ void generateKeys() {
 }
 
 void encryptText() {
-    clock_t startTime, endTime;
-    double elapsedTime;
-    startTime = clock();
-
     clearPrompts();
 
     FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
@@ -421,6 +417,10 @@ void encryptText() {
     initBignum(&nPublic);
 
     getKeys(encrypt, &ePublic, &nPublic);
+
+    clock_t startTime, endTime;
+    double elapsedTime;
+    startTime = clock();
 
     unsigned long long int charactersEncrypted = encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
 
