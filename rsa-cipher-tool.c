@@ -533,6 +533,10 @@ void decryptText() {
     printf("\nCharacters decrypted: %llu", charactersEncrypted);
     printf("\nView the decrypted file at: %s", outputFilename);
 
+    printf("\n\nNote: If the decrypted message doesn't look right, it can either be:");
+    printf("\n- The message was not encrypted with your public key");
+    printf("\n- You used the wrong key to decrypt the file");
+
     freeAllBignums();
 
     fclose(inputFilePtr);
