@@ -177,10 +177,6 @@ void loadingStatus(int x, int y, char message[]) {
 }
 
 void generateKeys() {
-    clock_t startTime, endTime;
-    double elapsedTime;
-    startTime = clock();
-
     clearPrompts();
 
     KeySize keySizeOptions[] = {
@@ -219,6 +215,10 @@ void generateKeys() {
     if (chosenKeySize == 0) {
         return;
     }
+
+    clock_t startTime, endTime;
+    double elapsedTime;
+    startTime = clock();
 
     clearPrompts();
     printf("\nKey length: %d bit",  chosenKeySize);
