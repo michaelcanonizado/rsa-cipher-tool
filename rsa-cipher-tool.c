@@ -177,7 +177,7 @@ void generateKeys() {
     double elapsedTime;
     startTime = clock();
 
-    moveCursor(0, 4);
+    clearPrompts();
 
     KeySize keySizeOptions[] = {
         {"16 bit", 16},
@@ -981,6 +981,12 @@ void printProgramHeader() {
     printf("\n");
     for (int i = 0; i < terminalWidth; i++) printf("-");
     printf("\n");
+
+#ifdef _WIN32
+    moveCursor(0,4);
+#elif
+    moveCursor(0,5);
+#endif
 }
 
 void promptExitConfirm() {
