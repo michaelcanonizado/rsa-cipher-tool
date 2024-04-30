@@ -500,10 +500,6 @@ unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, 
 }
 
 void decryptText() {
-    clock_t startTime, endTime;
-    double elapsedTime;
-    startTime = clock();
-
     clearPrompts();
 
     FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
@@ -525,6 +521,10 @@ void decryptText() {
     initBignum(&nPublic);
 
     getKeys(decrypt, &dPrivate, &nPublic);
+
+    clock_t startTime, endTime;
+    double elapsedTime;
+    startTime = clock();
 
     unsigned long long int charactersEncrypted = decryptTextFile(inputFilePtr, outputFilePtr, &dPrivate, &nPublic);
 
