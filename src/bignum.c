@@ -96,6 +96,8 @@ int multiplyBignumGetRightHalf(Bignum *result, Bignum *num, unsigned long long i
 }
 
 int bignumToBinary(Bignum *result, Bignum *num) {
+    // Function to convert a Bignum(Base-10) into its Binary(Base-2) representation.
+    // Uses simple divide and modulo to get the bits of the number, but uses a for-loop approach to avoid any Bignum arithmetic for maximum efficiency. 
 
     int remainderTemp;
     unsigned long long int binaryLength = 0;
@@ -105,19 +107,23 @@ int bignumToBinary(Bignum *result, Bignum *num) {
     Bignum two; 
 
     initBignum(&numTemp); 
-    initBignum(&remainder); 
-    initBignum(&two); 
-
     copyBignum(&numTemp, num);
 
+    initBignum(&two); 
     intToBignum(&two, 2, positive);
+
+    initBignum(&remainder); 
+
+    // Iterate through the Bignum till Bignum is 0
     while(!isBignumZero(&numTemp)) {
+        // Determine if the LSD (least significant digit) of the Bignum is odd or even. If even, the Bit will be 0, else it will be 1.
         if (numTemp.digits[0] % 2 == 0) {
             result->digits[binaryLength++] = 0;
         } else {
             result->digits[binaryLength++] = 1;
         }
 
+        // Divide bignum by 2 using the halfBignum() function to avoid actual division operations
         halfBignum(&numTemp, &numTemp);
     }
 
