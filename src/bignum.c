@@ -1897,11 +1897,6 @@ int modularInverseBignum(Bignum *result, Bignum *num, Bignum *divisor) {
     copyBignum(&a, isGreaterThanBignum(num, divisor) ? num : divisor);
     copyBignum(&b, isLessThanBignum(num, divisor) ? num : divisor);
 
-    // printf("\nA: ");
-    // printBignum(&a);
-    // printf("\nB: ");
-    // printBignum(&b);
-
     Bignum t2TimesQuotient;
     initBignum(&t2TimesQuotient);
 
@@ -1912,21 +1907,8 @@ int modularInverseBignum(Bignum *result, Bignum *num, Bignum *divisor) {
         moduloBignum(&remainder, &a, &b);
         divideBignum(&quotient, &a, &b);
 
-        // printf("\nr: ");
-        // printBignum(&remainder);
-        // printf("\nq: ");
-        // printBignum(&quotient);
-
         multiplyBignum(&t2TimesQuotient, &t2, &quotient);
         subtractBignum(&t, &t1, &t2TimesQuotient);
-
-        // printf("\nt: ");
-        // printBignum(&t);
-        // printf("\nt1: ");
-        // printBignum(&t1);
-        // printf("\nt2: ");
-        // printBignum(&t2);
-        // printf("\n-------------------------");
 
         copyBignum(&a, &b);
         copyBignum(&b, &remainder);
