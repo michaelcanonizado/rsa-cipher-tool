@@ -668,11 +668,12 @@ void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic) {
     char flag = '.';
     int flagIndex;
 
+    int tempCursorX, tempCursorY;
+    getCursorPosition(&tempCursorX, &tempCursorY);
+
     while(1) {
         int flagCount = 0, i;
 
-        int tempCursorX, tempCursorY;
-        getCursorPosition(&tempCursorX, &tempCursorY);
         moveCursor(tempCursorX, tempCursorY);
 
         char promptMsg[20];
@@ -699,6 +700,7 @@ void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic) {
         }
 
         clearWord(tempCursorY, strlen(promptMsg), terminalWidth);
+        clearLines(tempCursorY+1, terminalHeight - 8);
 
         moveCursor(0, terminalHeight - 7);
 
