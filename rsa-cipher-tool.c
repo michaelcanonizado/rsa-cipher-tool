@@ -649,16 +649,18 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type) {
         }
 
         if (isValidFile) {
+            int tempCursorX, tempCursorY;
+            getCursorPosition(&tempCursorX, &tempCursorY);
             clearWord(terminalHeight - 7, 0, terminalWidth);
-            moveCursor(prevCursorX, prevCursorY);
+            moveCursor(tempCursorX, tempCursorY);
             break;
         }
-            clearWord(tempCursorY+1, strlen(promptMsg), terminalWidth);
 
-            moveCursor(0, terminalHeight - 7);
-            printf("%*s%s", calculateLeftPadding(strlen(errorPrompt)), "", errorPrompt);
-            moveCursor(tempCursorX, tempCursorY);
-        
+        clearWord(tempCursorY+1, strlen(promptMsg), terminalWidth);
+        clearWord(terminalHeight - 7, 0, terminalWidth);
+        moveCursor(0, terminalHeight - 7);
+        printf("%*s%s", calculateLeftPadding(strlen(errorPrompt)), "", errorPrompt);
+        moveCursor(tempCursorX, tempCursorY);
     }
 }
 
