@@ -171,12 +171,8 @@ int millerRabinPrimalityTest(Bignum *num, int iterations) {
         // STEP 2:
         unsigned long long int min = 2;
         unsigned long long int max = pow(10,ceil(numMinusOne.length / 7.0)) - 1;
-        // unsigned long long int max = pow(10,ceil(numMinusOne.length / 4.0)) - 1;
         unsigned long long int aTemp = min + rand() % (max - min + 1);
         intToBignum(&a, aTemp, positive);
-
-        // printf("\n\t- a: ");
-        // printBignum(&a);
 
         // STEP 3:
         modularExponentiationBignum(&mod, &a, &temp, num);
@@ -186,24 +182,12 @@ int millerRabinPrimalityTest(Bignum *num, int iterations) {
             !isEqualToBignum(&mod, &pOne) &&
             !isEqualToBignum(&mod, &numMinusOne)
         ) {
-            // printf("\n( ");
-            // printBignum(&mod);
-            // printf(" * ");
-            // printBignum(&mod);
-            // printf(" ) mod ");
-            // printBignum(num);
 
             powerBignum(&modSquared, &mod, &two);
             moduloBignum(&mod, &modSquared, num);
 
-            // printf(" = ");
-            // printBignum(&mod);
-
-            // printf("\n");
-            // printBignum(&temp);
-            // printf(" * 2 = ");
             multiplyBignum(&tempCopy, &temp, &two);
-            // printBignum(&tempCopy);
+
             copyBignum(&temp, &tempCopy);
             resetBignum(&tempCopy);
         }
@@ -212,7 +196,6 @@ int millerRabinPrimalityTest(Bignum *num, int iterations) {
             !isEqualToBignum(&mod, &numMinusOne) &&
             temp.digits[0] % 2 == 0
         ) {
-            // printf(" -> composite:( ");
 
             freeBignum(&pOne);
             freeBignum(&two);
@@ -225,8 +208,6 @@ int millerRabinPrimalityTest(Bignum *num, int iterations) {
             freeBignum(&modSquared);
 
             return 0;
-        } else {
-            // printf(" -> prime!");
         }
     }
 
