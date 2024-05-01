@@ -131,6 +131,8 @@ int bignumToBinary(Bignum *result, Bignum *num) {
 }
 
 int millerRabinPrimalityTest(Bignum *num, int iterations) {
+    // Function to test for a Bignum's primality using the Miller Rabin Primality Test given a specified number of iterations/tests
+
     Bignum pOne;
     initBignum(&pOne);
     setBignum(&pOne, "1", positive);
@@ -168,13 +170,14 @@ int millerRabinPrimalityTest(Bignum *num, int iterations) {
     for (int i = 0; i < iterations; i++) {
         resetBignum(&a);
 
-        // STEP 2:
+        // STEP 2: Generate a random Bignum witness from: 2 - (num - 1). But in this implementation will be of a lower bit size to for faster tests.
+        // This step can be more optimized to standard. Such as: (1) generating small and large numbers, (2) the number being odd, (3) Co-prime with num, and (4) the same random witness being used again for the test.
         unsigned long long int min = 2;
         unsigned long long int max = pow(10,ceil(numMinusOne.length / 7.0)) - 1;
         unsigned long long int aTemp = min + rand() % (max - min + 1);
         intToBignum(&a, aTemp, positive);
 
-        // STEP 3:
+        // STEP 3: Perform test
         modularExponentiationBignum(&mod, &a, &temp, num);
 
         while(
@@ -192,6 +195,7 @@ int millerRabinPrimalityTest(Bignum *num, int iterations) {
             resetBignum(&tempCopy);
         }
 
+        // STEP 4: If the Bignum failed a test, immediately exit.
         if (
             !isEqualToBignum(&mod, &numMinusOne) &&
             temp.digits[0] % 2 == 0
