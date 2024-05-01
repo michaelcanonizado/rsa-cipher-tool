@@ -1800,13 +1800,21 @@ int powerBignum(Bignum *result, Bignum *base, Bignum *exponent) {
 }
 
 int modularExponentiationBignum(Bignum *result, Bignum *base, Bignum *exponent, Bignum *divisor) {
+    // Function to calculate ( (base^exponent) mod divisor ) of Bignums
+    // Uses binary exponentiation, but with inserted modulos to calculate the modular exponentiation in O(log(n)) time complexity. Reference: https://www.youtube.com/watch?v=8r4-5k-o1QE
+
+    // The function works a little differently from the usual binary exponentiation of using the base-10 representation of the exponent, and modulo-ing by 2 and halving it to get the binary bit to determine the steps. Instead it will first convert the exponent into its base-2 (binary) representation and start from the MSB to determine the steps needed, as shown in the reference above.
+
     Bignum binaryExponent; 
     initBignum(&binaryExponent);
 
+    // COnvert the exponent to its base-2 (binary) representation
     bignumToBinary(&binaryExponent, exponent);
 
     Bignum remainder;
     initBignum(&remainder);
+    // Copy the base to the remainder
+    // The initial value of the remainder should be set to the value of the base
     copyBignum(&remainder, base);
 
     Bignum remainderSquared;
@@ -1822,10 +1830,13 @@ int modularExponentiationBignum(Bignum *result, Bignum *base, Bignum *exponent, 
     initBignum(&remainderSquaredModDivisorTimesBase);
     initBignum(&remainderSquaredModDivisorTimesBaseModDivisor);
 
+    // Iterate through the bits of the exponent, starting from the MSB (most significant bit)
     for (unsigned long long int i = binaryExponent.length - 1; i > 0; i--) {
         resetBignum(&remainderSquared);
         resetBignum(&remainderSquaredModDivisor);
 
+        // If the next bit is 0:
+        // remainder = (remainder ^ 2) mod divisor
         if (binaryExponent.digits[i - 1] == 0) {
             resetBignum(&tempRemainder);
 
@@ -1835,7 +1846,11 @@ int modularExponentiationBignum(Bignum *result, Bignum *base, Bignum *exponent, 
             moduloBignum(&remainderSquaredModDivisor, &remainderSquared, divisor);
 
             copyBignum(&remainder, &remainderSquaredModDivisor);
-        } else if (binaryExponent.digits[i - 1] == 1) {
+        }
+        // If the next bit is 1:
+        // remainder = (remainder ^ 2) mod divisor
+        // remainder = ( remainder * base ) mod divisor
+        else if (binaryExponent.digits[i - 1] == 1) {
             resetBignum(&remainderSquaredModDivisorTimesBase);
             resetBignum(&remainderSquaredModDivisorTimesBaseModDivisor);
 
@@ -1849,6 +1864,7 @@ int modularExponentiationBignum(Bignum *result, Bignum *base, Bignum *exponent, 
         }
     }
 
+    // The final value of the remainder after iterating through all of the bits of the exponent is the result of ( ( base^exponent ) mod divisor )
     copyBignum(result, &remainder);
 
     freeBignum(&binaryExponent);
