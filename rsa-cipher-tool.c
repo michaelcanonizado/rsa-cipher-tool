@@ -845,12 +845,14 @@ int calculateLeftPadding(int strLength) {
 }
 
 void clearLines(int startLine, int endLine) {
+    hideCursor();
 	for (int i = startLine; i <= endLine; i++) {
 		moveCursor(0, i);
 		for (int j = 0; j < terminalWidth; j++) {
 			printf(" ");
 		}
 	}
+    showCursor();
 }
 
 void clearPrompts() {
