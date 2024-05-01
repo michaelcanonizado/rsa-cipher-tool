@@ -31,8 +31,6 @@
 int loadingBarLength = 0;
 int terminalWidth = 0;
 int terminalHeight = 0;
-int prevCursorX = 0;
-int prevCursorY = 0;
 
 typedef struct {
     char name[50];
@@ -1009,7 +1007,6 @@ void loadingStatus(int x, int y, char message[]) {
 
 void moveCursor(int x, int y) {
 #ifdef _WIN32
-    getCursorPosition(&prevCursorX, &prevCursorY);
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	COORD pos = {x, y};
 	SetConsoleCursorPosition(hConsole, pos);
