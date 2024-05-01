@@ -969,7 +969,6 @@ void loadingBar(int x, int y, int percentDone) {
 
     printf("[");
 
-#ifdef _WIN32
 	char a = '=', b = ' ';
     
 	for (int i = 0; i < fill; i++) {
@@ -978,15 +977,6 @@ void loadingBar(int x, int y, int percentDone) {
 	for (int i = 0; i < track; i++) {
 		printf("%c", b);
 	}
-#else
-	char a = '=', b = ' ';
-	for (int i = 0; i < fill; i++) {
-		printf("%c", a);
-	}
-	for (int i = 0; i < track; i++) {
-		printf("%c", b);
-	}
-#endif
 
     printf("]");
     
