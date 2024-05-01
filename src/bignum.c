@@ -2004,39 +2004,45 @@ int halfBignum(Bignum *result, Bignum *num) {
 }
 
 int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
+    // Function to generate a prime Bignum given a desired length.
+    // Function will generate random numbers, test for its primality using the Miller Rabbin Primality Test (https://home.sandiego.edu/~dhoffoss/teaching/cryptography/10-Rabin-Miller.pdf), and if the number passes all the test, it will be as MOST PROBABLY a prime number.
+
+    // NOTE: The Miller Rabin Primality Test can determine with certainty that a number is composite, but it can only provide a probabilistic assessment for its primality. In other words, there is still a small chance that a composite number might pass the test. Hence, increasing the number of iterations/tests done on a nuber can increase the probabilty of it being a prime number, but would cost some significant overhead.
+
     srand(time(NULL));
 
     Bignum n;
     initBignum(&n);
 
+    // Seed the last digit of the random Bignum with 1,3,7,9 as these are the only numbers that a prime number can end with.
     int primeLastDigits[] = {1,3,7,9};
     int randPrimeLastDigitIndex = rand() % 4;
     int isPrime = 0;
 
+    // Generate a new Bignum and test for primality until a Bignum has passed the primality test
     while(!isPrime) {
         resetBignum(&n);
 
+        // Generate a random number per digit of the Bignum
         for (unsigned long long int i = primeLength - 1; i > 0; i--) {
-        if (i == primeLength - 1) {
-            n.digits[i] = (rand() % 9) + 1;
-        } else {
-            n.digits[i] = rand() % 10;
+            // If the current digit is the MSD (most significant digit), generate a random number from 1 - 9
+            if (i == primeLength - 1) {
+                n.digits[i] = (rand() % 9) + 1;
+            }
+            // Else generate a random number from 0 - 9
+            else {
+                n.digits[i] = rand() % 10;
+            }
         }
-        }
+        // Choose a random number from the prime last digit array to seed the last digit of the random Bignum
         n.digits[0] = primeLastDigits[randPrimeLastDigitIndex];
         n.length = primeLength;
 
-        // printf("\nChecking if ");
-        // printBignum(&n);
-        // printf(" isPrime...");
-
+        // Test for the Bignum's primality
         isPrime = millerRabinPrimalityTest(&n, 10);
-
-        // printf("\n");
-        // printBignum(&n);
-        // printf(" isPrime: %d", isPrime);
     }
 
+    // If the generated Bignum passed the primality test, copy that Bignum to result Bignum
     copyBignum(result, &n);
 
     freeBignum(&n);
