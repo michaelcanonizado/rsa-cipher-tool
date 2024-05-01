@@ -610,7 +610,7 @@ long long int bignumToInt(Bignum *num) {
     // Function will convert a Bignum to an long long integer (maximum data type as negative Bignums can also be converted).
 
     // Get maximum number of digits of long long int. 
-    int maxNumOfDigits = getLengthOfInteger(MAX_VALUE_OF_LONG_LONG_INT);
+    int maxNumOfDigits = getLengthOfInteger(LLONG_MAX);
 
     // REFACTOR: THIS MUST THROW A PROPER ERROR. A BIGNUM WITH Bignum.digits[] = [0] and Bignum.length = 1 IS A VALID BIGNUM THAT CAN BE CONVERTED TO AN INTEGER. INSTEAD OF RETURNING THE RESULT, USE A POINTER PARAMETER TO POINT TO THE RESULT VARIABLE, AND THE RETURN SHOULD ONLY BE ERROR CODES.
 
