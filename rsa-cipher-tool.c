@@ -624,18 +624,18 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type) {
     unsigned long long int characterCount = 0;
     char character;
     int isValidFile = 0;
-    char errorPrompt[100];
+    char errorMessage[100];
 
     printf("\n");
     int tempCursorX, tempCursorY;
     getCursorPosition(&tempCursorX, &tempCursorY);
 
     while (1) {
-        char *promptMsg = "File name: ";
-        printf("%s", promptMsg);
+        char *promptMessage = "File name: ";
+        printf("%s", promptMessage);
         scanf("%s", inputFilename);
 
-        sprintf(errorPrompt, "Could not open \"%s\". Please try again...", inputFilename);
+        sprintf(errorMessage, "Could not open \"%s\". Please try again...", inputFilename);
 
         *inputFilePtr = fopen(inputFilename, "r");
 
@@ -643,7 +643,7 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type) {
             isValidFile = type == decrypt ? isValidEncryptedFile(*inputFilePtr) : 1;
 
             if (type == decrypt) {
-                sprintf(errorPrompt, "\"%s\" is not a valid file encrypted by the program...", inputFilename);
+                sprintf(errorMessage, "\"%s\" is not a valid file encrypted by the program...", inputFilename);
             }
         }
 
@@ -653,10 +653,10 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type) {
             break;
         }
 
-        clearWord(tempCursorY, strlen(promptMsg), terminalWidth);
+        clearWord(tempCursorY, strlen(promptMessage), terminalWidth);
         clearWord(terminalHeight - 7, 0, terminalWidth);
         moveCursor(0, terminalHeight - 7);
-        printf("%*s%s", calculateLeftPadding(strlen(errorPrompt)), "", errorPrompt);
+        printf("%*s%s", calculateLeftPadding(strlen(errorMessage)), "", errorMessage);
         moveCursor(tempCursorX, tempCursorY);
     }
 }
