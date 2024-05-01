@@ -1879,6 +1879,10 @@ int modularExponentiationBignum(Bignum *result, Bignum *base, Bignum *exponent, 
 }
 
 int modularInverseBignum(Bignum *result, Bignum *num, Bignum *divisor) {
+    // Function to get the Modular Multiplicative Inverse of a Bignum.
+    // Given num and divisor, find 'k'(result), such that: (num * k) mod divisor = 1
+    // Uses the Extended Euclidean Algorithm to find 'k'. Reference: https://www.youtube.com/watch?v=lq285DDdmtw
+
     Bignum quotient, remainder;
     initBignum(&quotient);
     initBignum(&remainder);
@@ -1887,6 +1891,7 @@ int modularInverseBignum(Bignum *result, Bignum *num, Bignum *divisor) {
     initBignum(&t);
     initBignum(&t1);
     initBignum(&t2);
+    // Initial values of t1 and t2
     setBignum(&t1, "0", positive);
     setBignum(&t2, "1", positive);
 
@@ -1894,28 +1899,40 @@ int modularInverseBignum(Bignum *result, Bignum *num, Bignum *divisor) {
     initBignum(&a);
     initBignum(&b);
 
+    // Determine which is greater between num and divisor, let the greater one be 'a' and the other be 'b'
     copyBignum(&a, isGreaterThanBignum(num, divisor) ? num : divisor);
     copyBignum(&b, isLessThanBignum(num, divisor) ? num : divisor);
 
     Bignum t2TimesQuotient;
     initBignum(&t2TimesQuotient);
 
+    // Iterate through till 'b' is 0
     while (!isBignumZero(&b)) {
         resetBignum(&remainder);
         resetBignum(&quotient);
 
+        // remainder = a % b
         moduloBignum(&remainder, &a, &b);
+        // quotient = a / b
         divideBignum(&quotient, &a, &b);
 
+        // t = t1 - (t2 * quotient)
         multiplyBignum(&t2TimesQuotient, &t2, &quotient);
         subtractBignum(&t, &t1, &t2TimesQuotient);
 
+        // Perform shifting operation
+        // b -> a
         copyBignum(&a, &b);
+        // remainder -> b
         copyBignum(&b, &remainder);
+        // t2 -> t1
         copyBignum(&t1, &t2);
+        // t2 -> t
         copyBignum(&t2, &t);
     }
 
+    // Once 'b' is equal to 0, the value in t1 will be the modular inverse
+    // If t1 is a negative Bignum, add the divisor to offset it to get the positive multiplicative inverse
     if (t1.sign == negative) {
         addBignum(result, &t1, divisor);
     } else {
