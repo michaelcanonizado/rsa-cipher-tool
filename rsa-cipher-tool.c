@@ -658,6 +658,7 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type) {
         moveCursor(0, terminalHeight - 7);
         printf("%*s%s", calculateLeftPadding(strlen(errorMessage)), "", errorMessage);
         moveCursor(tempCursorX, tempCursorY);
+        
     }
 }
 
