@@ -55,7 +55,8 @@ void generateKeys();
 void encryptText();
 unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
 void decryptText();
-unsigned long long int decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type);
+unsigned long long int decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);
+void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type);
 void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic);
 void about();
 
@@ -805,36 +806,37 @@ void about() {
     int tempCursorX, tempCursorY;
     int cursorXToDelete, cursorYToDelete;
 
+    for (int i = 0; i < bottomPadding + 3; i++) {
+        printf("\n");
+    }
+
     getCursorPosition(&tempCursorX, &tempCursorY);
-    
-	do {
-        for (int i = 0; i < bottomPadding + 1; i++) {
-            printf("\n");
-        }
+
+    do {
+        moveCursor(tempCursorX, tempCursorY-1);
         for (int i = 0; i < bottomLeftPadding; i++) {
             printf(" ");
         }
-        
-		printf("Enter DONE to go back: ");
+
+        printf("Enter DONE to go back: ");
         getCursorPosition(&cursorXToDelete, &cursorYToDelete);
-		fgets(userInput, sizeof(userInput), stdin);
+        fgets(userInput, sizeof(userInput), stdin);
 
 		// Replace the newline character at the end of the input to NULL
 		if (userInput[strlen(userInput) - 1] == '\n') {
 			userInput[strlen(userInput) - 1] = '\0';
 		}
 
-		// Convert the user's input to lowercase
-		for(int i = 0; userInput[i]; i++){
-			userInput[i] = tolower(userInput[i]);
-		}
+        // Convert the user's input to lowercase
+        for(int i = 0; userInput[i]; i++){
+            userInput[i] = tolower(userInput[i]);
+        }
 
+        clearWord(cursorYToDelete - 1, 0, terminalWidth);
 
-        clearWord(cursorYToDelete, 0, terminalWidth);
-        moveCursor(tempCursorX, tempCursorY);
-
-	} while (strcmp(userInput, "done") != 0);
+    } while (strcmp(userInput, "done") != 0);
 }
+
 
 
 
@@ -934,7 +936,7 @@ void getTerminalSize() {
 	terminalHeight = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
 
     loadingBarLength = terminalWidth - strlen("Encryption progress:   ( 100%% )");
-    aboutLineCap = terminalWidth - 40;
+    aboutLineCap = terminalWidth - 30;
 #else
 	struct winsize size;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
@@ -942,7 +944,7 @@ void getTerminalSize() {
 	terminalHeight = size.ws_row;
 
     loadingBarLength = terminalWidth - strlen("Encryption progress:   ( 100%% )");
-    aboutLineCap = terminalWidth - 40;
+    aboutLineCap = terminalWidth - 30;
 #endif
 }
 
