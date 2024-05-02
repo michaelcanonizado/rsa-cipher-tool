@@ -26,11 +26,11 @@
 
 #define ABOUT_MAX_LENGTH 500
 #define ABOUT_MAX_SUBSTRINGS 100
-#define ABOUT_LINE_CAP 50
 
 int loadingBarLength = 0;
 int terminalWidth = 0;
 int terminalHeight = 0;
+int aboutLineCap = 0;
 
 typedef struct {
     char name[50];
@@ -783,7 +783,7 @@ void about() {
     int paragraphSubstringCount = 0;
 
     for (int i = 0; i < paragraphsSize; i++) {
-        splitString(paragraphs[i], paragraphsSubstrings, &paragraphSubstringCount, ABOUT_LINE_CAP);
+        splitString(paragraphs[i], paragraphsSubstrings, &paragraphSubstringCount, aboutLineCap);
     }
     
     printProgramHeader();
@@ -934,6 +934,7 @@ void getTerminalSize() {
 	terminalHeight = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
 
     loadingBarLength = terminalWidth - strlen("Encryption progress:   ( 100%% )");
+    aboutLineCap = terminalWidth - 40;
 #else
 	struct winsize size;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
@@ -941,6 +942,7 @@ void getTerminalSize() {
 	terminalHeight = size.ws_row;
 
     loadingBarLength = terminalWidth - strlen("Encryption progress:   ( 100%% )");
+    aboutLineCap = terminalWidth - 40;
 #endif
 }
 
