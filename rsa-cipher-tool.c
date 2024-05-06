@@ -455,12 +455,13 @@ void generateKeys() {
 
     freeAllBignums();
 
-    /* Prompt user if they wish to go back to the main menu */
+    /* Prompt user to go back to the main menu */
     promptExitConfirm();
 }
 
 void encryptText() {
 
+    /* Initialize file pointers */
     FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
 
     char inputFilename[100];
@@ -478,9 +479,12 @@ void encryptText() {
         exit(1);
     }
 
-    Bignum nPublic, ePublic;
+    /* Initialize Bignums */
+    Bignum nPublic, ePublic, encryptedChar, plainChar;
     initBignum(&ePublic);
     initBignum(&nPublic);
+    initBignum(&encryptedChar);
+    initBignum(&plainChar);
 
     /* Get the public key and store it in Bignums */
     getKeys(encrypt, &ePublic, &nPublic);
@@ -490,59 +494,63 @@ void encryptText() {
     double elapsedTime;
     startTime = clock();
 
-    /* Encrypt the input file*/
-    // unsigned long long int charactersEncrypted = encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
-
     unsigned long long int characterCount = 0;
     unsigned long long int totalCharactersEncrypted = 0;
     int percentageEncrypted = 0;
     char character;
 
-    Bignum encryptedChar, plainChar;
-    initBignum(&encryptedChar);
-    initBignum(&plainChar);
-
+    /* Get the number of characters in the plaintext file. This number be used as a basis
+    to track the percentage of characters encrypted, which will be used in the loading
+    bar.  */
     fseek(inputFilePtr, 0, SEEK_END);
     characterCount = ftell(inputFilePtr);
     fseek(inputFilePtr, 0, SEEK_SET);
 
+    /* Get the position of the cursor after printing the loading bar title */
     printf("\nEncryption progress: ");
     int loadingBarX, loadingBarY;
     getCursorPosition(&loadingBarX, &loadingBarY);
 
+    /* Get the position of the cursor after printing the loading status title */
     printf("\nStatus: ");
     int loadingStatusX, loadingStatusY;
     getCursorPosition(&loadingStatusX, &loadingStatusY);
 
 #ifndef _WIN32
+    /* Offset the X coordinate in UNIX systems */
     loadingBarX += strlen("Encryption progress: ");
     loadingStatusX += strlen("Status: ");
 #endif
 
+    /* Initialize the loading bar and status */
     loadingBar(loadingBarX, loadingBarY, 0);
     loadingStatus(loadingStatusX, loadingStatusY, "Encrypting file...");
 
+    /* Loop through and encrypt each character in the plaintext file */
     while ((character = fgetc(inputFilePtr)) != EOF) {
+        /* Convert the character's ASCII value to a Bignum */
         intToBignum(&plainChar, character, positive);
 
+        /* Encrypt the character */
         modularExponentiationBignum(&encryptedChar, &plainChar, &ePublic, &nPublic);
 
+        /* Print the encrypted character and separate each encrypted character
+        with a flag */
         for (unsigned long long int i = encryptedChar.length - 1; i > 0; i--) {
             fprintf(outputFilePtr, "%d", encryptedChar.digits[i]);
         }
         fprintf(outputFilePtr, "%d/", encryptedChar.digits[0]);
 
+        /* Reset the following Bignums for the next iteration*/
         resetBignum(&encryptedChar);
         resetBignum(&plainChar);
 
-        totalCharactersEncrypted++;
 
+        /* Update the progress of the loading bar */
+        totalCharactersEncrypted++;
         percentageEncrypted = (totalCharactersEncrypted / (float)characterCount) * 100;
         loadingBar(loadingBarX, loadingBarY, percentageEncrypted);
     };
-
-    freeBignum(&encryptedChar);
-    freeBignum(&plainChar);
 
     loadingBar(loadingBarX, loadingBarY, 100);
     loadingStatus(loadingStatusX, loadingStatusY, "Complete");
@@ -557,11 +565,12 @@ void encryptText() {
     printf("\nView the encrypted file at: %s", outputFilename);
     printf("\n\nNote: Make sure you encrypted the file with the recipient's public key, or else they won't be able to decrypt it!");
 
+    /* Free the Bignums and file pointers */
     freeAllBignums();
-
     fclose(inputFilePtr);
     fclose(outputFilePtr);
 
+    /* Prompt user to go back to the main menu */
     promptExitConfirm();
 }
 
