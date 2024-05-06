@@ -182,6 +182,30 @@ int main(void) {
 
 void generateKeys() {
 
+    /* Key sizes to choose from.
+
+    Currently, the NIST (National Institute of Standards and Technology)
+    recommends a minimum of 2048 bit keys (Barker & Dang, 2015,
+    https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57Pt3r1.pdf).
+    But a 2048 bit key is takes too long for bignum.h to calculate and leads to an 
+    overflow. Thus, smaller key sizes where chosen for the sake of demonstration.
+    Further optimization can be made to bignum.h to enable it to handle longer
+    key sizes efficiently.
+
+    An integer referred to its "bit" has a maximum value of: 2 ^ (num of bits - 1)
+        E.g:
+        2 ^ (128 bit - 1) = 170,141,183,460,469,231,731,687,303,715,884,105,728 (51 digits). 
+    So the recommended 2048 key length would have the program deal with 308 - 617 digits
+    long integers.
+
+    The size or the length of the keys in RSA refer to the size of the modulus "n" (nPublic).
+    For example, a 128 bit RSA key means that the modulus "n" (nPublic) is a product of two
+    random prime numbers (pPrimePrivate and qPrimePrivate) each about 64 bits long.
+
+    The size of the modulus "n" determines how secure the key is. A larger modulus "n"
+    is exponentially hard to factorize. If an attacker manages to factorize modulus "n"
+    into its prime factors p and q (which are kept secret), they can easily calculate 
+    the private key using the public key and decrypt the encrypted message. */
     KeySize keySizeOptions[] = {
         {"16 bit", 16},
         {"32 bit", 32},
@@ -194,6 +218,7 @@ void generateKeys() {
     int chosenKeySize = 0;
     int pPrivateLength, qPrivateLength, ePublicLength;
 
+    /* Prompt user for their desired key size */
     while(1) {
         printf("\nThe key size determines the security of the encrypted text!");
         printf("\nThe longer the key size, the longer it will take to encrypt and decrypt.");
@@ -206,6 +231,9 @@ void generateKeys() {
         scanf("%d", &chosenKeySize);
 		while (getchar() != '\n');
 
+        /* The chosen index is temporarily stored in chosenKeySize. Once a valid key
+        size is chosen, dereference the index in the keySizeOptions[] and store the
+        actual key size. */
         if (chosenKeySize > 0 && chosenKeySize <= keySizeOptionsSize) {
             chosenKeySize = keySizeOptions[chosenKeySize-1].size;
             break;
@@ -214,47 +242,61 @@ void generateKeys() {
         clearPrompts();
     }
 
+    /* Exit case */
     if (chosenKeySize == 0) {
         return;
     }
 
+    /* Start elapsed-time timer */
     clock_t startTime, endTime;
     double elapsedTime;
     startTime = clock();
 
+    /* Claer previous prompt and output the state of the key generation */
     clearPrompts();
+
     printf("\nKey length: %d bit",  chosenKeySize);
 
     printf("\nGenerating: ");
+    /* Get the position of the cursor after printing the loading bar title */
     int loadingBarX, loadingBarY;
     getCursorPosition(&loadingBarX, &loadingBarY);
 
     printf("\nStatus: ");
+    /* Get the position of the cursor after printing the loading status title */
     int loadingStatusX, loadingStatusY;
     getCursorPosition(&loadingStatusX, &loadingStatusY);
 
 #ifndef _WIN32
+    /* Offset the X coordinate in UNIX systems */
     loadingBarX += strlen("Generating: ");
     loadingStatusX += strlen("Status: ");
 #endif
 
+
+    /* Calculate the length of p prime using the chosen key size (size of modulus n) */
     loadingBar(loadingBarX, loadingBarY, 0);
     loadingStatus(loadingStatusX, loadingStatusY, "Calculating P prime length...");
-
     pPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
 
+    /* Calculate the length of q prime using the chosen key size (size of modulus n)
+
+    NOTE: Since this option of the program deals with small but fast successions of
+    loading bar percentages. Add a short sleep in between the loading bar updates to
+    smoothen the loading bar. */
     sleepProgram(300);
     loadingBar(loadingBarX, loadingBarY, 5);
     loadingStatus(loadingStatusX, loadingStatusY, "Calculating Q prime length...");
-
     qPrivateLength = ceil((chosenKeySize / 2.0) / log2(10.0));
 
+    /* Calculate the length of e public (public key). Cap the size of e public to not
+    be too small if a 16 bit key was chosen */
     sleepProgram(300);
     loadingBar(loadingBarX, loadingBarY, 10);
     loadingStatus(loadingStatusX, loadingStatusY, "Calculating E public length...");
-
     ePublicLength = pPrivateLength > 3 ? pPrivateLength / 2 : (chosenKeySize / log2(10.0)) - 1;
-
+    
+    /* Initialize Bignums */
     sleepProgram(300);
     loadingBar(loadingBarX, loadingBarY, 20);
     loadingStatus(loadingStatusX, loadingStatusY, "Initializing Bignums...");
@@ -283,69 +325,75 @@ void generateKeys() {
     initBignum(&decryptedChar);
     setBignum(&plainChar, "2", positive);
 
-    sleepProgram(300);
-    loadingBar(loadingBarX, loadingBarY, 30);
-    loadingStatus(loadingStatusX, loadingStatusY, "Generating P prime...");
-
+    /* There is a very small chance that the generated keys won't work due to 
+    generatePrimeBignum() generating a composite number (For more info, read the
+    documenation of generatePrimeBignum() and millerRabinPrimalityTest() in
+    src/bignum.c). Thus, the keys need to be tested after generation, if the keys
+    fail the test, regenerate new keys. */
     while (1) {
-        // Generate p and q primes
+        /* Generate a random p prime */
+        sleepProgram(300);
+        loadingBar(loadingBarX, loadingBarY, 30);
+        loadingStatus(loadingStatusX, loadingStatusY, "Generating P prime...");
         generatePrimeBignum(&pPrimePrivate, pPrivateLength);
 
+        /* Generate a random q prime */
         sleepProgram(300);
         loadingBar(loadingBarX, loadingBarY, 35);
         loadingStatus(loadingStatusX, loadingStatusY, "Generating Q prime...");
-
         generatePrimeBignum(&qPrimePrivate, qPrivateLength);
 
+
+        /* If the generated q prime is equal to the generated p prime, regenerate
+        another q prime */
         sleepProgram(300);
         loadingBar(loadingBarX, loadingBarY, 40);
-
         while (isEqualToBignum(&pPrimePrivate, &qPrimePrivate)) {
             generatePrimeBignum(&qPrimePrivate, qPrivateLength);
         }
 
+
+
+        /* Calculate modulus "n":
+            n = p prime * q qprime */
         sleepProgram(300);
         loadingBar(loadingBarX, loadingBarY, 50);
         loadingStatus(loadingStatusX, loadingStatusY, "Generating N public...");
-
-        // Get n:
-        // n = p * q
         multiplyBignum(&nPublic, &pPrimePrivate, &qPrimePrivate);
 
+        /* Calculate phi of n:
+            phi of n = (p prime - 1) * (q qprime - 1) */
         sleepProgram(300);
         loadingBar(loadingBarX, loadingBarY, 60);
         loadingStatus(loadingStatusX, loadingStatusY, "Generating phi of N...");
-
-        // Get phi of n:
-        // phi of n = (p - 1) * (q - 1)
         subtractBignum(&pPrimePrivateMinusOne, &pPrimePrivate, &one);
         subtractBignum(&qPrimePrivateMinusOne, &qPrimePrivate, &one);
         multiplyBignum(&phiOfNPrivate, &pPrimePrivateMinusOne, &qPrimePrivateMinusOne);
 
+        /* Calculate e (public key):
+            2 < e < phi of n */
         sleepProgram(300);
         loadingBar(loadingBarX, loadingBarY, 70);
         loadingStatus(loadingStatusX, loadingStatusY, "Generating E public...");
-
-        // Generate e (public key):
-        // 2 < e < phi of n
         generatePrimeBignum(&ePublic, ePublicLength);
 
+        /* Calculate d (private key):
+            (e * d) mod (phi of n) = 1 */
         sleepProgram(300);
         loadingBar(loadingBarX, loadingBarY, 80);
         loadingStatus(loadingStatusX, loadingStatusY, "Generating D private...");
-    
-        // Get d (private key):
-        // (e * d)mod(n) = 1
         modularInverseBignum(&dPrivate, &ePublic, &phiOfNPrivate);
 
+        /* Once the keys are generated, test the keys to verify that they are able
+        to encrypt and decrypt */
         sleepProgram(300);
         loadingBar(loadingBarX, loadingBarY, 85);
         loadingStatus(loadingStatusX, loadingStatusY, "Testing keys...");
-
         modularExponentiationBignum(&encryptedChar, &plainChar, &ePublic, &nPublic);
         modularExponentiationBignum(&decryptedChar, &encryptedChar, &dPrivate, &nPublic);
 
-
+        /* If the decrypted character is equal to the plain character, the keys are
+        valid, thus exit the loop */
         if (isEqualToBignum(&plainChar, &decryptedChar)) {
             sleepProgram(300);
             loadingBar(loadingBarX, loadingBarY, 90);
@@ -353,6 +401,7 @@ void generateKeys() {
             break;
         }
 
+        /* If the generate keys failed the test, reset the Bignums and regenerate new keys */
         sleepProgram(500);
         loadingStatus(loadingStatusX, loadingStatusY, "Keys failed! Regenerating new keys...");
 
@@ -372,23 +421,31 @@ void generateKeys() {
     loadingBar(loadingBarX, loadingBarY, 95);
     loadingStatus(loadingStatusX, loadingStatusY, "Finishing up...");
 
-    int keyPromptLength = 13 + dPrivate.length + nPublic.length;
-
     sleepProgram(300);
     loadingBar(loadingBarX, loadingBarY, 100);
     loadingStatus(loadingStatusX, loadingStatusY, "Complete");
 
+    /* End the elapsed-time timer and output the elapsed-time */
     endTime = clock();
     elapsedTime = (double) (endTime - startTime) / CLOCKS_PER_SEC;
     printf("\nGenerated keys in: %.2f seconds", elapsedTime);
 
+    /* Output the generate keys 
+    The RSA encryption algorthim requires nPublic along with ePublic or dPrivate
+    to encrypt and decrypt respectively. Since we have to output two keys (public
+    and private) we have to store nPublic within the keys. The program does so by
+    concatinating nPublic to ePublic/dPrivate (separated by a '.').
+    
+    Equation to encrypt a character:
+        encryptedChar = ( plainChar ^ (ePublic) ) mod (npublic)
+    Equation to decrypt a character:
+        decryptedChar = ( encryptedChar ^ (dPrivate) ) mod (npublic)
+    */
     printf("\n");
-
     printf("\nPUBLIC KEY: ");
     printBignum(&ePublic);
     printf(".");
     printBignum(&nPublic);
-
     printf("\nPRIVATE KEY: ");
     printBignum(&dPrivate);
     printf(".");
@@ -398,6 +455,7 @@ void generateKeys() {
 
     freeAllBignums();
 
+    /* Prompt user if they wish to go back to the main menu */
     promptExitConfirm();
 }
 
