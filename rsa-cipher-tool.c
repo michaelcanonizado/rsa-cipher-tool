@@ -55,6 +55,7 @@ void generateKeys();
 void encryptText();
 void decryptText();
 void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type);
+int isValidEncryptedFile(FILE *inputFilePtr);
 void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic);
 void about();
 
