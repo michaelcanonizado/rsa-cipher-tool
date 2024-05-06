@@ -44,13 +44,6 @@ typedef enum {
 
 
 
-
-
-
-
-
-
-
 void generateKeys();
 void encryptText();
 void decryptText();
