@@ -119,24 +119,23 @@ int main(void) {
 
         /* If the user input is a valid menu option, execute the corresponding function */
         if (userMenuState > 0 && userMenuState <= optionsArrSize) {
+
+            clearPrompts();
+
             switch (userMenuState) {
 			    case 1:
-                    clearPrompts();
                     generateKeys();
                     clearPrompts();
 			    	break;
 			    case 2:
-                    clearPrompts();
                     encryptText();
                     clearScreen();
 			    	break;
 			    case 3:
-                    clearScreen();
                     decryptText();
                     clearScreen();
 				    break;
                 case 4:
-                    clearScreen();
                     about();
                     clearScreen();
 				    break;
@@ -182,7 +181,6 @@ int main(void) {
 
 
 void generateKeys() {
-    clearPrompts();
 
     KeySize keySizeOptions[] = {
         {"16 bit", 16},
@@ -404,7 +402,6 @@ void generateKeys() {
 }
 
 void encryptText() {
-    clearPrompts();
 
     FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
 
@@ -508,7 +505,6 @@ unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, 
 }
 
 void decryptText() {
-    clearPrompts();
 
     FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
 
@@ -797,8 +793,6 @@ void about() {
     for (int i = 0; i < paragraphsSize; i++) {
         splitString(paragraphs[i], paragraphsSubstrings, &paragraphSubstringCount, aboutLineCap);
     }
-    
-    printProgramHeader();
 
     int topPadding = (terminalHeight - paragraphSubstringCount) / 4;
 
