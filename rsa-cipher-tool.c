@@ -200,7 +200,7 @@ void generateKeys() {
 
     The size or the length of the keys in RSA refer to the size of the modulus "n" (nPublic).
     For example, a 128 bit RSA key means that the modulus "n" (nPublic) is a product of two
-    random prime numbers (pPrimePrivate and qPrimePrivate) each about 64 bits long.
+    random prime numbers (pPrimePrivate and qPrimePrivate) each not exceeding 64 bit long.
 
     The size of the modulus "n" determines how secure the key is. A larger modulus "n"
     is exponentially hard to factorize. If an attacker manages to factorize modulus "n"
