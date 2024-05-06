@@ -491,7 +491,61 @@ void encryptText() {
     startTime = clock();
 
     /* Encrypt the input file*/
-    unsigned long long int charactersEncrypted = encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
+    // unsigned long long int charactersEncrypted = encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
+
+    unsigned long long int characterCount = 0;
+    unsigned long long int totalCharactersEncrypted = 0;
+    int percentageEncrypted = 0;
+    char character;
+
+    Bignum encryptedChar, plainChar;
+    initBignum(&encryptedChar);
+    initBignum(&plainChar);
+
+    fseek(inputFilePtr, 0, SEEK_END);
+    characterCount = ftell(inputFilePtr);
+    fseek(inputFilePtr, 0, SEEK_SET);
+
+    printf("\nEncryption progress: ");
+    int loadingBarX, loadingBarY;
+    getCursorPosition(&loadingBarX, &loadingBarY);
+
+    printf("\nStatus: ");
+    int loadingStatusX, loadingStatusY;
+    getCursorPosition(&loadingStatusX, &loadingStatusY);
+
+#ifndef _WIN32
+    loadingBarX += strlen("Encryption progress: ");
+    loadingStatusX += strlen("Status: ");
+#endif
+
+    loadingBar(loadingBarX, loadingBarY, 0);
+    loadingStatus(loadingStatusX, loadingStatusY, "Encrypting file...");
+
+    while ((character = fgetc(inputFilePtr)) != EOF) {
+        intToBignum(&plainChar, character, positive);
+
+        modularExponentiationBignum(&encryptedChar, &plainChar, &ePublic, &nPublic);
+
+        for (unsigned long long int i = encryptedChar.length - 1; i > 0; i--) {
+            fprintf(outputFilePtr, "%d", encryptedChar.digits[i]);
+        }
+        fprintf(outputFilePtr, "%d/", encryptedChar.digits[0]);
+
+        resetBignum(&encryptedChar);
+        resetBignum(&plainChar);
+
+        totalCharactersEncrypted++;
+
+        percentageEncrypted = (totalCharactersEncrypted / (float)characterCount) * 100;
+        loadingBar(loadingBarX, loadingBarY, percentageEncrypted);
+    };
+
+    freeBignum(&encryptedChar);
+    freeBignum(&plainChar);
+
+    loadingBar(loadingBarX, loadingBarY, 100);
+    loadingStatus(loadingStatusX, loadingStatusY, "Complete");
 
     /* End elapsed-time timer */
     endTime = clock();
@@ -499,7 +553,7 @@ void encryptText() {
 
     /* Output details */
     printf("\nEncrypted file in: %.2f seconds", elapsedTime);
-    printf("\nCharacters encrypted: %llu", charactersEncrypted);
+    printf("\nCharacters encrypted: %llu", totalCharactersEncrypted);
     printf("\nView the encrypted file at: %s", outputFilename);
     printf("\n\nNote: Make sure you encrypted the file with the recipient's public key, or else they won't be able to decrypt it!");
 
