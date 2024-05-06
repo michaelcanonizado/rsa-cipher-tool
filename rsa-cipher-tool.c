@@ -886,6 +886,11 @@ void splitString(const char *inputStr, char outputArr[][ABOUT_MAX_LENGTH], int *
 }
 
 void about() {
+    /* Array of strings that contain the original unformatted about paragraphs
+    
+    If any modifications are to be made on the paragraphs in the about option
+    of the program, do it here. This array of strings will be formatted to
+    line wrap the text. */
     char paragraphs[][ABOUT_MAX_LENGTH] = {
         "This tool is a smart way to keep secrets safe online! It's like a lock and key system, where only the right key can unlock the secret message. It uses the RSA encryption magic to keep your messages secure. You can encrypt messages that you want to keep tucked away, or encrypt a message that you want to send to your friend using their public key.\n",
         "Using our tool is easy-peasy!",
@@ -901,16 +906,21 @@ void about() {
     char paragraphsSubstrings[ABOUT_MAX_SUBSTRINGS][ABOUT_MAX_LENGTH];
     int paragraphSubstringCount = 0;
 
+    /* Go through each paragraph and format it according to the line cap.
+    I.e: line wrap it to prevent overflow and proper format. Then store it
+    in another array of strings.*/
     for (int i = 0; i < paragraphsSize; i++) {
         splitString(paragraphs[i], paragraphsSubstrings, &paragraphSubstringCount, aboutLineCap);
     }
 
+    /* Calculate the top padding and manually print new lines instead of
+    using moveCursor(). This allows the outputs to be scrollable */
     int topPadding = (terminalHeight - paragraphSubstringCount) / 4;
-
     for (int i = 0; i < topPadding; i++) {
         printf("\n");
     }
 
+    /* Print the format strings */
     for (int i = 0; i < paragraphSubstringCount; i++) {
         printf("\n%*s%s", calculateLeftPadding(strlen(paragraphsSubstrings[i])), "", paragraphsSubstrings[i]);
     }
@@ -922,12 +932,13 @@ void about() {
     int tempCursorX, tempCursorY;
     int cursorXToDelete, cursorYToDelete;
 
+    /* Manually print the prompt exit confirm, as promptExitConfirm()
+    uses moveCursor() to move the cursor to the bottom of the terminal.
+    Using promptExitConfirm() will overwrite any text that reaches the bottom */
     for (int i = 0; i < bottomPadding + 3; i++) {
         printf("\n");
     }
-
     getCursorPosition(&tempCursorX, &tempCursorY);
-
     do {
         moveCursor(tempCursorX, tempCursorY-1);
         for (int i = 0; i < bottomLeftPadding; i++) {
@@ -938,12 +949,10 @@ void about() {
         getCursorPosition(&cursorXToDelete, &cursorYToDelete);
         fgets(userInput, sizeof(userInput), stdin);
 
-		// Replace the newline character at the end of the input to NULL
 		if (userInput[strlen(userInput) - 1] == '\n') {
 			userInput[strlen(userInput) - 1] = '\0';
 		}
 
-        // Convert the user's input to lowercase
         for(int i = 0; userInput[i]; i++){
             userInput[i] = tolower(userInput[i]);
         }
