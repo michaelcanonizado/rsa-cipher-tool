@@ -92,8 +92,6 @@ int main(void) {
     getTerminalSize();
 
     int userMenuState = 0;
-    int i;
-
     char *optionsArr[] = {"Generate Keys", "Encrypt Text", "Decrypt Text", "About","Exit"};
     int optionsArrSize = sizeof(optionsArr)/sizeof(optionsArr[0]);
 
@@ -101,7 +99,7 @@ int main(void) {
         printProgramHeader();
 
         printf("\nWhat do you want to do?\n");
-		for (i = 0; i < optionsArrSize; i++) {
+		for (int i = 0; i < optionsArrSize; i++) {
 			printf("\n%d) - %s", i+1, optionsArr[i]);
 		}
 
