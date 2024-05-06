@@ -56,6 +56,5 @@ int modularInverseBignum(Bignum *result, Bignum *num, Bignum *divisor);
 int halfBignum(Bignum *result, Bignum *num);
 int generatePrimeBignum(Bignum *result, unsigned long long int primeLength);
 int generateRandomBignumInRange(Bignum *result, Bignum *min, Bignum *max);
-int generateRandomBignum(Bignum *result, unsigned long long int numOfDigits, BIGNUM_SIGN sign);
 
 #endif /* BIGNUM_H */
