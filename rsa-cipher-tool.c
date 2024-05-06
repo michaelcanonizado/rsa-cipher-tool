@@ -753,12 +753,16 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type) {
 
 int isValidEncryptedFile(FILE *inputFilePtr) {
     char character;
+    /* Look for any invalid characters in the input file */
     while((character = fgetc(inputFilePtr)) != EOF) {
+        /* If an invalid character is found, bring the file pointer back
+        to the start, and return 0. */
         if (!isdigit(character) && character != '/') {
             rewind(inputFilePtr);
             return 0;
         }
     }
+    /* If the encrypted file is a valid file, return 1; */
     rewind(inputFilePtr);
     return 1;
 }
