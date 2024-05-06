@@ -696,18 +696,6 @@ void decryptText() {
     promptExitConfirm();
 }
 
-int isValidEncryptedFile(FILE *inputFilePtr) {
-    char character;
-    while((character = fgetc(inputFilePtr)) != EOF) {
-        if (!isdigit(character) && character != '/') {
-            rewind(inputFilePtr);
-            return 0;
-        }
-    }
-    rewind(inputFilePtr);
-    return 1;
-}
-
 void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type) {
     unsigned long long int characterCount = 0;
     char character;
@@ -748,6 +736,18 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type) {
         moveCursor(tempCursorX, tempCursorY);
         
     }
+}
+
+int isValidEncryptedFile(FILE *inputFilePtr) {
+    char character;
+    while((character = fgetc(inputFilePtr)) != EOF) {
+        if (!isdigit(character) && character != '/') {
+            rewind(inputFilePtr);
+            return 0;
+        }
+    }
+    rewind(inputFilePtr);
+    return 1;
 }
 
 void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic) {
