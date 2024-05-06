@@ -88,9 +88,13 @@ void sleepProgram(int milliseconds);
 
 
 int main(void) {
+    /* When the program initially runs, clear the terminal and determine the global
+    variables that the program needs: loadingBarLength, terminalWidth, terminalHeight,
+    and aboutLineCap */
     clearScreen();
     getTerminalSize();
 
+    /* Menu options */
     int userMenuState = 0;
     char *optionsArr[] = {"Generate Keys", "Encrypt Text", "Decrypt Text", "About","Exit"};
     int optionsArrSize = sizeof(optionsArr)/sizeof(optionsArr[0]);
@@ -98,17 +102,22 @@ int main(void) {
     do {
         printProgramHeader();
 
+        /* Loop through menu options */
         printf("\nWhat do you want to do?\n");
 		for (int i = 0; i < optionsArrSize; i++) {
 			printf("\n%d) - %s", i+1, optionsArr[i]);
 		}
 
         printf("\n\nEnter number: ");
+        /* Get the current position of the cursor after the prompt. This coordinate 
+        will be used to bring back the cursor at this position when the user inputs 
+        an invalid option and the option that they typed is cleared. */
         int tempCursorX, tempCursorY;
         getCursorPosition(&tempCursorX, &tempCursorY);
 		scanf("%d", &userMenuState);
 		while (getchar() != '\n');
 
+        /* If the user input is a valid menu option, execute the corresponding function */
         if (userMenuState > 0 && userMenuState <= optionsArrSize) {
             switch (userMenuState) {
 			    case 1:
@@ -132,6 +141,7 @@ int main(void) {
                     clearScreen();
 				    break;
                 case 5:
+                    /* If the user wants to exit. Clear the screen and show an exiting feedback */
             	    clearScreen();
                     moveCursor(0, (terminalHeight/2) - 4);
 				    printf("%*s%s\n", calculateLeftPadding(strlen("Exiting RSA Cipher Tool...")), "", "Exiting RSA Cipher Tool...");
@@ -141,7 +151,10 @@ int main(void) {
                 default:
                     break;
             }
-        } else {         
+        }
+        /* Else if invalid option, clear the text that the user typed, and bring the 
+        cursor back to the stored coordinate */
+        else {         
             clearWord(tempCursorY, strlen("Enter number: "), terminalWidth);
 
             moveCursor(0, terminalHeight - 7);
