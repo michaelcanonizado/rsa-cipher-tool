@@ -293,8 +293,6 @@ void initBignum(Bignum *num) {
         printf("\n\nError allocating Bignum.digits...\n\n");
         exit(-1);
     }
-
-    // printf("\nCreated %p.%p Bignum in initBignum(). (1)", num, digitsPtr);
     
     // Set the Bignum members to its default values
     num->digits = digitsPtr;
@@ -327,8 +325,6 @@ void freeAllBignums() {
             printf("\n\tFunction: freeAllBignums()");
         }
 
-        // printf("\nFreeing %p.%p with freeAllBignums()", tempHeadNode->value, tempHeadNode->value->digits);
-
         // Point temporary head node to next node
         tempHeadNode = tempHeadNode->next;
 
@@ -348,8 +344,6 @@ void freeAllBignums() {
         FREED_BIGNUMS_COUNT++;
     }
 
-    // Print allocation results
-    // printf("\n\nAllocated %llu Bignums, Freed %llu Bignums, Remaining unfreed: %llu", ALLOCATED_BIGNUMS_COUNT, FREED_BIGNUMS_COUNT, ALLOCATED_BIGNUMS_COUNT - FREED_BIGNUMS_COUNT);
 }
 
 void freeBignum(Bignum *num) {
@@ -392,8 +386,6 @@ void freeBignum(Bignum *num) {
             exit(-4);
         }
 
-        // printf("\nFreeing %p->%p.%p with freeBignum(). (1)", bignumListHead, bignumListHead->value, bignumListHead->value->digits);
-
         // Store head in a temporary node
         BignumNode *toRemoveNode = bignumListHead;
         // Clear Bignum.digits[]
@@ -430,8 +422,6 @@ void freeBignum(Bignum *num) {
 
             exit(-6);
         }
-
-        // printf("\nFreeing %p->%p.%p with freeBignum(). (2)",bignumListHead, bignumListHead->value, bignumListHead->value->digits);
 
         // Store the head in a temporary node
         BignumNode *toRemoveNode = bignumListHead;
@@ -475,8 +465,6 @@ void freeBignum(Bignum *num) {
 
                 exit(-8);
             }
-
-            // printf("\nFreeing %p->%p.%p with freeBignum(). (3)", tempNode, tempNode->value, tempNode->value->digits);
             
             // Point previous node to the node that the target Bignum is pointing to
             prevNode->next = tempNode->next;
@@ -640,7 +628,7 @@ long long int bignumToInt(Bignum *num) {
 }
 
 int resetBignum(Bignum *num) {
-    // Function to reset the contents of a Bignum. Although initBignum() can be used to reset a Bignum, this function resets the Bignum, whilst maintaining the intance of the Bignum and the allocated Bignum.digits[]. initBignum() resets the Bignum by creating a new instance of the Bignum (Therefore another allocation will be made just to reset the Bignum).
+    // Function to reset the contents of a Bignum. Although initBignum() can be used to reset a Bignum, this function resets the Bignum, whilst maintaining the instance of the Bignum and the allocated Bignum.digits[]. initBignum() resets the Bignum by creating a new instance of the Bignum (Therefore another allocation will be made just to reset the Bignum).
     // This function should be used when Bignums are initialized or need to be reset inside of loops to minimize the amount of memory allocated.
 
     // Reset indexes of Bignum.digits[] to 0 
@@ -688,7 +676,7 @@ void printBignumCenter(Bignum *num, unsigned int requiredWidth) {
     // It prioritizes the required width over centeredness to stay consistent when used in formatted prints. Bignums with odd lengths won't be perfectly centered, so it either needs to have equal spaces on both sides (prioritizing centeredness) or 1 side having less space but meet the required width.
     // Eg: Bignum = -1234 with the required with of 10 spaces, will be __-1234___ not ___-1234___.
 
-    // If bignum overflows the required width, just print bignum.
+    // If bignum overflows the required width, just print Bignum.
     if (requiredWidth <= num->length) {
         printBignum(num);
         return;
@@ -701,7 +689,7 @@ void printBignumCenter(Bignum *num, unsigned int requiredWidth) {
     // Calculate total width to determine if we have exceeded or receded the required width.
     unsigned int totalWidth = leftWidth + rightWidth + num->length;
 
-    // if bignum is negative, decrement left width as it will be printed later on.
+    // If bignum is negative, decrement left width as it will be printed later on.
     if (num->sign == negative) {
         leftWidth--;
     }
@@ -1065,7 +1053,7 @@ void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend) {
         return;
     }
 
-    // NOTE: FUnction will check signs, length, and compare the two Bignums to determine twhat subtraction rule to follow.
+    // NOTE: Function will check signs, length, and compare the two Bignums to determine twhat subtraction rule to follow.
 
     // Check signs. If signs are different, add the two numbers.
 
@@ -1543,7 +1531,7 @@ int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
         // FEAT: ADD AN IF CASE WHERE THE LEFT INDEX IS GREATER THAN THE RIGHT INDEX, JUST LIKE IN OTHER BINARY SEARCH IMPLEMENTATIONS. HOWEVER, THIS CASE WHERE THIS FUNCTION DOESN'T FIND AN APPROPRIATE QUOTIENT, IS HYPOTHETICALLY IMPOSSIBLE DUE TO: (1) THE CONDITION ABOVE THAT CHECKS IF THE PRODUCT IS FIT TO BE A QUOTIENT, AND (2) ALL NUMBERS ARE PRESENT WITHIN THE RANGE. IF IN ANY CASE WHERE THE FUNCTION FAILS DUE TO THIS PROBLEM, THERE MUST BE A FLAW IN ANOTHER PART OF THIS FUNCTION. PERHAPS THE LEFT AND IRGHT INDEXES OR THE CONDITION THAT CHECKS IF THE PRODUCT IS A FIT QUOTIENT.
     }
 
-    // Return the latest counterMiddleIndex that triggered the exit condition. I.e: the quotient
+    // Return the latest counterMiddleIndex that triggered the exit condition. i.e: the quotient
     copyBignum(result, &counterMiddleIndex);
 
     // Set the corresponding result sign, and bring back the original sign of the dividend and the divisor.
@@ -1750,7 +1738,7 @@ int powerBignum(Bignum *result, Bignum *base, Bignum *exponent) {
     initBignum(&tempRemainder);
     initBignum(&tempBase);
 
-    // Iterate through binaryExpont starting from the LSB (least significant bit)
+    // Iterate through binaryExponent starting from the LSB (least significant bit)
     for (unsigned long long int i = 0; i < binaryExponent.length; i++) {
         resetBignum(&tempRemainder);
         resetBignum(&tempBase);
@@ -1763,7 +1751,7 @@ int powerBignum(Bignum *result, Bignum *base, Bignum *exponent) {
         }
 
         // If the iteration is at the last bit of the binary, copy remainder to result. Next step is not needed:
-        // function will perform the Bignum operations below, exit the for-loop, then a copyBignum(result,&remainder) would be needed to be performed before exiting the function --Exiting early at the last bit will save 2 operations.
+        // Function will perform the Bignum operations below, exit the for-loop, then a copyBignum(result,&remainder) would be needed to be performed before exiting the function --Exiting early at the last bit will save 2 operations.
         if (i == binaryExponent.length - 1) {
             copyBignum(result, &remainder);
 
@@ -1948,12 +1936,12 @@ int modularInverseBignum(Bignum *result, Bignum *num, Bignum *divisor) {
 int halfBignum(Bignum *result, Bignum *num) {
     // Function that divides a Bignum by 2 without using divideBignum(). This is useful as this function is faster at dividing a Bignum by 2 compared to divideBignum() --especially when the Bignum being halved is a really large number.
 
-    // NOTE: this function might be redundant, but it is needed int the algorithms used in the actual RSA Cipher Tool where it requires big Bignums to be divided by 2 effieciently.
+    // NOTE: this function might be redundant, but it is needed in the algorithms used in the actual RSA Cipher Tool where it requires big Bignums to be divided by 2 effieciently.
 
-    // NOTE: this function doesnt take into consideration the division sign rules. It will simply half the Bignum and the result will get the same sign as the Bignum being halved.
+    // NOTE: this function doesn't take into consideration the division sign rules. It will simply half the Bignum and the result will get the same sign as the Bignum being halved.
 
     // divideBignum() uses repeated multiplication and binary search. When a really big Bignum is being divided by 2, the left and right limits/indexes of the binary search grows, and more steps are needed. Moreover, using divideBignum() to half a really large Bignum somehow causes an overflow.
-    // On the other hand, this function iterated through Bignum.digits[] and uses the native division on each digit. This has been tested to be faster than divideBignum().
+    // On the other hand, this function iterates through Bignum.digits[] and uses the native division on each digit. This has been tested to be faster than divideBignum().
     // E.g: 567 -> [  7  ,  6  ,  5  ]
     //              7/2     |     |
     //      floor->=2.5    6/2    |
@@ -1996,9 +1984,9 @@ int halfBignum(Bignum *result, Bignum *num) {
 
 int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
     // Function to generate a prime Bignum given a desired length.
-    // Function will generate random numbers, test for its primality using the Miller Rabbin Primality Test (https://home.sandiego.edu/~dhoffoss/teaching/cryptography/10-Rabin-Miller.pdf), and if the number passes all the test, it will be as MOST PROBABLY a prime number.
+    // Function will generate random numbers, test for its primality using the Miller Rabin Primality Test (https://home.sandiego.edu/~dhoffoss/teaching/cryptography/10-Rabin-Miller.pdf), and if the number passes all the test, it will be as MOST PROBABLY a prime number.
 
-    // NOTE: The Miller Rabin Primality Test can determine with certainty that a number is composite, but it can only provide a probabilistic assessment for its primality. In other words, there is still a small chance that a composite number might pass the test. Hence, increasing the number of iterations/tests done on a nuber can increase the probabilty of it being a prime number, but would cost some significant overhead.
+    // NOTE: The Miller Rabin Primality Test can determine with certainty that a number is composite, but it can only provide a probabilistic assessment for its primality. In other words, there is still a small chance that a composite number might pass the test. Hence, increasing the number of iterations/tests done on a number can increase the probabilty of it being a prime number, but would cost some significant overhead.
 
     srand(time(NULL));
 
