@@ -768,9 +768,9 @@ int isValidEncryptedFile(FILE *inputFilePtr) {
 }
 
 void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic) {
-    char key[5000];
-    char firstKey[2500];
-    char secondKey[2500];
+    char key[200];
+    char firstKey[100];
+    char secondKey[100];
     char flag = '.';
     int flagIndex;
 
