@@ -464,11 +464,14 @@ void encryptText() {
     FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
 
     char inputFilename[100];
+    /* Default output file name */
     char outputFilename[] = "en.txt";
 
+    /* Open plaintext input file */
     printf("\nAction: Encryption");
     getInputFile(&inputFilePtr, inputFilename, encrypt);
 
+    /* Open output file */
     outputFilePtr = fopen(outputFilename, "w");
     if (outputFilePtr == NULL) {
         printf("Could not open output file \"%s\". Please try again...", inputFilename);
@@ -479,21 +482,25 @@ void encryptText() {
     initBignum(&ePublic);
     initBignum(&nPublic);
 
+    /* Get the public key and store it in Bignums */
     getKeys(encrypt, &ePublic, &nPublic);
 
+    /* Start elepased-time timer */
     clock_t startTime, endTime;
     double elapsedTime;
     startTime = clock();
 
+    /* Encrypt the input file*/
     unsigned long long int charactersEncrypted = encryptTextFile(inputFilePtr, outputFilePtr, &ePublic, &nPublic);
 
+    /* End elapsed-time timer */
     endTime = clock();
     elapsedTime = (double) (endTime - startTime) / CLOCKS_PER_SEC;
-    printf("\nEncrypted file in: %.2f seconds", elapsedTime);
 
+    /* Output details */
+    printf("\nEncrypted file in: %.2f seconds", elapsedTime);
     printf("\nCharacters encrypted: %llu", charactersEncrypted);
     printf("\nView the encrypted file at: %s", outputFilename);
-
     printf("\n\nNote: Make sure you encrypted the file with the recipient's public key, or else they won't be able to decrypt it!");
 
     freeAllBignums();
