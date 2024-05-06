@@ -120,6 +120,8 @@ int main(void) {
         /* If the user input is a valid menu option, execute the corresponding function */
         if (userMenuState > 0 && userMenuState <= optionsArrSize) {
 
+            /* Each menu option will still display the program header, thus just clear 
+            the prompts */ 
             clearPrompts();
 
             switch (userMenuState) {
