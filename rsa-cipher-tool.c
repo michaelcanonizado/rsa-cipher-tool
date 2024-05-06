@@ -125,19 +125,15 @@ int main(void) {
             switch (userMenuState) {
 			    case 1:
                     generateKeys();
-                    clearPrompts();
 			    	break;
 			    case 2:
                     encryptText();
-                    clearScreen();
 			    	break;
 			    case 3:
                     decryptText();
-                    clearScreen();
 				    break;
                 case 4:
                     about();
-                    clearScreen();
 				    break;
                 case 5:
                     /* If the user wants to exit. Clear the screen and show an exiting feedback */
@@ -150,6 +146,8 @@ int main(void) {
                 default:
                     break;
             }
+
+            clearScreen();
         }
         /* Else if invalid option, clear the text that the user typed, and bring the 
         cursor back to the stored coordinate */
