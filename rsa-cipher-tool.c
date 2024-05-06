@@ -929,23 +929,24 @@ void getCursorPosition(int *x, int *y) {
 }
 
 void getTerminalSize() {
+
 #ifdef _WIN32
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
 	terminalWidth = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 	terminalHeight = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
-
-    loadingBarLength = terminalWidth - strlen("Encryption progress:   ( 100%% )");
-    aboutLineCap = terminalWidth - 30;
 #else
 	struct winsize size;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
 	terminalWidth = size.ws_col;
 	terminalHeight = size.ws_row;
-
-    loadingBarLength = terminalWidth - strlen("Encryption progress:   ( 100%% )");
-    aboutLineCap = terminalWidth - 30;
 #endif
+
+   loadingBarLength = terminalWidth - strlen("Encryption progress:   ( 100%% )");
+    aboutLineCap = terminalWidth * 0.7;
+    if (aboutLineCap > 100) {
+        aboutLineCap = 100;
+    }
 }
 
 void hideCursor() {
