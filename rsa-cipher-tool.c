@@ -54,7 +54,6 @@ typedef enum {
 void generateKeys();
 void encryptText();
 void decryptText();
-unsigned long long int decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);
 void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type);
 void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic);
 void about();
@@ -694,70 +693,6 @@ void decryptText() {
 
     /* Prompt user to go back to the main menu */
     promptExitConfirm();
-}
-
-unsigned long long int decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic) {
-    unsigned long long int characterCount = 0;
-    unsigned long long int totalCharactersEncrypted = 0;
-    int percentageEncrypted = 0;
-    char tempCharacter;
-    char encryptedCharacter[100];
-    char decryptedCharacter;
-
-    Bignum decryptedChar, encryptedChar;
-    initBignum(&decryptedChar);
-    initBignum(&encryptedChar);
-
-    while((tempCharacter = fgetc(inputFilePtr)) != EOF) {
-        if (tempCharacter == '/') {
-            characterCount++;
-        }
-    }
-    rewind(inputFilePtr);
-
-    printf("\nDecryption progress: ");
-    int loadingBarX, loadingBarY;
-    getCursorPosition(&loadingBarX, &loadingBarY);
-
-    printf("\nStatus: ");
-    int loadingStatusX, loadingStatusY;
-    getCursorPosition(&loadingStatusX, &loadingStatusY);
-
-#ifndef _WIN32
-    loadingBarX += strlen("Decryption progress: ");
-    loadingStatusX += strlen("Status: ");
-#endif
-
-    loadingBar(loadingBarX, loadingBarY, 0);
-    loadingStatus(loadingStatusX, loadingStatusY, "Decrypting file...");
-
-    while (fscanf(inputFilePtr, "%[^/]/", encryptedCharacter) == 1) {
-        setBignum(&encryptedChar, encryptedCharacter, positive);
-
-        modularExponentiationBignum(&decryptedChar, &encryptedChar, dPrivate, nPublic);
-
-        decryptedCharacter = bignumToInt(&decryptedChar);
-
-        fprintf(outputFilePtr, "%c", decryptedCharacter);
-
-        resetBignum(&encryptedChar);
-        resetBignum(&decryptedChar);
-        encryptedCharacter[0] = '\0';
-        decryptedCharacter = '\0';
-
-        totalCharactersEncrypted++;
-
-        percentageEncrypted = (totalCharactersEncrypted / (float)characterCount) * 100;
-        loadingBar(loadingBarX, loadingBarY, percentageEncrypted);
-    };
-
-    loadingBar(loadingBarX, loadingBarY, 100);
-    loadingStatus(loadingStatusX, loadingStatusY, "Complete");
-
-    freeBignum(&decryptedChar);
-    freeBignum(&encryptedChar);
-
-    return totalCharactersEncrypted;
 }
 
 int isValidEncryptedFile(FILE *inputFilePtr) {
