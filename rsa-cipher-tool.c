@@ -53,7 +53,6 @@ typedef enum {
 
 void generateKeys();
 void encryptText();
-unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic);
 void decryptText();
 unsigned long long int decryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *dPrivate, Bignum *nPublic);
 void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type);
@@ -572,64 +571,6 @@ void encryptText() {
 
     /* Prompt user to go back to the main menu */
     promptExitConfirm();
-}
-
-unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, Bignum *ePublic, Bignum *nPublic) {
-    unsigned long long int characterCount = 0;
-    unsigned long long int totalCharactersEncrypted = 0;
-    int percentageEncrypted = 0;
-    char character;
-
-    Bignum encryptedChar, plainChar;
-    initBignum(&encryptedChar);
-    initBignum(&plainChar);
-
-    fseek(inputFilePtr, 0, SEEK_END);
-    characterCount = ftell(inputFilePtr);
-    fseek(inputFilePtr, 0, SEEK_SET);
-
-    printf("\nEncryption progress: ");
-    int loadingBarX, loadingBarY;
-    getCursorPosition(&loadingBarX, &loadingBarY);
-
-    printf("\nStatus: ");
-    int loadingStatusX, loadingStatusY;
-    getCursorPosition(&loadingStatusX, &loadingStatusY);
-
-#ifndef _WIN32
-    loadingBarX += strlen("Encryption progress: ");
-    loadingStatusX += strlen("Status: ");
-#endif
-
-    loadingBar(loadingBarX, loadingBarY, 0);
-    loadingStatus(loadingStatusX, loadingStatusY, "Encrypting file...");
-
-    while ((character = fgetc(inputFilePtr)) != EOF) {
-        intToBignum(&plainChar, character, positive);
-
-        modularExponentiationBignum(&encryptedChar, &plainChar, ePublic, nPublic);
-
-        for (unsigned long long int i = encryptedChar.length - 1; i > 0; i--) {
-            fprintf(outputFilePtr, "%d", encryptedChar.digits[i]);
-        }
-        fprintf(outputFilePtr, "%d/", encryptedChar.digits[0]);
-
-        resetBignum(&encryptedChar);
-        resetBignum(&plainChar);
-
-        totalCharactersEncrypted++;
-
-        percentageEncrypted = (totalCharactersEncrypted / (float)characterCount) * 100;
-        loadingBar(loadingBarX, loadingBarY, percentageEncrypted);
-    };
-
-    freeBignum(&encryptedChar);
-    freeBignum(&plainChar);
-
-    loadingBar(loadingBarX, loadingBarY, 100);
-    loadingStatus(loadingStatusX, loadingStatusY, "Complete");
-
-    return totalCharactersEncrypted;
 }
 
 void decryptText() {
