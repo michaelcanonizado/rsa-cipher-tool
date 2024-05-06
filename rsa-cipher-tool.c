@@ -44,13 +44,6 @@ typedef enum {
 
 
 
-
-
-
-
-
-
-
 void generateKeys();
 void encryptText();
 void decryptText();
@@ -998,7 +991,7 @@ void about() {
     }
     getCursorPosition(&tempCursorX, &tempCursorY);
     do {
-        moveCursor(tempCursorX, tempCursorY-1);
+        moveCursor(tempCursorX, tempCursorY-2);
         for (int i = 0; i < bottomLeftPadding; i++) {
             printf(" ");
         }
@@ -1007,15 +1000,15 @@ void about() {
         getCursorPosition(&cursorXToDelete, &cursorYToDelete);
         fgets(userInput, sizeof(userInput), stdin);
 
-		if (userInput[strlen(userInput) - 1] == '\n') {
-			userInput[strlen(userInput) - 1] = '\0';
-		}
+        if (userInput[strlen(userInput) - 1] == '\n') {
+            userInput[strlen(userInput) - 1] = '\0';
+        }
 
         for(int i = 0; userInput[i]; i++){
             userInput[i] = tolower(userInput[i]);
         }
 
-        clearWord(cursorYToDelete - 1, 0, terminalWidth);
+        clearLines(tempCursorY-2, terminalHeight-1);
 
     } while (strcmp(userInput, "done") != 0);
 }
