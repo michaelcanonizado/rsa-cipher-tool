@@ -697,6 +697,7 @@ void decryptText() {
 }
 
 void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type) {
+
     unsigned long long int characterCount = 0;
     char character;
     int isValidFile = 0;
@@ -706,16 +707,20 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type) {
     int tempCursorX, tempCursorY;
     getCursorPosition(&tempCursorX, &tempCursorY);
 
+    /* Continuously ask user for input file until a valid input file is passed */
     while (1) {
         char *promptMessage = "File name: ";
         printf("%s", promptMessage);
         scanf("%s", inputFilename);
 
-        sprintf(errorMessage, "Could not open \"%s\". Please try again...", inputFilename);
-
         *inputFilePtr = fopen(inputFilename, "r");
 
+        /* if the file exists, check if it is a valid file */
         if (*inputFilePtr != NULL) {
+            /* A valid input file to decrypt is a file that uses the encrypted 
+            file format that encryptText() returns. I.e: a file that contains
+            numbers separated by a flag. This prevents the user to not decrypt
+            encrypted files that was not encrypted by the program. */
             isValidFile = type == decrypt ? isValidEncryptedFile(*inputFilePtr) : 1;
 
             if (type == decrypt) {
@@ -723,12 +728,20 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type) {
             }
         }
 
+        /* If a valid file was inputted, clear any error messages and move the
+        cursor to the original position. */
         if (isValidFile) {
             clearWord(terminalHeight - 7, 0, terminalWidth);
             moveCursor(tempCursorX, tempCursorY+1);
             break;
         }
 
+        /* Load the default error message in a buffer. This is done as a format
+        specifier is used in the error message. The error message will also change
+        depending on the error case that was triggered */
+        sprintf(errorMessage, "Could not open \"%s\". Please try again...", inputFilename);
+
+        /* Print error message */
         clearWord(tempCursorY, strlen(promptMessage), terminalWidth);
         clearWord(terminalHeight - 7, 0, terminalWidth);
         moveCursor(0, terminalHeight - 7);
