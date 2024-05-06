@@ -634,33 +634,38 @@ unsigned long long int encryptTextFile(FILE *inputFilePtr, FILE *outputFilePtr, 
 
 void decryptText() {
 
+    /* Initialize file pointers */
     FILE *inputFilePtr = NULL, *outputFilePtr = NULL;
 
     char inputFilename[100];
+    /* Default output file name */
     char outputFilename[] = "dc.txt";
 
+    /* Open encrypted input file */
     printf("\nAction: Decryption");
     getInputFile(&inputFilePtr, inputFilename, decrypt);
 
+    /* Open output file */
     outputFilePtr = fopen(outputFilename, "w");
     if (outputFilePtr == NULL) {
         printf("Could not open output file \"%s\". Please try again...", inputFilename);
         exit(1);
     }
 
+    /* Initialize Bignums */
     Bignum nPublic, dPrivate, decryptedChar, encryptedChar;
     initBignum(&dPrivate);
     initBignum(&nPublic);
     initBignum(&decryptedChar);
     initBignum(&encryptedChar);
 
+    /* Get the private key and store it in Bignums */
     getKeys(decrypt, &dPrivate, &nPublic);
 
+    /* Start elepased-time timer */
     clock_t startTime, endTime;
     double elapsedTime;
     startTime = clock();
-
-    // unsigned long long int charactersEncrypted = decryptTextFile(inputFilePtr, outputFilePtr, &dPrivate, &nPublic);
 
     unsigned long long int characterCount = 0;
     unsigned long long int totalCharactersEncrypted = 0;
@@ -669,6 +674,9 @@ void decryptText() {
     char encryptedCharacter[100];
     char decryptedCharacter;
 
+    /* Get the number of encrypted characters in the input file. This number be
+    used as a basis to track the percentage of characters encrypted, which will 
+    be used in the loading bar.  */
     while((tempCharacter = fgetc(inputFilePtr)) != EOF) {
         if (tempCharacter == '/') {
             characterCount++;
@@ -676,38 +684,49 @@ void decryptText() {
     }
     rewind(inputFilePtr);
 
+    /* Get the position of the cursor after printing the loading bar title */
     printf("\nDecryption progress: ");
     int loadingBarX, loadingBarY;
     getCursorPosition(&loadingBarX, &loadingBarY);
 
+    /* Get the position of the cursor after printing the loading status title */
     printf("\nStatus: ");
     int loadingStatusX, loadingStatusY;
     getCursorPosition(&loadingStatusX, &loadingStatusY);
 
 #ifndef _WIN32
+    /* Offset the X coordinate in UNIX systems */
     loadingBarX += strlen("Decryption progress: ");
     loadingStatusX += strlen("Status: ");
 #endif
 
+    /* Initialize the loading bar and status */
     loadingBar(loadingBarX, loadingBarY, 0);
     loadingStatus(loadingStatusX, loadingStatusY, "Decrypting file...");
 
+    /* Loop through and decrypt each character in the encrypted file */
     while (fscanf(inputFilePtr, "%[^/]/", encryptedCharacter) == 1) {
+        /* Convert the encrypted character's value to a Bignum */
         setBignum(&encryptedChar, encryptedCharacter, positive);
 
+        /* Decrypt the character */
         modularExponentiationBignum(&decryptedChar, &encryptedChar, &dPrivate, &nPublic);
 
+        /* Convert the decrypted character Bignum to an integer, and store it in a char. 
+        NOTE: The decryted character will be an ASCII value */
         decryptedCharacter = bignumToInt(&decryptedChar);
 
+        /* Print the decrypted character */
         fprintf(outputFilePtr, "%c", decryptedCharacter);
 
+        /* Reset the following Bignums for the next iteration*/
         resetBignum(&encryptedChar);
         resetBignum(&decryptedChar);
         encryptedCharacter[0] = '\0';
         decryptedCharacter = '\0';
 
+        /* Update the progress of the loading bar */
         totalCharactersEncrypted++;
-
         percentageEncrypted = (totalCharactersEncrypted / (float)characterCount) * 100;
         loadingBar(loadingBarX, loadingBarY, percentageEncrypted);
     };
@@ -715,9 +734,11 @@ void decryptText() {
     loadingBar(loadingBarX, loadingBarY, 100);
     loadingStatus(loadingStatusX, loadingStatusY, "Complete");
 
+    /* End elapsed-time timer */
     endTime = clock();
     elapsedTime = (double) (endTime - startTime) / CLOCKS_PER_SEC;
 
+    /* Output details */
     printf("\nDecrypted file in: %.2f seconds", elapsedTime);
     printf("\nCharacters decrypted: %llu", totalCharactersEncrypted);
     printf("\nView the decrypted file at: %s", outputFilename);
@@ -725,11 +746,12 @@ void decryptText() {
     printf("\n- The message was not encrypted with your public key");
     printf("\n- You used the wrong key to decrypt the file");
 
+    /* Free the Bignums and file pointers */
     freeAllBignums();
-
     fclose(inputFilePtr);
     fclose(outputFilePtr);
 
+    /* Prompt user to go back to the main menu */
     promptExitConfirm();
 }
 
