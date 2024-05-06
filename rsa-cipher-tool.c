@@ -771,7 +771,6 @@ void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic) {
     char key[200];
     char firstKey[100];
     char secondKey[100];
-    char flag = '.';
     int flagIndex;
 
     /* Get current cursor position to bring back the cursor back to this 
@@ -796,9 +795,16 @@ void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic) {
 
         /* Verify the characters of the key */
         for (i = 0; i < strlen(key); i++) {
-            if (key[i] == flag) {
+            /* Look for the flag */
+            if (key[i] == '.') {
                 flagIndex = i;
                 flagCount++;
+            }
+
+            /* Look for non-digits */
+            if (!isdigit(key[i]) && key[i] != '.') {
+                flagCount = 0;
+                break;
             }
         }
 
