@@ -850,14 +850,34 @@ void splitString(const char *inputStr, char outputArr[][ABOUT_MAX_LENGTH], int *
     int j = 0;
     int k = 0;
 
-    // Iterate through the input string
+    /* Iterate through the string, copying chunks accoring to the line cap,
+    and store it in the array of strings. */
     for (int i = 0; i < strlen(inputStr); i += lineCap) {
+        /* If the chunk stops in between a word, count the number of characters
+        till the end of the word and include it in the string.
+        
+        E.g:
+        
+        --------- DONT DO THIS ---------
+            the quick brown fox ju
+               mps over the laz
+                   y dog
+
+        ----------- DO THIS -----------
+            the quick brown fox jumps
+                 over the lazy 
+                       dog
+        
+        The line cap will only serve as an initially basis of the rough number
+        of characters per line. If a word will be chopped in half, where the 
+        2nd half will be printed in the next line, just include the 2nd half
+        in the 1st half to not break the word. */
         while (indexOffset + chunkToCopy + j < strlen(inputStr) && inputStr[indexOffset + chunkToCopy + j] != ' ') {
             numOfCharactersBeforeASpace++;
             j++;
         }
-
         chunkToCopy += numOfCharactersBeforeASpace;
+
 
         if (inputStr[indexOffset + k] == '\t' && indexOffset != 0) {
             chunkToCopy -= 8;
@@ -866,18 +886,56 @@ void splitString(const char *inputStr, char outputArr[][ABOUT_MAX_LENGTH], int *
             k++;
         }
 
+
+        /* Copy the evaluated chunk to the array of substrings
+        
+        How it works:
+        
+        lineCap = 25;
+        chunk = lineCap;
+        indexOffset = 0;
+        
+        NOTE: inputStr will point to the FIRST character of the string.
+        After each chunk copy, the pointer will be moved to the starting
+        character of the next chunk.
+
+        ---------------------------------------------------------------
+
+        Iteration #1:
+
+                "The quick brown fox jumps over the lazy dog"
+                 |                       |
+        inputStr + indexOffset           |
+                 |                       |
+                 THIS CHUNK WILL BE COPIED
+
+        *move the pointer to the start of the next chunk*
+        indexOffset += chunk;
+
+        ---------------------------------------------------------------
+
+        Iteration #2:
+        
+                "The quick brown fox jumps over the lazy dog"
+                                        |                  |
+                               inputStr + indexOffset
+                                        |                  |
+                                    THIS CHUNK WILL BE COPIED
+
+        ---------------------------------------------------------------
+         */
         strncpy(outputArr[*outputArrCount], inputStr + indexOffset + k, chunkToCopy);
 
-        // Null terminate the substring
+        /* Null terminate the substring */
         outputArr[*outputArrCount][chunkToCopy + numOfCharactersBeforeASpace] = '\0';
-        // outputArr[*outputArrCount][lineCap] = '\0';
 
-        // Update indices
+        /* Update indices */ 
         indexOffset += chunkToCopy;
 
-        // Increment count of substrings
+        /* Increment number of substrings */
         (*outputArrCount)++;
 
+        /* Reset variables for next iteration */
         chunkToCopy = lineCap;
         j = 0;
         k = 0;
