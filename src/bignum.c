@@ -2129,7 +2129,3 @@ int generateRandomBignumInRange(Bignum *result, Bignum *min, Bignum *max) {
 
 }
 
-int generateRandomBignum(Bignum *result, unsigned long long int numOfDigits, BIGNUM_SIGN sign) {
-
-    printf("\n\nHello world!\n\n");
-}
