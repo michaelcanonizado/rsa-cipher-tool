@@ -178,7 +178,6 @@ void generateKeys() {
         {"32 bit", 32},
         {"64 bit", 64},
         {"128 bit", 128},
-        {"256 bit", 256},
         {"Back", 0},
     };
     int keySizeOptionsSize = sizeof(keySizeOptions)/sizeof(keySizeOptions[0]);
