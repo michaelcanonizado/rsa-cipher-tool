@@ -1233,21 +1233,25 @@ void printProgramHeader() {
 }
 
 void promptExitConfirm() {
+    /* Function to show the promp exit comfirm. It will continuously ask the sure to type the confirmation message until it has been typed correctly */
+
 	char userInput[100];
 
 	do {
+        /* Clear the previous exit prompt */
 		clearLines(terminalHeight - 5, terminalHeight - 5);
 		moveCursor((terminalWidth - 21)/ 2, terminalHeight - 5);
-        // Ask user for confirmation
+
+        /* Ask user for confirmation */
 		printf("Enter DONE to go back: ");
 		fgets(userInput, sizeof(userInput), stdin);
 
-		// Replace the newline character at the end of the input to NULL
+		/* Replace the newline character at the end of the input to NULL */ 
 		if (userInput[strlen(userInput) - 1] == '\n') {
 			userInput[strlen(userInput) - 1] = '\0';
 		}
 
-		// Convert the user's input to lowercase
+		/* Convert the user's input to lowercase */
 		for(int i = 0; userInput[i]; i++){
 			userInput[i] = tolower(userInput[i]);
 		}
