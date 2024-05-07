@@ -77,7 +77,6 @@ void sleepProgram(int milliseconds);
 
 
 
-
 int main(void) {
     /* When the program initially runs, clear the terminal and determine the global
     variables that the program needs: loadingBarLength, terminalWidth, and terminalHeight*/
