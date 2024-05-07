@@ -1273,6 +1273,7 @@ void showCursor() {
 }
 
 void sleepProgram(int milliseconds) {
+    /* Function to sleep or add delay to the program */
 #ifdef _WIN32
 	Sleep(milliseconds);
 #else
