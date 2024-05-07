@@ -1260,6 +1260,7 @@ void promptExitConfirm() {
 }
 
 void showCursor() {
+    /* Function to show the cursor */
 #ifdef _WIN32
    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
    CONSOLE_CURSOR_INFO info;
