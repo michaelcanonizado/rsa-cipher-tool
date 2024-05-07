@@ -1111,7 +1111,7 @@ void getCursorPosition(int *x, int *y) {
 }
 
 void getTerminalSize() {
-
+    /* Function to get the terminal size. It also initialize and calculates the length of the loading bar */
 #ifdef _WIN32
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
@@ -1124,6 +1124,7 @@ void getTerminalSize() {
 	terminalHeight = size.ws_row;
 #endif
 
+    /* Loading bar will span the whole terminal width */
    loadingBarLength = terminalWidth - strlen("Encryption progress:   ( 100%% )");
     aboutLineCap = terminalWidth * 0.7;
     if (aboutLineCap > 100) {
