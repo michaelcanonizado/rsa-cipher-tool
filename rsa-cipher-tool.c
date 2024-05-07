@@ -1024,6 +1024,7 @@ int calculateLeftPadding(int strLength) {
 }
 
 void clearLines(int startLine, int endLine) {
+    /* Function to clear lines in the terminal given a starting and ending y-coordinate */
     hideCursor();
 	for (int i = startLine; i <= endLine; i++) {
 		moveCursor(0, i);
