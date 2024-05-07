@@ -1036,6 +1036,7 @@ void clearLines(int startLine, int endLine) {
 }
 
 void clearPrompts() {
+    /* Function to clear the prompts of the program. It will essentially clear everything below the program header. */
     clearScreen();
     printProgramHeader();
 }
