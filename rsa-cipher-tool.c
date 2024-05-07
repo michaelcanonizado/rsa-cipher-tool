@@ -571,7 +571,7 @@ void decryptText() {
 
     char inputFilename[100];
     /* Default output file name */
-    char outputFilename[] = "dc.txt";
+    char outputFilename[] = "decrypted.txt";
 
     /* Open encrypted input file */
     printf("\nAction: Decryption");
