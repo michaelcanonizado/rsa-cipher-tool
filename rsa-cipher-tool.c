@@ -109,36 +109,35 @@ int main(void) {
 
         /* If the user input is a valid menu option, execute the corresponding function */
         if (userMenuState > 0 && userMenuState <= optionsArrSize) {
-
             /* Each menu option will still display the program header, thus just clear 
             the prompts */ 
             clearPrompts();
 
             switch (userMenuState) {
-			    case 1:
-                    generateKeys();
-			    	break;
-			    case 2:
-                    encryptText();
-			    	break;
-			    case 3:
-                    decryptText();
-				    break;
+		case 1:
+			generateKeys();
+			break;
+		case 2:
+                    	encryptText();
+			break;
+		case 3:
+                    	decryptText();
+			break;
                 case 4:
-                    about();
-				    break;
+                    	about();
+			break;
                 case 5:
-                    /* If the user wants to exit. Clear the screen and show an exiting feedback */
-            	    clearScreen();
-                    moveCursor(0, (terminalHeight/2) - 4);
-				    printf("%*s%s\n", calculateLeftPadding(strlen("Exiting RSA Cipher Tool...")), "", "Exiting RSA Cipher Tool...");
-                    freeAllBignums();
-				    sleepProgram(1000);
-                    return 0;
+                    	/* If the user wants to exit. Clear the screen and show an exiting feedback */
+            	    	clearScreen();
+                    	moveCursor(0, (terminalHeight/2) - 4);
+			printf("%*s%s\n", calculateLeftPadding(strlen("Exiting RSA Cipher Tool...")), "", "Exiting RSA Cipher Tool...");
+                    	freeAllBignums();
+			sleepProgram(1000);
+                    	return 0;
                 default:
-                    break;
+                    	break;
             }
-
+		
             clearScreen();
         }
         /* Else if invalid option, clear the text that the user typed, and bring the 
