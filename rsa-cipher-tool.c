@@ -1133,6 +1133,7 @@ void getTerminalSize() {
 }
 
 void hideCursor() {
+    /* Function to hide the cursor */
 #ifdef _WIN32
    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
    CONSOLE_CURSOR_INFO info;
