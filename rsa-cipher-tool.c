@@ -1201,6 +1201,7 @@ void loadingStatus(int x, int y, char message[]) {
 }
 
 void moveCursor(int x, int y) {
+    /* Function to move the cursor at a specified coordinate in the terminal */
 #ifdef _WIN32
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	COORD pos = {x, y};
