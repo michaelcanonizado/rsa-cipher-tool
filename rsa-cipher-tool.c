@@ -104,8 +104,8 @@ int main(void) {
         an invalid option and the option that they typed is cleared. */
         int tempCursorX, tempCursorY;
         getCursorPosition(&tempCursorX, &tempCursorY);
-		scanf("%d", &userMenuState);
-		while (getchar() != '\n');
+	scanf("%d", &userMenuState);
+	while (getchar() != '\n');
 
         /* If the user input is a valid menu option, execute the corresponding function */
         if (userMenuState > 0 && userMenuState <= optionsArrSize) {
