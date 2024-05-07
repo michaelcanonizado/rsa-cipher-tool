@@ -1052,6 +1052,7 @@ void clearScreen() {
 }
 
 void clearWord(int y, int startCol, int endCol) {
+    /* Function to clear a specific portion of a line in the terminal */
     moveCursor(startCol, y);
     for (int i = 0; i < endCol - startCol; i++) {
 		printf(" ");
