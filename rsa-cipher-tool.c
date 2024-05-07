@@ -30,7 +30,6 @@
 int loadingBarLength = 0;
 int terminalWidth = 0;
 int terminalHeight = 0;
-int aboutLineCap = 0;
 
 typedef struct {
     char name[50];
@@ -81,8 +80,7 @@ void sleepProgram(int milliseconds);
 
 int main(void) {
     /* When the program initially runs, clear the terminal and determine the global
-    variables that the program needs: loadingBarLength, terminalWidth, terminalHeight,
-    and aboutLineCap */
+    variables that the program needs: loadingBarLength, terminalWidth, and terminalHeight*/
     clearScreen();
     getTerminalSize();
 
@@ -960,8 +958,12 @@ void about() {
     /* Go through each paragraph and format it according to the line cap.
     I.e: line wrap it to prevent overflow and proper format. Then store it
     in another array of strings.*/
+    int lineCap = terminalWidth * 0.7;
+    if (lineCap > 100) {
+        lineCap = 100;
+    }
     for (int i = 0; i < paragraphsSize; i++) {
-        splitString(paragraphs[i], paragraphsSubstrings, &paragraphSubstringCount, aboutLineCap);
+        splitString(paragraphs[i], paragraphsSubstrings, &paragraphSubstringCount, lineCap);
     }
 
     /* Calculate the top padding and manually print new lines instead of
@@ -1125,11 +1127,7 @@ void getTerminalSize() {
 #endif
 
     /* Loading bar will span the whole terminal width */
-   loadingBarLength = terminalWidth - strlen("Encryption progress:   ( 100%% )");
-    aboutLineCap = terminalWidth * 0.7;
-    if (aboutLineCap > 100) {
-        aboutLineCap = 100;
-    }
+    loadingBarLength = terminalWidth - strlen("Encryption progress:   ( 100%% )");
 }
 
 void hideCursor() {
