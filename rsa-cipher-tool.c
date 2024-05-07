@@ -1042,6 +1042,7 @@ void clearPrompts() {
 }
 
 void clearScreen() {
+    /* Function to clear the in-view area of the terminal */
 #ifdef _WIN32
 	system("cls");
 #else
