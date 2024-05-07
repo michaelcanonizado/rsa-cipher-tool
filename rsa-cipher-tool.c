@@ -1146,35 +1146,43 @@ void hideCursor() {
 }
 
 void loadingBar(int x, int y, int percentDone) {
+    /* Function to update and display the loading bar
+    
+    This function takes in the coordinate of where to start printing the loading bar as the cursor will be moving to other position, particularly when the program updates and prints the loading status, and the percentage of the fill. */
+
+    /* Cap the loading bar to prevent the fill from overflowing incase the user passes a percentage greater than 100 */
     if (percentDone > 100) {
         percentDone = 100;
     }
 
+    /* Claculate how much characters of fill and track to print */
 	int fill = percentDone * loadingBarLength / 100;
     int track = loadingBarLength - fill;
 
+    /* Move cursor to the specified coordinate */
     moveCursor(x, y);
 
+    /* Hide cursor when loading bar is less than 100. This is done to avoid the flashing effect of the cursor when it continuously moves around the terminal to smoothen the loading bar */
     if (percentDone < 100) {
         hideCursor();
     }
 
+    /* Print the loading bar */ 
     printf("[");
-
 	char a = '=', b = ' ';
-    
 	for (int i = 0; i < fill; i++) {
 		printf("%c", a);
 	}
 	for (int i = 0; i < track; i++) {
 		printf("%c", b);
 	}
-
     printf("]");
     
+    /* Print the percentage done */
 	printf(" ( %d%% )", percentDone);
 	fflush(stdout);
 
+    /* If loading has complete, bring back the cursor */
     if (percentDone >= 100) {
         showCursor();
     }
