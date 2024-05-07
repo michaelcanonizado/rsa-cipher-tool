@@ -1189,8 +1189,13 @@ void loadingBar(int x, int y, int percentDone) {
 }
 
 void loadingStatus(int x, int y, char message[]) {
+    /* Function to update the loading status which gives more information about the current action being done */
+
+    /* Clear previous status */
     clearWord(y, x, terminalWidth);
+    /* Move cursor to the specified position */
     moveCursor(x, y);
+    /* Print the status */
     printf("%s", message);
 	fflush(stdout);
 }
