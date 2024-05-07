@@ -1212,12 +1212,15 @@ void moveCursor(int x, int y) {
 }
 
 void printProgramHeader() {
+    /* Function to print the program header */
+
+    /* Move cursor at the top of the file */
     moveCursor(0,0);
+
+    /* Print header */
     printf("\n");
     for (int i = 0; i < terminalWidth; i++) printf("-");
-
     printf("\n%*sRSA Cipher Tool", calculateLeftPadding(strlen("RSA Cipher Tool")), "");
-
     printf("\n");
     for (int i = 0; i < terminalWidth; i++) printf("-");
     printf("\n");
