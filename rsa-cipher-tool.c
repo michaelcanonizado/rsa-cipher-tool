@@ -1060,6 +1060,7 @@ void clearWord(int y, int startCol, int endCol) {
 }
 
 void getCursorPosition(int *x, int *y) {
+    /* Function to get the current position of the cursor */
 #ifdef _WIN32
     CONSOLE_SCREEN_BUFFER_INFO info;
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
