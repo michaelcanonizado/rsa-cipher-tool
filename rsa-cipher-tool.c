@@ -456,7 +456,7 @@ void encryptText() {
 
     char inputFilename[100];
     /* Default output file name */
-    char outputFilename[] = "en.txt";
+    char outputFilename[] = "encrypted.txt";
 
     /* Open plaintext input file */
     printf("\nAction: Encryption");
