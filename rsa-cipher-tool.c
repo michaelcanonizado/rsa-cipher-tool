@@ -1017,6 +1017,7 @@ void about() {
 
 
 int calculateLeftPadding(int strLength) {
+    /* Function to calculate the left padding needed to center align a print */
     int remainingWidth = terminalWidth - strLength;
     int leftPadding = remainingWidth % 2 ? (remainingWidth + 1) / 2 : remainingWidth / 2;
     return leftPadding;
