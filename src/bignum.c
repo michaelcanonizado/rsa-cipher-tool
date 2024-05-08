@@ -308,9 +308,11 @@ void initBignum(Bignum *num) {
 
 }
 
-void freeAllBignums() {
+unsigned long long int freeAllBignums() {
     // Function to go through linked list of Bignum pointers and free the allocated Bignum.digits[] and the nodes all at once.
     // Function will free nodes starting from the end. I.e: the most recent Bignums initialized.
+
+    unsigned long long int numOfBignumsFreed = 0;
 
     // Store head node in a temporary ndoe.
     BignumNode *tempHeadNode = bignumListHead;
@@ -342,8 +344,9 @@ void freeAllBignums() {
         bignumListHead = tempHeadNode;
 
         FREED_BIGNUMS_COUNT++;
+        numOfBignumsFreed++;
     }
-
+    return numOfBignumsFreed;
 }
 
 void freeBignum(Bignum *num) {
