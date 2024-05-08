@@ -32,6 +32,37 @@ unsigned long long int ALLOCATED_BIGNUMS_COUNT = 0, FREED_BIGNUMS_COUNT = 0;
 
 // -----------------PRIVATE FUNCTIONS-----------------
 
+void trimBignum(Bignum *num) {
+    // Function to trim leading 0s of Bignum. This function works by counting leading 0s encapsulated by the current Bignum.length, and once a non-zero is found, will update the length of Bignum by adjusting Bignum.length.
+
+    unsigned long long int numOfZeros = 0;
+    // Flag to check if a non-zero integer was found. Cases where a Bignum was intentionally set to 0: setBignum(&x, "0", positive);. Should not be trimmed.
+    int bignumIsZero = 1;
+
+    // Start from the most significant digit, looking for 0s, and keep track of the number of 0s found.
+    for (int i = num->length - 1; i >= 0; i--) {
+        if (num->digits[i] == 0) {
+            numOfZeros++;
+        } 
+        // If a non-zero integer is found, it has found the MSD(most significant digit), exit the loop and update Bignum.length.
+        else {
+            bignumIsZero = 0;
+            break;
+        }
+    }
+
+    // If Bignum is intentionally set to 0, don't trim the length and set it to 1.
+    if (bignumIsZero) {
+        num->length = 1;
+        return;
+    }
+
+    // If 0s were found, trim the Bignum by adjusting the length.
+    if (numOfZeros != 0) {
+        num->length = num->length - numOfZeros;
+    }
+}
+
 int bignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
     // Function that shifts a Bignum with the amount of 0s specified (x * pow(10, n)), without using multiplyBignum(). This has been tested to be faster especially when shifting by large place values.
     // I.e: x * 10^n
@@ -710,37 +741,6 @@ void printBignumCenter(Bignum *num, unsigned int requiredWidth) {
     printBignum(num);
     for (int i = 0; i < rightWidth; i++) {
         printf(" ");
-    }
-}
-
-void trimBignum(Bignum *num) {
-    // Function to trim leading 0s of Bignum. This function works by counting leading 0s encapsulated by the current Bignum.length, and once a non-zero is found, will update the length of Bignum by adjusting Bignum.length.
-
-    unsigned long long int numOfZeros = 0;
-    // Flag to check if a non-zero integer was found. Cases where a Bignum was intentionally set to 0: setBignum(&x, "0", positive);. Should not be trimmed.
-    int bignumIsZero = 1;
-
-    // Start from the most significant digit, looking for 0s, and keep track of the number of 0s found.
-    for (int i = num->length - 1; i >= 0; i--) {
-        if (num->digits[i] == 0) {
-            numOfZeros++;
-        } 
-        // If a non-zero integer is found, it has found the MSD(most significant digit), exit the loop and update Bignum.length.
-        else {
-            bignumIsZero = 0;
-            break;
-        }
-    }
-
-    // If Bignum is intentionally set to 0, don't trim the length and set it to 1.
-    if (bignumIsZero) {
-        num->length = 1;
-        return;
-    }
-
-    // If 0s were found, trim the Bignum by adjusting the length.
-    if (numOfZeros != 0) {
-        num->length = num->length - numOfZeros;
     }
 }
 
