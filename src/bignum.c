@@ -1992,8 +1992,8 @@ int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
 
     srand(time(NULL));
 
-    Bignum n;
-    initBignum(&n);
+    Bignum randomBignum;
+    initBignum(&randomBignum);
 
     // Seed the last digit of the random Bignum with 1,3,7,9 as these are the only numbers that a prime number can end with.
     int primeLastDigits[] = {1,3,7,9};
@@ -2002,31 +2002,31 @@ int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
 
     // Generate a new Bignum and test for primality until a Bignum has passed the primality test
     while(!isPrime) {
-        resetBignum(&n);
+        resetBignum(&randomBignum);
 
         // Generate a random number per digit of the Bignum
         for (unsigned long long int i = primeLength - 1; i > 0; i--) {
             // If the current digit is the MSD (most significant digit), generate a random number from 1 - 9
             if (i == primeLength - 1) {
-                n.digits[i] = (rand() % 9) + 1;
+                randomBignum.digits[i] = (rand() % 9) + 1;
             }
             // Else generate a random number from 0 - 9
             else {
-                n.digits[i] = rand() % 10;
+                randomBignum.digits[i] = rand() % 10;
             }
         }
         // Choose a random number from the prime last digit array to seed the last digit of the random Bignum
-        n.digits[0] = primeLastDigits[randPrimeLastDigitIndex];
-        n.length = primeLength;
+        randomBignum.digits[0] = primeLastDigits[randPrimeLastDigitIndex];
+        randomBignum.length = primeLength;
 
         // Test for the Bignum's primality
-        isPrime = millerRabinPrimalityTest(&n, 10);
+        isPrime = millerRabinPrimalityTest(&randomBignum, 10);
     }
 
     // If the generated Bignum passed the primality test, copy that Bignum to result Bignum
-    copyBignum(result, &n);
+    copyBignum(result, &randomBignum);
 
-    freeBignum(&n);
+    freeBignum(&randomBignum);
 
     return 0;
 }
