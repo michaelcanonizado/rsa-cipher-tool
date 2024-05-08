@@ -630,7 +630,7 @@ long long int bignumToInt(Bignum *num) {
     return result;
 }
 
-int resetBignum(Bignum *num) {
+void resetBignum(Bignum *num) {
     // Function to reset the contents of a Bignum. Although initBignum() can be used to reset a Bignum, this function resets the Bignum, whilst maintaining the instance of the Bignum and the allocated Bignum.digits[]. initBignum() resets the Bignum by creating a new instance of the Bignum (Therefore another allocation will be made just to reset the Bignum).
     // This function should be used when Bignums are initialized or need to be reset inside of loops to minimize the amount of memory allocated.
 
@@ -640,7 +640,6 @@ int resetBignum(Bignum *num) {
     num->length = 0;
     // Reset Sign
     num->sign = positive;
-    return 0;
 }
 
 void copyBignum(Bignum *result, Bignum *num) {
