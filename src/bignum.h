@@ -40,7 +40,7 @@ int isGreaterThanBignum(Bignum *num1, Bignum *num2);
 int isLessThanBignum(Bignum *num1, Bignum *num2);
 int isLessThanOrEqualToBignum(Bignum *num1, Bignum *num2);
 int isEqualToBignum(Bignum *num1, Bignum *num2);
-int incrementBignum(Bignum *num, unsigned long long int incrementValue);
+void incrementBignum(Bignum *num, unsigned long long int incrementValue);
 int decrementBignum(Bignum *num, unsigned long long int decrementValue);
 
 void addBignum(Bignum *result, Bignum *addend1, Bignum *addend2);
