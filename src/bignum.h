@@ -34,13 +34,12 @@ void copyBignum(Bignum *result, Bignum *num);
 void printBignum(Bignum *num);
 void printBignumExtended(Bignum *num, unsigned long long int specifiedLength);
 void printBignumCenter(Bignum *num, unsigned int requiredWidth);
-void trimBignum(Bignum *num);
+int isBignumZero(Bignum *num);
 
 int isGreaterThanBignum(Bignum *num1, Bignum *num2);
 int isLessThanBignum(Bignum *num1, Bignum *num2);
 int isLessThanOrEqualToBignum(Bignum *num1, Bignum *num2);
 int isEqualToBignum(Bignum *num1, Bignum *num2);
-int isBignumZero(Bignum *num);
 int incrementBignum(Bignum *num, unsigned long long int incrementValue);
 int decrementBignum(Bignum *num, unsigned long long int decrementValue);
 
