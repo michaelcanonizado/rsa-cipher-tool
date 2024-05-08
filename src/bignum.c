@@ -899,7 +899,7 @@ void incrementBignum(Bignum *num, unsigned long long int incrementValue) {
     return 0;
 }
 
-int decrementBignum(Bignum *num, unsigned long long int decrementValue) {
+void decrementBignum(Bignum *num, unsigned long long int decrementValue) {
     Bignum offset;
     initBignum(&offset);
     intToBignum(&offset, decrementValue, positive);
