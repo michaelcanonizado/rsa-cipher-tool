@@ -890,7 +890,7 @@ int isEqualToBignum(Bignum *num1, Bignum *num2) {
     return 1;
 }
 
-int incrementBignum(Bignum *num, unsigned long long int incrementValue) {
+void incrementBignum(Bignum *num, unsigned long long int incrementValue) {
     Bignum offset;
     initBignum(&offset);
     intToBignum(&offset, incrementValue, positive);
