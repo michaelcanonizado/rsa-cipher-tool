@@ -45,14 +45,14 @@ void decrementBignum(Bignum *num, unsigned long long int decrementValue);
 
 void addBignum(Bignum *result, Bignum *addend1, Bignum *addend2);
 void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend);
-int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier);
-int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor);
-int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor);
-int powerBignum(Bignum *result, Bignum *base, Bignum *exponent);
-int modularExponentiationBignum(Bignum *result, Bignum *base, Bignum *exponent, Bignum *divisor);
-int modularInverseBignum(Bignum *result, Bignum *num, Bignum *divisor);
+void multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier);
+void divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor);
+void moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor);
+void powerBignum(Bignum *result, Bignum *base, Bignum *exponent);
+void modularExponentiationBignum(Bignum *result, Bignum *base, Bignum *exponent, Bignum *divisor);
+void modularInverseBignum(Bignum *result, Bignum *num, Bignum *divisor);
 
-int halfBignum(Bignum *result, Bignum *num);
-int generatePrimeBignum(Bignum *result, unsigned long long int primeLength);
+void halfBignum(Bignum *result, Bignum *num);
+void generatePrimeBignum(Bignum *result, unsigned long long int primeLength);
 
 #endif /* BIGNUM_H */
