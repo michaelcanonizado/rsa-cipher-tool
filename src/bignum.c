@@ -1228,10 +1228,12 @@ void multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     if (isBignumZero(multiplicand)) {
         resetBignum(result);
         setBignum(result, "0", positive);
+        return;
     }
     if (isBignumZero(multiplier)) {
         resetBignum(result);
         setBignum(result, "0", positive);
+        return;
     }
 
     // Store multiplicand and multiplier sign in a temporary enum. Then make both Bignums positive to trigger the other function calls correctly.
@@ -1270,6 +1272,7 @@ void multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
         multiplicand->sign = tempMultiplicandSign;
         multiplier->sign = tempMultiplierSign;
 
+        return;
     }
 
 
@@ -1449,6 +1452,7 @@ void divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
         dividend->sign = dividendSign;
         divisor->sign = divisorSign;
         setBignum(result, "0", resultSign);
+        return;
     }
 
     // A temporary Bignum set as 1 is used as bignumShiftLeft doesn't modify the actual Bignum that is passed. But modifies a separate resulting Bignum.
@@ -1593,12 +1597,14 @@ void moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
         result->sign = positive;
 
         freeBignum(&tempMod);
+        return;
     }
 
     // If dividend is less than the divisor. It is the remainder/modulo
     // 123 % 987654321 = 123
     if (isLessThanBignum(dividend, divisor)) {
         copyBignum(result, dividend);
+        return;
     }
 
     BIGNUM_SIGN tempDividendSign = dividend->sign;
@@ -1752,6 +1758,8 @@ void powerBignum(Bignum *result, Bignum *base, Bignum *exponent) {
             freeBignum(&baseCopy);
             freeBignum(&tempRemainder);
             freeBignum(&tempBase);
+            
+            return;
         }
         
         // base = base * base
@@ -1764,6 +1772,8 @@ void powerBignum(Bignum *result, Bignum *base, Bignum *exponent) {
     freeBignum(&baseCopy);
     freeBignum(&tempRemainder);
     freeBignum(&tempBase);
+
+    return;
 }
 
 void modularExponentiationBignum(Bignum *result, Bignum *base, Bignum *exponent, Bignum *divisor) {
@@ -1841,6 +1851,8 @@ void modularExponentiationBignum(Bignum *result, Bignum *base, Bignum *exponent,
     freeBignum(&tempRemainder);
     freeBignum(&remainderSquaredModDivisorTimesBase);
     freeBignum(&remainderSquaredModDivisorTimesBaseModDivisor);
+
+    return;
 }
 
 void modularInverseBignum(Bignum *result, Bignum *num, Bignum *divisor) {
