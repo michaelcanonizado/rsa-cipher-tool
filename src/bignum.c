@@ -896,7 +896,6 @@ void incrementBignum(Bignum *num, unsigned long long int incrementValue) {
     intToBignum(&offset, incrementValue, positive);
     addBignum(num, num, &offset);
     freeBignum(&offset);
-    return 0;
 }
 
 void decrementBignum(Bignum *num, unsigned long long int decrementValue) {
