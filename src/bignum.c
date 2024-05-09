@@ -32,6 +32,37 @@ unsigned long long int ALLOCATED_BIGNUMS_COUNT = 0, FREED_BIGNUMS_COUNT = 0;
 
 // -----------------PRIVATE FUNCTIONS-----------------
 
+void trimBignum(Bignum *num) {
+    // Function to trim leading 0s of Bignum. This function works by counting leading 0s encapsulated by the current Bignum.length, and once a non-zero is found, will update the length of Bignum by adjusting Bignum.length.
+
+    unsigned long long int numOfZeros = 0;
+    // Flag to check if a non-zero integer was found. Cases where a Bignum was intentionally set to 0: setBignum(&x, "0", positive);. Should not be trimmed.
+    int bignumIsZero = 1;
+
+    // Start from the most significant digit, looking for 0s, and keep track of the number of 0s found.
+    for (int i = num->length - 1; i >= 0; i--) {
+        if (num->digits[i] == 0) {
+            numOfZeros++;
+        } 
+        // If a non-zero integer is found, it has found the MSD(most significant digit), exit the loop and update Bignum.length.
+        else {
+            bignumIsZero = 0;
+            break;
+        }
+    }
+
+    // If Bignum is intentionally set to 0, don't trim the length and set it to 1.
+    if (bignumIsZero) {
+        num->length = 1;
+        return;
+    }
+
+    // If 0s were found, trim the Bignum by adjusting the length.
+    if (numOfZeros != 0) {
+        num->length = num->length - numOfZeros;
+    }
+}
+
 int bignumShiftLeft(Bignum *result, Bignum *num, unsigned long long int shiftPlaces) {
     // Function that shifts a Bignum with the amount of 0s specified (x * pow(10, n)), without using multiplyBignum(). This has been tested to be faster especially when shifting by large place values.
     // I.e: x * 10^n
@@ -308,9 +339,11 @@ void initBignum(Bignum *num) {
 
 }
 
-void freeAllBignums() {
+unsigned long long int freeAllBignums() {
     // Function to go through linked list of Bignum pointers and free the allocated Bignum.digits[] and the nodes all at once.
     // Function will free nodes starting from the end. I.e: the most recent Bignums initialized.
+
+    unsigned long long int numOfBignumsFreed = 0;
 
     // Store head node in a temporary ndoe.
     BignumNode *tempHeadNode = bignumListHead;
@@ -342,8 +375,9 @@ void freeAllBignums() {
         bignumListHead = tempHeadNode;
 
         FREED_BIGNUMS_COUNT++;
+        numOfBignumsFreed++;
     }
-
+    return numOfBignumsFreed;
 }
 
 void freeBignum(Bignum *num) {
@@ -493,7 +527,7 @@ void printBignumNodeList() {
     BignumNode *tempNode = bignumListHead;
 
     if (bignumListHead == NULL) {
-        printf("\n\nNode list empty!\n");
+        printf("\nHEAD -> NULL\n");
         return;
     }
 
@@ -627,7 +661,7 @@ long long int bignumToInt(Bignum *num) {
     return result;
 }
 
-int resetBignum(Bignum *num) {
+void resetBignum(Bignum *num) {
     // Function to reset the contents of a Bignum. Although initBignum() can be used to reset a Bignum, this function resets the Bignum, whilst maintaining the instance of the Bignum and the allocated Bignum.digits[]. initBignum() resets the Bignum by creating a new instance of the Bignum (Therefore another allocation will be made just to reset the Bignum).
     // This function should be used when Bignums are initialized or need to be reset inside of loops to minimize the amount of memory allocated.
 
@@ -637,7 +671,6 @@ int resetBignum(Bignum *num) {
     num->length = 0;
     // Reset Sign
     num->sign = positive;
-    return 0;
 }
 
 void copyBignum(Bignum *result, Bignum *num) {
@@ -708,37 +741,6 @@ void printBignumCenter(Bignum *num, unsigned int requiredWidth) {
     printBignum(num);
     for (int i = 0; i < rightWidth; i++) {
         printf(" ");
-    }
-}
-
-void trimBignum(Bignum *num) {
-    // Function to trim leading 0s of Bignum. This function works by counting leading 0s encapsulated by the current Bignum.length, and once a non-zero is found, will update the length of Bignum by adjusting Bignum.length.
-
-    unsigned long long int numOfZeros = 0;
-    // Flag to check if a non-zero integer was found. Cases where a Bignum was intentionally set to 0: setBignum(&x, "0", positive);. Should not be trimmed.
-    int bignumIsZero = 1;
-
-    // Start from the most significant digit, looking for 0s, and keep track of the number of 0s found.
-    for (int i = num->length - 1; i >= 0; i--) {
-        if (num->digits[i] == 0) {
-            numOfZeros++;
-        } 
-        // If a non-zero integer is found, it has found the MSD(most significant digit), exit the loop and update Bignum.length.
-        else {
-            bignumIsZero = 0;
-            break;
-        }
-    }
-
-    // If Bignum is intentionally set to 0, don't trim the length and set it to 1.
-    if (bignumIsZero) {
-        num->length = 1;
-        return;
-    }
-
-    // If 0s were found, trim the Bignum by adjusting the length.
-    if (numOfZeros != 0) {
-        num->length = num->length - numOfZeros;
     }
 }
 
@@ -888,22 +890,20 @@ int isEqualToBignum(Bignum *num1, Bignum *num2) {
     return 1;
 }
 
-int incrementBignum(Bignum *num, unsigned long long int incrementValue) {
+void incrementBignum(Bignum *num, unsigned long long int incrementValue) {
     Bignum offset;
     initBignum(&offset);
     intToBignum(&offset, incrementValue, positive);
     addBignum(num, num, &offset);
     freeBignum(&offset);
-    return 0;
 }
 
-int decrementBignum(Bignum *num, unsigned long long int decrementValue) {
+void decrementBignum(Bignum *num, unsigned long long int decrementValue) {
     Bignum offset;
     initBignum(&offset);
     intToBignum(&offset, decrementValue, positive);
     subtractBignum(num, num, &offset);
     freeBignum(&offset);
-    return 0;
 }
 
 
@@ -1990,8 +1990,8 @@ int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
 
     srand(time(NULL));
 
-    Bignum n;
-    initBignum(&n);
+    Bignum randomBignum;
+    initBignum(&randomBignum);
 
     // Seed the last digit of the random Bignum with 1,3,7,9 as these are the only numbers that a prime number can end with.
     int primeLastDigits[] = {1,3,7,9};
@@ -2000,31 +2000,31 @@ int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
 
     // Generate a new Bignum and test for primality until a Bignum has passed the primality test
     while(!isPrime) {
-        resetBignum(&n);
+        resetBignum(&randomBignum);
 
         // Generate a random number per digit of the Bignum
         for (unsigned long long int i = primeLength - 1; i > 0; i--) {
             // If the current digit is the MSD (most significant digit), generate a random number from 1 - 9
             if (i == primeLength - 1) {
-                n.digits[i] = (rand() % 9) + 1;
+                randomBignum.digits[i] = (rand() % 9) + 1;
             }
             // Else generate a random number from 0 - 9
             else {
-                n.digits[i] = rand() % 10;
+                randomBignum.digits[i] = rand() % 10;
             }
         }
         // Choose a random number from the prime last digit array to seed the last digit of the random Bignum
-        n.digits[0] = primeLastDigits[randPrimeLastDigitIndex];
-        n.length = primeLength;
+        randomBignum.digits[0] = primeLastDigits[randPrimeLastDigitIndex];
+        randomBignum.length = primeLength;
 
         // Test for the Bignum's primality
-        isPrime = millerRabinPrimalityTest(&n, 10);
+        isPrime = millerRabinPrimalityTest(&randomBignum, 10);
     }
 
     // If the generated Bignum passed the primality test, copy that Bignum to result Bignum
-    copyBignum(result, &n);
+    copyBignum(result, &randomBignum);
 
-    freeBignum(&n);
+    freeBignum(&randomBignum);
 
     return 0;
 }

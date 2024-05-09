@@ -23,26 +23,25 @@ typedef struct {
 int getLengthOfInteger(long long int num);
 
 void initBignum(Bignum *num);
-void freeAllBignums();
+unsigned long long int freeAllBignums();
 void freeBignum(Bignum *num);
 void printBignumNodeList();
 void setBignum(Bignum *numStruct, char numStr[], BIGNUM_SIGN sign);
 void intToBignum(Bignum *numStruct, unsigned long long int integer, BIGNUM_SIGN sign);
 long long int bignumToInt(Bignum *num);
-int resetBignum(Bignum *num);
+void resetBignum(Bignum *num);
 void copyBignum(Bignum *result, Bignum *num);
 void printBignum(Bignum *num);
 void printBignumExtended(Bignum *num, unsigned long long int specifiedLength);
 void printBignumCenter(Bignum *num, unsigned int requiredWidth);
-void trimBignum(Bignum *num);
+int isBignumZero(Bignum *num);
 
 int isGreaterThanBignum(Bignum *num1, Bignum *num2);
 int isLessThanBignum(Bignum *num1, Bignum *num2);
 int isLessThanOrEqualToBignum(Bignum *num1, Bignum *num2);
 int isEqualToBignum(Bignum *num1, Bignum *num2);
-int isBignumZero(Bignum *num);
-int incrementBignum(Bignum *num, unsigned long long int incrementValue);
-int decrementBignum(Bignum *num, unsigned long long int decrementValue);
+void incrementBignum(Bignum *num, unsigned long long int incrementValue);
+void decrementBignum(Bignum *num, unsigned long long int decrementValue);
 
 void addBignum(Bignum *result, Bignum *addend1, Bignum *addend2);
 void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend);
