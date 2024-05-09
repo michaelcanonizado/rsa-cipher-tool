@@ -527,7 +527,7 @@ void printBignumNodeList() {
     BignumNode *tempNode = bignumListHead;
 
     if (bignumListHead == NULL) {
-        printf("\n\nNode list empty!\n");
+        printf("\nHEAD -> NULL\n");
         return;
     }
 
