@@ -905,7 +905,6 @@ void decrementBignum(Bignum *num, unsigned long long int decrementValue) {
     intToBignum(&offset, decrementValue, positive);
     subtractBignum(num, num, &offset);
     freeBignum(&offset);
-    return 0;
 }
 
 
