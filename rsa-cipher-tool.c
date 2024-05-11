@@ -799,6 +799,7 @@ void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic) {
             clearWord(terminalHeight - 7, 0, terminalWidth);
             clearWord(terminalHeight - 6, 0, terminalWidth);
             moveCursor(tempCursorX, tempCursorY);
+            clearWord(tempCursorY, strlen(promptMsg), terminalWidth);
             break;
         }
 
