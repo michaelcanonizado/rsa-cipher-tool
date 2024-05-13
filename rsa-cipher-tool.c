@@ -118,25 +118,25 @@ int main(void) {
 			generateKeys();
 			break;
 		case 2:
-                    	encryptText();
+            encryptText();
 			break;
 		case 3:
-                    	decryptText();
+            decryptText();
 			break;
-                case 4:
-                    	about();
+        case 4:
+            about();
 			break;
-                case 5:
-                    	/* If the user wants to exit. Clear the screen and show an exiting feedback */
-            	    	clearScreen();
-                    	moveCursor(0, (terminalHeight/2) - 4);
+        case 5:
+        	/* If the user wants to exit. Clear the screen and show an exiting feedback */
+        	clearScreen();
+        	moveCursor(0, (terminalHeight/2) - 4);
 			printf("%*s%s\n", calculateLeftPadding(strlen("Exiting RSA Cipher Tool...")), "", "Exiting RSA Cipher Tool...");
-                    	freeAllBignums();
+        	freeAllBignums();
 			sleepProgram(1000);
-                    	return 0;
-                default:
-                    	break;
-            }
+        	return 0;
+        default:
+        	break;
+        }
 		
             clearScreen();
         }
@@ -241,7 +241,7 @@ void generateKeys() {
     double elapsedTime;
     startTime = clock();
 
-    /* Claer previous prompt and output the state of the key generation */
+    /* Clear previous prompt and output the state of the key generation */
     clearPrompts();
 
     printf("\nKey length: %d bit",  chosenKeySize);
@@ -344,14 +344,14 @@ void generateKeys() {
 
 
         /* Calculate modulus "n":
-            n = p prime * q qprime */
+            n = p prime * q prime */
         sleepProgram(300);
         loadingBar(loadingBarX, loadingBarY, 50);
         loadingStatus(loadingStatusX, loadingStatusY, "Generating N public...");
         multiplyBignum(&nPublic, &pPrimePrivate, &qPrimePrivate);
 
         /* Calculate phi of n:
-            phi of n = (p prime - 1) * (q qprime - 1) */
+            phi of n = (p prime - 1) * (q prime - 1) */
         sleepProgram(300);
         loadingBar(loadingBarX, loadingBarY, 60);
         loadingStatus(loadingStatusX, loadingStatusY, "Generating phi of N...");
@@ -423,7 +423,7 @@ void generateKeys() {
     The RSA encryption algorthim requires nPublic along with ePublic or dPrivate
     to encrypt and decrypt respectively. Since we have to output two keys (public
     and private) we have to store nPublic within the keys. The program does so by
-    concatinating nPublic to ePublic/dPrivate (separated by a '.').
+    concatenating nPublic to ePublic/dPrivate (separated by a '.').
     
     Equation to encrypt a character:
         encryptedChar = ( plainChar ^ (ePublic) ) mod (npublic)
@@ -478,7 +478,7 @@ void encryptText() {
     /* Get the public key and store it in Bignums */
     getKeys(encrypt, &ePublic, &nPublic);
 
-    /* Start elepased-time timer */
+    /* Start elapsed-time timer */
     clock_t startTime, endTime;
     double elapsedTime;
     startTime = clock();
@@ -593,7 +593,7 @@ void decryptText() {
     /* Get the private key and store it in Bignums */
     getKeys(decrypt, &dPrivate, &nPublic);
 
-    /* Start elepased-time timer */
+    /* Start elapsed-time timer */
     clock_t startTime, endTime;
     double elapsedTime;
     startTime = clock();
@@ -605,8 +605,8 @@ void decryptText() {
     char encryptedCharacter[100];
     char decryptedCharacter;
 
-    /* Get the number of encrypted characters in the input file. This number be
-    used as a basis to track the percentage of characters encrypted, which will 
+    /* Get the number of decrypted characters in the input file. This number be
+    used as a basis to track the percentage of characters decrypted, which will 
     be used in the loading bar.  */
     while((tempCharacter = fgetc(inputFilePtr)) != EOF) {
         if (tempCharacter == '/') {
@@ -707,10 +707,6 @@ void getInputFile(FILE **inputFilePtr, char *inputFilename, Action type) {
 
         /* if the file exists, check if it is a valid file */
         if (*inputFilePtr != NULL) {
-            /* A valid input file to decrypt is a file that uses the encrypted 
-            file format that encryptText() returns. I.e: a file that contains
-            numbers separated by a flag. This prevents the user to not decrypt
-            encrypted files that was not encrypted by the program. */
             isValidFile = type == decrypt ? isValidEncryptedFile(*inputFilePtr) : 1;
 
             if (type == decrypt) {
@@ -803,6 +799,7 @@ void getKeys(Action type, Bignum *ePublicOrDPrivate, Bignum *nPublic) {
             clearWord(terminalHeight - 7, 0, terminalWidth);
             clearWord(terminalHeight - 6, 0, terminalWidth);
             moveCursor(tempCursorX, tempCursorY);
+            clearWord(tempCursorY, strlen(promptMsg), terminalWidth);
             break;
         }
 
@@ -840,7 +837,7 @@ void splitString(const char *inputStr, char outputArr[][ABOUT_MAX_LENGTH], int *
     int j = 0;
     int k = 0;
 
-    /* Iterate through the string, copying chunks accoring to the line cap,
+    /* Iterate through the string, copying chunks according to the line cap,
     and store it in the array of strings. */
     for (int i = 0; i < strlen(inputStr); i += lineCap) {
         /* If the chunk stops in between a word, count the number of characters
@@ -1230,7 +1227,7 @@ void printProgramHeader() {
 }
 
 void promptExitConfirm() {
-    /* Function to show the promp exit comfirm. It will continuously ask the sure to type the confirmation message until it has been typed correctly */
+    /* Function to show the promp exit comfirm. It will continuously ask the user to type the confirmation message until it has been typed correctly */
 
 	char userInput[100];
 

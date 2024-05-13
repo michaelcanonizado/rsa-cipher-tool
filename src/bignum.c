@@ -1220,7 +1220,7 @@ void subtractBignum(Bignum *result, Bignum *minuend, Bignum *subtrahend) {
     freeBignum(&subtrahendTemp);
 }
 
-int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
+void multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     // Function that multiplies 2 Bignums together.
     // Uses the karatsuba multiplication algorithm (https://www.youtube.com/watch?v=yWI2K4jOjFQ&t=6s) that has a time complexity of O(n^1.6). Which is faster than the traditional multiplication algorithm with a time complexity of O(n^2).
 
@@ -1228,12 +1228,12 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     if (isBignumZero(multiplicand)) {
         resetBignum(result);
         setBignum(result, "0", positive);
-        return 0;
+        return;
     }
     if (isBignumZero(multiplier)) {
         resetBignum(result);
         setBignum(result, "0", positive);
-        return 0;
+        return;
     }
 
     // Store multiplicand and multiplier sign in a temporary enum. Then make both Bignums positive to trigger the other function calls correctly.
@@ -1272,7 +1272,7 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
         multiplicand->sign = tempMultiplicandSign;
         multiplier->sign = tempMultiplierSign;
 
-        return 0;
+        return;
     }
 
 
@@ -1396,11 +1396,9 @@ int multiplyBignum(Bignum *result, Bignum *multiplicand, Bignum *multiplier) {
     freeBignum(&ac_left_shift_plus_ad_plus_bc_left_shift);
     freeBignum(&ac_left_shift_plus_ad_plus_bc_left_shift_plus_bd);
     freeBignum(&zero);
-
-    return 0;
 }
 
-int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
+void divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     // Function that will find the quotient of two Bignums. Uses repeated multiplication to find the quotient of the dividend and divisor.
     // E.g: 111 / 20:
     //      20 * 1 = 20
@@ -1454,7 +1452,7 @@ int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
         dividend->sign = dividendSign;
         divisor->sign = divisorSign;
         setBignum(result, "0", resultSign);
-        return 0;
+        return;
     }
 
     // A temporary Bignum set as 1 is used as bignumShiftLeft doesn't modify the actual Bignum that is passed. But modifies a separate resulting Bignum.
@@ -1548,7 +1546,7 @@ int divideBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     freeBignum(&dividendMinusMultiplyResult);
 }
 
-int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
+void moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     // Function that will find the modulo of two Bignums. Uses repeated multiplication to find the quotient of the dividend and divisor. dividend - (quotient * divisor) will then give the remainder/modulo.
     // E.g: 111 / 20:
     //      20 * 1 = 20
@@ -1599,14 +1597,14 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
         result->sign = positive;
 
         freeBignum(&tempMod);
-        return 0;
+        return;
     }
 
     // If dividend is less than the divisor. It is the remainder/modulo
     // 123 % 987654321 = 123
     if (isLessThanBignum(dividend, divisor)) {
         copyBignum(result, dividend);
-        return 0;
+        return;
     }
 
     BIGNUM_SIGN tempDividendSign = dividend->sign;
@@ -1709,7 +1707,7 @@ int moduloBignum(Bignum *result, Bignum *dividend, Bignum *divisor) {
     freeBignum(&dividendMinusMultiplyResult);
 }
 
-int powerBignum(Bignum *result, Bignum *base, Bignum *exponent) {
+void powerBignum(Bignum *result, Bignum *base, Bignum *exponent) {
     // Function to calculate the power of a Bignum (x^n).
     // Uses binary exponentiation to calculate the power in O(log(n)) time complexity. Reference: https://www.youtube.com/watch?v=9VEqjAZxmeA&t=387s
 
@@ -1761,7 +1759,7 @@ int powerBignum(Bignum *result, Bignum *base, Bignum *exponent) {
             freeBignum(&tempRemainder);
             freeBignum(&tempBase);
             
-            return 0;
+            return;
         }
         
         // base = base * base
@@ -1775,10 +1773,10 @@ int powerBignum(Bignum *result, Bignum *base, Bignum *exponent) {
     freeBignum(&tempRemainder);
     freeBignum(&tempBase);
 
-    return 0;
+    return;
 }
 
-int modularExponentiationBignum(Bignum *result, Bignum *base, Bignum *exponent, Bignum *divisor) {
+void modularExponentiationBignum(Bignum *result, Bignum *base, Bignum *exponent, Bignum *divisor) {
     // Function to calculate ( (base^exponent) mod divisor ) of Bignums
     // Uses binary exponentiation, but with inserted modulos to calculate the modular exponentiation in O(log(n)) time complexity. Reference: https://www.youtube.com/watch?v=8r4-5k-o1QE
 
@@ -1854,10 +1852,10 @@ int modularExponentiationBignum(Bignum *result, Bignum *base, Bignum *exponent, 
     freeBignum(&remainderSquaredModDivisorTimesBase);
     freeBignum(&remainderSquaredModDivisorTimesBaseModDivisor);
 
-    return 0;
+    return;
 }
 
-int modularInverseBignum(Bignum *result, Bignum *num, Bignum *divisor) {
+void modularInverseBignum(Bignum *result, Bignum *num, Bignum *divisor) {
     // Function to get the Modular Multiplicative Inverse of a Bignum.
     // Given num and divisor, find 'k'(result), such that: (num * k) mod divisor = 1
     // Uses the Extended Euclidean Algorithm to find 'k'. Reference: https://www.youtube.com/watch?v=lq285DDdmtw
@@ -1927,13 +1925,11 @@ int modularInverseBignum(Bignum *result, Bignum *num, Bignum *divisor) {
     freeBignum(&b);
 
     freeBignum(&t2TimesQuotient);
-
-    return 0;
 }
 
 
 
-int halfBignum(Bignum *result, Bignum *num) {
+void halfBignum(Bignum *result, Bignum *num) {
     // Function that divides a Bignum by 2 without using divideBignum(). This is useful as this function is faster at dividing a Bignum by 2 compared to divideBignum() --especially when the Bignum being halved is a really large number.
 
     // NOTE: this function might be redundant, but it is needed in the algorithms used in the actual RSA Cipher Tool where it requires big Bignums to be divided by 2 effieciently.
@@ -1982,7 +1978,7 @@ int halfBignum(Bignum *result, Bignum *num) {
     trimBignum(result);
 }
 
-int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
+void generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
     // Function to generate a prime Bignum given a desired length.
     // Function will generate random numbers, test for its primality using the Miller Rabin Primality Test (https://home.sandiego.edu/~dhoffoss/teaching/cryptography/10-Rabin-Miller.pdf), and if the number passes all the test, it will be as MOST PROBABLY a prime number.
 
@@ -2025,7 +2021,5 @@ int generatePrimeBignum(Bignum *result, unsigned long long int primeLength) {
     copyBignum(result, &randomBignum);
 
     freeBignum(&randomBignum);
-
-    return 0;
 }
 
