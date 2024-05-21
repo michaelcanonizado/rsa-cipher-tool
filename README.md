@@ -4,7 +4,7 @@
 A cipher tool that uses the RSA (Rivest, Shamir, Adleman) encryption algorithm to generate keys, encryptm and decrypt. It also uses a custom number precision library made from scratch!
 
 ## Backstory
-This is a 1st year capstone project for Computer Programming 2. This project was chosen as the members wanted to explore the complex algorithms used in cryptography and mathematical operations, while implementing the lessons learned this academic year. A custom number precision library was built to overcome the limitations of C's native data types. The current state of the precision library ([bignum.h](src/bignum.c)) is enough to handle a maximum of 128-bit RSA key size! Super small i know hehe.
+This is a 1st year capstone project for Computer Programming 2. This project was chosen as the members wanted to explore the complex algorithms used in cryptography and mathematical operations, while implementing the lessons learned this academic year. A custom number precision library was built to overcome the limitations of C's native data types. The current state of the precision library ([bignum.h](src/bignum.c)) is enough to efficiently handle a maximum of 128-bit RSA key size. Super small i know hehe. You can view the project instructions [here](CS103-Programming-Project.pdf).
 
 ## Installation
 Clone the repository
