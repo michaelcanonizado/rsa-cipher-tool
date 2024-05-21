@@ -945,7 +945,6 @@ void about() {
         "Michael Xavier Canonizado",
         "Deanne Clarice Bea",
         "Simon Narvaez",
-        "Marc Jordan Campopos"
     };
     int paragraphsSize = sizeof(paragraphs) / sizeof(paragraphs[0]);
     char paragraphsSubstrings[ABOUT_MAX_SUBSTRINGS][ABOUT_MAX_LENGTH];
