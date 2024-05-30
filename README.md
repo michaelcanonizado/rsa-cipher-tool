@@ -15,10 +15,6 @@ Enter project directory
 ```
 cd rsa-cipher-tool
 ```
-Compile ./rsa-cipher-tool.c
-```
-gcc rsa-cipher-tool.c -o rsa-cipher-tool src/bignum.c -lm
-```
 Run executable file
 ```
 ./rsa-cipher-tool
