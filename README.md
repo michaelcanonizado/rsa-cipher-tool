@@ -4,7 +4,7 @@
 A cipher tool that uses the RSA (Rivest, Shamir, Adleman) encryption algorithm to generate keys, encrypt, and decrypt. It also uses a custom number precision library made from scratch!
 
 ## Backstory
-This is a 1st year capstone project for Computer Programming 2. This project was chosen as the members wanted to explore the complex algorithms used in cryptography and mathematical operations, while implementing the lessons learned this academic year. A custom number precision library was built to overcome the limitations of C's native data types. The current state of the precision library ([bignum.h](src/bignum.c)) is enough to efficiently handle a maximum of 128-bit RSA key size. Super small i know :sweat_smile:. You can view the project instructions [here](CS103-Programming-Project.pdf).
+This is a 1st year capstone project for Computer Programming 2. This project was chosen as the members wanted to explore the complex algorithms used in cryptography and mathematics, while implementing the lessons learned this academic year. A custom number precision library was built to overcome the limitations of C's native data types. The current state of the precision library ([bignum.h](src/bignum.c)) is enough to efficiently handle a maximum of 128-bit RSA key size. You can view the project instructions [here](CS103-Programming-Project.pdf).
 
 ## Installation
 Clone the repository
@@ -29,7 +29,7 @@ Therefore, upon running the program, you will be greeted with the following opti
 
 
 ### 1) - Generating Keys
-You will be asked for your desired key size. The bigger the key size, the more secure the encrypted message will be, but the longer it will take to encrypt and decrypt. Smaller key sizes where implemented for the sake of demonstration, as the custom number precision library is not efficient enough to perform calculations on super large numbers. Further optimization can be made to bignum.h to enable it to handle longer key sizes efficiently.
+You will be asked for your desired key size. The bigger the key size, the more secure the encrypted message will be, but the longer it will take to encrypt and decrypt. Smaller key sizes where implemented for the sake of demonstration, as the custom number precision library is not efficient enough to perform calculations on super-duper large numbers. Further optimization can be made to bignum.h to enable it to handle longer key sizes efficiently.
 
 ![image](https://github.com/michaelcanonizado/rsa-cipher-tool/assets/100785846/4504f147-4b5c-4b55-b9c5-7ef25a058b8a)
 
